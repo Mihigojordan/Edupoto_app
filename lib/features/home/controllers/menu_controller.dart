@@ -1,0 +1,51 @@
+import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/hoso_home_screen.dart';
+import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/hoso_services/hoso_services.dart';
+import 'package:hosomobile/features/setting/screens/profile_screen.dart';
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class MenuItemController extends GetxController implements GetxService{
+  int _currentTabIndex = 0;
+  int get currentTabIndex => _currentTabIndex;
+
+
+  final List<Widget> screen = [
+   const HosoHomeScreen(),
+  //  const HomeScreen(),
+    const MzaziScreen(),
+     const HosoServices(),
+    const ProfileScreen()
+
+  ];
+
+  void resetNavBarTabIndex(){
+    _currentTabIndex = 0;
+  }
+
+  void selectHomePage({bool isUpdate = true}) {
+    _currentTabIndex = 0;
+    if(isUpdate) {
+      update();
+    }
+  }
+
+  void selectHistoryPage({bool isUpdate=true}) {
+    _currentTabIndex = 1;
+    if(isUpdate){
+ update();     
+    }
+    
+  }
+
+  void selectNotificationPage() {
+    _currentTabIndex = 2;
+    update();
+  }
+
+  void selectProfilePage() {
+    _currentTabIndex = 3;
+    update();
+  }
+}

@@ -1,0 +1,73 @@
+import 'dart:io';
+import 'package:get/get.dart';
+import 'package:hosomobile/common/models/error_model.dart';
+import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
+import 'package:hosomobile/features/auth/domain/models/user_short_data_model.dart';
+import 'package:hosomobile/helper/route_helper.dart';
+import 'package:hosomobile/helper/custom_snackbar_helper.dart';
+
+class ApiChecker {
+  static void checkApi(Response response) {
+    UserShortDataModel? userData =  Get.find<AuthController>().getUserData();
+
+
+    if((response.statusCode == 401 || response.statusCode == 429) && !(Get.currentRoute.contains(RouteHelper.loginScreen))) {
+      Get.find<AuthController>().removeCustomerToken();
+      Get.offAllNamed(RouteHelper.getRestart());
+
+      showCustomSnackBarHelper(response.body != null
+          ? response.body['message'] ?? ErrorResponseModel.fromJson(response.body).errors?.first.message ?? ''
+          : response.statusText, isError: true
+      );
+
+    }
+    
+    else if(response.statusCode == -1){
+      Get.find<AuthController>().removeCustomerToken();
+      Get.offAllNamed(RouteHelper.getLoginRoute(
+        countryCode: userData?.countryCode,
+        phoneNumber: userData?.phone,
+      ));
+      showCustomSnackBarHelper('you are using vpn', isVpn: true, duration: const Duration(minutes: 10));
+
+    }
+    else  if(response.statusCode == 200){
+      showCustomSnackBarHelper(response.body != null
+          ? response.body
+          ['message'] ?? ErrorResponseModel.fromJson(response.body).errors?.first.message ?? ''
+          : response.statusText, isError: false);
+    }
+    else  if(response.statusCode == 201){
+      showCustomSnackBarHelper(response.body != null
+          ? response.body
+          ['message'] ?? ErrorResponseModel.fromJson(response.body).errors?.first.message ?? ''
+          : response.statusText, isError: false);
+    }else  if(response.statusCode == 501){
+      showCustomSnackBarHelper(response.body != null
+          ? response.body
+          ['message'] ?? ErrorResponseModel.fromJson(response.body).errors?.first.message ?? ''
+          : response.statusText, isError: true);
+    }
+    else {
+      
+      showCustomSnackBarHelper(response.body != null
+          ? response.body
+          ['message'] ?? ErrorResponseModel.fromJson(response.body).errors?.first.message ?? ''
+          : response.statusText, isError: true);
+    }
+  }
+
+  static Future<bool> isVpnActive() async {
+    bool isVpnActive;
+    List<NetworkInterface> interfaces = await NetworkInterface.list(
+        includeLoopback: false, type: InternetAddressType.any);
+    interfaces.isNotEmpty
+        ? isVpnActive = interfaces.any((interface) =>
+    interface.name.contains("tun") ||
+        interface.name.contains("ppp") ||
+        interface.name.contains("pptp"))
+        : isVpnActive = false;
+
+    return isVpnActive;
+  }
+}

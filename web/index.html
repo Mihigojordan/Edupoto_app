@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="EdupotoMobile.">
+  <base href="/">
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="EdupotoMobile">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="ic_launcher3.png"/>
+
+  <title>Edupoto Mobile</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <div class="background">
+    <!-- Loader Container -->
+    <div class="loading" id="loading">
+      <div class="balls-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+    <!-- Main Content -->
+    <div id="main-content" style="display: none;">
+      <!-- Add your main application content here -->
+      <h1></h1>
+    </div>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js');
+      });
+    }
+
+    // Function to hide the loader and display main content
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('loading');
+      const mainContent = document.getElementById('main-content');
+
+      // Simulate a delay for demo purposes (optional, remove in production)
+      setTimeout(() => {
+        loader.style.display = 'none'; // Hide the loader
+        mainContent.style.display = 'block'; // Show the main content
+      }, 6000); // Adjust delay as needed
+    });
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
+  <script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCwZRTO3ydX4lAKIaplZbAndfzxxqbhbWI",
+      authDomain: "hosomobile-app.firebaseapp.com",
+      projectId: "hosomobile-app",
+      storageBucket: "hosomobile-app.firebasestorage.app",
+      messagingSenderId: "908377002813",
+      appId: "1:908377002813:web:b4727e19759cd2424d2b54"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+  </script>
+  <script src="main.dart.js" type="application/javascript"></script>
+</body>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  .background {
+    background-image: url('assets/image/ic_launcher3.png'); /* Path to your background image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .loading {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+  }
+
+  .balls-loader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80px;
+  }
+
+  .balls-loader div {
+    width: 20px;
+    height: 20px;
+    background-color: #060606;
+    border-radius: 50%;
+    animation: bounce 1.5s infinite ease-in-out;
+  }
+
+  .balls-loader div:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+
+  .balls-loader div:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+
+  #main-content {
+    text-align: center;
+    color: #fff;
+    font-size: 2rem;
+    z-index: 2;
+  }
+
+  @keyframes bounce {
+    0%, 80%, 100% {
+      transform: scale(0);
+    }
+    40% {
+      transform: scale(1);
+    }
+  }
+</style>
+</html>
