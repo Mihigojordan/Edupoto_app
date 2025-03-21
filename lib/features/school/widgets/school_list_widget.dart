@@ -329,7 +329,7 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
               price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
             ),
           ),
-                title: 'PAY CASH',
+                title: 'PAY NOW',
                
                 color1: kamber300Color,
                 color2: kyellowColor,

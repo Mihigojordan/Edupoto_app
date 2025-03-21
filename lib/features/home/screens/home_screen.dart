@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
     Get.find<ProfileController>().getProfileData(reload: reload);
-    Get.find<BannerController>().getBannerList(reload,type: 2);
+    Get.find<BannerController>().getBannerList(reload,type: 2,application: 2);
     Get.find<RequestedMoneyController>().getRequestedMoneyList(reload, isUpdate: reload);
     Get.find<RequestedMoneyController>().getOwnRequestedMoneyList(reload, isUpdate: reload);
     Get.find<TransactionHistoryController>().getTransactionData(1, reload: reload);

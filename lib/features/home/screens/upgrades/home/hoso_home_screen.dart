@@ -72,7 +72,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
   }
 
  // Wait for banner data to load
-await Get.find<BannerController>().getBannerList(reload,type:1).then((_) {
+await Get.find<BannerController>().getBannerList(reload,type:1,application: 1).then((_) {
   banners = Get.find<BannerController>().bannerList;
  
 });

@@ -129,54 +129,11 @@ Future<String?> _loadPin() async {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Stack(
-          children: [
-            Image.asset(
-              Images.launch_page,
-              fit: BoxFit.cover,
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-            ),
-            Positioned(
-              height: MediaQuery.of(context).size.height/3,
-             
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                                Image.asset(Images.splash_logo, height: 75),
-                     const SizedBox(
-              height: Dimensions.paddingSizeDefault,
-            ),  
-                    Text(
-              '${'welcome_to'.tr} ${AppConstants.appName} !',
-              textAlign: TextAlign.center,
-              style: rubikMedium.copyWith(
-                color: Theme.of(context).textTheme.titleLarge!.color,
-                fontSize: Dimensions.fontSizeOverOverLarge,
-              ),
-            ),
-            const SizedBox(
-              height: Dimensions.paddingSizeDefault,
-            ),
-          
-            Text(
-              'A new parenting experience!'.tr,
-              textAlign: TextAlign.center,
-              style: rubikLight.copyWith(
-                color: Theme.of(context).textTheme.bodyLarge!.color,
-                fontSize: Dimensions.fontSizeExtraLarge,
-              ),
-            ),
-               
-                  sizedBox10,
-                  isLoading  // Conditional rendering based on the loading state
-                      ?  CircularProgressIndicator(color: kTextBlackColor)
-                      : const SizedBox.shrink(),  // If not loading, show nothing
-                   
-                ],
-              ),
-            ),
-          ],
+        child: Image.asset(
+          Images.launch_page,
+          fit: BoxFit.cover,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
         ),
       ),
     );

@@ -7,7 +7,7 @@ class BilboardRepo{
 
   BilboardRepo({required this.apiClient});
 
-  Future<Response> getBilboardList(type) async {
-    return await apiClient.getData('${AppConstants.customerBanner}/$type');
+  Future<Response> getBilboardList(type,application) async {
+    return await apiClient.getData('${AppConstants.customerBanner}/$type/$application');
   }
 }

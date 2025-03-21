@@ -15,7 +15,7 @@ class BannerController extends GetxController implements GetxService {
   int get bannerActiveIndex => _bannerActiveIndex;
 
 
-  Future getBannerList(bool reload, {bool isUpdate = true,required int type})async{
+  Future getBannerList(bool reload, {bool isUpdate = true,required int type,required int application })async{
   
     if(_bannerList == null || reload) {
       _bannerList = null;
@@ -24,7 +24,7 @@ class BannerController extends GetxController implements GetxService {
       }
     }
     if (_bannerList == null) {
-      Response response = await bannerRepo.getBannerList(type);
+      Response response = await bannerRepo.getBannerList(type,application);
       if (response.statusCode == 200) {
         _bannerList = [];
       

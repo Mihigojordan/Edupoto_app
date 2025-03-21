@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
     //   showInstallPrompt(context);
     // });
 //Load Bilboard
-   Get.find<BilboardController>().getBilboardList(true,type:2).then((_) {
+   Get.find<BilboardController>().getBilboardList(true,type:2,application: 3).then((_) {
   banners = Get.find<BilboardController>().bannerList;
  
 });
