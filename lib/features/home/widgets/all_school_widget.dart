@@ -79,12 +79,12 @@ class _AllSchoolWidgetState extends State<AllSchoolWidget> {
                   child: TextButton(
                       onPressed: () {}, // => selectedVale(),
                       child: Text(
-                        'Find Your School List',
+                        'Delivery Address if different from school',
                         textAlign: TextAlign.left,
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            decoration: TextDecoration.underline,
+                        
                             color: Colors.black,
-                            fontSize: 15,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold),
                       )),
                 ),

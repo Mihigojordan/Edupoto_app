@@ -291,17 +291,40 @@ TextEditingController schoolNameEditingController=TextEditingController();
                           overflow: TextOverflow.ellipsis,
                     ),
                     sizedBox10,
-    buildFormField(
-                    'Enter Your Delivery Address',
+     Text(
+                    'Choose Delivery Address',
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                        ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 10),
+                  _buildFormField(
+                    'Where to?',
                     schoolNameEditingController,
                     TextInputType.name,
                   ),
-sizedBox15,
-                     const SizedBox(
-                  height: 130,
-                  width: 340,
-                  child: IconImages('assets/icons1/map.png'),
-                ),
+                  const SizedBox(height: 15),
+                  _buildListTile(
+                    icon: Icons.location_on,
+                    title: 'KG 338 St, Kigali, Rwanda',
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 15),
+                  _buildListTile(
+                    icon: Icons.star,
+                    title: 'Choose saved place',
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 15),
+                  const SizedBox(
+                    height: 130,
+                    width: 340,
+                    child: IconImages('assets/icons1/map.png'),
+                  ),
+                  const SizedBox(height: 15),
             sizedBox15,
                             DefaultButton2(
                               color1: kamber300Color,
@@ -366,6 +389,69 @@ TextFormField buildFormField(String labelText,
         }
         return null; // Return null if the input is valid
       },
+    );
+  }
+
+   TextFormField _buildFormField(
+    String labelText,
+    TextEditingController editingController,
+    TextInputType textInputType,
+  ) {
+    return TextFormField(
+      textAlign: TextAlign.start,
+      controller: editingController,
+      keyboardType: textInputType,
+      style: kInputTextStyle,
+      decoration: InputDecoration(
+        isCollapsed: true,
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 13,
+          horizontal: 15,
+        ),
+        isDense: true,
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 1, color: kamber300Color),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 1, color: kTextLightColor),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        labelText: labelText,
+        hintStyle: const TextStyle(color: Colors.grey),
+        hintText: 'KN 360 St 6',
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildListTile({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: const Color(0xFF000000)),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      trailing:
+          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+      onTap: onTap,
     );
   }
 
