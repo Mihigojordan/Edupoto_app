@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hosomobile/features/language/controllers/localization_controller.dart';
-import 'package:hosomobile/features/history/domain/models/transaction_model.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
-import 'package:hosomobile/helper/date_converter_helper.dart';
-import 'package:hosomobile/helper/price_converter_helper.dart';
 import 'package:hosomobile/util/app_constants.dart';
-import 'package:hosomobile/util/color_resources.dart';
-import 'package:hosomobile/util/dimensions.dart';
-import 'package:hosomobile/util/images.dart';
-import 'package:hosomobile/util/styles.dart';
 
 class SingleSchoolListWidget extends StatelessWidget {
    final SchoolLists? schoolLists;
@@ -33,17 +25,20 @@ class SingleSchoolListWidget extends StatelessWidget {
     bool isCredit = (schoolLists?.credit ?? 0) > 0;
 
     try {
-      heading = schoolLists!.transactionType == AppConstants.tuitionFee
-          ? 'Tuition Fee'
-          : schoolLists!.transactionType == AppConstants.classRequirement
+      heading =
+      //  schoolLists!.transactionType == AppConstants.tuitionFee
+      //     ? 'Tuition Fee'
+      //     :
+           schoolLists!.transactionType == AppConstants.classRequirement
               ? 'Class Requirements': schoolLists!.transactionType == AppConstants.dormitoryEssential
           ? 'Dormitory Essentials'
           : schoolLists!.transactionType == AppConstants.textBook
               ? 'Text Books'
                           : '';
-                          color = schoolLists!.transactionType == AppConstants.tuitionFee
-          ? Colors.orangeAccent
-          : schoolLists!.transactionType == AppConstants.classRequirement
+          //                 color = schoolLists!.transactionType == AppConstants.tuitionFee
+          // ? Colors.orangeAccent
+          // :
+        color =   schoolLists!.transactionType == AppConstants.classRequirement
               ? Colors.deepPurple: schoolLists!.transactionType == AppConstants.dormitoryEssential
           ? Colors.lightBlueAccent
           : schoolLists!.transactionType == AppConstants.textBook
@@ -54,12 +49,18 @@ class SingleSchoolListWidget extends StatelessWidget {
     }
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical:  schoolLists!.transactionType == AppConstants.headteacherMessage?5:  2),
-      padding:const EdgeInsets.symmetric(horizontal: 3),
+      margin: EdgeInsets.symmetric(vertical:  schoolLists!.transactionType == AppConstants.headteacherMessage?2:  2),
+      padding:const EdgeInsets.symmetric(horizontal: 3,vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(5),
-        border:schoolLists!.transactionType == AppConstants.headteacherMessage? Border.all(color: ColorResources.blackColor,width: 1):null
+        border:schoolLists!.transactionType == AppConstants.headteacherMessage?const Border(
+  bottom: BorderSide(
+    width: 1.0,          // Required
+    color: Colors.grey,  // Required
+    style: BorderStyle.solid, // Optional (defaults to solid)
+  ),
+):null
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,13 +77,13 @@ class SingleSchoolListWidget extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-           schoolLists!.transactionType == AppConstants.headteacherMessage? const SizedBox(width: 2):   Checkbox(
+           (schoolLists!.transactionType == AppConstants.headteacherMessage)? const SizedBox(width: 2):   Checkbox(
                 value: initialChecked,
                 onChanged: onChanged
               ),
               Expanded(
                 child: Text(
-                  '${schoolLists!.transactionId ?? ''} ${schoolLists!.transactionType == AppConstants.headteacherMessage?'' :'${schoolLists!.amount ?? 0} RWF'}',
+                  '${schoolLists!.transactionId ?? ''} ${(schoolLists!.transactionType == AppConstants.headteacherMessage)?'' :'${schoolLists!.amount ?? 0} RWF'}',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),

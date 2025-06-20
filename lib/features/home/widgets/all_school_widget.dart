@@ -135,7 +135,7 @@ class _AllSchoolWidgetState extends State<AllSchoolWidget> {
             sizedBox15,
         
         //************************************Dependent Dropdown *****************************/        
-                const DependentDropdowns(),
+                // const DependentDropdowns(),
 
           ],
         ),

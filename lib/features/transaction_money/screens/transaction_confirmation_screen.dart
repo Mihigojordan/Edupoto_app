@@ -3,6 +3,9 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/common/widgets/custom_back_button_widget.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/components/custom_buttons.dart';
+import 'package:hosomobile/features/map/screens/map_screen.dart';
+import 'package:hosomobile/features/map/screens/map_screen_sl.dart';
 import 'package:hosomobile/helper/currency_text_input_formatter_helper.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
@@ -14,7 +17,7 @@ import 'package:hosomobile/features/home/domain/models/edubox_material_model.dar
 import 'package:hosomobile/features/home/domain/models/student_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/drop_down.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
-import 'package:hosomobile/features/home/widgets/student_widget.dart';
+import 'package:hosomobile/features/student/screens/student_screen.dart';
 import 'package:hosomobile/features/transaction_money/controllers/bootom_slider_controller.dart';
 import 'package:hosomobile/features/setting/controllers/profile_screen_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
@@ -92,8 +95,8 @@ class TransactionConfirmationScreen extends StatefulWidget {
 
 class _TransactionConfirmationScreenState
     extends State<TransactionConfirmationScreen> {
-  final _pinCodeFieldController = TextEditingController(text:"1234");
-  final TextEditingController _inputAmountController= TextEditingController();
+  final _pinCodeFieldController = TextEditingController(text: "1234");
+  final TextEditingController _inputAmountController = TextEditingController();
   final ContactController contactController = Get.find<ContactController>();
   final TransactionMoneyController transactionMoneyController =
       Get.find<TransactionMoneyController>();
@@ -103,6 +106,32 @@ class _TransactionConfirmationScreenState
   final double serviceChargePercentage =
       4.0; // Example service charge percentage
   Random random = Random();
+
+bool isHomeDelivery =false;
+ double totalPrice = 0.0;
+  double deliveryCost = 3000.0;
+  double subTotalPrice = 0.0;
+  double calculatedTotal = 0.0;
+  int checkedProducts = 0;
+
+  Districts? selectedDistrict;
+  AllSchoolModel? selectedCategory; // Selected value for the first dropdown
+  ClassDetails? selectedSubCategory; // Selected value for the second dropdown
+  Student? selectedStudent; // Selected value for the third dropdown
+  TextEditingController mapDestinationEditingController =
+      TextEditingController();
+  TextEditingController phoneNumberEditingController = TextEditingController();
+  String deliveryOptionsValue = 'Choose Delivery Company';
+  String? _deliveryOptionError;
+
+  homeDeliveryAction() {
+    setState(() {
+      isHomeDelivery = !isHomeDelivery;
+    });
+  }
+
+
+
   final String data =
       'Amafaranga y’ishuri ,Minerval/School fees ni 65.500 Frw/ku gihembwe.\n'
       'Aya ni amafaranga y’ishuri akubiyemo ( Ramede papier ( Impapuro)),\n'
@@ -116,7 +145,7 @@ class _TransactionConfirmationScreenState
     super.initState();
   }
 
-    final FocusNode _inputAmountFocusNode = FocusNode();
+  final FocusNode _inputAmountFocusNode = FocusNode();
 
   void setFocus() {
     _inputAmountFocusNode.requestFocus();
@@ -177,6 +206,7 @@ class _TransactionConfirmationScreenState
             .toStringAsFixed(2);
     String phoneNumber = widget.contactModel!.phoneNumber!.replaceAll('+', '');
     int randomNumber = random.nextInt(90000000) + 10000000;
+    final student = widget.studentInfo![widget.studentIndex!];
     //   bottomSliderController.setIsPinCompleted(isCompleted: false, isNotify: false);
 
     return Scaffold(
@@ -191,8 +221,7 @@ class _TransactionConfirmationScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                 const  CustomBackButton(),
-                
+              const CustomBackButton(),
               if (widget.transactionType != TransactionType.withdrawRequest)
                 ForPersonWidget(contactModel: widget.contactModel),
               const SizedBox(height: 15),
@@ -213,6 +242,8 @@ class _TransactionConfirmationScreenState
                   Text(
                       'Product: ${widget.serviceValue}. Class: ${widget.studentInfo![widget.studentIndex!].studentClass}'),
                   sizedBox05h,
+
+                  // ********************************** Dropdown that has button **************************
                   DropDownEduboxMaterial(
                       onChanged: (value) {
                         setState(() {
@@ -221,14 +252,96 @@ class _TransactionConfirmationScreenState
                       },
                       itemLists: widget.dataList!,
                       title:
-                          '${widget.dataList![widget.productIndex!].name!}-${widget.dataList![widget.productIndex!].price!}RWF',
+                          '${widget.dataList![widget.productIndex!].name}-${widget.dataList![widget.productIndex!].price}RWF',
                       isExpanded: true),
                   sizedBox15,
-                  // PreviewAmountWidget(
-                  //     amountText: widget.inputBalance?.toStringAsFixed(2) ?? "",
-                  //     onTap: widget.callBack),
-
- 
+     Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Text(
+      'Delivery Options',
+      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            color: Colors.black,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ) ?? TextStyle(
+            color: Colors.black,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+      overflow: TextOverflow.ellipsis,
+      maxLines: 2,
+    ),
+    sizedBox15,
+    DefaultButton2(
+      color1: kamber300Color,
+      color2: kyellowColor,
+      onPress: () => _captureInformation(
+        context,
+        randomNumber: randomNumber,
+        totalAmount: totalAmount,
+        className: student.studentClass ?? 'Unknown Class',
+        schoolName: student.school ?? 'Unknown School',
+        orderId: '1234',
+        productName: widget.edubox_service ?? 'Unknown Service',
+      ),
+      title: 'SCHOOL',
+      iconData: Icons.arrow_forward_outlined,
+    ),
+    sizedBox15,
+    isHomeDelivery == false
+        ? DefaultButton2(
+            color1: kamber300Color,
+            color2: kyellowColor,
+            onPress: () => homeDeliveryAction(),
+            title: 'HOME',
+            iconData: Icons.arrow_forward_outlined,
+          )
+        : DeliveryMapScreen(
+            isShop: 0,
+            deliveryCost: deliveryCost ,
+            schoolId: student.schoolId ?? 0,
+            classId: student.classId ?? 0,
+            className: student.studentClass ?? 'Unknown Class',
+            schoolName: student.school ?? 'Unknown School',
+            studentCode: student.code ?? '',
+            studentId: student.id ?? 0,
+            studentName: student.name ?? 'Unknown Student',
+            screenId: 0,
+            calculatedTotal: calculatedTotal ?? 0,
+            contactModel: widget.contactModel ?? ContactModel(
+              phoneNumber: '',
+              name: '',
+              avatarImage: '',
+            ),
+            eduboxService: widget.edubox_service ?? '',
+            dataList: widget.dataList ?? [],
+            shipper: 'widget.shipper',
+            destination: 'widget.destination' ,
+            homePhone: 'widget.homePhone',
+            productId: widget.productId ?? 0,
+            pinCodeFieldController: _pinCodeFieldController.text,
+            transactionType: widget.transactionType!,
+            calculatedTotalWithServices: calculateTotalWithService(
+              double.tryParse(calculatedTotal?.toString() ?? '0') ?? 0,
+            ),
+            productIndex: widget.productIndex ?? 0,
+            purpose: widget.purpose ?? '',
+            calculateServiceCharge: calculateServiceCharge(
+              double.tryParse(calculatedTotal?.toString() ?? '0') ?? 0,
+            ),
+            calculateVAT: calculateVAT(
+              double.tryParse(calculatedTotal?.toString() ?? '0') ?? 0,
+            ),
+            productName: widget.edubox_service ?? '',
+            randomNumber: randomNumber,
+            serviceIndex: widget.serviceIndex ?? 0,
+            totalAmount: double.tryParse(totalAmount ?? '0') ?? 0,
+            vatPercentage: vatPercentage,
+          ),
+  ],
+),
+sizedBox10,
                   Container(
                     height: Dimensions.dividerSizeMedium,
                     color: Theme.of(context).dividerColor,
@@ -322,341 +435,7 @@ class _TransactionConfirmationScreenState
                     ]),
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: Dimensions.paddingSizeLarge),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Padding(
-                    //   padding: const EdgeInsets.only(
-                    //     top: Dimensions.paddingSizeExtraExtraLarge,
-                    //     bottom: Dimensions.paddingSizeDefault,
-                    //   ),
-                    //   child: Text('4digit_pin'.tr,
-                    //       style: rubikMedium.copyWith(
-                    //         fontSize: Dimensions.fontSizeLarge,
-                    //       )),
-                    // ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-   
-                        // const SizedBox(width: Dimensions.paddingSizeDefault),
-                        GestureDetector(
-                          onTap: () {
-                          
-                            final configModel =
-                                Get.find<SplashController>().configModel;
-                            // if (!Get.find<BottomSliderController>()
-                            //     .isPinCompleted) {
-                            //   showCustomSnackBarHelper(
-                            //       'please_input_4_digit_pin'.tr);
-                            // }
-                            //  else {
-                              Get.find<TransactionMoneyController>()
-                                  .pinVerify(
-                                pin: _pinCodeFieldController.text,
-                              )
-                                  .then((isCorrect) {
-                                if (isCorrect) {
-                                  if (widget.transactionType ==
-                                      TransactionType.withdrawRequest) {
-                                    _placeWithdrawRequest();
-                                  } else if (configModel!.twoFactor! &&
-                                      Get.find<ProfileController>()
-                                          .userInfo!
-                                          .twoFactor!) {
-                                    Get.find<AuthController>()
-                                        .checkOtp()
-                                        .then((value) => value.isOk
-                                            ? Get.defaultDialog(
-                                                barrierDismissible: false,
-                                                title: 'otp_verification'.tr,
-                                                content: Column(
-                                                  children: [
-                                                    CustomPinCodeFieldWidget(
-                                                      onCompleted: (pin) =>
-                                                          Get.find<
-                                                                  AuthController>()
-                                                              .verifyOtp(pin)
-                                                              .then((value) {
-                                                        if (value.isOk) {
-                                                          showModalBottomSheet(
-                                                            isScrollControlled:
-                                                                true,
-                                                            context:
-                                                                Get.context!,
-                                                            isDismissible:
-                                                                false,
-                                                            enableDrag: false,
-                                                            shape:
-                                                                const RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.vertical(
-                                                                  top: Radius.circular(
-                                                                      Dimensions
-                                                                          .radiusSizeLarge)),
-                                                            ),
-                                                            builder: (context) =>
-                                                                BottomSheetWithSliderP(
-                                                              amount: widget
-                                                                  .inputBalance
-                                                                  .toString(),
-                                                              availableBalance: availableBalance(
-                                                                      amount: double
-                                                                          .parse(
-                                                                              '${widget.inputBalance}'),
-                                                                      balance: double
-                                                                          .parse(widget
-                                                                              .availableBalance!))
-                                                                  .toStringAsFixed(
-                                                                      2),
-                                                              contactModel: widget
-                                                                  .contactModel,
-                                                              contactModelMtn:
-                                                                  widget
-                                                                      .contactModelMtn,
-                                                              pinCode: _pinCodeFieldController.text,
-                                                              transactionType:
-                                                                  widget
-                                                                      .transactionType,
-                                                              purpose: widget
-                                                                  .purpose,
-                                                              inputBalance: widget
-                                                                  .inputBalance,
-                                                              dataList: widget
-                                                                  .dataList,
-                                                              productIndex: widget
-                                                                  .productIndex,
-                                                              edubox_service: widget
-                                                                  .edubox_service!,
-                                                              amountToPay:
-                                                                  'Amount to be Paid: ${calculateTotalWithService(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
-                                                              nowPaid:
-                                                                  'Now Paid: ${widget.inputBalance!.toStringAsFixed(2)} RWF',
-                                                              vat:
-                                                                  'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
-                                                              serviceCharge:
-                                                                  'Service Charge (${serviceChargePercentage.toStringAsFixed(1)}%): ${calculateServiceCharge(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
-                                                              totalNowPaid:
-                                                                  'Total Amount paid now: $totalAmount RWF',
-                                                            ),
-                                                          );
-                                                        }
-                                                      }),
-                                                    ),
-                                                    const DemoOtpHintWidget(),
-                                                    GetBuilder<AuthController>(
-                                                      builder: (verifyController) =>
-                                                          verifyController
-                                                                  .isVerifying
-                                                              ? CircularProgressIndicator(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .titleLarge!
-                                                                      .color,
-                                                                )
-                                                              : const SizedBox
-                                                                  .shrink(),
-                                                    )
-                                                  ],
-                                                ),
-                                              )
-                                            : null);
-                                  } else {
-                                    // Generate a random integer between 10000000 and 99999999
-                                    int randomNumber =
-                                        random.nextInt(90000000) + 10000000;
-        
-                                               
-                                    mtnMomoApiClient
-                                        .postMtnMomo(
-                                            transactionId:
-                                                randomNumber.toString(),
-                                      amount: calculateTotalWithService(
-                                                    double.parse(
-                                                        '${widget.inputBalance}'))
-                                                .toInt()
-                                                .toString(),
-                                            message:
-                                                'You have paid for ${widget.edubox_service} VAT Inc, ${calculateServiceCharge(double.parse('${widget.inputBalance}')).toInt()} RWF Service Charge',
-                                            phoneNumber: phoneNumber)
-                                        .then((value) async {
-                                      String? status = await mtnMomoApiClient
-                                          .getPaymentStatus();
 
-                                      // Ensure the reference ID is available
-                                      if (status == '202') {
-                                        showModalBottomSheet(
-                                            isScrollControlled: true,
-                                            context: Get.context!,
-                                            isDismissible: false,
-                                            enableDrag: false,
-                                            shape: const RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.vertical(
-                                              top: Radius.circular(
-                                                  Dimensions.radiusSizeLarge),
-                                            )),
-                                            builder: (context) {
-                                              return BottomSheetWithSliderP(
-                                                availableBalance: availableBalance(
-                                                        amount: double.parse(
-                                                            '${widget.inputBalance}'),
-                                                        balance: double.parse(widget.availableBalance!))
-                                                    .toStringAsFixed(2),
-                                                amount: widget.inputBalance
-                                                    .toString(),
-                                                productId: widget.productId!,
-                                                contactModel:
-                                                    widget.contactModel,
-                                                studentIndex:
-                                                    widget.studentIndex,
-                                                pinCode: _pinCodeFieldController.text,
-                                                transactionType:
-                                                    widget.transactionType,
-                                                purpose: widget.purpose,
-                                                studentInfo: widget.studentInfo,
-                                                inputBalance:
-                                                    widget.inputBalance,
-                                                dataList: widget.dataList,
-                                                productIndex:
-                                                    widget.productIndex,
-                                                edubox_service:
-                                                    widget.edubox_service!,
-                                                amountToPay:
-                                                    calculateTotalWithService(
-                                                            double.parse(
-                                                                '${widget.inputBalance}'))
-                                                        .toStringAsFixed(2),
-                                                nowPaid: widget.inputBalance!
-                                                    .toStringAsFixed(2),
-                                                vat:
-                                                    'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
-                                                serviceCharge:
-                                                    calculateServiceCharge(
-                                                            double.parse(
-                                                                '${widget.inputBalance}'))
-                                                        .toStringAsFixed(2),
-                                                totalNowPaid:
-                                                    'Total Amount paid now: $totalAmount RWF',
-                                                serviceValue:
-                                                    widget.serviceValue,
-                                                serviceIndex:
-                                                    widget.serviceIndex,
-                                              );
-                                            });
-                                      } else {
-                                        print('payment not done $status');
-                                      }
-                                            //                       showModalBottomSheet(
-                                            // isScrollControlled: true,
-                                            // context: Get.context!,
-                                            // isDismissible: false,
-                                            // enableDrag: false,
-                                            // shape: const RoundedRectangleBorder(
-                                            //     borderRadius:
-                                            //         BorderRadius.vertical(
-                                            //   top: Radius.circular(
-                                            //       Dimensions.radiusSizeLarge),
-                                            // )),
-                                            // builder: (context) {
-                                            //   return BottomSheetWithSliderP(
-                                            //     availableBalance: availableBalance(
-                                            //             amount: double.parse(
-                                            //                 '${widget.inputBalance}'),
-                                            //             balance: double.parse(widget.availableBalance!))
-                                            //         .toStringAsFixed(2),
-                                            //     amount: widget.inputBalance
-                                            //         .toString(),
-                                            //     productId: widget.productId!,
-                                            //     contactModel:
-                                            //         widget.contactModel,
-                                            //     studentIndex:
-                                            //         widget.studentIndex,
-                                            //     pinCode: Get.find<
-                                            //             BottomSliderController>()
-                                            //         .pin,
-                                            //     transactionType:
-                                            //         widget.transactionType,
-                                            //     purpose: widget.purpose,
-                                            //     studentInfo: widget.studentInfo,
-                                            //     inputBalance:
-                                            //         widget.inputBalance,
-                                            //     dataList: widget.dataList,
-                                            //     productIndex:
-                                            //         widget.productIndex,
-                                            //     edubox_service:
-                                            //         widget.edubox_service!,
-                                            //     amountToPay:
-                                            //         calculateTotalWithService(
-                                            //                 double.parse(
-                                            //                     '${widget.inputBalance}'))
-                                            //             .toStringAsFixed(2),
-                                            //     nowPaid: widget.inputBalance!
-                                            //         .toStringAsFixed(2),
-                                            //     vat:
-                                            //         'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
-                                            //     serviceCharge:
-                                            //         calculateServiceCharge(
-                                            //                 double.parse(
-                                            //                     '${widget.inputBalance}'))
-                                            //             .toStringAsFixed(2),
-                                            //     totalNowPaid:
-                                            //         'Total Amount paid now: $totalAmount RWF',
-                                            //     serviceValue:
-                                            //         widget.serviceValue,
-                                            //     serviceIndex:
-                                            //         widget.serviceIndex,
-                                            //   );
-                                            // });
-                                     });
-                                  }
-                                }
-                                // _pinCodeFieldController.clear();
-                              });
-                            // }
-                          },
-                          child: GetBuilder<AuthController>(
-                            builder: (otpCheckController) {
-                              return GetBuilder<TransactionMoneyController>(
-                                builder: (pinVerify) {
-                                  return pinVerify.isLoading ||
-                                          otpCheckController.isLoading
-                                      ? SizedBox(
-                                          width: Dimensions.radiusSizeOverLarge,
-                                          height:
-                                              Dimensions.radiusSizeOverLarge,
-                                          child: Center(
-                                            child: CircularProgressIndicator(
-                                                color: Theme.of(context)
-                                                    .primaryColor),
-                                          ),
-                                        )
-                                      : Container(
-                                          width: Dimensions.radiusSizeOverLarge,
-                                          height:
-                                              Dimensions.radiusSizeOverLarge,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(25),
-                                            color: Theme.of(context)
-                                                .secondaryHeaderColor,
-                                          ),
-                                          child: Icon(Icons.arrow_forward,
-                                              color: ColorResources.blackColor),
-                                        );
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              )
             ],
           ),
         ),
@@ -723,64 +502,179 @@ class _TransactionConfirmationScreenState
       ),
     );
   }
-}
 
-  TextFormField buildFormField(
-      String labelText,
-      TextEditingController editingController,
-      TextInputType textInputType,
-      String hint,
-      List<TextInputFormatter>? formatter,
-      FocusNode? focusNode) {
-    return TextFormField(
-      textAlign: TextAlign.start,
-      controller: editingController,
-      keyboardType: textInputType,
-      style: kInputTextStyle,
-      inputFormatters: formatter,
-      focusNode: focusNode,
-      decoration: InputDecoration(
-        isCollapsed: true,
-        hintText: hint,
-        contentPadding: const EdgeInsets.symmetric(
-            vertical: 13,
-            horizontal: 15), //Change this value to custom as you like
-        isDense: true,
-        focusedBorder: OutlineInputBorder(
-          ////<-- SEE HERE
-          borderSide: const BorderSide(width: 1, color: kamber300Color),
-          borderRadius: BorderRadius.circular(20.0),
-        ),
+    void _captureInformation(context,
+      {required int randomNumber,
+      required String totalAmount,
+      required String schoolName,
+      required String className,
+      required String productName,
+      required String orderId}) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirm'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Your School materials will be delivered at;'),
+              Text('School Name: $schoolName'),
+              Text('Class: $className'),
+              Text('Customer Product: $productName'),
+              Text('Order ID: $orderId'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            const SizedBox(width: 10),
+TextButton(
+  onPressed: () {
+    final configModel = Get.find<SplashController>().configModel;
+    Get.find<TransactionMoneyController>()
+        .pinVerify(
+      pin: _pinCodeFieldController.text,
+    )
+        .then((isCorrect) {
+      if (isCorrect) {
+        if (widget.transactionType == TransactionType.withdrawRequest) {
+          _placeWithdrawRequest();
+        } else {
+          // Safely access student info
+          final student = widget.studentInfo != null && 
+                         widget.studentIndex != null &&
+                         widget.studentInfo!.length > widget.studentIndex!
+                       ? widget.studentInfo![widget.studentIndex!]
+                       : null;
 
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1, color: kTextLightColor),
-          borderRadius: BorderRadius.circular(20.0),
-        ),
+          // Safe numerical conversions
+          final inputBalance = widget.inputBalance ?? 0.0;
+          final availableBalance = widget.availableBalance != null 
+                                 ? double.tryParse(widget.availableBalance!) ?? 0.0
+                                 : 0.0;
 
-        errorBorder: OutlineInputBorder(
-          //<-- SEE HERE
-          borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-          borderRadius: BorderRadius.circular(20.0),
-          //<-- SEE HERE
-        ),
-
-        labelText: labelText,
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter some text';
+          showModalBottomSheet(
+            isScrollControlled: true,
+            context: Get.context!,
+            isDismissible: false,
+            enableDrag: false,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(Dimensions.radiusSizeLarge),
+              ),
+            ),
+            builder: (context) {
+              return BottomSheetWithSliderP(
+                schoolName: student?.school ?? 'Unknown School',
+                className: student?.studentClass ?? 'Unknown Class',
+                shipper: '',
+                studentCode: student?.code ?? '',
+                studentName: student?.name ?? 'Unknown Student',
+                homePhone: '',
+                destination: '',
+                randomNumber: 00000000,
+                studentId: student?.id ?? 0,
+                amount: inputBalance.toString(),
+                availableBalance: availableBalance.toStringAsFixed(2),
+                contactModel: widget.contactModel ?? ContactModel(
+                  phoneNumber: '',
+                  name: '',
+                  avatarImage: '',
+                ),
+                contactModelMtn: widget.contactModelMtn ?? ContactModelMtn(
+                  phoneNumber: '',
+                  name: '',
+                ),
+                pinCode: _pinCodeFieldController.text,
+                transactionType: widget.transactionType ?? TransactionType.sendMoney,
+                purpose: widget.purpose ?? '',
+                inputBalance: inputBalance,
+                dataList: widget.dataList ?? [],
+                productIndex: widget.productIndex ?? 0,
+                edubox_service: widget.edubox_service ?? '',
+                amountToPay: 'Amount to be Paid: ${calculateTotalWithService(inputBalance).toStringAsFixed(2)} RWF',
+                nowPaid: 'Now Paid: ${inputBalance.toStringAsFixed(2)} RWF',
+                vat: 'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(inputBalance).toStringAsFixed(2)} RWF',
+                serviceCharge: calculateServiceCharge(inputBalance).toStringAsFixed(2),
+                totalNowPaid: 'Total Amount paid now: $totalAmount RWF',
+              );
+            },
+          );
         }
-        return null;
+      }
+    });
+  },
+  child: const Text('OK'),
+),
+          ],
+        );
       },
     );
   }
+}
+
+TextFormField buildFormField(
+    String labelText,
+    TextEditingController editingController,
+    TextInputType textInputType,
+    String hint,
+    List<TextInputFormatter>? formatter,
+    FocusNode? focusNode) {
+  return TextFormField(
+    textAlign: TextAlign.start,
+    controller: editingController,
+    keyboardType: textInputType,
+    style: kInputTextStyle,
+    inputFormatters: formatter,
+    focusNode: focusNode,
+    decoration: InputDecoration(
+      isCollapsed: true,
+      hintText: hint,
+      contentPadding: const EdgeInsets.symmetric(
+          vertical: 13,
+          horizontal: 15), //Change this value to custom as you like
+      isDense: true,
+      focusedBorder: OutlineInputBorder(
+        ////<-- SEE HERE
+        borderSide: const BorderSide(width: 1, color: kamber300Color),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(width: 1, color: kTextLightColor),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+
+      errorBorder: OutlineInputBorder(
+        //<-- SEE HERE
+        borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+        borderRadius: BorderRadius.circular(20.0),
+        //<-- SEE HERE
+      ),
+
+      labelText: labelText,
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return 'Please enter some text';
+      }
+      return null;
+    },
+  );
+}
 
 class _MethodFieldWidget extends StatelessWidget {
   final String type;
   final String value;
 
-  const _MethodFieldWidget({super.key, required this.type, required this.value});
+  const _MethodFieldWidget({required this.type, required this.value});
 
   @override
   Widget build(BuildContext context) {

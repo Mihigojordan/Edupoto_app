@@ -26,8 +26,9 @@ import 'package:upgrader/upgrader.dart';
 
 class MzaziScreen extends StatefulWidget {
   static String routeName = 'MzaziScreen';
+  final  bool isShop;
 
-  const MzaziScreen({super.key});
+  const MzaziScreen({super.key,required this.isShop});
 
   @override
   _MzaziScreenState createState() => _MzaziScreenState();
@@ -256,8 +257,8 @@ class _MzaziScreenState extends State<MzaziScreen> {
                                 
                                   height: screenHeight * 0.05,
                                   width: screenWidth * 0.30,
-                                  icon: 'HOSO\nServices',
-                                  title: 'assets/image/HOSO Services.png',
+                                  icon: 'Recharge\nSchool Card',
+                                  title: 'assets/image/cashout3.png',
                                   clas: ''),
                             ],
                           ),
@@ -545,7 +546,7 @@ class _BottomNavState extends State<BottomNav> {
             children: [
               InkWell(
                 enableFeedback: false,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MzaziScreen(),)),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MzaziScreen(isShop: false,),)),
                 child:
                     //  pageIndex == 1
                     //     ?

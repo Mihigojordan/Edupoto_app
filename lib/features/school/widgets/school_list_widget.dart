@@ -3,14 +3,12 @@ import 'package:get/get.dart';
 import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/common/models/contact_model_mtn.dart';
 import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
-import 'package:hosomobile/features/home/domain/models/all_school_model.dart';
 import 'package:hosomobile/features/school/controllers/school_list_controller.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/school/widgets/school_list_shimmer_widget.dart';
 import 'package:hosomobile/common/widgets/no_data_widget.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
-import 'package:hosomobile/features/transaction_money/domain/models/withdraw_model.dart';
-import 'package:hosomobile/features/transaction_money/screens/credit_transaction_confirmation_screen_sl.dart';
+import 'package:hosomobile/features/transaction_money/screens/paid_at_school_transaction_confirmation_screen.dart';
 import 'package:hosomobile/features/transaction_money/screens/school_transaction_confirmation_screen.dart';
 import 'package:hosomobile/helper/transaction_type.dart';
 import 'package:hosomobile/util/app_constants.dart';
@@ -21,12 +19,19 @@ import 'package:hosomobile/features/home/screens/upgrades/home/constants/constan
 
 class SchoolListWidget extends StatefulWidget {
   final ScrollController? scrollController;
-  final Student? studentId;
-  final AllSchoolModel? schoolId;
-  final ClassDetails? classId;
+  final int? studentId;
+  final int? schoolId;
+  final int? classId;
   final String? productName;
+  final String studentName;
+  final String studentCode;
+  final String schoolName;
+  final String className;
   final bool? isHome;
   final String? type;
+  final String homePhone;
+  final String destination;
+  final String shipper;
 
   const SchoolListWidget({
     super.key,
@@ -37,6 +42,13 @@ class SchoolListWidget extends StatefulWidget {
     this.studentId,
     this.isHome,
     this.type,
+    required this.shipper,
+     required this.homePhone,
+    required this.destination,
+    required this.studentCode,
+    required this.studentName,
+    required this.className,
+    required this.schoolName
   });
 
   @override
@@ -62,31 +74,36 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
     });
   }
 
-  void _calculateTotals() {
-    final schoolLists = Get.find<SchoolListController>();
-    double calculatedTotal = 0.0;
-    caseTotals.clear(); // Reset case totals
+void _calculateTotals() {
+  final schoolLists = Get.find<SchoolListController>();
+  double calculatedTotal = 0.0;
+  caseTotals.clear();
 
-    // Calculate total for all items
-    for (int i = 0; i < schoolLists.schoolList.length; i++) {
-      if (i < isChecked.length && isChecked[i]) {
-        calculatedTotal += schoolLists.schoolList[i].amount ?? 0.0;
-      }
+  // Get the filtered list
+  List<SchoolLists> filteredList = _getFilteredSchoolList(schoolLists);
+
+  // Calculate total for all items
+  for (int i = 0; i < filteredList.length; i++) {
+    if (i < isChecked.length && isChecked[i]) {
+      calculatedTotal += filteredList[i].amount ?? 0.0;
     }
-
-    // Calculate totals for each case
-    _calculateCaseTotal(schoolLists.headteacherMessageList, 1);
-    _calculateCaseTotal(schoolLists.classRequirementList, 2);
-    _calculateCaseTotal(schoolLists.domitoryEssentialList, 3);
-    _calculateCaseTotal(schoolLists.textBookList, 4);
-    _calculateCaseTotal(schoolLists.tuitionFeeList, 5);
-    _calculateCaseTotal(schoolLists.withdrawList, 6);
-    _calculateCaseTotal(schoolLists.paymentList, 7);
-
-    setState(() {
-      totalPrice = calculatedTotal;
-    });
   }
+
+  // Calculate totals for each case (excluding tuition fee from all lists)
+  _calculateCaseTotal( schoolLists.tuitionFeeList.where((item) => 
+      item.transactionType != AppConstants.headteacherMessage
+    ).toList(), 1);
+  _calculateCaseTotal(schoolLists.classRequirementList, 2);
+  _calculateCaseTotal(schoolLists.domitoryEssentialList, 3);
+  _calculateCaseTotal(schoolLists.textBookList, 4);
+  _calculateCaseTotal(schoolLists.tuitionFeeList, 5);
+  _calculateCaseTotal(schoolLists.withdrawList, 6);
+  _calculateCaseTotal(schoolLists.paymentList, 7);
+
+  setState(() {
+    totalPrice = calculatedTotal;
+  });
+}
 
   void _calculateCaseTotal(List<SchoolLists> caseList, int caseIndex) {
 
@@ -132,13 +149,16 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
 
   int schoolListIndex = schoolLists.schoolListIndex;
 
-    String? heading = schoolList[schoolListIndex].transactionType == AppConstants.headteacherMessage
-          ? 'Headteachers Message'
-          : schoolList[schoolListIndex].transactionType == AppConstants.classRequirement
+    String? 
+    heading = 
+    // schoolList[schoolListIndex].transactionType == AppConstants.headteacherMessage
+    //       ? 'Headteachers Message'
+    //       : 
+      schoolList[schoolListIndex].transactionType == AppConstants.classRequirement
               ? 'Class Requirements': schoolList[schoolListIndex].transactionType == AppConstants.dormitoryEssential
           ? 'Dormitory Essentials'
           : schoolList[schoolListIndex].transactionType == AppConstants.tuitionFee
-              ? 'Tuition Fees'
+              ? 'Paid at School'
           : schoolList[schoolListIndex].transactionType == AppConstants.textBook
               ? 'Text Books'
                           : '';
@@ -160,66 +180,77 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
     });
   }
 
-  List<SchoolLists> _getFilteredSchoolList(SchoolListController schoolLists) {
-    if (widget.isHome != null && !widget.isHome!) {
-      switch (schoolLists.schoolListIndex) {
-        case 1:
-          return schoolLists.headteacherMessageList;
-        case 2:
-          return schoolLists.classRequirementList;
-        case 3:
-          return schoolLists.domitoryEssentialList;
-        case 4:
-          return schoolLists.textBookList;
-        case 5:
-          return schoolLists.tuitionFeeList;
-        case 6:
-          return schoolLists.withdrawList;
-        case 7:
-          return schoolLists.paymentList;
-        default:
-          return schoolLists.schoolList;
-      }
+ List<SchoolLists> _getFilteredSchoolList(SchoolListController schoolLists) {
+  if (widget.isHome != null && !widget.isHome!) {
+    switch (schoolLists.schoolListIndex) {
+      case 1:
+      //   return schoolLists.headteacherMessageList;
+      // case 2:
+        return schoolLists.classRequirementList;
+      case 3:
+        return schoolLists.domitoryEssentialList;
+      case 4:
+        return schoolLists.textBookList;
+      case 5:
+        return schoolLists.tuitionFeeList;
+      case 6:
+        return schoolLists.withdrawList;
+      case 7:
+        return schoolLists.paymentList;
+      default:
+        // Filter out tuition fee items when showing all school lists
+        return schoolLists.schoolList.where((item) => 
+          item.transactionType != AppConstants.tuitionFee 
+          // && item.transactionType != AppConstants.headteacherMessage
+        ).toList();
     }
-    return schoolLists.schoolList;
   }
+  // Filter out tuition fee items for home view as well
+  return schoolLists.schoolList.where((item) => 
+    item.transactionType != AppConstants.tuitionFee 
+    // && item.transactionType != AppConstants.headteacherMessage
+  ).toList();
+}
 
-  Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList,int schoolListIndex) {
-  
-    
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: Dimensions.paddingSizeExtraSmall),
-      child: Container(
-        height: schoolListIndex==1?MediaQuery.of(context).size.height / 1.5: MediaQuery.of(context).size.height / 2.5,
-        margin: const EdgeInsets.symmetric(horizontal: 5),
-        decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.1),
-          border: Border.all(width: 1, color: Colors.grey),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Scrollbar(
-          thumbVisibility: true,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: schoolList.length,
-            itemBuilder: (ctx, index) {
-           
-              return (schoolList[index].transactionType==AppConstants.headteacherMessage &&schoolListIndex==0)?const SizedBox.shrink(): SingleSchoolListWidget(
-                index: schoolListIndex,
-                schoolLists: schoolList[index],
-                initialChecked: isChecked[index],
-                onChanged: (value) {
-               
-                   onCheckboxChanged(index, value!);
-                },
-              );
-            },
-          ),
+Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int schoolListIndex) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeExtraSmall),
+    child: Container(
+      height: schoolListIndex == 1 
+          ? MediaQuery.of(context).size.height / 1.5 
+          : MediaQuery.of(context).size.height / 2.5,
+      margin: const EdgeInsets.symmetric(horizontal: 5),
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.1),
+        border: Border.all(width: 1, color: Colors.grey),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Scrollbar(
+        thumbVisibility: true,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: schoolList.length,
+          itemBuilder: (ctx, index) {
+            // Skip tuition fee items and headteacher messages when showing all lists
+            if (schoolListIndex == 0 && 
+                (schoolList[index].transactionType == AppConstants.tuitionFee )) {
+              return const SizedBox.shrink();
+            }
+            
+            return SingleSchoolListWidget(
+              index: schoolListIndex,
+              schoolLists: schoolList[index],
+              initialChecked: isChecked[index],
+              onChanged: (value) {
+                onCheckboxChanged(index, value!);
+              },
+            );
+          },
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildLoadingIndicator(BuildContext context) {
     return Center(
@@ -239,7 +270,7 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          if (schoolListIndex > 0)
+          if (schoolListIndex > 0 && schoolListIndex!=5)
             Column(
               children: [
                 _buildRichTextSutitle(
@@ -253,13 +284,19 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
                 DefaultButton2(
                   onPress: () => Get.to(
             () => SchoolTransactionConfirmationScreen(
+              shipper:widget.shipper,
+             homePhone:widget.homePhone,
+             destination:widget.destination,
+             studentId: widget.studentId!,
               inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
               productId: schoolListIndex,
               isChecked: isChecked,
-              schoolId: widget.schoolId,
+              schoolId: widget.schoolId!,
+              classId: widget.classId!,
               productName: widget.productName,
               transactionType: TransactionType.sendMoney,
-              classDetails: widget.classId,
+              className: widget.className,
+              schoolName:widget.schoolName,
               contactModel: ContactModel(
                 phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
                 name: userData?.name ?? '',
@@ -271,8 +308,9 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
               ),
               dataList: schoolList,
               productIndex: 0,
-              student: widget.studentId,
-              edubox_service: widget.productName,
+              studentName: widget.studentName,
+              studentCode: widget.studentCode,
+              edubox_service:heading,
               serviceIndex: 0,
               price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
             ),
@@ -289,29 +327,26 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
                   '${caseTotals[schoolListIndex]}',
                   ' RWF Sub Total to All Total Invoice to pay or request credit at once.\nOR',
                 ),
-              ],
-            )
-          else
-            _buildRichText(
-              context,
-              'Total All : ',
-              '$totalPrice',
-              ' RWF',
-            ),
-          const SizedBox(height: 10),
-          Row(
+                sizedBox10,
+                 Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               DefaultButtonWidth(
                 onPress: () => Get.to(
             () => SchoolTransactionConfirmationScreen(
+              shipper:widget.shipper,
+              homePhone:widget.homePhone,
+              destination:widget.destination,
+              studentId: widget.studentId!,
               inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
               productId: schoolListIndex,
               isChecked: isChecked,
-              schoolId: widget.schoolId,
+              schoolId: widget.schoolId!,
+              classId: widget.schoolId!,
               productName: widget.productName,
               transactionType: TransactionType.sendMoney,
-              classDetails: widget.classId,
+              className: widget.className,
+              schoolName:widget.schoolName,
               contactModel: ContactModel(
                 phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
                 name: userData?.name ?? '',
@@ -323,8 +358,9 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
               ),
               dataList: schoolList,
               productIndex: 0,
-              student: widget.studentId,
-              edubox_service: widget.productName,
+              studentName: widget.studentName,
+              studentCode:widget.studentCode,
+              edubox_service:schoolListIndex>0? heading:'All School Lists',
               serviceIndex: 0,
               price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
             ),
@@ -339,13 +375,18 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
                 onPress: ()=>  Get.to(
             () => SchoolTransactionConfirmationScreen(
               screenId:1,
+              homePhone:widget.homePhone,
+              shipper:widget.shipper,
+              destination:widget.destination,
               inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
               productId: schoolListIndex,
               isChecked: isChecked,
-              schoolId: widget.schoolId,
+              schoolId: widget.schoolId!,
+              classId: widget.classId!,
               productName: widget.productName,
               transactionType: TransactionType.sendMoney,
-              classDetails: widget.classId,
+              className: widget.className,
+              schoolName: widget.schoolName,
               contactModel: ContactModel(
                 phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
                 name: userData?.name ?? '',
@@ -357,8 +398,175 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
               ),
               dataList: schoolList,
               productIndex: 0,
-              student: widget.studentId,
-              edubox_service: widget.productName,
+              studentName: widget.studentName,
+              studentCode: widget.studentCode,
+              studentId: widget.studentId!,
+              edubox_service:schoolListIndex>0? heading:'All School Lists',
+              serviceIndex: schoolListIndex,
+              price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+            )),
+        
+                title: 'REQUEST CREDIT',
+            
+                color1: kamber300Color,
+                color2: kyellowColor,
+                width: 123,
+              ),
+            ],
+          ),  
+              ],
+            )
+          else if(schoolListIndex==5)
+            Column(
+              children: [
+                _buildRichText(
+                  context,
+                  'Total All : ',
+                  '${caseTotals[schoolListIndex]}',
+                  ' RWF',
+                ),
+        
+          const SizedBox(height: 10),
+        
+        
+        Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              DefaultButtonWidth(
+                onPress: () =>Get.to(
+            () =>  PaidAtSchoolTransactionConfirmationScreen(
+             studentId: widget.studentId!,
+              inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              productId: schoolListIndex,
+              isChecked: isChecked,
+              schoolId: widget.schoolId,
+              productName: widget.productName,
+              transactionType: TransactionType.sendMoney,
+              className: widget.className,
+              schoolName:widget.schoolName,
+              contactModel: ContactModel(
+                phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
+                name: userData?.name ?? '',
+                avatarImage: '${Get.find<SplashController>().configModel?.baseUrls?.customerImageUrl ?? ''}/image',
+              ),
+              contactModelMtn: ContactModelMtn(
+                phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
+                name: userData?.name ?? '',
+              ),
+              dataList: schoolList,
+              productIndex: 0,
+              studentName: widget.studentName,
+              studentCode: widget.studentCode,
+              edubox_service:heading,
+              serviceIndex: 0,
+              price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+            ), 
+                ),    
+    //              showDialog(
+    //   context: context,
+    //   builder: (context) => PaymentDialog(
+    //     accountNumber: '1234567890',
+    //     shortCode: '*123#',
+    //     phoneNumber: '*123*1*1234567890*${schoolList.isNotEmpty ? schoolList[0].amount : 0}#',
+    //   ),
+    // ),
+                title: 'PAY NOW',
+               
+                color1: kamber300Color,
+                color2: kyellowColor,
+                width: 123,
+              ),
+        
+            ],
+          )
+                ],
+            )
+       else
+            Column(
+              children: [
+                _buildRichText(
+                  context,
+                  'Total All : ',
+                  '$totalPrice',
+                  ' RWF',
+                ),
+                  const SizedBox(height: 10),
+        
+        
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              DefaultButtonWidth(
+                onPress: () => Get.to(
+            () => SchoolTransactionConfirmationScreen(
+              studentId: widget.studentId!,
+              shipper: widget.shipper,
+              homePhone:widget.homePhone,
+              destination:widget.destination,
+              inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              productId: schoolListIndex,
+              isChecked: isChecked,
+              schoolId: widget.schoolId!,
+              classId: widget.classId!,
+              productName: widget.productName,
+              transactionType: TransactionType.sendMoney,
+              className: widget.className,
+              schoolName:widget.schoolName,
+              contactModel: ContactModel(
+                phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
+                name: userData?.name ?? '',
+                avatarImage: '${Get.find<SplashController>().configModel?.baseUrls?.customerImageUrl ?? ''}/image',
+              ),
+              contactModelMtn: ContactModelMtn(
+                phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
+                name: userData?.name ?? '',
+              ),
+              dataList: schoolList,
+              productIndex: 0,
+              studentName: widget.studentName,
+              studentCode:widget.studentCode,
+              edubox_service:schoolListIndex>0? heading:'All School Lists',
+              serviceIndex: 0,
+              price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+            ),
+          ),
+                title: 'PAY NOW',
+               
+                color1: kamber300Color,
+                color2: kyellowColor,
+                width: 123,
+              ),
+              DefaultButtonWidth(
+                onPress: ()=>  Get.to(
+            () => SchoolTransactionConfirmationScreen(
+              homePhone: widget.homePhone,
+              destination: widget.destination,
+              screenId:1,
+              shipper: widget.shipper,
+              inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              productId: schoolListIndex,
+              isChecked: isChecked,
+              schoolId: widget.schoolId!,
+              classId: widget.classId!,
+              productName: widget.productName,
+              transactionType: TransactionType.sendMoney,
+              className: widget.className,
+              schoolName: widget.schoolName,
+              contactModel: ContactModel(
+                phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
+                name: userData?.name ?? '',
+                avatarImage: '${Get.find<SplashController>().configModel?.baseUrls?.customerImageUrl ?? ''}/image',
+              ),
+              contactModelMtn: ContactModelMtn(
+                phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
+                name: userData?.name ?? '',
+              ),
+              dataList: schoolList,
+              productIndex: 0,
+              studentName: widget.studentName,
+              studentCode: widget.studentCode,
+              studentId: widget.studentId!,
+              edubox_service:schoolListIndex>0? heading:'All School Lists',
               serviceIndex: 0,
               price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
             )),
@@ -371,7 +579,10 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+         
+              ],
+            ),
+         const SizedBox(height: 10),
           // Display case totals
           // ...caseTotals.entries.map((entry) {
           //   return _buildRichText(

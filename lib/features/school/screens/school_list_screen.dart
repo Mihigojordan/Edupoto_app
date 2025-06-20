@@ -16,12 +16,19 @@ import 'package:hosomobile/features/history/widgets/transaction_list_widget.dart
 
 class SchoolListScreen extends StatelessWidget {
   final ScrollController _scrollController = ScrollController();
-  final SchoolLists? schoolLists;
-  final AllSchoolModel? schoolId;
-  final bool? isSchool;
-  final Student? studentId; 
-  final ClassDetails? classId;
-  SchoolListScreen({super.key,this.isSchool, this.schoolLists,this.schoolId,this.studentId,this.classId});
+
+  final int schoolId;
+  final int studentId; 
+  final int classId;
+  final String studentName;
+  final String className;
+  final String schoolName;
+  final String studentCode;
+  final String homePhone;
+  final String destination;
+  final String shipper;
+
+  SchoolListScreen({super.key,required this.studentCode,required this.shipper, required this.homePhone,required this.destination, required this.studentName,required this.className,required this.schoolName,required this.schoolId,required this.studentId,required this.classId});
 
   @override
   Widget build(BuildContext context) {
@@ -53,82 +60,63 @@ class SchoolListScreen extends StatelessWidget {
                        Positioned(
                             left: 20,
                             right: 10,
-                            top: 40,
-                            child: isSchool==false?  RichText(
-                              text: TextSpan(
-                                text: '${schoolId!.schoolName}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight
-                                          .bold, // Bold only for 'St Michael’s School'
-                                    ),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text:
-                                        '\n${schoolId!.address}\nTel:',
+                            top: 20,
+                            child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                            
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 18.0, vertical: 30),
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: 'Preparing list for:\n',
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleSmall!
                                         .copyWith(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight
-                                              .normal, // Regular weight for the rest of the text
-                                        ),
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.normal),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: '$studentName\n',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium!
+                                            .copyWith(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight
+                                                  .bold, // Regular weight for the rest of the text
+                                            ),
+                                      ),
+                                      TextSpan(
+                                        text: '$className, ',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall!
+                                            .copyWith(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight
+                                                  .w500, // Regular weight for the rest of the text
+                                            ),
+                                      ),
+                                      TextSpan(
+                                        text: schoolName,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall!
+                                            .copyWith(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight
+                                                  .w500, // Regular weight for the rest of the text
+                                            ),
+                                      ),
+                                    ],
                                   ),
-                                  TextSpan(
-                                    text: '${schoolId!.countryCode}${schoolId!.phone}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall!
-                                        .copyWith(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight
-                                              .bold, // Regular weight for the rest of the text
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ):RichText(
-                              text: TextSpan(
-                                text: 'Generate your School list here',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight
-                                          .bold, // Bold only for 'St Michael’s School'
-                                    ),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text:
-                                        '',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall!
-                                        .copyWith(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight
-                                              .normal, // Regular weight for the rest of the text
-                                        ),
-                                  ),
-                                  TextSpan(
-                                    text: '',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall!
-                                        .copyWith(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight
-                                              .bold, // Regular weight for the rest of the text
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            )
+                                ),
+                              )
+                            ],
+                          ),
                             
                             )
                       ],
@@ -157,6 +145,8 @@ class SchoolListScreen extends StatelessWidget {
 
             child: CustomBackButton(),
           ),
+
+      //************* Requirement List  */
               Positioned(
                   top: 150,
                   left: 20,
@@ -164,9 +154,9 @@ class SchoolListScreen extends StatelessWidget {
                   child: requirementList(
                     context,
                     productName: 'Edubox Materials',
-                    studentId: studentId!,
-                    schoolId: schoolId!,
-                    classId: classId!,
+                    studentId: studentId,
+                    schoolId: schoolId,
+                    classId: classId,
                   )),
             ],
           ),
@@ -178,7 +168,7 @@ class SchoolListScreen extends StatelessWidget {
     );
   }
 
-Widget requirementList(BuildContext context,{required Student studentId,required AllSchoolModel schoolId,required ClassDetails classId,required String productName}){
+Widget requirementList(BuildContext context,{required int studentId,required int schoolId,required int classId,required String productName}){
   return   Container(
         decoration: const BoxDecoration(
                       boxShadow: [
@@ -238,11 +228,11 @@ Widget requirementList(BuildContext context,{required Student studentId,required
                       schoolList: schoolListController.schoolList,
                     ),
                     const SizedBox(width: 10),
-                    SchoolListButtonWidget(
-                      text: 'Headteachers M'.tr,
-                      index: 1,
-                      schoolList: schoolListController.headteacherMessageList,
-                    ),
+                    // SchoolListButtonWidget(
+                    //   text: 'Headteachers M'.tr,
+                    //   index: 1,
+                    //   schoolList: schoolListController.headteacherMessageList,
+                    // ),
                     const SizedBox(width: 10),
                     SchoolListButtonWidget(
                       text: 'Class Requirements'.tr,
@@ -251,7 +241,7 @@ Widget requirementList(BuildContext context,{required Student studentId,required
                     ),
                     const SizedBox(width: 10),
                     SchoolListButtonWidget(
-                      text: 'Tuition Fees'.tr,
+                      text: 'Paid at School'.tr,
                       index: 5,
                       schoolList: schoolListController.tuitionFeeList,
                     ),
@@ -303,11 +293,20 @@ Widget requirementList(BuildContext context,{required Student studentId,required
     ),
   ),
 ),
+
+//************* School List Widget */
         SliverToBoxAdapter(
           child: Scrollbar(
             child: Padding(
               padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
               child: SchoolListWidget(
+                shipper:shipper,
+                homePhone:homePhone,
+                destination:destination,
+                schoolName: schoolName,
+                className: className,
+                studentCode: studentCode,
+                studentName: studentName,
                   scrollController: _scrollController, isHome: false, studentId:studentId,schoolId:schoolId,classId:classId,productName:productName),
             ),
           ),

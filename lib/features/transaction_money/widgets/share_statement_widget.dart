@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
+import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:hosomobile/common/controllers/share_controller.dart';
-import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/common/models/contact_model.dart';
@@ -35,6 +36,8 @@ class ShareStatementWidget extends StatefulWidget {
   final String? serviceValue;
   final int? serviceIndex;
   final int? studentIndex;
+  final String destination;
+
   const ShareStatementWidget(
       {super.key,
       this.amountToPay,
@@ -48,6 +51,7 @@ class ShareStatementWidget extends StatefulWidget {
       required this.contactModel,
       required this.charge,
       required this.trxId,
+      required this.destination,
       this.studentInfo,
       this.inputBalance,
       this.productIndex,

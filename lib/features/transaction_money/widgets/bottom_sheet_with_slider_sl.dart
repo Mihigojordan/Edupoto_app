@@ -1,30 +1,28 @@
+import 'package:flutter/foundation.dart';
 import 'package:hosomobile/common/controllers/share_controller_sl.dart';
 import 'package:hosomobile/common/models/contact_model_mtn.dart';
 import 'package:hosomobile/data/api/mtn_momo_api_client.dart';
+import 'package:hosomobile/features/home/controllers/all_school_controller.dart';
 import 'package:hosomobile/features/home/domain/models/all_school_model.dart';
 import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
-import 'package:hosomobile/features/home/domain/models/student_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/transaction_money/controllers/bootom_slider_controller.dart';
-import 'package:hosomobile/common/controllers/share_controller.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/transaction_controller.dart';
 import 'package:hosomobile/common/models/contact_model.dart';
-import 'package:hosomobile/features/transaction_money/domain/enums/suggest_type_enum.dart';
 import 'package:hosomobile/features/transaction_money/widgets/for_student_widget.dart';
+import 'package:hosomobile/features/transaction_money/widgets/payment_methods/payment_method_selector.dart';
 import 'package:hosomobile/helper/price_converter_helper.dart';
 import 'package:hosomobile/helper/route_helper.dart';
 import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
-import 'package:hosomobile/util/images.dart';
 import 'package:hosomobile/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:hosomobile/common/widgets/custom_ink_well_widget.dart';
-import 'package:slide_to_confirm/slide_to_confirm.dart';
 
 class BottomSheetWithSliderSl extends StatefulWidget {
   final String amount;
@@ -35,7 +33,7 @@ class BottomSheetWithSliderSl extends StatefulWidget {
   final String? purpose;
   final ContactModel? contactModel;
   final ContactModelMtn? contactModelMtn;
-  final List<StudentModel>? studentInfo;
+  final int studentId;
   final double? inputBalance;
   final List<SchoolLists>? dataList;
   final int? productIndex;
@@ -48,16 +46,26 @@ class BottomSheetWithSliderSl extends StatefulWidget {
   final String? totalNowPaid;
   final String? serviceValue;
   final int? serviceIndex;
-  final Student? student;
-  final ClassDetails? classDetails;
-  final AllSchoolModel? schoolId;
+  final String studentName;
+  final String studentCode;
+  final String className;
+  final String schoolName;
+  final int randomNumber;
+  final String homePhone;
+  final String destination;
+  final String shipper;
 
   const BottomSheetWithSliderSl({
     super.key,
     this.amountToPay,
-    this.student,
-    this.classDetails,
-    this.schoolId,
+    required this.shipper,
+    required this.homePhone,
+    required this.destination,
+    required this.studentName,
+    required this.studentCode,
+    required this.className,
+    required this.schoolName,
+    required this.randomNumber,
     this.nowPaid,
     this.studentIndex,
     this.productId,
@@ -71,7 +79,7 @@ class BottomSheetWithSliderSl extends StatefulWidget {
     this.purpose,
     this.contactModel,
     this.contactModelMtn,
-    this.studentInfo,
+    required this.studentId,
     this.inputBalance,
     this.productIndex,
     this.dataList,
@@ -87,6 +95,8 @@ class BottomSheetWithSliderSl extends StatefulWidget {
 class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
   String? transactionId;
   final MtnMomoApiClient mtnMomoApiClient = MtnMomoApiClient();
+ List<Districts>? allSchoolList;
+
   @override
   void initState() {
     Get.find<TransactionMoneyController>().changeTrueFalse();
@@ -115,7 +125,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (_) => Get.offAllNamed(RouteHelper.getNavBarRoute()),
+      onPopInvoked: (_) => Get.back(),     //Get.offAllNamed(RouteHelper.getNavBarRoute()),
       child: Container(
         decoration: BoxDecoration(
           color: ColorResources.getBackgroundColor(),
@@ -225,7 +235,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                   children: [
                                     transactionId != null
                                         ? Text(
-                                            'Receipt No:$transactionId',
+                                            'Receipt No:${widget.randomNumber}',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleLarge,
@@ -233,14 +243,17 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                         : const SizedBox(),
                                     sizedBox10,
                                     //********************* Student is Problem Here */
-                                    // Column(children: [
-                                    //   ForStudentWidget(
-                                    //       studentInfo: 'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}'),
-                                    // ]),
-                                    // sizedBox15,
-                                    Text(
-                                        'Product: ${widget.edubox_service}, ${'${widget.dataList![widget.productIndex!].transactionId} (${widget.dataList![widget.productIndex!].amount} RWF), '}'), //${widget.studentInfo![widget.studentIndex!].studentClass}
+                                    Column(children: [
+                                      ForStudentWidget(
+                                          studentInfo:
+                                              'Code: ${widget.studentCode}\nName: ${widget.studentName}'),
+                                    ]),
                                     sizedBox15,
+                                    Text(
+                                        'Product: ${widget.edubox_service}, Contains: ${'${widget.dataList!.length} (${widget.dataList![widget.productIndex!].amount} RWF), '}'), //${widget.studentInfo![widget.studentIndex!].studentClass}
+                                    sizedBox10,
+                                    Text('Destination: ${widget.destination}'),
+                                    sizedBox10,
                                     Container(
                                       height: Dimensions.dividerSizeMedium,
                                       color: Theme.of(context).dividerColor,
@@ -250,11 +263,11 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                     Text(
                                         'Amount to be Paid: ${widget.amountToPay!} RWF'),
 
-                                    Text('Now Paid: ${widget.nowPaid!} RWF'),
+                                    // Text('Now Paid: ${widget.nowPaid!} RWF'),
                                     Text(widget.vat!),
 
                                     Text(
-                                        'Service Charge (${widget.serviceCharge!} RWF'),
+                                        'Convinience fee (${widget.serviceCharge!} RWF'),
                                     const Divider(),
                                     Text(
                                       widget.totalNowPaid!,
@@ -268,11 +281,11 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                   ],
                                 ),
                                 sizedBox10,
-                                Text('Pending/Remaing Amount to be paid',
-                                    style: rubikSemiBold.copyWith(
-                                        fontSize: Dimensions.fontSizeLarge,
-                                        color:
-                                            ColorResources.getGreyBaseGray1())),
+                                // Text('Pending/Remaing Amount to be paid',
+                                //     style: rubikSemiBold.copyWith(
+                                //         fontSize: Dimensions.fontSizeLarge,
+                                //         color:
+                                //             ColorResources.getGreyBaseGray1())),
                                 Text(widget.availableBalance,
                                     style: Theme.of(context)
                                         .textTheme
@@ -283,8 +296,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                 const SizedBox(height: 15),
                               ])
                             : const SizedBox(),
-                        const SizedBox(
-                            height: Dimensions.paddingSizeExtraExtraLarge),
+                       
                         transactionMoneyController.isNextBottomSheet
                             ? const SizedBox()
                             : Column(
@@ -294,10 +306,48 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                           balance: widget.amount),
                                       style:
                                           rubikMedium.copyWith(fontSize: 34.0)),
-                                  const SizedBox(
-                                      height: Dimensions.paddingSizeLarge),
-                                  const SizedBox(
-                                      height: Dimensions.paddingSizeDefault),
+                                  sizedBox10,
+                                  // ************************ Payment Method*******************/
+
+                                  PaymentMethodSelector(
+                                    productList: widget.dataList??[],
+                                    productName:widget.edubox_service??'no product found',
+                                    shipper:widget.shipper,
+                                    destination:widget.destination,
+                                    homePhone:widget.homePhone,
+                                    service_charge:widget.serviceCharge??'0',
+                                    edubox_service:widget.edubox_service??'no Edubox Service',
+                                    randomNumber:widget.randomNumber,
+                                    transactionMoneyController:
+                                        transactionMoneyController,
+                                    transactionId: transactionId ??
+                                        '', // Provide empty string if null
+                                    studentId: widget.studentId,
+                                    amountToPay: widget.amountToPay ??
+                                        '0', // Default to '0' if null
+                                    productId: widget.productId ??
+                                        0, // Default to 0 if null
+                                    availableBalance:
+                                        widget.availableBalance ?? '0',
+                                    serviceCharge: widget.serviceCharge ?? '0',
+                                    contactController: contactController,
+                                    amount: widget.amount ?? '0',
+                                    purpose: widget.purpose ??
+                                        'Payment', // Default purpose
+                                    pinCode: widget.pinCode ??
+                                        '', // Empty string if null
+                                    contactModel: widget.contactModel ??
+                                        ContactModel(), // Default empty model
+                                    mtnMomoApiClient: mtnMomoApiClient,
+                                    transactionType: widget.transactionType ??
+                                        'payment', // Default type
+                                    onPaymentMethodSelected:
+                                        (method, details, provider) {
+                                      debugPrint(
+                                          'Selected $method via $provider with details: $details');
+                                    },
+                                    initialAmount: widget.amount ?? '0',
+                                  )
                                 ],
                               ),
                         const Padding(
@@ -317,7 +367,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                               transactionMoneyController.isNextBottomSheet
                                   ? transactionId != null
                                       ? Text(
-                                          'TrxID: $transactionId',
+                                          'TrxID: ${widget.randomNumber}',
                                           style: rubikLight.copyWith(
                                               fontSize:
                                                   Dimensions.fontSizeDefault),
@@ -330,8 +380,8 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                       ],
                     ),
                   ),
-                  transactionMoneyController.isNextBottomSheet
-                      ? Column(
+              transactionMoneyController.isNextBottomSheet ?
+                   Column(
                           children: [
                             const Padding(
                               padding: EdgeInsets.symmetric(
@@ -346,6 +396,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                               onTap: () async =>
                                   await Get.find<ShareControllerSl>()
                                       .statementScreenShootFunction(
+                                        destination: widget.destination,
                                 amount: widget.amount,
                                 transactionType: widget.transactionType,
                                 contactModel: widget.contactModel,
@@ -356,9 +407,9 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                         .toString()
                                     : cashOutCharge.toString(),
                                 trxId: transactionId,
-                                edubox_service: widget.edubox_service,
+                                eduboxService: widget.edubox_service,
                                 studentInfo:
-                                    'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}',
+                                    'Code: ${widget.studentCode}\nName: ${widget.studentName}',
                                 inputBalance: widget.inputBalance,
                                 dataList: widget.dataList,
                                 productIndex: widget.productIndex,
@@ -378,10 +429,10 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                             const SizedBox(
                                 height: Dimensions.paddingSizeDefault),
                           ],
-                        )
-                      : const SizedBox(),
+                        ): const SizedBox(),
                   transactionMoneyController.isNextBottomSheet
-                      ? Padding(
+                      ?
+                       Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal:
                                   Dimensions.paddingSizeExtraExtraLarge),
@@ -393,8 +444,18 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                             ),
                             child: CustomInkWellWidget(
                               onTap: () {
-                                Get.find<BottomSliderController>()
-                                    .goBackButton();
+                                if (!kIsWeb) {
+                                  Get.find<BottomSliderController>()
+                                      .goBackButton();
+                                } else {
+                                        Get.find<BottomSliderController>()
+                                      .goBackButton();
+      //                             Get.back();
+      //                                 Get.put(AllSchoolController(allSchoolRepo: Get.find()))        .getSchoolList(false)
+      //   .then((_) {
+      // allSchoolList = Get.find<AllSchoolController>().schoolList;
+    // });
+                                }
                               },
                               radius: Dimensions.radiusSizeSmall,
                               highlightColor: Theme.of(context)
@@ -420,193 +481,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                               color:
                                   Theme.of(context).textTheme.titleLarge!.color,
                             ))
-                          : ConfirmationSlider(
-                              height: 60.0,
-                              backgroundColor:
-                                  ColorResources.getGreyBaseGray6(),
-                              text: 'swipe_to_confirm'.tr,
-                              textStyle: rubikRegular.copyWith(
-                                  fontSize: Dimensions.paddingSizeLarge),
-                              shadow: const BoxShadow(),
-                              sliderButtonContent: Container(
-                                padding: const EdgeInsets.all(
-                                    Dimensions.paddingSizeDefault),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Image.asset(Images.slideRightIcon),
-                              ),
-                              onConfirmation: () async {
-                                //                              if (widget.transactionType == "send_money") {
-                                //  transactionMoneyController
-                                //                                   .sendMoney(
-                                //                                       contactModel: widget.contactModel!,
-
-                                //                                       amount: double.parse(widget.amount),
-                                //                                       purpose: widget.purpose,
-                                //                                       pinCode: widget.pinCode,
-                                //                                       onSuggest: () => contactController
-                                //                                               .addToSuggestContact(
-                                //                                             widget.contactModel,
-                                //                                             type: SuggestType.sendMoney,
-                                //                                           ))
-                                //                                   .then((value) {
-                                //                                 transactionId =
-                                //                                     value.body['transaction_id'];
-                                //                               });
-
-                                //                                         transactionMoneyController
-                                //                                   .makePayment(
-                                //                                       studentId: widget.studentInfo![widget.studentIndex!].id!,
-
-                                //                                       amount: double.parse(widget.amount),
-                                //                                       totalAmount:double.parse(widget.amountToPay!),
-                                //                                        productType:widget.productId!,  //widget.dataList![widget.productIndex!].id!,
-                                //                                       productId: widget.productId!,
-                                //                                       balance: double.parse(widget.availableBalance),
-                                //                                       phoneNumber:widget.contactModel!.phoneNumber!,
-                                //                                       charge:  double.parse(widget.serviceCharge!)
-                                //                                   );
-                                //                             } else if (widget.transactionType ==
-                                //                                 "request_money") {
-                                //                               transactionMoneyController.requestMoney(
-                                //                                 contactModel: widget.contactModel!,
-                                //                                 amount: double.parse(widget.amount),
-                                //                                 onSuggest: () =>
-                                //                                     contactController.addToSuggestContact(
-                                //                                   widget.contactModel,
-                                //                                   type: SuggestType.requestMoney,
-                                //                                 ),
-                                //                               );
-                                //                             } else if (widget.transactionType ==
-                                //                                 "cash_out") {
-                                //                               transactionMoneyController
-                                //                                   .cashOutMoney(
-                                //                                       contactModel: widget.contactModel!,
-                                //                                       amount: double.parse(widget.amount),
-                                //                                       pinCode: widget.pinCode,
-                                //                                       onSuggest: () {
-                                //                                         if (contactController
-                                //                                             .isFutureSave) {
-                                //                                           contactController
-                                //                                               .addToSuggestContact(
-                                //                                                   widget.contactModel,
-                                //                                                   type:
-                                //                                                       SuggestType.cashOut);
-                                //                                         }
-                                //                                       })
-                                //                                   .then((value) {
-                                //                                 transactionId =
-                                //                                     value.body['transaction_id'];
-                                //                               });
-                                //                             }
-
-                                mtnMomoApiClient
-                                    .getMtnMomo()
-                                    .then((response) async {
-                                  try {
-                                    String? status = await mtnMomoApiClient
-                                        .getStatus(); // Assuming `getReferenceId()` is a function that retrieves the reference ID
-
-                                    // Ensure the reference ID is available
-                                    if (status == null) {
-                                      print(
-                                          'Error: Reference ID is required for this operation.');
-                                      return null; // Return null or handle the error as needed
-                                    }
-
-                                    print(
-                                        'The result for the payment being made: $status');
-
-                                    // Check if the payment status is 'PAID'
-                                    if (status == 'success') {
-                                      if (widget.transactionType ==
-                                          "send_money") {
-                                        transactionMoneyController
-                                            .sendMoney(
-                                                contactModel:
-                                                    widget.contactModel!,
-                                                amount:
-                                                    double.parse(widget.amount),
-                                                purpose: widget.purpose,
-                                                pinCode: widget.pinCode,
-                                                onSuggest: () =>
-                                                    contactController
-                                                        .addToSuggestContact(
-                                                      widget.contactModel,
-                                                      type:
-                                                          SuggestType.sendMoney,
-                                                    ))
-                                            .then((value) {
-                                          transactionId =
-                                              value.body['transaction_id'];
-                                        });
-
-                                        transactionMoneyController.makePayment(
-                                            studentId: widget
-                                                .studentInfo![
-                                                    widget.studentIndex!]
-                                                .id!,
-                                            amount: double.parse(widget.amount),
-                                            totalAmount: double.parse(
-                                                widget.amountToPay!),
-                                            productType:widget.productId!, //widget.dataList![widget.productIndex!].id!,
-                                            productId: widget.productId!,
-                                            balance: double.parse(
-                                                widget.availableBalance),
-                                            phoneNumber: widget
-                                                .contactModel!.phoneNumber!,
-                                            charge: double.parse(
-                                                widget.serviceCharge!));
-                                      } else if (widget.transactionType ==
-                                          "request_money") {
-                                        transactionMoneyController.requestMoney(
-                                          contactModel: widget.contactModel!,
-                                          amount: double.parse(widget.amount),
-                                          onSuggest: () => contactController
-                                              .addToSuggestContact(
-                                            widget.contactModel,
-                                            type: SuggestType.requestMoney,
-                                          ),
-                                        );
-                                      } else if (widget.transactionType ==
-                                          "cash_out") {
-                                        transactionMoneyController
-                                            .cashOutMoney(
-                                                contactModel:
-                                                    widget.contactModel!,
-                                                amount:
-                                                    double.parse(widget.amount),
-                                                pinCode: widget.pinCode,
-                                                onSuggest: () {
-                                                  if (contactController
-                                                      .isFutureSave) {
-                                                    contactController
-                                                        .addToSuggestContact(
-                                                            widget.contactModel,
-                                                            type: SuggestType
-                                                                .cashOut);
-                                                  }
-                                                })
-                                            .then((value) {
-                                          transactionId =
-                                              value.body['transaction_id'];
-                                        });
-                                      }
-                                    } else {}
-                                  } catch (e) {
-                                    // Handle any errors during the process
-                                    print(
-                                        'Error occurred while processing the payment: $e');
-                                  }
-                                }).catchError((e) {
-                                  // Handle errors that occur within the .then chain
-                                  print('Error in .then chain: $e');
-                                });
-                              },
-                            ),
-                  const SizedBox(height: 40.0),
+                          :const SizedBox.shrink()
                 ],
               ),
             ),

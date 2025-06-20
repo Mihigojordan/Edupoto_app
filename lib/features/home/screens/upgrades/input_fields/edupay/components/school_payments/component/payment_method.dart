@@ -1,11 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/custom_buttons.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/drop_down.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/image.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
-import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/installment_pay/installment_pay.dart';
+import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:upgrader/upgrader.dart';
@@ -14,13 +14,24 @@ import 'dart:convert';
 
 class PaymentMethod extends StatefulWidget {
   static String routeName = 'PaymentMethod';
-PaymentMethod({super.key, required this.amountTotal, this.student,this.material,this.product,this.parent,this.classes});
-final String amountTotal;
- String? student;
- String?product;
- String?material;
- String?classes;
- String?parent;
+  PaymentMethod(
+      {super.key,
+      required this.amountTotal,
+      required this.studentName,
+      required this.studentCode,
+      this.material,
+      this.product,
+      this.parent,
+      required this.className,
+      required this.schoolName});
+  final String amountTotal;
+  final String studentName;
+  final String studentCode;
+  String? product;
+  List<EduboxMaterialModel>? material;
+  final String className;
+  final String schoolName;
+  String? parent;
   @override
   _PaymentMethodState createState() => _PaymentMethodState();
 }
@@ -28,7 +39,6 @@ final String amountTotal;
 class _PaymentMethodState extends State<PaymentMethod> {
   //validate our form now
   final _formKey = GlobalKey<FormState>();
-
 
   late String videoTitle;
   // Url List
@@ -81,7 +91,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight= MediaQuery.of(context).size.height;
+    final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return UpgradeAlert(
         child: Scaffold(
@@ -92,7 +102,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
           Column(
             children: [
               Container(
-                height:screenHeight / 3,
+                height: screenHeight / 3,
                 width: screenWidth,
                 color: kyellowColor,
                 child: Stack(
@@ -101,21 +111,22 @@ class _PaymentMethodState extends State<PaymentMethod> {
                     //   // height: 0,
                     //   child: ImagesUp(Images.launch_page),
                     // ),
-                          Column(
-                            children: [
-                              sizedBox,
-                              sizedBox10,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                  height: screenHeight>=700?40:35,
-                                  width: screenHeight>=700?180:160,
-                                  child: const IconImages('assets/image/edubox.png')),
-                                ],
-                              ),
-                            ],
-                          )
+                    Column(
+                      children: [
+                        sizedBox,
+                        sizedBox10,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                                height: screenHeight >= 700 ? 40 : 35,
+                                width: screenHeight >= 700 ? 180 : 160,
+                                child: const IconImages(
+                                    'assets/image/HOSO MOBILE.png')),
+                          ],
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -137,10 +148,19 @@ class _PaymentMethodState extends State<PaymentMethod> {
             ],
           ),
           Positioned(
-              top:150,
+              top: 150,
               left: 20,
               right: 20,
-              child: HomeCard1(icon: 'icon', parent: 'Parent', student: widget.student!, classes: widget.classes!, material: widget.material!, product: widget.product!, amount: widget.amountTotal)),
+              child: HomeCard1(
+                  icon: 'icon',
+                  parent: 'Parent',
+                  studentName: widget.studentName,
+                  studentCode: widget.studentCode,
+                  schoolName: widget.schoolName,
+                  className: widget.className,
+                  material: widget.material!,
+                  product: widget.product!,
+                  amount: widget.amountTotal)),
         ],
       ),
 
@@ -197,14 +217,25 @@ class HomeCard extends StatelessWidget {
 
 class HomeCard1 extends StatefulWidget {
   const HomeCard1(
-      {super.key, required this.icon, required this.parent,required this.student ,required this.classes,required this.material,required this.product, required this.amount});
+      {super.key,
+      required this.icon,
+      required this.parent,
+      required this.studentName,
+      required this.studentCode,
+      required this.className,
+      required this.schoolName,
+      required this.material,
+      required this.product,
+      required this.amount});
 
   final String icon;
   final String parent;
-  final String student;
+  final String studentName;
   final String product;
-  final String material;
-  final String classes;
+  final List<EduboxMaterialModel> material;
+  final String schoolName;
+  final String studentCode;
+  final String className;
   final String amount;
   @override
   State<HomeCard1> createState() => _HomeCard1State();
@@ -217,7 +248,7 @@ class _HomeCard1State extends State<HomeCard1> {
   String studentCardValue = 'Choose from a list of partiner school';
   String classValue = 'Choose your Bank';
   bool isSelected = false;
-   String selectedFrequency = 'Weekly';
+  String selectedFrequency = 'Daily';
   DateTime startDate = DateTime.now();
   List<DateTime> paymentDates = [];
 
@@ -225,8 +256,8 @@ class _HomeCard1State extends State<HomeCard1> {
   TextEditingController cardEditingController = TextEditingController();
   TextEditingController dayEditingController = TextEditingController();
   TextEditingController nameEditingController = TextEditingController();
-  TextEditingController schoolNameEditingController =
-      TextEditingController();
+  TextEditingController schoolNameEditingController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   showDetails() async {}
   selectedVale() {
@@ -243,9 +274,8 @@ class _HomeCard1State extends State<HomeCard1> {
     super.initState();
   }
 
-
-
   final Map<String, Duration> frequencies = {
+    'Daily': const Duration(days: 1),
     'Weekly': const Duration(days: 7),
     'Monthly': const Duration(days: 30),
   };
@@ -270,235 +300,271 @@ class _HomeCard1State extends State<HomeCard1> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color: kTextLightColor,
-                spreadRadius: 3,
-                blurRadius: 7,
-                offset: Offset(0, 3)),
-          ],
-          color: kTextWhiteColor,
-          borderRadius: BorderRadius.all(Radius.circular(10))),
-      height:MediaQuery.of(context).size.height/1.5,
-      width: 340,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal:8.0),
-        child: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              alignment: Alignment.bottomLeft,
-              child: TextButton(
-                  onPressed: () => selectedVale(),
-                  child:RichText(
-  text: TextSpan(
-    text: 'Dear ${widget.parent} You are requesting credit facility',
-style: Theme.of(context).textTheme.titleMedium,
-    children: <TextSpan>[
-      //       TextSpan(
-      //   text: '${widget.amount} FRW ',
-      //   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-      //         color: Colors.black,
-      //         fontWeight: FontWeight.bold, // Regular weight for the rest of the text
-      //       ),
-      // ),
-            TextSpan(
-        text: '  for  ${widget.material}, for student: ',
-        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-          color: Colors.black,
-          fontWeight: FontWeight.normal, )
-      ),
-      TextSpan(
-        text: '${widget.student}, (${widget.classes})',
-        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              color: Colors.black,
-              fontWeight: FontWeight.bold, // Regular weight for the rest of the text
-            ),
-      ),
-    ],
-  ),
-)
-),
-            ),
-            sizedBox10,
-          
-
-     
-            DropDownPayment(
-                onChanged: (onChanged) {
-                  setState(() {
-                    classValue = onChanged!;
-                  });
-                },
-                itemLists: const [
-  {'no':'1','name':'BK'},
-  {'no':'2','name':'EQUITY BANK'},
-  {'no':'3','name':'UMWALIMU SACCO'},
-  {'no':'4','name':'MUGANGA SACCO'},
-    {'no':'5','name':'ZIGAMA CSS'},
-  {'no':'6','name':'GASABO DISTRICT SACCO'},
-  {'no':'7','name':'KICUKIRO DISTRICT SACCO '},
-    {'no':'8','name':'NYARUGENGE DISTRICT SACCO'}, 
-    {'no':'9','name':'UMURENGE SACCO'}, 
-]
-,
-                title: classValue,
-                isExpanded: true),
-          sizedBox10,
-              buildFormField(  'Enter Account Number',cardEditingController,TextInputType.text,),
+    return Form(
+      key:_formKey,
+      child: Container(
+        decoration: const BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  color: kTextLightColor,
+                  spreadRadius: 3,
+                  blurRadius: 7,
+                  offset: Offset(0, 3)),
+            ],
+            color: kTextWhiteColor,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        height: MediaQuery.of(context).size.height / 1.5,
+        width: 340,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: ListView(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                alignment: Alignment.bottomLeft,
+                child: TextButton(
+                    onPressed: () => selectedVale(),
+                    child: RichText(
+                      text: TextSpan(
+                        text:
+                            'Dear ${widget.parent} You are requesting credit facility',
+                        style: Theme.of(context).textTheme.titleMedium,
+                        children: <TextSpan>[
+                                TextSpan(
+                            text: ' of ${widget.amount} FRW ',
+                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold, // Regular weight for the rest of the text
+                                ),
+                          ),
+                     
+                          TextSpan(
+                              text: '  for  ${widget.product},',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.normal,
+                                  )),
+                                  TextSpan(
+                              text: '  Contain  ${widget.material.length} Materials,',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall!
+                                  .copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.normal,
+                                  )), 
+                                    
+                          TextSpan(
+                            text:
+                                ' for student: Code:${widget.studentCode} Name:${widget.studentName}, (Class:${widget.className} School:${widget.schoolName})',
+                            style:
+                                Theme.of(context).textTheme.titleMedium!.copyWith(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight
+                                          .w500, // Regular weight for the rest of the text
+                                    ),
+                          ),
+                        ],
+                      ),
+                    )),
+              ),
+                  // Wrap(
+                  //                   spacing: 8.0, // Horizontal space between items
+                  //                   runSpacing: 4.0, // Vertical space between lines
+                  //                   children: widget.material.map((entry) {
+                  //                     final product = entry;
+                  //                     final quantity = entry;
+                  //                     return Text(
+                  //                       '${product.transactionId} (${product.amount} RWF) x $quantity, ',
+                  //                     );
+                  //                   }).toList(),
+                  //                 ),
               sizedBox10,
-         Text('Select Installment Plan',
-              style: Theme.of(context).textTheme.titleLarge
-         ),
-            sizedBox10,
-            Row(
-              children: [
-                DropdownButton<String>(
-                  value: selectedFrequency,
-                  onChanged: (String? newValue) {
+              DropDownPayment(
+                  onChanged: (onChanged) {
                     setState(() {
-                      selectedFrequency = newValue!;
-                      generatePaymentDates();
+                      classValue = onChanged!;
                     });
                   },
-                  items: frequencies.keys.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                
-                  hint: const Text('select'),
-                ), const SizedBox(width: 5,),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    generatePaymentDates();
-                    
-                  });
-                },
-                child: const Text('Generate Payment Schedule',
-                overflow: TextOverflow.ellipsis,
-                ),
+                  itemLists: const [
+                    {'no': '1', 'name': 'BK'},
+                    {'no': '2', 'name': 'EQUITY BANK'},
+                    {'no': '3', 'name': 'UMWALIMU SACCO'},
+                    {'no': '4', 'name': 'MUGANGA SACCO'},
+                    {'no': '5', 'name': 'ZIGAMA CSS'},
+                    {'no': '6', 'name': 'GASABO DISTRICT SACCO'},
+                    {'no': '7', 'name': 'KICUKIRO DISTRICT SACCO '},
+                    {'no': '8', 'name': 'NYARUGENGE DISTRICT SACCO'},
+                    {'no': '9', 'name': 'UMURENGE SACCO'},
+                  ],
+                  title: classValue,
+                  isExpanded: true),
+              sizedBox10,
+              buildFormField(
+                'Enter Account Number',
+                cardEditingController,
+                TextInputType.text,
               ),
-            ),
-              ],
-            ),
-           const SizedBox(height: 10),
-                DefaultButton2(
-                  color1: kamber300Color,
-                  color2: kyellowColor,
-                  onPress: () =>showSuccessDialog(context),
-                  title: 'REQUEST',
-                  iconData: Icons.arrow_forward_outlined,
-             
+              sizedBox10,
+              buildFormField(
+                'Enter National ID Number',
+                cardEditingController,
+                TextInputType.text,
+              ),
+              sizedBox10,
+              Text('Select Installment Plan',
+                  style: Theme.of(context).textTheme.titleLarge),
+              sizedBox10,
+              Row(
+                children: [
+                  DropdownButton<String>(
+                    value: selectedFrequency,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedFrequency = newValue!;
+                        generatePaymentDates();
+                      });
+                    },
+                    items: frequencies.keys
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    hint: const Text('select'),
                   ),
-            if (widget.amount.isNotEmpty)
-              SizedBox(
-                height: 150,
-                child: ListView.builder(
-                  itemCount: paymentDates.length,
-                  itemBuilder: (context, index) {
-                    double installmentAmount = calculateInstallmentAmount(
-                        double.parse(widget.amount));
-                    return ListTile(
-                      title: Text(
-                        'Installment ${index + 1}: ${installmentAmount.toStringAsFixed(2)} RWF',
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          generatePaymentDates();
+                        });
+                      },
+                      child: const Text(
+                        'Generate Payment Schedule',
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      subtitle: Text(
-                        'Due Date: ${paymentDates[index].toLocal()}',
-                      ),
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                ],
               ),
-   
-        
-
-            const SizedBox(
-              height: 200,
-            )
-          ],
+              const SizedBox(height: 10),
+              DefaultButton2(
+                color1: kamber300Color,
+                color2: kyellowColor,
+                onPress: () => showSuccessDialog(context),
+                title: 'REQUEST',
+                iconData: Icons.arrow_forward_outlined,
+              ),
+              if (widget.amount.isNotEmpty)
+                SizedBox(
+                  height: 150,
+                  child: ListView.builder(
+                    itemCount: paymentDates.length,
+                    itemBuilder: (context, index) {
+                      double installmentAmount =
+                          calculateInstallmentAmount(double.parse(widget.amount));
+                      return ListTile(
+                        title: Text(
+                          'Installment ${index + 1}: ${installmentAmount.toStringAsFixed(2)} RWF',
+                        ),
+                        subtitle: Text(
+                          'Due Date: ${paymentDates[index].toLocal()}',
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              const SizedBox(
+                height: 200,
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 
-
-
-TextFormField buildFormField(String labelText, TextEditingController editingController, TextInputType textInputType) {
-  return TextFormField(
-    textAlign: TextAlign.start,
-    controller: editingController,
-    keyboardType: textInputType,
-  style: kInputTextStyle,
-    decoration: InputDecoration(
-      contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 15), // Customize as needed
-      isDense: true,
-      focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: kamber300Color),
-        borderRadius: BorderRadius.circular(20.0),
+  TextFormField buildFormField(String labelText,
+      TextEditingController editingController, TextInputType textInputType) {
+    return TextFormField(
+      textAlign: TextAlign.start,
+      controller: editingController,
+      keyboardType: textInputType,
+      style: kInputTextStyle,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(
+            vertical: 13, horizontal: 15), // Customize as needed
+        isDense: true,
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 1, color: kamber300Color),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 1, color: kTextLightColor),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        labelText: labelText,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: kTextLightColor),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      labelText: labelText,
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-    ),
-    validator: (value) {
-      if (value == null || value.isEmpty) {
-        return 'Please enter some text';
-      }
-      return null; // Return null if the input is valid
-    },
-  );
-}
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
+        }
+        return null; // Return null if the input is valid
+      },
+    );
+  }
 
-
-void showSuccessDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        title: const Text("Request Successful!"),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 60,
-            ),
-            SizedBox(height: 16),
-            Text(
-              "Your request was processed successfully.",
-              textAlign: TextAlign.center,
+  void showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          title: const Text("Request Successful!"),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 60,
+              ),
+              SizedBox(height: 16),
+              Text(
+                "Your request was processed successfully.",
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Closes the dialog
+              },
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.black),
+              ),
             ),
           ],
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Closes the dialog
-            },
-            child: const Text("OK",style: TextStyle(color: Colors.black),),
-          ),
-        ],
-      );
-    },
-  );
-}
-
-
+        );
+      },
+    );
+  }
 
   _launchURL(url) async {
     final uri = Uri.parse(url);
@@ -550,12 +616,12 @@ class _HomeCard2State extends State<HomeCard2> {
   Widget build(BuildContext context) {
     return isLoading == false
         ? Container(
-            height: MediaQuery.of(context).size.height/3,
+            height: MediaQuery.of(context).size.height / 3,
             color: kTextLightColor.withOpacity(0.7),
             child: const Center(child: CircularProgressIndicator()))
         : CarouselSlider.builder(
             options: CarouselOptions(
-              height:MediaQuery.of(context).size.height/3,
+              height: MediaQuery.of(context).size.height / 3,
               viewportFraction: 1,
               enableInfiniteScroll: true,
               autoPlay: true,
@@ -569,7 +635,7 @@ class _HomeCard2State extends State<HomeCard2> {
             itemBuilder: (BuildContext context, int index, int pageViewIndex) {
               return orderLists[index] == []
                   ? SizedBox(
-                      height: MediaQuery.of(context).size.height/3,
+                      height: MediaQuery.of(context).size.height / 3,
                       child: const Center(
                         child: Text(
                           'No Ads for now',

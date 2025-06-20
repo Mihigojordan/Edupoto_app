@@ -1,0 +1,623 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:hosomobile/common/models/contact_model.dart';
+import 'package:hosomobile/data/api/mtn_momo_api_client.dart';
+import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
+import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
+import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
+import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
+import 'package:hosomobile/features/transaction_money/controllers/transaction_controller.dart';
+import 'package:hosomobile/features/transaction_money/domain/enums/suggest_type_enum.dart';
+import 'package:hosomobile/helper/custom_snackbar_helper.dart';
+import 'package:hosomobile/helper/normalize_phone_number.dart';
+import 'package:hosomobile/util/color_resources.dart';
+import 'package:hosomobile/util/dimensions.dart';
+import 'package:hosomobile/util/images.dart';
+import 'package:hosomobile/util/styles.dart';
+import 'package:slide_to_confirm/slide_to_confirm.dart';
+
+class PsPaymentMethodSelector extends StatefulWidget {
+  final Function(String, String, String?) onPaymentMethodSelected;
+  final String initialAmount;
+  final TransactionMoneyController transactionMoneyController;
+  final String transactionType;
+  final MtnMomoApiClient mtnMomoApiClient;
+  final ContactModel contactModel;
+  final String amount;
+  final String purpose;
+  final String pinCode;
+  final ContactController contactController;
+  String transactionId;
+  final int studentId;
+  final String amountToPay;
+  final int productId;
+  final String availableBalance;
+  final String serviceCharge;
+  final int randomNumber;
+  final String edubox_service;
+  final String service_charge;
+  final List<SchoolLists> product_list;
+  final String product_name;
+
+
+
+  PsPaymentMethodSelector({
+    super.key,
+    required this.transactionMoneyController,
+    required this.randomNumber,
+    required this.product_list,
+    required this.product_name,
+    required this.edubox_service,
+    required this.service_charge,
+    required this.transactionId,
+    required this.studentId,
+    required this.amountToPay,
+    required this.productId,
+    required this.availableBalance,
+    required this.serviceCharge,
+    required this.contactController,
+    required this.amount,
+    required this.purpose,
+    required this.pinCode,
+    required this.contactModel,
+    required this.mtnMomoApiClient,
+    required this.transactionType,
+    required this.onPaymentMethodSelected,
+    required this.initialAmount,
+  });
+
+  @override
+  State<PsPaymentMethodSelector> createState() => _PaymentMethodSelectorState();
+}
+
+class _PaymentMethodSelectorState extends State<PsPaymentMethodSelector> {
+  int _selectedMethod = 0; // 0=MOMO, 1=Card, 2=Bank
+  int? _selectedMobileProvider; // 0=MTN, 1=Airtel
+  int? _selectedBankProvider; // 0=BK
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _cardController = TextEditingController();
+  final TextEditingController _inputAmountController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+ double calculateServiceCharge(double amount) {
+    return (amount * 4.0) / 100;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildDragHandle(),
+          const SizedBox(height: 20),
+          Text(
+            'Select Payment Method',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 20),
+          _buildPaymentMethodSelector(),
+          const SizedBox(height: 20),
+          if (_selectedMethod == 0) _buildMobileMoneyProviders(),
+          if (_selectedMethod == 2) _buildBankProviders(),
+          const SizedBox(height: 10),
+          _buildPaymentInputField(),
+          const SizedBox(height: 30),
+          buildFormField(
+              'Enter Amount', _inputAmountController, TextInputType.number),
+          sizedBox10,
+          // _buildConfirmButton(),
+          _confirmationButton(),
+          const SizedBox(height: 10),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobileMoneyProviders() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Select Mobile Money Provider',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildProviderOption(
+              image: 'assets/icons1/momo.jpeg', // Replace with your asset path
+              label: 'MTN',
+              isSelected: _selectedMobileProvider == 0,
+              onTap: () => setState(() => _selectedMobileProvider = 0),
+            ),
+            _buildProviderOption(
+              image:
+                  'assets/icons1/airtel_money.png', // Replace with your asset path
+              label: 'Airtel',
+              isSelected: _selectedMobileProvider == 1,
+              onTap: () => setState(() => _selectedMobileProvider = 1),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBankProviders() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Select Bank',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildProviderOption(
+              image: 'assets/icons1/bk.jpg', // Replace with your asset path
+              label: 'BK',
+              isSelected: _selectedBankProvider == 0,
+              onTap: () => setState(() => _selectedBankProvider = 0),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProviderOption({
+    required String image,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Theme.of(context).primaryColor.withOpacity(0.2)
+              : Colors.grey[200],
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: isSelected
+                ? Theme.of(context).primaryColor
+                : Colors.transparent,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              image,
+              width: 40,
+              height: 40,
+              errorBuilder: (context, error, stackTrace) =>
+                  const Icon(Icons.account_balance, size: 40),
+            ),
+            const SizedBox(height: 5),
+            Text(label),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ... [Keep all your existing methods (_buildDragHandle, _buildPaymentMethodSelector,
+  // _buildMethodOption, _buildPaymentInputField, etc.) unchanged]
+
+  Widget _buildConfirmButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            if (_selectedMethod == 0 && _selectedMobileProvider == null) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('Please select a mobile money provider')));
+              return;
+            }
+            if (_selectedMethod == 2 && _selectedBankProvider == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Please select a bank')));
+              return;
+            }
+
+            final paymentDetails = _selectedMethod == 0
+                ? _phoneController.text
+                : _cardController.text;
+
+            final method = _selectedMethod == 0
+                ? 'Mobile Money'
+                : _selectedMethod == 1
+                    ? 'Card'
+                    : 'Bank';
+
+            String? provider;
+            if (_selectedMethod == 0) {
+              provider = _selectedMobileProvider == 0 ? 'MTN' : 'Airtel';
+            } else if (_selectedMethod == 2) {
+              provider = 'BK';
+            }
+
+            widget.onPaymentMethodSelected(method, paymentDetails, provider);
+            // Navigator.pop(context);
+          }
+        },
+        child: Text(
+          'Pay ${widget.initialAmount}',
+          style: const TextStyle(fontSize: 16),
+        ),
+      ),
+    );
+  }
+
+Widget _confirmationButton() {
+  return Column(
+    children: [
+      const SizedBox(height: 40.0),
+      const Padding(
+        padding: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+        child: Divider(height: Dimensions.dividerSizeSmall),
+      ),
+      sizedBox10,
+      widget.transactionMoneyController.isLoading
+          ? Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).textTheme.titleLarge!.color,
+              ),
+            )
+          : ConfirmationSlider(
+              height: 60.0,
+              backgroundColor: ColorResources.getGreyBaseGray6(),
+              text: 'Swipe to Pay',
+              textStyle: rubikRegular.copyWith(
+                  fontSize: Dimensions.paddingSizeLarge),
+              shadow: const BoxShadow(),
+              sliderButtonContent: Container(
+                padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Image.asset(Images.slideRightIcon),
+              ),
+              onConfirmation: () async {
+                                   showCustomSnackBarHelper(
+        'Processing payment... Please wait.',
+        isError: false,
+      );
+                // Initiate payment
+                await widget.mtnMomoApiClient.postMtnMomo(
+                  transactionId: widget.randomNumber.toString(),
+                  amount: double.parse(_inputAmountController.text).toInt().toString(),
+                  message: 'You have paid for ${widget.edubox_service} VAT Inc, ${calculateServiceCharge(double.parse(_inputAmountController.text))} RWF Convinience fee',
+                  phoneNumber: normalizeRwandaPhoneNumber(_phoneController.text),
+                );
+
+                // Start polling for payment status
+                _pollPaymentStatus();
+              },
+            ),
+    ],
+  );
+}
+
+void _pollPaymentStatus() async {
+  const maxAttempts = 10; // Maximum number of polling attempts
+  const interval = Duration(seconds: 3); // Poll every 3 seconds
+  int attempts = 0;
+  bool paymentCompleted = false;
+
+  while (attempts < maxAttempts && !paymentCompleted) {
+    await Future.delayed(interval);
+    attempts++;
+
+    try {
+      final response = await widget.mtnMomoApiClient.getMtnMomo();
+      final status = await widget.mtnMomoApiClient.getStatus();
+
+      print('Payment status check attempt $attempts: $status');
+
+      switch (status) {
+        case 'SUCCESSFUL':
+          paymentCompleted = true;
+          _handleSuccessfulPayment();
+          break;
+        
+        case 'FAILED':
+          paymentCompleted = true;
+          showCustomSnackBarHelper(
+            'Payment failed: Insufficient balance or transaction declined',
+            isError: true,
+          );
+          break;
+        
+        case 'PENDING':
+          // Continue polling
+          break;
+        
+        default:
+          // Handle unknown status
+          paymentCompleted = true;
+          showCustomSnackBarHelper(
+            'Payment status unknown: $status',
+            isError: true,
+          );
+      }
+    } catch (e) {
+      print('Error checking payment status: $e');
+      if (attempts >= maxAttempts) {
+        showCustomSnackBarHelper(
+          'Payment verification timeout. Please check your transaction history.',
+          isError: false,
+        );
+      }
+    }
+  }
+
+  if (!paymentCompleted) {
+    showCustomSnackBarHelper(
+      'Payment verification timeout. Please check your transaction history.',
+      isError: false,
+    );
+  }
+}
+
+void _handleSuccessfulPayment() async {
+     final  userId = Get.find<AuthController>().getUserId();
+  try {
+    if (widget.transactionType == "send_money") {
+      // Process successful payment
+      final transaction = await widget.transactionMoneyController.sendMoney(
+        contactModel: widget.contactModel,
+        amount: double.parse(_inputAmountController.text),
+        purpose: widget.purpose,
+        pinCode: widget.pinCode,
+        onSuggest: () => widget.contactController.addToSuggestContact(
+          widget.contactModel,
+          type: SuggestType.sendMoney,
+        ),
+      );
+
+      widget.transactionId = transaction.body['transaction_id'];
+
+      await widget.transactionMoneyController.makePayment(
+          payment_method:_selectedMethod==0?'Mobile Money':_selectedMethod==1?'Card':_selectedMethod==2?'Bank':'No Method',
+          payment_media:_selectedMobileProvider==0?'MTN':_selectedMobileProvider==1?'Airtel':_selectedBankProvider==0?'BK':'No Bank',
+          payment_phone: _phoneController.text,
+           product_name: widget.edubox_service,
+           parent_id: userId!,
+           product_list:widget.product_list ,
+           destination:'',
+           homePhone:'',
+           shipper:'',
+        studentId: widget.studentId,
+        amount: double.parse(_inputAmountController.text),
+        totalAmount: double.parse(widget.amountToPay),
+        productType: widget.productId,
+        productId: widget.productId,
+        balance: double.parse(widget.availableBalance),
+        phoneNumber: widget.contactModel.phoneNumber!,
+        charge: double.parse(widget.serviceCharge),
+      );
+
+      showCustomSnackBarHelper('Payment successful!', isError: false);
+    }
+  } catch (e) {
+    print('Error processing successful payment: $e');
+    showCustomSnackBarHelper(
+      'Payment verification failed. Please check your transaction history.',
+      isError: true,
+    );
+  }
+}
+
+  Widget _buildPaymentMethodSelector() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildMethodOption(
+          icon: Icons.phone_android,
+          label: 'Mobile Money',
+          index: 0,
+        ),
+        _buildMethodOption(
+          icon: Icons.credit_card,
+          label: 'Card',
+          index: 1,
+        ),
+        _buildMethodOption(
+          icon: Icons.account_balance,
+          label: 'Bank',
+          index: 2,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMethodOption({
+    required IconData icon,
+    required String label,
+    required int index,
+  }) {
+    return GestureDetector(
+      onTap: () => setState(() => _selectedMethod = index),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: _selectedMethod == index
+              ? Theme.of(context).primaryColor.withOpacity(0.2)
+              : Colors.grey[200],
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: _selectedMethod == index
+                ? Theme.of(context).primaryColor
+                : Colors.transparent,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon,
+                color: _selectedMethod == index
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey[700]),
+            const SizedBox(height: 5),
+            Text(label,
+                style: TextStyle(
+                    color: _selectedMethod == index
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey[700])),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentInputField() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _selectedMethod == 0
+                ? 'Enter Mobile Money Number'
+                : _selectedMethod == 1
+                    ? 'Enter Card Details'
+                    : 'Enter Account Number',
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          const SizedBox(height: 10),
+          TextFormField(
+            controller:
+                _selectedMethod == 0 ? _phoneController : _cardController,
+            keyboardType: _selectedMethod == 0
+                ? TextInputType.phone
+                : TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              if (_selectedMethod == 0)
+                LengthLimitingTextInputFormatter(10), // For phone numbers
+            ],
+            decoration: InputDecoration(
+              hintText: _selectedMethod == 0
+                  ? '07X XXX XXXX'
+                  : _selectedMethod == 1
+                      ? 'Card number'
+                      : 'Account number',
+              prefixIcon: _selectedMethod == 0
+                  ? const Icon(Icons.phone)
+                  : const Icon(Icons.credit_card),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter required details';
+              }
+              if (_selectedMethod == 0 && value.length != 10) {
+                return 'Enter a valid 10-digit number';
+              }
+              return null;
+            },
+          ),
+          if (_selectedMethod == 0)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                'You will receive a payment request on this number',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.grey,
+                    ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDragHandle() {
+    return Center(
+      child: Container(
+        width: 40,
+        height: 5,
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
+  TextFormField buildFormField(String labelText,
+      TextEditingController editingController, TextInputType textInputType) {
+    return TextFormField(
+      textAlign: TextAlign.start,
+      controller: editingController,
+      keyboardType: textInputType,
+      style: kInputTextStyle,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(
+            vertical: 13,
+            horizontal: 15), //Change this value to custom as you like
+        isDense: true,
+        focusedBorder: OutlineInputBorder(
+          ////<-- SEE HERE
+          borderSide: const BorderSide(width: 1, color: kamber300Color),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 1, color: kTextLightColor),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+
+        errorBorder: OutlineInputBorder(
+          //<-- SEE HERE
+          borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+          borderRadius: BorderRadius.circular(20.0),
+          //<-- SEE HERE
+        ),
+
+        labelText: labelText,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
+      validator: (value) {
+        //for validation
+        // RegExp regExp = new RegExp(emailPattern);
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
+          //if it does not matches the pattern, like
+          //it not contains @
+        }
+        return null;
+        //  else if (!regExp.hasMatch(value)) {
+        //   return 'Please enter a valid Email';
+        // }
+      },
+    );
+  }
+}

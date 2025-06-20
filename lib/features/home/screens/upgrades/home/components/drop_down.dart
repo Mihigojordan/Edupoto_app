@@ -5,6 +5,7 @@ import 'package:hosomobile/features/home/domain/models/all_school_model.dart';
 import 'package:hosomobile/features/home/domain/models/class_model.dart';
 import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
 import 'package:hosomobile/features/home/domain/models/student_model.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/components/image.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 
 
@@ -86,6 +87,7 @@ class DropDownStudentInfo extends StatelessWidget {
   final String title;
   final double width; // Width of the dropdown field
   final double menuWidth; // Width of the dropdown popup menu
+  final double menuHeight; // Height of the dropdown popup menu
 
   const DropDownStudentInfo({
     super.key,
@@ -94,6 +96,7 @@ class DropDownStudentInfo extends StatelessWidget {
     required this.title,
     required this.width, // Default width for dropdown field
     required this.menuWidth, // Default width for dropdown menu
+    required this.menuHeight, // Default height for dropdown menu
   });
 
   @override
@@ -101,7 +104,6 @@ class DropDownStudentInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-     
         SizedBox(
           width: width, // Set dropdown field width
           child: DropdownSearch<Map<dynamic, String>>(
@@ -110,11 +112,31 @@ class DropDownStudentInfo extends StatelessWidget {
               showSearchBox: true,
               constraints: BoxConstraints(
                 maxWidth: menuWidth, // Set width of dropdown menu
+                maxHeight: menuHeight, // Set height of dropdown menu
               ),
+              // Custom container for the dropdown menu
+              containerBuilder: (context, popupWidget) {
+                return Container(
+                  height: menuHeight, // Set height of the dropdown menu
+                  width: menuWidth, // Set width of the dropdown menu
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: popupWidget,
+                );
+              },
             ),
-            items:(filter, infiniteScrollProps) => itemLists,
-            decoratorProps:const DropDownDecoratorProps(
-          
+            items: (filter, infiniteScrollProps) => itemLists,
+            decoratorProps: const DropDownDecoratorProps(
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey),
@@ -134,7 +156,7 @@ class DropDownStudentInfo extends StatelessWidget {
             dropdownBuilder: (context, selectedItem) {
               return Text(
                 selectedItem != null ? selectedItem['name'] ?? '' : title,
-                style:const TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
                 overflow: TextOverflow.ellipsis,
               );
             },
@@ -145,6 +167,182 @@ class DropDownStudentInfo extends StatelessWidget {
     );
   }
 }
+
+class DropDownMapInfo extends StatelessWidget {
+  static String routeName = 'DropDown';
+  final List<Map<dynamic, String>> itemLists;
+  final Function(String?)? onChanged;
+  final String title;
+  final double width;
+  final double menuWidth;
+  final double menuHeight;
+  final String prefixIcon;
+  final double iconSize;
+  final String? errorText; // Changed to nullable String
+
+  const DropDownMapInfo({
+    super.key,
+    required this.onChanged,
+    this.errorText,
+    required this.prefixIcon,
+    required this.itemLists,
+    required this.title,
+    required this.width,
+    required this.menuWidth,
+    required this.menuHeight,
+    this.iconSize = 20,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: width,
+          child: DropdownSearch<Map<dynamic, String>>(
+            compareFn: (item1, item2) => item1 == item2,
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+              constraints: BoxConstraints(
+                maxWidth: menuWidth,
+                maxHeight: menuHeight,
+              ),
+              containerBuilder: (context, popupWidget) {
+                return Container(
+                  height: menuHeight,
+                  width: menuWidth,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: popupWidget,
+                );
+              },
+              errorBuilder: (context, searchEntry, exception) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    errorText ?? 'No results found',
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                );
+              },
+              searchFieldProps: TextFieldProps(
+                decoration: InputDecoration(
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 4, right: 4, top: 10),
+                    child: SizedBox(
+                      width: iconSize,
+                      height: iconSize,
+                      child: IconImages(prefixIcon),
+                    ),
+                  ),
+                  hintText: 'Search...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+            items: (filter, infiniteScrollProps) => itemLists,
+            decoratorProps: DropDownDecoratorProps(
+              decoration: InputDecoration(
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.only(left: 4, right: 4, top: 10),
+                  child: SizedBox(
+                    width: iconSize,
+                    height: iconSize,
+                    child: IconImages(prefixIcon),
+                  ),
+                ),
+                border: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.amber),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                errorText: errorText, // Add error text to the input decoration
+                errorBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.red),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.red),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+            ),
+            onChanged: (selectedItem) {
+              if (selectedItem != null) {
+                onChanged?.call(selectedItem['name']);
+              }
+            },
+            dropdownBuilder: (context, selectedItem) {
+              return Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8, top: 10),
+                    child: SizedBox(
+                      width: iconSize,
+                      height: iconSize,
+                      child: IconImages(
+                        selectedItem != null && selectedItem['logo'] != null
+                            ? selectedItem['logo']!
+                            : prefixIcon,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      selectedItem != null ? selectedItem['name'] ?? '' : title,
+                      style: TextStyle(
+                        color: errorText != null ? Colors.red : Colors.black,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                      selectedItem != null ? selectedItem['status'] ?? '' : '',
+                      style: TextStyle(
+                        color: errorText != null ? Colors.red :selectedItem?['status']=='available'? Colors.green:Colors.red,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                ],
+              );
+            },
+            itemAsString: (item) => item['name'] ?? '',
+          ),
+        ),
+        if (errorText != null) // Show error text below the dropdown if it exists
+          Padding(
+            padding: const EdgeInsets.only(left: 12, top: 4),
+            child: Text(
+              errorText!,
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 12,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 
 
 class DropDownEdubox extends StatelessWidget {
@@ -431,10 +629,6 @@ class DropDownSchool extends StatelessWidget {
 }
 
 
-// Define your text styles and colors here
-const Color kTextBlackColor = Colors.black; // Replace with your actual color
-const TextStyle ktextBlack = TextStyle(color: kTextBlackColor); // Adjust as needed
-
 
 class DropDownAccount extends StatelessWidget {
   static const String routeName = 'DropDown';
@@ -615,7 +809,7 @@ class DropDown1 extends StatelessWidget {
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
         isExpanded: isExpanded,
-        icon: const Icon(
+        icon: Icon(
           Icons.arrow_drop_down,
           color: kTextBlackColor,
         ),

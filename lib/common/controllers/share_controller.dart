@@ -1,101 +1,148 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/cupertino.dart';
+import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
+import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
+import 'package:hosomobile/features/transaction_money/widgets/share_statement_widget.dart';
+import 'package:hosomobile/features/transaction_money/widgets/share_statement_widget_sl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:hosomobile/common/models/contact_model.dart';
-import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
 import 'package:hosomobile/helper/route_helper.dart';
 import 'package:get/get.dart';
-// import 'package:gallery_saver/gallery_saver.dart';
-import 'package:hosomobile/features/transaction_money/widgets/share_statement_widget.dart';
 
 class ShareController extends GetxController implements GetxService {
-  ScreenshotController statementController = ScreenshotController();
+  final ScreenshotController statementController = ScreenshotController();
 
-  Future statementScreenShootFunction(
-      {required String amount,
-      required String? transactionType,
-      required ContactModel? contactModel,
-      required String charge,
-      required String? trxId,
-      required String? edubox_service,
-      required String? studentInfo,
-      required double? inputBalance,
-      required List<EduboxMaterialModel>? dataList,
-      required int? productIndex,
-       required String? amountToPay,
-  required String? nowPaid,
-  required String?remainingAmount,
-  required String? vat,
- required String?serviceCharge,
-required String?totalNowPaid,
-required String?serviceValue,
-required int?serviceIndex,
+  Future<void> statementScreenShootFunction({
+    required String amount,
+    required String? transactionType,
+    required ContactModel? contactModel,
+    required String charge,
+    required String? trxId,
+    required String? eduboxService,
+    required String? studentInfo,
+    required double? inputBalance,
+    required List<EduboxMaterialModel>? dataList,
+    required int? productIndex,
+    required String? amountToPay,
+    required String? nowPaid,
+    required String? remainingAmount,
+    required String? vat,
+    required String? serviceCharge,
+    required String? totalNowPaid,
+    required String? serviceValue,
+    required int? serviceIndex,
+    String? destination,
+  }) async {
+    try {
+      // Navigate to share widget
+      await Get.to(
+        () => ShareStatementWidget(
+          amount: amount,
+          destination: destination ?? '',
+          transactionType: transactionType ?? '',
+          contactModel: contactModel,
+          charge: charge,
+          trxId: trxId ?? '',
+          edubox_service: eduboxService ?? '',
+          inputBalance: inputBalance ?? 0.0,
+          studentInfo: studentInfo ?? '',
+          dataList: dataList ?? [],
+          productIndex: productIndex ?? 0,
+          amountToPay: amountToPay ?? '',
+          nowPaid: nowPaid ?? '',
+          remainingAmount: remainingAmount ?? '',
+          vat: vat ?? '',
+          serviceCharge: serviceCharge ?? '',
+          totalNowPaid: totalNowPaid ?? '',
+          serviceValue: serviceValue ?? '',
+          serviceIndex: serviceIndex ?? 0,
+        ),
+      );
 
-      }) async {
-    Uint8List? image;
-    Get.to(ShareStatementWidget(
-      amount: amount,
-      transactionType: transactionType,
-      contactModel: contactModel,
-      charge: charge,
-      trxId: trxId,
-      edubox_service: edubox_service,
-      inputBalance: inputBalance,
-      studentInfo: studentInfo,
-      dataList: dataList,
-      productIndex: productIndex,
-      amountToPay:amountToPay,
-      nowPaid:nowPaid,
-      remainingAmount:remainingAmount,
-      vat:vat,
-      serviceCharge:serviceCharge,
-      totalNowPaid:totalNowPaid,
-      serviceValue:serviceValue,
-      serviceIndex:serviceIndex,
-     
-    ));
-    Future.delayed(const Duration(milliseconds: 1000)).then((value) async {
-      image = await statementController.capture();
-
-      Navigator.pop(Get.context!);
-      final directory = await getApplicationDocumentsDirectory();
-      final imageFile = File('${directory.path}/share.png');
-      imageFile.writeAsBytesSync(image!);
-      await Share.shareXFiles([XFile(imageFile.path)]);
-    });
+      // Capture screenshot after delay
+      await Future.delayed(const Duration(milliseconds: 1000)).then((_) async {
+        final image = await _captureAndShareScreenshot();
+        if (image != null) {
+          await _shareImageFile(image);
+        }
+      });
+    } catch (e) {
+      debugPrint('Error in statementScreenShootFunction: $e');
+      rethrow;
+    }
   }
 
-  Future<void> qrCodeDownloadAndShare(
-      {required String qrCode,
-      required String phoneNumber,
-      required bool isShare}) async {
-    Uint8List? image;
-    Get.toNamed(RouteHelper.getQrCodeDownloadOrShareRoute(
-        qrCode: qrCode, phoneNumber: phoneNumber));
-    Future.delayed(const Duration(milliseconds: 100)).then((value) async {
-      image = await statementController.capture();
+  Future<void> qrCodeDownloadAndShare({
+    required String qrCode,
+    required String phoneNumber,
+    required bool isShare,
+  }) async {
+    try {
+      // Navigate to QR code screen
+      await Get.toNamed(
+        RouteHelper.getQrCodeDownloadOrShareRoute(
+          qrCode: qrCode,
+          phoneNumber: phoneNumber,
+        ),
+      );
 
-      Navigator.pop(Get.context!);
+      // Capture and handle after delay
+      await Future.delayed(const Duration(milliseconds: 100)).then((_) async {
+        final image = await _captureAndShareScreenshot();
+        if (image != null) {
+          if (isShare) {
+            await _shareImageFile(image);
+          } else {
+            await _saveQrCodeToGallery(image);
+          }
+        }
+      });
+    } catch (e) {
+      debugPrint('Error in qrCodeDownloadAndShare: $e');
+      rethrow;
+    }
+  }
 
-      if (isShare == true) {
-        final directory = await getApplicationDocumentsDirectory();
-        final imageFile = File('${directory.path}/share.png');
-        imageFile.writeAsBytesSync(image!);
-        await Share.shareXFiles([XFile(imageFile.path)]);
-      } else {
-        final directory = await getApplicationDocumentsDirectory();
-        final imageFile = File('${directory.path}/qr.png');
-        imageFile.writeAsBytesSync(image!);
-        // await GallerySaver.saveImage(imageFile.path,
-        //         albumName: AppConstants.appName)
-        //     .then((value) => showCustomSnackBarHelper(
-        //         'QR code save to your Gallery',
-        //         isError: false));
+  Future<Uint8List?> _captureAndShareScreenshot() async {
+    try {
+      final image = await statementController.capture();
+      if (image == null) {
+        throw Exception('Failed to capture screenshot');
       }
-    });
+      Navigator.of(Get.context!).pop();
+      return image;
+    } catch (e) {
+      debugPrint('Error capturing screenshot: $e');
+      return null;
+    }
+  }
+
+  Future<void> _shareImageFile(Uint8List image) async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final imageFile = File('${directory.path}/share.png');
+      await imageFile.writeAsBytes(image);
+      await Share.shareXFiles([XFile(imageFile.path)]);
+    } catch (e) {
+      debugPrint('Error sharing image: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> _saveQrCodeToGallery(Uint8List image) async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final imageFile = File('${directory.path}/qr.png');
+      await imageFile.writeAsBytes(image);
+      // Uncomment if you have gallery_saver package
+      // await GallerySaver.saveImage(imageFile.path, albumName: 'YourAppName');
+      // showCustomSnackBarHelper('QR code saved to your Gallery', isError: false);
+    } catch (e) {
+      debugPrint('Error saving QR code: $e');
+      rethrow;
+    }
   }
 }

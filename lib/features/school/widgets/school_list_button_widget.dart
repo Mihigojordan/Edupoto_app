@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/common/widgets/custom_ink_well_widget.dart';
-import 'package:hosomobile/features/history/controllers/transaction_history_controller.dart';
-import 'package:hosomobile/features/history/domain/models/transaction_model.dart';
 import 'package:hosomobile/features/school/controllers/school_list_controller.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/util/color_resources.dart';

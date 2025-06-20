@@ -9,9 +9,9 @@ import 'package:hosomobile/features/home/screens/upgrades/home/hoso_home_screen.
 import 'package:hosomobile/features/home/screens/upgrades/home/studentpoto_screen/studentpoto_screen.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/hoso_services/hoso_services.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/installment_pay/installment_pay.dart';
-import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/student_add_info.dart';
+import 'package:hosomobile/features/student/widgets/student_add_info.dart';
 import 'package:hosomobile/features/school/screens/school_list_screen.dart';
-import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/add_account.dart';
+import 'package:hosomobile/features/student/screens/student_logistic_screen.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/component/payment_invoice.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/component/payment_method.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/single_school.dart';
@@ -226,10 +226,10 @@ class RouteHelper {
   static List<GetPage> routes = [
     GetPage(name: restart, page: () => const Restart()),
     GetPage(name: splash, page: () => const SplashScreen()),
-    GetPage(name: product, page: () => const MzaziScreen()),
+    GetPage(name: product, page: () =>  const MzaziScreen(isShop: false,)),
     GetPage(name: hosoHome, page: () => const HosoHomeScreen()),
     GetPage(name: home, page: () => const HomeScreen()),
-    GetPage(name: ababyeyi, page: () => const MzaziScreen()),
+    GetPage(name: ababyeyi, page: () => const MzaziScreen(isShop: false,)),
     GetPage(name: hosoServices, page: () => const HosoServices()),
 
 
@@ -272,18 +272,7 @@ GetPage(
   },
 ),
 
-
- GetPage(
-  name: eduboxPlus,
-  page: () {
-    final index = int.tryParse(Get.parameters['index'] ?? '0') ?? 0;
-    final iconImage = Get.parameters['iconImage'] ?? '';
-
-    return AddAccount(productIndex: index, iconImages: iconImage);
-  },
-),
-
-    GetPage(name: singleSchool, page: () => SingleSchool()),
+    
     GetPage(name: studentAddInfo, page: (){
       final studentId=Get.parameters['studentId'];
       final studentInfo=Get.parameters['studentInfo'];
@@ -292,25 +281,8 @@ GetPage(
     
     
     ),
-    GetPage(name: schoolList, page: () => SchoolListScreen()),
 
-    GetPage(
-      name: paymentInvoice,
-      page: () {
-        // Check if 'data-list' exists and is not null
-        final dataListString = Get.parameters['data-list'];
-        final amount = Get.parameters['amount'];
 
-        // Convert the data-list string back to a List<String>
-        List<SchoolRequirementModel>? schoolRequirementList;
-        List<bool>? isReqChecked;
-        ClassDetails? classId;
-        AllSchoolModel? schoolId;
-        // Pass the parsed list and amount to the PaymentInvoice page
-        return PaymentInvoice(classId: classId!,schoolId: schoolId!, schoolRequirementList: schoolRequirementList!, isReqChecked: isReqChecked!);
-      },
-    ),
- GetPage(name: paymentMethod, page: ()=>PaymentMethod(amountTotal: Get.parameters['total-amount']!)),
  GetPage(name: installmentPay, page: ()=>InstallmentPayment(totalAmount: Get.parameters['total-amount']!)),
  GetPage(name: studentPoto, page: ()=>const StudentpotoScreen()),
  GetPage(name: navbar, page: () =>  NavBarScreen(destination: Get.parameters['destination']!,)),
@@ -320,6 +292,7 @@ GetPage(
     GetPage(
         name: shareStatement,
         page: () => ShareStatementWidget(
+          destination: '',
             amount: Get.parameters['amount'],
             charge: null,
             trxId: null,
@@ -352,13 +325,6 @@ GetPage(
             dataList: const [],
             )),
 
-    GetPage(
-        name: sendMoneyConfirmation,
-        page: () => CreditTransactionConfirmationScreen(
-            inputBalance: double.tryParse(Get.parameters['input-balance']!),
-            transactionType: Get.parameters['transaction-type'],
-            dataList: const [],
-            )),
               GetPage(
         name: sendMoneyConfirmation,
         page: () => CreditTransactionConfirmationScreenSL(
@@ -367,13 +333,6 @@ GetPage(
             dataList: const [],
             )),
 
-            GetPage(
-        name: sendMoneyConfirmation,
-        page: () => SchoolTransactionConfirmationScreen(
-            inputBalance: double.tryParse(Get.parameters['input-balance']!),
-            transactionType: Get.parameters['transaction-type'],
-            dataList: const [],
-            )),
 
     GetPage(name: choseLoginOrRegScreen, page: () => const OnBoardingScreen()),
     GetPage(name: createAccountScreen, page: () => const CreateAccountScreen()),

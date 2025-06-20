@@ -26,6 +26,7 @@ import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_updat
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/add_account.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/student_add_info.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/tereka_asome/tereka_asome.dart';
+import 'package:hosomobile/features/school/screens/school_list_screen.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/helper/route_helper.dart';
 import 'package:hosomobile/helper/transaction_type.dart';
@@ -185,50 +186,48 @@ class _StudentWidgetState extends State<StudentWidget> {
         builder: (studentRegistrationController) {
       return GetBuilder<SplashController>(builder: (splashController) {
         return GetBuilder<EduboxMaterialController>(
-                  builder: (eduboxController) {
-                  return eduboxController.isLoading
-                      ? const WebSiteShimmer()
-                      : GetBuilder<StudentController>(builder: (studentController) {
-          
-          //*************** Check if studentList is null or empty */
-          if (studentController.studentList == null ||
-              studentController.studentList!.isEmpty) {
-
-            return Container(
-              margin:const EdgeInsets.only(top:100),
-              padding:const EdgeInsets.all(8.0),
-               decoration: const BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                    color: kTextLightColor,
-                    spreadRadius: 3,
-                    blurRadius: 7,
-                    offset: Offset(0, 3)),
-              ],
-              color: kTextWhiteColor,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            clipBehavior: Clip.antiAlias,
-              child: addAccout(
-                  student: studentController.studentList??[],
-                  studentRegController: studentRegistrationController,
-                  studentController: studentController,
-                  eduboxController: eduboxController),
-            );
-          }
-
-          // Validate selectedIndex
-          if (selectedIndex < 0 ||
-              selectedIndex >= studentController.studentList!.length) {
-            return const Center(child: Text('Invalid student selected.'));
-          }
-final student = studentController.studentList![selectedIndex];
-          return studentController.isLoading
+            builder: (eduboxController) {
+          return eduboxController.isLoading
               ? const WebSiteShimmer()
-              :  Form(
+              : GetBuilder<StudentController>(builder: (studentController) {
+                  //*************** Check if studentList is null or empty */
+                  if (studentController.studentList == null ||
+                      studentController.studentList!.isEmpty) {
+                    return Container(
+                      margin: const EdgeInsets.only(top: 100),
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: const BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                              color: kTextLightColor,
+                              spreadRadius: 3,
+                              blurRadius: 7,
+                              offset: Offset(0, 3)),
+                        ],
+                        color: kTextWhiteColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: addAccout(
+                          student: studentController.studentList ?? [],
+                          studentRegController: studentRegistrationController,
+                          studentController: studentController,
+                          eduboxController: eduboxController),
+                    );
+                  }
+
+                  // Validate selectedIndex
+                  if (selectedIndex < 0 ||
+                      selectedIndex >= studentController.studentList!.length) {
+                    return const Center(
+                        child: Text('Invalid student selected.'));
+                  }
+                  final student = studentController.studentList![selectedIndex];
+                  return studentController.isLoading
+                      ? const WebSiteShimmer()
+                      : Form(
                           key: _formKey,
                           child: Column(children: [
-
 //***************************************** Student Upper container ***************************************8*/
 
                             upperContainer(
@@ -240,179 +239,219 @@ final student = studentController.studentList![selectedIndex];
                             ),
                             sizedBox10,
                             SizedBox(
-                              height: screenHeight / 2.3,
-                              width:
-                                  screenWidth >= 520 ? 340 : screenWidth / 1.2,
-                              child: (eduboxController
-                                      .eduboxMaterialList!.isEmpty)
-                                  ? Text(
-                                      'No Material for now',
-                                      style: TextStyle(
-                                        fontSize: screenHeight >= 763 ? 16 : 14,
-                                        color: Colors.black.withOpacity(0.5),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )
-      //*********************** Student bootom Grid View *************************************888*/
-                                  : GridView.builder(
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount:
-                                            2, // Number of items per row
-                                        crossAxisSpacing:
-                                            10.0, // Horizontal spacing
-                                        mainAxisSpacing:
-                                            10.0, // Vertical spacing
-                                        childAspectRatio:
-                                            1.0, // Aspect ratio for grid items
-                                      ),
-                                      itemCount: eduboxController
-                                              .eduboxMaterialList?.length ??
-                                          0,
-                                      itemBuilder: (context, index) {
-                                        final edubox = eduboxController
-                                            .eduboxMaterialList![index];
-                                        final image = eduboxController
-                                                .eduboxMaterialList!.isNotEmpty
-                                            ? eduboxController
-                                                .eduboxMaterialList![index]
-                                                .image
-                                            : '';
-                                        final titleImage = eduboxController
-                                                .eduboxMaterialList!.isNotEmpty
-                                            ? eduboxController
-                                                .eduboxMaterialList![index]
-                                                .title_image
-                                            : '';
-                                        return InkWell(
+                                height: screenHeight / 2.3,
+                                width: screenWidth >= 520
+                                    ? 340
+                                    : screenWidth / 1.2,
+                                child: (eduboxController
+                                        .eduboxMaterialList!.isEmpty)
+                                    ? Text(
+                                        'No Material for now',
+                                        style: TextStyle(
+                                          fontSize:
+                                              screenHeight >= 763 ? 16 : 14,
+                                          color: Colors.black.withOpacity(0.5),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    //*********************** Student bootom Grid View *************************************888*/
+                                    : GridView.builder(
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing: 10.0,
+                                          mainAxisSpacing: 10.0,
+                                          childAspectRatio: 1.0,
+                                        ),
+                                        itemCount: eduboxController
+                                                .eduboxMaterialList?.length ??
+                                            0,
+                                        itemBuilder: (context, index) {
+                                          // Safe access to material list
+                                          if (eduboxController
+                                                      .eduboxMaterialList ==
+                                                  null ||
+                                              index >=
+                                                  eduboxController
+                                                      .eduboxMaterialList!
+                                                      .length) {
+                                            return const SizedBox(); // Return empty widget if invalid index
+                                          }
 
-                                          onTap: () => studentController
-                                                  .studentList!.isEmpty
-                                              ? showInfoDialog(context,
+                                          final edubox = eduboxController
+                                              .eduboxMaterialList![index];
+                                          final image = edubox.image ?? '';
+                                          final titleImage =
+                                              edubox.title_image ?? '';
+
+                                          return InkWell(
+                                            onTap: () {
+                                              debugPrint(
+                                                  'Student info: ${student.name} | ${student.id} | ${student.classId} | ${student.schoolId}');
+
+                                              // Safe student checks
+                                              final studentName =
+                                                  student.name ?? 'Unknown';
+                                              final studentCode =
+                                                  student.code ?? '';
+                                              final studentId = student.id ?? 0;
+                                              final classId =
+                                                  student.classId ?? 0;
+                                              final schoolId =
+                                                  student.schoolId ?? 0;
+                                              final className =
+                                                  student.studentClass ?? '';
+                                              final schoolName =
+                                                  student.school ?? '';
+
+                                              if (studentController
+                                                      .studentList?.isEmpty ??
+                                                  true) {
+                                                showInfoDialog(
+                                                  context,
                                                   title: 'Student Info',
-                                                  student_name: student.name!,
-                                                  student_code: student.code!,
+                                                  student_name: studentName,
+                                                  student_code: studentCode,
                                                   description:
-                                                      'Student is not available!, Please add Student to continue',
+                                                      'Student is not available! Please add Student to continue',
                                                   studentController:
                                                       studentController,
                                                   studentRegController:
                                                       studentRegistrationController,
-                                                  studentId: studentId!,
+                                                  studentId: studentId,
                                                   selectedIndex: selectedIndex,
-                                                  parentId: parentId!)
-                                              : index == 0
-                                                  ? Get.to(AddAccount(
-                                                      productIndex: index,
-                                                      iconImages:
-                                                          "${AppConstants.baseUrl}/storage/app/public/edupoto_product/$titleImage",
-                                                    ))
-//****************************** Go to the invoice  ****************************/
-
-                                                  : Get.to(
-                                                      TerekaAsome(
-                                                          productId: edubox.id,
-                                                          studentId:
-                                                              studentController
-                                                                  .studentList![
-                                                                      0]
-                                                                  .id,
-                                                          schoolId:
-                                                              studentController
-                                                                  .studentList![
-                                                                      0]
-                                                                  .schoolId!,
-                                                          classId:
-                                                              studentController
-                                                                  .studentList![
-                                                                      0]
-                                                                  .classId!,
-                                                          contactModelMtn:
-                                                              ContactModelMtn(
-                                                            phoneNumber:
-                                                                '${userData?.countryCode}${userData?.phone}' ??
-                                                                    '',
-                                                            name:
-                                                                '${userData?.name}',
-                                                          ),
-                                                          transactionType:
-                                                              TransactionType
-                                                                  .sendMoney,
-                                                          contactModel:
-                                                              ContactModel(
-                                                            phoneNumber:
-                                                                '${userData?.countryCode}${userData?.phone}' ??
-                                                                    '',
-                                                            name:
-                                                                '${userData?.name}',
-                                                            avatarImage:
-                                                                '${Get.find<SplashController>().configModel!.baseUrls!.customerImageUrl}/${'image' ?? ''}',
-                                                          ),
-                                                          studentIndex:
-                                                              selectedIndex,
-                                                          productValue:
-                                                              productValueList[
-                                                                      index]
-                                                                  [
-                                                                  'action'], // Dynamic value
-                                                          productIndex: index,
-                                                          iconImages:
-                                                              "${AppConstants.baseUrl}/storage/app/public/edupoto_product/$titleImage", // Adjust icon logic
-                                                          edubox_service:
-                                                              productValueList[
-                                                                      index]
-                                                                  ['action'],
-                                                          parent:
-                                                              userData?.name),
+                                                  parentId: parentId ?? '',
+                                                );
+                                              } else {
+                                                if (index == 0) {
+                                                  Get.to(
+                                                    SchoolListScreen(
+                                                      studentCode: studentCode,
+                                                      shipper: 'shipper',
+                                                      homePhone: 'homePhone',
+                                                      destination:
+                                                          'destination',
+                                                      studentName: studentName,
+                                                      className: className,
+                                                      schoolName: schoolName,
+                                                      schoolId: schoolId,
+                                                      studentId: studentId,
+                                                      classId: classId,
                                                     ),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  Colors.white,
-                                                  Colors.grey.shade100
-                                                ],
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
-                                              ),
-                                              borderRadius: BorderRadius.circular(
-                                                  15.0), // Slightly larger corner radius
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black.withOpacity(
-                                                      0.1), // Soft shadow for depth
-                                                  spreadRadius: 4,
-                                                  blurRadius: 10,
-                                                  offset: const Offset(0,
-                                                      4), // Shadow below the container
+                                                  );
+                                                } else {
+                                                  // Safe user data access
+                                                  final userData =
+                                                      Get.find<AuthController>()
+                                                          .getUserData();
+                                                  final countryCode =
+                                                      userData?.countryCode ??
+                                                          '';
+                                                  final phone =
+                                                      userData?.phone ?? '';
+                                                  final name =
+                                                      userData?.name ?? '';
+
+                                                  Get.to(
+                                                    TerekaAsome(
+                                                        productId: edubox.id,
+                                                        studentId:
+                                                            studentController
+                                                                .studentList![0]
+                                                                .id,
+                                                        schoolId:
+                                                            studentController
+                                                                .studentList![0]
+                                                                .schoolId!,
+                                                        classId:
+                                                            studentController
+                                                                .studentList![0]
+                                                                .classId!,
+                                                        contactModelMtn:
+                                                            ContactModelMtn(
+                                                          phoneNumber:
+                                                              '${userData?.countryCode}${userData?.phone}' ??
+                                                                  '',
+                                                          name:
+                                                              '${userData?.name}',
+                                                        ),
+                                                        transactionType:
+                                                            TransactionType
+                                                                .sendMoney,
+                                                        contactModel:
+                                                            ContactModel(
+                                                          phoneNumber:
+                                                              '${userData?.countryCode}${userData?.phone}' ??
+                                                                  '',
+                                                          name:
+                                                              '${userData?.name}',
+                                                          avatarImage:
+                                                              '${Get.find<SplashController>().configModel!.baseUrls!.customerImageUrl}/${'image' ?? ''}',
+                                                        ),
+                                                        studentIndex:
+                                                            selectedIndex,
+                                                        productValue:
+                                                            productValueList[
+                                                                    index]
+                                                                [
+                                                                'action'], // Dynamic value
+                                                        productIndex: index,
+                                                        iconImages:
+                                                            "${AppConstants.baseUrl}/storage/app/public/edupoto_product/$titleImage", // Adjust icon logic
+                                                        edubox_service:
+                                                            productValueList[
+                                                                    index]
+                                                                ['action'],
+                                                        parent: userData?.name),
+                                                  );
+                                                }
+                                              }
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    Colors.white,
+                                                    Colors.grey.shade100
+                                                  ],
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
                                                 ),
-                                              ],
-                                            ),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                // Image with rounded corners
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                  child: CustomImageWidget(
-                                                    image:
-                                                        "${AppConstants.baseUrl}/storage/app/public/edupoto_product/$image",
-                                                    fit: BoxFit.cover,
-                                                    placeholder: Images
-                                                        .bannerPlaceHolder,
+                                                borderRadius:
+                                                    BorderRadius.circular(15.0),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.1),
+                                                    spreadRadius: 4,
+                                                    blurRadius: 10,
+                                                    offset: const Offset(0, 4),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8.0),
+                                                    child: CustomImageWidget(
+                                                      image:
+                                                          "${AppConstants.baseUrl}/storage/app/public/edupoto_product/$image",
+                                                      fit: BoxFit.cover,
+                                                      placeholder: Images
+                                                          .bannerPlaceHolder,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                            ),
+                                          );
+                                        },
+                                      )),
                           ]),
                         );
                 });
@@ -742,8 +781,10 @@ final student = studentController.studentList![selectedIndex];
                                                     true) {
                                                   setAddAccount();
                                                   showInfoDialog(context,
-                                                      student_code: student.code!,
-                                                      student_name: student.name!,
+                                                      student_code:
+                                                          student.code!,
+                                                      student_name:
+                                                          student.name!,
                                                       studentRegController:
                                                           studentRegistrationController,
                                                       title: 'Student Info',
@@ -903,7 +944,7 @@ final student = studentController.studentList![selectedIndex];
     ClassModel? classModel;
 
     return SizedBox(
-      height: screenHeight/1.3,
+      height: screenHeight / 1.3,
       child: SingleChildScrollView(
         child: Stack(
           children: [
@@ -919,8 +960,8 @@ final student = studentController.studentList![selectedIndex];
                       ),
                 ),
                 const SizedBox(height: 5),
-        
-        //********************THIS IS THE DEPENDENCE DROPDOWN FOR REGISTERING STUDENTS *********************/
+
+                //********************THIS IS THE DEPENDENCE DROPDOWN FOR REGISTERING STUDENTS *********************/
                 SizedBox(
                   width: screenWidth / 1.1,
                   child: DependentSchoolDropdowns(

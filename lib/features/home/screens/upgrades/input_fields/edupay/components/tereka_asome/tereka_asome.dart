@@ -224,7 +224,7 @@ class _TerekaAsomeState extends State<TerekaAsome> {
                             ),
                             Positioned(
                               top: screenHeight >= 763 ? 10 : 10,
-                              left: screenWidth >= 520 ? 10: 10,
+                              left: screenWidth >= 520 ? 10 : 10,
                               child: const CustomBackButton(),
                             ),
                             Positioned(
@@ -420,7 +420,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                 isExpanded: true,
                               ),
                               sizedBox15,
-                        Text(
+                              Text(
                                 'Product: ${widget.edubox_service} (${studentController.studentList?[widget.studentIndex]?.studentClass ?? ''}):',
                                 style: TextStyle(
                                   fontSize: 14,
@@ -442,7 +442,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                     itemCount: widget.productList[selectedIndex]
                                         .eduboxMaterials!.length,
                                     itemBuilder: (context, materialIndex) {
-                                   material = widget
+                                      material = widget
                                           .productList[selectedIndex]
                                           .eduboxMaterials![materialIndex];
                                       return ListTile(
@@ -568,157 +568,243 @@ class _HomeCard1State extends State<HomeCard1> {
                               //   _inputAmountFocusNode,
                               // ),
 
-                              sizedBox,
-          DefaultButton2(
-  color1: kamber300Color,
-  color2: kyellowColor,
-  onPress: () {
-    // Ensure material exists
-    if (material == null) {
-      showCustomSnackBarHelper('Material information not available', isError: true);
-      return;
-    }
+                            
+                              DefaultButton2(
+                                color1: kamber300Color,
+                                color2: kyellowColor,
+                                onPress: () {
+                                  // Ensure material exists
+                                  if (material == null) {
+                                    showCustomSnackBarHelper(
+                                        'Material information not available',
+                                        isError: true);
+                                    return;
+                                  }
 
-    // Get material balance with proper null checks
-    double materialBalance;
-    try {
-      materialBalance = (material.paymentHistory?.balance != null && 
-          double.tryParse(material.paymentHistory!.balance ?? '0.00')! > 0.00)
-          ? double.parse(material.paymentHistory!.balance!)
-          : double.parse(material.price?.toString() ?? '0.00');
-    } catch (e) {
-      materialBalance = 0.00;
-    }
+                                  // Get material balance with proper null checks
+                                  double materialBalance;
+                                  try {
+                                    materialBalance = (material
+                                                    .paymentHistory?.balance !=
+                                                null &&
+                                            double.tryParse(material
+                                                        .paymentHistory!
+                                                        .balance ??
+                                                    '0.00')! >
+                                                0.00)
+                                        ? double.parse(
+                                            material.paymentHistory!.balance!)
+                                        : double.parse(
+                                            material.price?.toString() ??
+                                                '0.00');
+                                  } catch (e) {
+                                    materialBalance = 0.00;
+                                  }
 
-    // Check input amount
-    if (_inputAmountController.text.isEmpty) {
-      showCustomSnackBarHelper('please_input_amount'.tr, isError: true);
-      return;
-    }
+                                  // Check input amount
+                                  if (_inputAmountController.text.isEmpty) {
+                                    showCustomSnackBarHelper(
+                                        'please_input_amount'.tr,
+                                        isError: true);
+                                    return;
+                                  }
 
-    // Process amount
-    String balance = _inputAmountController.text;
-    balance = balance.replaceAll(splashController.configModel?.currencySymbol ?? '', '')
-                    .replaceAll(',', '')
-                    .replaceAll(' ', '');
+                                  // Process amount
+                                  String balance = _inputAmountController.text;
+                                  balance = balance
+                                      .replaceAll(
+                                          splashController.configModel
+                                                  ?.currencySymbol ??
+                                              '',
+                                          '')
+                                      .replaceAll(',', '')
+                                      .replaceAll(' ', '');
 
-    double amount;
-    try {
-      amount = double.parse(balance);
-    } catch (e) {
-      showCustomSnackBarHelper('invalid_amount_format'.tr, isError: true);
-      return;
-    }
+                                  double amount;
+                                  try {
+                                    amount = double.parse(balance);
+                                  } catch (e) {
+                                    showCustomSnackBarHelper(
+                                        'invalid_amount_format'.tr,
+                                        isError: true);
+                                    return;
+                                  }
 
-    if (amount <= 0) {
-      showCustomSnackBarHelper('transaction_amount_must_be'.tr, isError: true);
-      return;
-    }
+                                  if (amount <= 0) {
+                                    showCustomSnackBarHelper(
+                                        'transaction_amount_must_be'.tr,
+                                        isError: true);
+                                    return;
+                                  }
 
-    // Check product list bounds
-    if (widget.productList.isEmpty || 
-        selectedIndex >= widget.productList.length ||
-        widget.productList[selectedIndex].eduboxMaterials == null ||
-        materialIndex >= widget.productList[selectedIndex].eduboxMaterials!.length) {
-      showCustomSnackBarHelper('product_information_not_available'.tr, isError: true);
-      return;
-    }
+                                  // Check product list bounds
+                                  if (widget.productList.isEmpty ||
+                                      selectedIndex >=
+                                          widget.productList.length ||
+                                      widget.productList[selectedIndex]
+                                              .eduboxMaterials ==
+                                          null ||
+                                      materialIndex >=
+                                          widget.productList[selectedIndex]
+                                              .eduboxMaterials!.length) {
+                                    showCustomSnackBarHelper(
+                                        'product_information_not_available'.tr,
+                                        isError: true);
+                                    return;
+                                  }
 
-    // Get current material safely
-    final currentMaterial = widget.productList[selectedIndex].eduboxMaterials![materialIndex];
-    
-    if (amount < 100 || amount > materialBalance || materialBalance <= 0.00) {
-      dialog.showWarningDialog(
-        context: context,
-        balance: materialBalance,
-        amount: double.tryParse(currentMaterial.price?.toString() ?? '0.00') ?? 0.00,
-        inputAmaount: amount
-      );
-    } else {
-      _confirmationRoute(
-        amount: double.tryParse(currentMaterial.price?.toString() ?? '0.00') ?? 0.00,
-        price: double.tryParse(currentMaterial.price?.toString() ?? '0.00') ?? 0.00,
-        balance: materialBalance
-      );
-    }
-  },
-  title: 'PAY CASH',
-  iconData: Icons.arrow_forward_outlined,
-),
+                                  // Get current material safely
+                                  final currentMaterial = widget
+                                      .productList[selectedIndex]
+                                      .eduboxMaterials![materialIndex];
 
-sizedBox05h,
+                                  // if (amount < 100 ||
+                                  //     amount > materialBalance ||
+                                  //     materialBalance <= 0.00) {
+                                  //   dialog.showWarningDialog(
+                                  //       context: context,
+                                  //       balance: materialBalance,
+                                  //       amount: double.tryParse(currentMaterial
+                                  //                   .price
+                                  //                   ?.toString() ??
+                                  //               '0.00') ??
+                                  //           0.00,
+                                  //       inputAmaount: amount);
+                                  // } else {
+                                    _confirmationRoute(
+                                        amount: double.tryParse(currentMaterial
+                                                    .price
+                                                    ?.toString() ??
+                                                '0.00') ??
+                                            0.00,
+                                        price: double.tryParse(currentMaterial
+                                                    .price
+                                                    ?.toString() ??
+                                                '0.00') ??
+                                            0.00,
+                                        balance: materialBalance);
+                                  // }
+                                },
+                                title: 'PAY CASH',
+                                iconData: Icons.arrow_forward_outlined,
+                              ),
 
-DefaultButton2(
-  color1: kamber300Color,
-  color2: kyellowColor,
-  onPress: () {
-    // Same safety checks as above button
-    if (material == null) {
-      showCustomSnackBarHelper('Material information not available', isError: true);
-      return;
-    }
+                              sizedBox05h,
 
-    double materialBalance;
-    try {
-      materialBalance = (material.paymentHistory?.balance != null && 
-          double.tryParse(material.paymentHistory!.balance ?? '0.00')! > 0.00)
-          ? double.parse(material.paymentHistory!.balance!)
-          : double.parse(material.price?.toString() ?? '0.00');
-    } catch (e) {
-      materialBalance = 0.00;
-    }
+                              DefaultButton2(
+                                color1: kamber300Color,
+                                color2: kyellowColor,
+                                onPress: () {
+                                  // Same safety checks as above button
+                                  if (material == null) {
+                                    showCustomSnackBarHelper(
+                                        'Material information not available',
+                                        isError: true);
+                                    return;
+                                  }
 
-    if (_inputAmountController.text.isEmpty) {
-      showCustomSnackBarHelper('please_input_amount'.tr, isError: true);
-      return;
-    }
+                                  double materialBalance;
+                                  try {
+                                    materialBalance = (material
+                                                    .paymentHistory?.balance !=
+                                                null &&
+                                            double.tryParse(material
+                                                        .paymentHistory!
+                                                        .balance ??
+                                                    '0.00')! >
+                                                0.00)
+                                        ? double.parse(
+                                            material.paymentHistory!.balance!)
+                                        : double.parse(
+                                            material.price?.toString() ??
+                                                '0.00');
+                                  } catch (e) {
+                                    materialBalance = 0.00;
+                                  }
 
-    String balance = _inputAmountController.text;
-    balance = balance.replaceAll(splashController.configModel?.currencySymbol ?? '', '')
-                    .replaceAll(',', '')
-                    .replaceAll(' ', '');
+                                  if (_inputAmountController.text.isEmpty) {
+                                    showCustomSnackBarHelper(
+                                        'please_input_amount'.tr,
+                                        isError: true);
+                                    return;
+                                  }
 
-    double amount;
-    try {
-      amount = double.parse(balance);
-    } catch (e) {
-      showCustomSnackBarHelper('invalid_amount_format'.tr, isError: true);
-      return;
-    }
+                                  String balance = _inputAmountController.text;
+                                  balance = balance
+                                      .replaceAll(
+                                          splashController.configModel
+                                                  ?.currencySymbol ??
+                                              '',
+                                          '')
+                                      .replaceAll(',', '')
+                                      .replaceAll(' ', '');
 
-    if (amount <= 0) {
-      showCustomSnackBarHelper('transaction_amount_must_be'.tr, isError: true);
-      return;
-    }
+                                  double amount;
+                                  try {
+                                    amount = double.parse(balance);
+                                  } catch (e) {
+                                    showCustomSnackBarHelper(
+                                        'invalid_amount_format'.tr,
+                                        isError: true);
+                                    return;
+                                  }
 
-    if (widget.productList.isEmpty || 
-        selectedIndex >= widget.productList.length ||
-        widget.productList[selectedIndex].eduboxMaterials == null ||
-        materialIndex >= widget.productList[selectedIndex].eduboxMaterials!.length) {
-      showCustomSnackBarHelper('product_information_not_available'.tr, isError: true);
-      return;
-    }
+                                  if (amount <= 0) {
+                                    showCustomSnackBarHelper(
+                                        'transaction_amount_must_be'.tr,
+                                        isError: true);
+                                    return;
+                                  }
 
-    final currentMaterial = widget.productList[selectedIndex].eduboxMaterials![materialIndex];
-    
-    if (amount < 100 || amount > materialBalance || materialBalance <= 0.00) {
-      dialog.showWarningDialog(
-        context: context,
-        balance: materialBalance,
-        amount: double.tryParse(currentMaterial.price?.toString() ?? '0.00') ?? 0.00,
-        inputAmaount: amount
-      );
-    } else {
-      _creditConfirmationRoute(
-        amount: double.tryParse(currentMaterial.price?.toString() ?? '0.00') ?? 0.00,
-        price: double.tryParse(currentMaterial.price?.toString() ?? '0.00') ?? 0.00,
-        balance: materialBalance
-      );
-    }
-  },
-  title: 'REQUEST FOR CREDIT',
-  iconData: Icons.arrow_forward_outlined,
-),
+                                  if (widget.productList.isEmpty ||
+                                      selectedIndex >=
+                                          widget.productList.length ||
+                                      widget.productList[selectedIndex]
+                                              .eduboxMaterials ==
+                                          null ||
+                                      materialIndex >=
+                                          widget.productList[selectedIndex]
+                                              .eduboxMaterials!.length) {
+                                    showCustomSnackBarHelper(
+                                        'product_information_not_available'.tr,
+                                        isError: true);
+                                    return;
+                                  }
+
+                                  final currentMaterial = widget
+                                      .productList[selectedIndex]
+                                      .eduboxMaterials![materialIndex];
+
+                                  // if (amount < 100 ||
+                                  //     amount > materialBalance ||
+                                  //     materialBalance <= 0.00) {
+                                  //   dialog.showWarningDialog(
+                                  //       context: context,
+                                  //       balance: materialBalance,
+                                  //       amount: double.tryParse(currentMaterial
+                                  //                   .price
+                                  //                   ?.toString() ??
+                                  //               '0.00') ??
+                                  //           0.00,
+                                  //       inputAmaount: amount);
+                                  // } else {
+                                    _creditConfirmationRoute(
+                                        amount: double.tryParse(currentMaterial
+                                                    .price
+                                                    ?.toString() ??
+                                                '0.00') ??
+                                            0.00,
+                                        price: double.tryParse(currentMaterial
+                                                    .price
+                                                    ?.toString() ??
+                                                '0.00') ??
+                                            0.00,
+                                        balance: materialBalance);
+                                  // }
+                                },
+                                title: 'REQUEST FOR CREDIT',
+                                iconData: Icons.arrow_forward_outlined,
+                              ),
                               sizedBox10,
                               Padding(
                                 padding:
@@ -1009,9 +1095,9 @@ DefaultButton2(
               contactModelMtn: widget.contactModelMtn,
               studentInfo: studentController.studentList,
               edubox_service: widget.productValue,
-              serviceValue: widget.productValue,
+            
               serviceIndex: widget.productIndex,
-              studentIndex: widget.studentIndex,
+             
               price: price,
             ));
       }
@@ -1114,6 +1200,14 @@ DefaultButton2(
         message = null;
       } else {
         Get.to(() => CreditTransactionConfirmationScreen(
+            // className: studentController
+            //     .studentList![widget.studentIndex].studentClass!,
+            // schoolName:
+            //     studentController.studentList![widget.studentIndex].school!,
+            // studentCode:
+            //     studentController.studentList![widget.studentIndex].code!,
+            // studentName:
+            //     studentController.studentList![widget.studentIndex].name!,
             inputBalance: amount,
             productId: widget.productId!,
             transactionType: TransactionType.withdrawRequest,
@@ -1136,6 +1230,14 @@ DefaultButton2(
       }
     } else {
       Get.to(() => CreditTransactionConfirmationScreen(
+            // className: studentController
+            //     .studentList![widget.studentIndex].studentClass!,
+            // schoolName:
+            //     studentController.studentList![widget.studentIndex].school!,
+            // studentCode:
+            //     studentController.studentList![widget.studentIndex].code!,
+            // studentName:
+            //     studentController.studentList![widget.studentIndex].name!,
             inputBalance: amount,
             availableBalance: balance.toStringAsFixed(2),
             productId: widget.productId!,

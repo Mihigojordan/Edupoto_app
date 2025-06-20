@@ -64,7 +64,8 @@ class BottomSliderController extends GetxController implements GetxService {
 
   void goBackButton(){
     _isPinCompleted = false;
-    Get.offAllNamed(RouteHelper.getNavBarRoute(), arguments:  true);
+    // Get.offAllNamed(RouteHelper.getNavBarRoute(), arguments:  true);
+    Get.back();
   }
 
 }

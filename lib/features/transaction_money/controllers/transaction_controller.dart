@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
+import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/data/api/api_checker.dart';
@@ -189,7 +191,7 @@ class TransactionMoneyController extends GetxController implements GetxService {
    return response;
   }
 
-   Future<Response> makePayment({required int studentId, required double amount, required double totalAmount, required int productId, required int productType,required String phoneNumber,required double charge,required double balance }) async{
+   Future<Response> makePayment({ List<EduboxMaterialModel>? sv_product_list, required String payment_method,required String payment_media,required String payment_phone, required String parent_id, List<SchoolLists>? product_list, required String product_name, required String homePhone,required String destination,required String shipper, required int studentId, required double amount, required double totalAmount, required int productId, required int productType,required String phoneNumber,required double charge,required double balance }) async{
 
     _isLoading = true;
     _isNextBottomSheet = false;
@@ -198,7 +200,7 @@ class TransactionMoneyController extends GetxController implements GetxService {
    
   //  if(responseMtn.statusCode == 202){
 
-    Response response = await transactionRepo.makePaymentApi(studentId: studentId, amount: amount, totalAmount: totalAmount, charge: charge, productId: productId, productType: productType, phoneNumber: phoneNumber, balance: balance);
+    Response response = await transactionRepo.makePaymentApi(payment_phone:payment_phone,payment_media:payment_media,payment_method:payment_method, parent_id:parent_id, product_list:product_list??[],sv_product_list:sv_product_list, product_name:product_name, studentId: studentId, amount: amount, totalAmount: totalAmount, charge: charge, productId: productId, productType: productType, phoneNumber: phoneNumber, balance: balance, shipper:shipper,homePhone:homePhone,destination:destination);
     if(response.statusCode==200){
         _isLoading = false;
      _isNextBottomSheet = true;

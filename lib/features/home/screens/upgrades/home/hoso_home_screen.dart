@@ -289,11 +289,11 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                                   vertical: screenHeight * 0.005,
                                   textColor: kTextBlackColor,
                                   horizontal: screenWidth * 0.025,
-                                  onPress: () => Get.to(const HosoServices()),
+                                  onPress: () => Get.to(const NoConnection()),
                                   height: screenHeight * 0.05,
                                   width: screenWidth * 0.30,
-                                  icon: 'HOSO\nServices',
-                                  title: 'assets/image/HOSO Services.png',
+                                  icon: 'Recharge\nSchool Card',
+                                  title: 'assets/image/cashout3.png',
                                   clas: ''),
                             ],
                           ),
@@ -441,7 +441,7 @@ class _HomeCard1State extends State<HomeCard1> {
                               horizontal: screenHeight >= 763 ? 10.0 : 5,
                               onPress: () {
                                 mtnMomoApiClient.createMomoToken();
-                                Get.to(const MzaziScreen());
+                                Get.to(const MzaziScreen(isShop: false,));
                               },
                               // Navigator.push(context,MaterialPageRoute(builder: (context)=>MzaziScreen())),
                               height: 30,

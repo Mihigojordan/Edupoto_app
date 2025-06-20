@@ -150,13 +150,13 @@ void calculateTotalPrice() {
                 ],
               ),
             const SizedBox(height: 15),
-          DefaultButton2(
-              color1: kamber300Color,
-              color2: kyellowColor,
-              onPress: () =>Get.to(PaymentMethod(amountTotal: totalAmounts!)),
-              title: 'Next',
-              iconData: Icons.arrow_forward_outlined,
-            ),
+          // DefaultButton2(
+          //     color1: kamber300Color,
+          //     color2: kyellowColor,
+          //     onPress: () =>Get.to(PaymentMethod(amountTotal: totalAmounts!)),
+          //     title: 'Next',
+          //     iconData: Icons.arrow_forward_outlined,
+          //   ),
             const SizedBox(
               height: 200,
             )
