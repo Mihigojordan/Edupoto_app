@@ -5,7 +5,7 @@ class Images {
 
   //
   static const String logo = 'assets/image/ic_launcher3.png';
-  static const String launch_page = 'assets/image/launch page2.jpg';
+  static const String launch_page = 'assets/image/launch_page2.jpg';
   static const String page_logo = 'assets/image/edubox.png';
    static const String splash_logo = 'assets/image/HOSO MOBILE.png';
   static const String avatar = 'assets/image/avatar.jpg';

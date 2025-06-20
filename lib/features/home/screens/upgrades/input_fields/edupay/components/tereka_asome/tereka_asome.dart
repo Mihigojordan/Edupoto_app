@@ -346,7 +346,7 @@ class _HomeCard1State extends State<HomeCard1> {
     final SplashController splashController = Get.find<SplashController>();
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    EduboxMaterialModel? material;
+    late EduboxMaterialModel material;
 
     return GetBuilder<SplashController>(builder: (splashController) {
       return //splashController.configModel!.systemFeature!.linkedWebSiteStatus! ?
@@ -420,74 +420,71 @@ class _HomeCard1State extends State<HomeCard1> {
                                 isExpanded: true,
                               ),
                               sizedBox15,
-                              Text(
-                                'Product:  ${widget.edubox_service} (${studentController.studentList![widget.studentIndex].studentClass ?? ''}):',
+                        Text(
+                                'Product: ${widget.edubox_service} (${studentController.studentList?[widget.studentIndex]?.studentClass ?? ''}):',
                                 style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black.withOpacity(0.5),
-                                    fontWeight: FontWeight.w400),
+                                  fontSize: 14,
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
-                              widget.productList.isNotEmpty &&
-                                      widget.productList[selectedIndex]
-                                              .eduboxMaterials !=
-                                          null
-                                  ? Column(
-                                      children: [
-                                        SizedBox(
-                                          height: 65,
-                                          child: ListView.builder(
-                                            shrinkWrap:
-                                                true, // Ensures the ListView takes only as much space as needed
-                                            physics:
-                                                const NeverScrollableScrollPhysics(), // Disables scrolling
-                                            itemCount: widget
-                                                .productList[selectedIndex]
-                                                .eduboxMaterials!
-                                                .length,
-                                            itemBuilder:
-                                                (context, materialIndex) {
-                                              material =
-                                                  widget
-                                                          .productList[
-                                                              selectedIndex]
-                                                          .eduboxMaterials![
-                                                      materialIndex];
-                                              return ListTile(
-                                                title: Text(
-                                                  '${material!.name} ${material!.price} RWF\nBalance to be Paid: ${material!.paymentHistory == null || (material!.paymentHistory!.balance != null && double.parse(material!.paymentHistory!.balance ?? '0.00') > 0.00) ? material!.paymentHistory!.balance : material!.price} RWF' ??
-                                                      'Unknown Material',
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              );
-                                            },
-                                          ),
+
+                              // Materials List
+                              if (widget.productList.isNotEmpty &&
+                                  selectedIndex < widget.productList.length &&
+                                  widget.productList[selectedIndex]
+                                          .eduboxMaterials !=
+                                      null)
+                                SizedBox(
+                                  height: 65,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: widget.productList[selectedIndex]
+                                        .eduboxMaterials!.length,
+                                    itemBuilder: (context, materialIndex) {
+                                   material = widget
+                                          .productList[selectedIndex]
+                                          .eduboxMaterials![materialIndex];
+                                      return ListTile(
+                                        title: Text(
+                                          '${material.name} ${material.price} RWF\n'
+                                          'Balance to be Paid: ${material.paymentHistory?.balance != null && double.parse(material.paymentHistory!.balance!) > 0.00 ? material.paymentHistory!.balance : material.price} RWF',
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                      ],
-                                    )
-                                  : const SizedBox(),
+                                      );
+                                    },
+                                  ),
+                                )
+                              else
+                                const SizedBox(),
 
                               sizedBox10,
-                              DropDownEdubox(
+
+                              // Dropdown
+                              if (widget.productList.isNotEmpty)
+                                DropDownEdubox(
                                   onChanged: (selectedProduct) {
                                     setState(() {
-                                      // Find the index of the selected product in the list
                                       selectedIndex = widget.productList
                                           .indexWhere((product) =>
-                                              product.name == selectedProduct!);
+                                              product.name == selectedProduct);
 
-                                      // Update the selected product in the list
-                                      widget.productList[selectedIndex].name =
-                                          selectedProduct!;
-
-                                      // Now you can use selectedIndex for further logic
-                                      print(
-                                          'Selected product index: $selectedIndex');
+                                      if (selectedIndex >= 0) {
+                                        print(
+                                            'Selected product index: $selectedIndex');
+                                      }
                                     });
                                   },
                                   itemLists: widget.productList,
-                                  title: ' ${widget.productList[0].name!}',
-                                  isExpanded: true),
+                                  title: widget.productList.isNotEmpty
+                                      ? widget.productList[0].name ??
+                                          'Select Product'
+                                      : 'No Products',
+                                  isExpanded: true,
+                                )
+                              else
+                                Text('No products available'),
+
                               sizedBox15,
                               //DependentDropdowns(),
                               //   Text.rich(
@@ -572,225 +569,156 @@ class _HomeCard1State extends State<HomeCard1> {
                               // ),
 
                               sizedBox,
-                              DefaultButton2(
-                                color1: kamber300Color,
-                                color2: kyellowColor,
-                                onPress: () {
-                                  double amount;
-                                  double materialBalance = (material
-                                                  ?.paymentHistory?.balance !=
-                                              null &&
-                                          double.parse(material?.paymentHistory
-                                                      ?.balance ??
-                                                  '0.00') >
-                                              0.00)
-                                      ? double.parse(
-                                          '${material?.paymentHistory!.balance}')
-                                      : double.parse(
-                                          '${material?.price ?? 0.0}');
+          DefaultButton2(
+  color1: kamber300Color,
+  color2: kyellowColor,
+  onPress: () {
+    // Ensure material exists
+    if (material == null) {
+      showCustomSnackBarHelper('Material information not available', isError: true);
+      return;
+    }
 
-                                  if (_inputAmountController.text.isEmpty) {
-                                    showCustomSnackBarHelper(
-                                        'please_input_amount'.tr,
-                                        isError: true);
-                                  } else {
-                                    String balance =
-                                        _inputAmountController.text;
-                                    if (balance.contains(
-                                        '${splashController.configModel!.currencySymbol}')) {
-                                      balance = balance.replaceAll(
-                                          '${splashController.configModel!.currencySymbol}',
-                                          '');
-                                    }
-                                    if (balance.contains(',')) {
-                                      balance = balance.replaceAll(',', '');
-                                    }
-                                    if (balance.contains(' ')) {
-                                      balance = balance.replaceAll(' ', '');
-                                    }
-                                    amount = double.parse(balance);
-                                    if (amount <= 0) {
-                                      showCustomSnackBarHelper(
-                                          'transaction_amount_must_be'.tr,
-                                          isError: true);
-                                    } else {
-                                      bool inSufficientBalance = false;
-                                      bool isPaymentSelect =
-                                          Get.find<AddMoneyController>()
-                                                  .paymentMethod !=
-                                              null;
+    // Get material balance with proper null checks
+    double materialBalance;
+    try {
+      materialBalance = (material.paymentHistory?.balance != null && 
+          double.tryParse(material.paymentHistory!.balance ?? '0.00')! > 0.00)
+          ? double.parse(material.paymentHistory!.balance!)
+          : double.parse(material.price?.toString() ?? '0.00');
+    } catch (e) {
+      materialBalance = 0.00;
+    }
 
-                                      final bool isCheck = widget
-                                                  .transactionType !=
-                                              TransactionType.requestMoney &&
-                                          widget.transactionType !=
-                                              TransactionType.addMoney;
+    // Check input amount
+    if (_inputAmountController.text.isEmpty) {
+      showCustomSnackBarHelper('please_input_amount'.tr, isError: true);
+      return;
+    }
 
-                                      if (isCheck &&
-                                          widget.transactionType ==
-                                              TransactionType.sendMoney) {
-                                        // inSufficientBalance = PriceConverterHelper.balanceWithCharge(amount, splashController.configModel!.sendMoneyChargeFlat, false) > profileController.userInfo!.balance!;
-                                      } else if (isCheck &&
-                                          widget.transactionType ==
-                                              TransactionType.cashOut) {
-                                        // inSufficientBalance = PriceConverterHelper.balanceWithCharge(amount, splashController.configModel!.cashOutChargePercent, true) > profileController.userInfo!.balance!;
-                                      } else if (isCheck &&
-                                          widget.transactionType ==
-                                              TransactionType.withdrawRequest) {
-                                        // inSufficientBalance = PriceConverterHelper.balanceWithCharge(amount, splashController.configModel!.withdrawChargePercent, true) > profileController.userInfo!.balance!;
-                                      } else if (isCheck) {
-                                        // inSufficientBalance = amount > profileController.userInfo!.balance!;
-                                      }
+    // Process amount
+    String balance = _inputAmountController.text;
+    balance = balance.replaceAll(splashController.configModel?.currencySymbol ?? '', '')
+                    .replaceAll(',', '')
+                    .replaceAll(' ', '');
 
-                                      if (inSufficientBalance) {
-                                        showCustomSnackBarHelper(
-                                            'insufficient_balance'.tr,
-                                            isError: true);
-                                      } else if (widget.transactionType ==
-                                              TransactionType.addMoney &&
-                                          !isPaymentSelect) {
-                                        showCustomSnackBarHelper(
-                                            'please_select_a_payment'.tr,
-                                            isError: true);
-                                      } else if (amount < 100 ||
-                                          amount > materialBalance ||
-                                          materialBalance <= 0.00) {
-                                        dialog.showWarningDialog(
-                                            context: context,
-                                            balance: materialBalance,
-                                            amount: double.parse(
-                                                '${material!.price}'),
-                                            inputAmaount: amount);
-                                      } else {
-                                        _confirmationRoute(
-                                            amount: double.parse(widget
-                                                .productList[selectedIndex]
-                                                .eduboxMaterials![materialIndex]
-                                                .price
-                                                .toString()),
-                                            price: double.parse(widget
-                                                .productList[selectedIndex]
-                                                .eduboxMaterials![materialIndex]
-                                                .price
-                                                .toString()),
-                                            balance: materialBalance);
-                                      }
-                                    }
-                                  }
-                                },
-                                title: 'PAY CASH',
-                                iconData: Icons.arrow_forward_outlined,
-                              ),
-                              sizedBox05h,
-                              DefaultButton2(
-                                color1: kamber300Color,
-                                color2: kyellowColor,
-                                onPress: () {
-                                  double amount;
-                                  double materialBalance = (material
-                                                  ?.paymentHistory?.balance !=
-                                              null &&
-                                          double.parse(material?.paymentHistory
-                                                      ?.balance ??
-                                                  '0.00') >
-                                              0.00)
-                                      ? double.parse(
-                                          '${material?.paymentHistory!.balance}')
-                                      : double.parse(
-                                          '${material?.price ?? 0.0}');
+    double amount;
+    try {
+      amount = double.parse(balance);
+    } catch (e) {
+      showCustomSnackBarHelper('invalid_amount_format'.tr, isError: true);
+      return;
+    }
 
-                                  if (_inputAmountController.text.isEmpty) {
-                                    showCustomSnackBarHelper(
-                                        'please_input_amount'.tr,
-                                        isError: true);
-                                  } else {
-                                    String balance =
-                                        _inputAmountController.text;
-                                    if (balance.contains(
-                                        '${splashController.configModel!.currencySymbol}')) {
-                                      balance = balance.replaceAll(
-                                          '${splashController.configModel!.currencySymbol}',
-                                          '');
-                                    }
-                                    if (balance.contains(',')) {
-                                      balance = balance.replaceAll(',', '');
-                                    }
-                                    if (balance.contains(' ')) {
-                                      balance = balance.replaceAll(' ', '');
-                                    }
-                                    amount = double.parse(balance);
-                                    if (amount <= 0) {
-                                      showCustomSnackBarHelper(
-                                          'transaction_amount_must_be'.tr,
-                                          isError: true);
-                                    } else {
-                                      bool inSufficientBalance = false;
-                                      bool isPaymentSelect =
-                                          Get.find<AddMoneyController>()
-                                                  .paymentMethod !=
-                                              null;
+    if (amount <= 0) {
+      showCustomSnackBarHelper('transaction_amount_must_be'.tr, isError: true);
+      return;
+    }
 
-                                      final bool isCheck = widget
-                                                  .transactionType !=
-                                              TransactionType.requestMoney &&
-                                          widget.transactionType !=
-                                              TransactionType.addMoney;
+    // Check product list bounds
+    if (widget.productList.isEmpty || 
+        selectedIndex >= widget.productList.length ||
+        widget.productList[selectedIndex].eduboxMaterials == null ||
+        materialIndex >= widget.productList[selectedIndex].eduboxMaterials!.length) {
+      showCustomSnackBarHelper('product_information_not_available'.tr, isError: true);
+      return;
+    }
 
-                                      if (isCheck &&
-                                          widget.transactionType ==
-                                              TransactionType.sendMoney) {
-                                        // inSufficientBalance = PriceConverterHelper.balanceWithCharge(amount, splashController.configModel!.sendMoneyChargeFlat, false) > profileController.userInfo!.balance!;
-                                      } else if (isCheck &&
-                                          widget.transactionType ==
-                                              TransactionType.cashOut) {
-                                        // inSufficientBalance = PriceConverterHelper.balanceWithCharge(amount, splashController.configModel!.cashOutChargePercent, true) > profileController.userInfo!.balance!;
-                                      } else if (isCheck &&
-                                          widget.transactionType ==
-                                              TransactionType.withdrawRequest) {
-                                        // inSufficientBalance = PriceConverterHelper.balanceWithCharge(amount, splashController.configModel!.withdrawChargePercent, true) > profileController.userInfo!.balance!;
-                                      } else if (isCheck) {
-                                        // inSufficientBalance = amount > profileController.userInfo!.balance!;
-                                      }
+    // Get current material safely
+    final currentMaterial = widget.productList[selectedIndex].eduboxMaterials![materialIndex];
+    
+    if (amount < 100 || amount > materialBalance || materialBalance <= 0.00) {
+      dialog.showWarningDialog(
+        context: context,
+        balance: materialBalance,
+        amount: double.tryParse(currentMaterial.price?.toString() ?? '0.00') ?? 0.00,
+        inputAmaount: amount
+      );
+    } else {
+      _confirmationRoute(
+        amount: double.tryParse(currentMaterial.price?.toString() ?? '0.00') ?? 0.00,
+        price: double.tryParse(currentMaterial.price?.toString() ?? '0.00') ?? 0.00,
+        balance: materialBalance
+      );
+    }
+  },
+  title: 'PAY CASH',
+  iconData: Icons.arrow_forward_outlined,
+),
 
-                                      if (inSufficientBalance) {
-                                        showCustomSnackBarHelper(
-                                            'insufficient_balance'.tr,
-                                            isError: true);
-                                      } else if (widget.transactionType ==
-                                              TransactionType.addMoney &&
-                                          !isPaymentSelect) {
-                                        showCustomSnackBarHelper(
-                                            'please_select_a_payment'.tr,
-                                            isError: true);
-                                      } else if (amount < 100 ||
-                                          amount > materialBalance ||
-                                          materialBalance <= 0.00) {
-                                        dialog.showWarningDialog(
-                                            context: context,
-                                            balance: materialBalance,
-                                            amount: double.parse(
-                                                '${material!.price}'),
-                                            inputAmaount: amount);
-                                      } else {
-                                        _creditConfirmationRoute(
-                                            amount: double.parse(widget
-                                                .productList[selectedIndex]
-                                                .eduboxMaterials![materialIndex]
-                                                .price
-                                                .toString()),
-                                            price: double.parse(widget
-                                                .productList[selectedIndex]
-                                                .eduboxMaterials![materialIndex]
-                                                .price
-                                                .toString()),
-                                            balance: materialBalance);
-                                      }
-                                    }
-                                  }
-                                },
-                                title: 'REQUEST FOR CREDIT',
-                                iconData: Icons.arrow_forward_outlined,
-                              ),
+sizedBox05h,
+
+DefaultButton2(
+  color1: kamber300Color,
+  color2: kyellowColor,
+  onPress: () {
+    // Same safety checks as above button
+    if (material == null) {
+      showCustomSnackBarHelper('Material information not available', isError: true);
+      return;
+    }
+
+    double materialBalance;
+    try {
+      materialBalance = (material.paymentHistory?.balance != null && 
+          double.tryParse(material.paymentHistory!.balance ?? '0.00')! > 0.00)
+          ? double.parse(material.paymentHistory!.balance!)
+          : double.parse(material.price?.toString() ?? '0.00');
+    } catch (e) {
+      materialBalance = 0.00;
+    }
+
+    if (_inputAmountController.text.isEmpty) {
+      showCustomSnackBarHelper('please_input_amount'.tr, isError: true);
+      return;
+    }
+
+    String balance = _inputAmountController.text;
+    balance = balance.replaceAll(splashController.configModel?.currencySymbol ?? '', '')
+                    .replaceAll(',', '')
+                    .replaceAll(' ', '');
+
+    double amount;
+    try {
+      amount = double.parse(balance);
+    } catch (e) {
+      showCustomSnackBarHelper('invalid_amount_format'.tr, isError: true);
+      return;
+    }
+
+    if (amount <= 0) {
+      showCustomSnackBarHelper('transaction_amount_must_be'.tr, isError: true);
+      return;
+    }
+
+    if (widget.productList.isEmpty || 
+        selectedIndex >= widget.productList.length ||
+        widget.productList[selectedIndex].eduboxMaterials == null ||
+        materialIndex >= widget.productList[selectedIndex].eduboxMaterials!.length) {
+      showCustomSnackBarHelper('product_information_not_available'.tr, isError: true);
+      return;
+    }
+
+    final currentMaterial = widget.productList[selectedIndex].eduboxMaterials![materialIndex];
+    
+    if (amount < 100 || amount > materialBalance || materialBalance <= 0.00) {
+      dialog.showWarningDialog(
+        context: context,
+        balance: materialBalance,
+        amount: double.tryParse(currentMaterial.price?.toString() ?? '0.00') ?? 0.00,
+        inputAmaount: amount
+      );
+    } else {
+      _creditConfirmationRoute(
+        amount: double.tryParse(currentMaterial.price?.toString() ?? '0.00') ?? 0.00,
+        price: double.tryParse(currentMaterial.price?.toString() ?? '0.00') ?? 0.00,
+        balance: materialBalance
+      );
+    }
+  },
+  title: 'REQUEST FOR CREDIT',
+  iconData: Icons.arrow_forward_outlined,
+),
                               sizedBox10,
                               Padding(
                                 padding:
