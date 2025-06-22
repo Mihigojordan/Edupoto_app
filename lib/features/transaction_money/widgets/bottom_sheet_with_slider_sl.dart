@@ -267,7 +267,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                     Text(widget.vat!),
 
                                     Text(
-                                        'Convinience fee (${widget.serviceCharge!} RWF'),
+                                        'Convenience fee (${widget.serviceCharge!} RWF'),
                                     const Divider(),
                                     Text(
                                       widget.totalNowPaid!,

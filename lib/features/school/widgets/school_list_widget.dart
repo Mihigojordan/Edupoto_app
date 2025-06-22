@@ -281,13 +281,63 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
                   'RWF'
                 ),
                 const SizedBox(height: 10),
-                DefaultButton2(
-                  onPress: () => Get.to(
+          //       DefaultButton2(
+          //         onPress: () => Get.to(
+          //   () => SchoolTransactionConfirmationScreen(
+          //     shipper:widget.shipper,
+          //    homePhone:widget.homePhone,
+          //    destination:widget.destination,
+          //    studentId: widget.studentId!,
+          //     inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+          //     productId: schoolListIndex,
+          //     isChecked: isChecked,
+          //     schoolId: widget.schoolId!,
+          //     classId: widget.classId!,
+          //     productName: widget.productName,
+          //     transactionType: TransactionType.sendMoney,
+          //     className: widget.className,
+          //     schoolName:widget.schoolName,
+          //     contactModel: ContactModel(
+          //       phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
+          //       name: userData?.name ?? '',
+          //       avatarImage: '${Get.find<SplashController>().configModel?.baseUrls?.customerImageUrl ?? ''}/image',
+          //     ),
+          //     contactModelMtn: ContactModelMtn(
+          //       phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
+          //       name: userData?.name ?? '',
+          //     ),
+          //     dataList: schoolList,
+          //     productIndex: 0,
+          //     studentName: widget.studentName,
+          //     studentCode: widget.studentCode,
+          //     edubox_service:heading,
+          //     serviceIndex: 0,
+          //     price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+          //   ),
+          // ),
+          //         title: 'ADD TO ALL TOTAL INVOICE',
+          //         iconData: Icons.arrow_forward,
+          //         color1: kamber300Color,
+          //         color2: kyellowColor,
+          //       ),
+          //       const SizedBox(height: 10),
+          //       _buildRichText(
+          //         context,
+          //         'Add',
+          //         '${caseTotals[schoolListIndex]}',
+          //         ' RWF Sub Total to All Total Invoice to pay or request credit at once.\nOR',
+          //       ),
+          //       sizedBox10,
+                 Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              DefaultButtonWidth(
+                onPress: () => Get.to(
             () => SchoolTransactionConfirmationScreen(
               shipper:widget.shipper,
-             homePhone:widget.homePhone,
-             destination:widget.destination,
-             studentId: widget.studentId!,
+              homePhone:widget.homePhone,
+              destination:widget.destination,
+              studentId: widget.studentId!,
               inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
               productId: schoolListIndex,
               isChecked: isChecked,
@@ -309,29 +359,19 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               dataList: schoolList,
               productIndex: 0,
               studentName: widget.studentName,
-              studentCode: widget.studentCode,
-              edubox_service:heading,
+              studentCode:widget.studentCode,
+              edubox_service:schoolListIndex>0? heading:'All School Lists',
               serviceIndex: 0,
               price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
             ),
           ),
-                  title: 'ADD TO ALL TOTAL INVOICE',
-                  iconData: Icons.arrow_forward,
-                  color1: kamber300Color,
-                  color2: kyellowColor,
-                ),
-                const SizedBox(height: 10),
-                _buildRichText(
-                  context,
-                  'Add',
-                  '${caseTotals[schoolListIndex]}',
-                  ' RWF Sub Total to All Total Invoice to pay or request credit at once.\nOR',
-                ),
-                sizedBox10,
-                 Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              DefaultButtonWidth(
+                title: 'PAY NOW',
+               
+                color1: kamber300Color,
+                color2: kyellowColor,
+                width: 123,
+              ),
+        DefaultButtonWidth(
                 onPress: () => Get.to(
             () => SchoolTransactionConfirmationScreen(
               shipper:widget.shipper,
@@ -365,13 +405,17 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
             ),
           ),
-                title: 'PAY NOW',
+                title: 'DEPOSIT',
                
                 color1: kamber300Color,
                 color2: kyellowColor,
                 width: 123,
               ),
-              DefaultButtonWidth(
+            ],
+          ), 
+          sizedBox10,
+          DefaultButton2(
+            iconData: Icons.credit_card,
                 onPress: ()=>  Get.to(
             () => SchoolTransactionConfirmationScreen(
               screenId:1,
@@ -410,10 +454,8 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
             
                 color1: kamber300Color,
                 color2: kyellowColor,
-                width: 123,
-              ),
-            ],
-          ),  
+               
+              ),  
               ],
             )
           else if(schoolListIndex==5)
@@ -536,7 +578,51 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
                 color2: kyellowColor,
                 width: 123,
               ),
-              DefaultButtonWidth(
+        DefaultButtonWidth(
+                onPress: () => Get.to(
+            () => SchoolTransactionConfirmationScreen(
+              studentId: widget.studentId!,
+              shipper: widget.shipper,
+              homePhone:widget.homePhone,
+              destination:widget.destination,
+              inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              productId: schoolListIndex,
+              isChecked: isChecked,
+              schoolId: widget.schoolId!,
+              classId: widget.classId!,
+              productName: widget.productName,
+              transactionType: TransactionType.sendMoney,
+              className: widget.className,
+              schoolName:widget.schoolName,
+              contactModel: ContactModel(
+                phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
+                name: userData?.name ?? '',
+                avatarImage: '${Get.find<SplashController>().configModel?.baseUrls?.customerImageUrl ?? ''}/image',
+              ),
+              contactModelMtn: ContactModelMtn(
+                phoneNumber: '${userData?.countryCode ?? ''}${userData?.phone ?? ''}',
+                name: userData?.name ?? '',
+              ),
+              dataList: schoolList,
+              productIndex: 0,
+              studentName: widget.studentName,
+              studentCode:widget.studentCode,
+              edubox_service:schoolListIndex>0? heading:'All School Lists',
+              serviceIndex: 0,
+              price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+            ),
+          ),
+                title: 'DEPOSIT',
+               
+                color1: kamber300Color,
+                color2: kyellowColor,
+                width: 123,
+              ),
+            ],
+          ),
+          sizedBox10,
+                  DefaultButton2(
+                    iconData: Icons.credit_card,
                 onPress: ()=>  Get.to(
             () => SchoolTransactionConfirmationScreen(
               homePhone: widget.homePhone,
@@ -575,11 +661,7 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
             
                 color1: kamber300Color,
                 color2: kyellowColor,
-                width: 123,
-              ),
-            ],
-          ),
-         
+              ), 
               ],
             ),
          const SizedBox(height: 10),

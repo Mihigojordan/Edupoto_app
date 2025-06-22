@@ -317,7 +317,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
                       transactionId: widget.randomNumber.toString(),
                       amount: double.parse(widget.amount).toInt().toString(),
                       message:
-                          'You have paid for ${widget.edubox_service} VAT Inc, ${double.parse(widget.service_charge).toInt()} RWF Convinience fee',
+                          'You have paid for ${widget.edubox_service} VAT , ${double.parse(widget.service_charge).toInt()} RWF Convenience fee',
                       phoneNumber:
                           normalizeRwandaPhoneNumber(_phoneController.text));
 

@@ -48,6 +48,7 @@ class WidgetDialog {
       },
     );
   }
+
   void showWarningDialog(
       {required BuildContext context,
       required double balance,
@@ -101,3 +102,95 @@ class WidgetDialog {
     );
   }
   }
+
+ void showDepositDialog({
+  required BuildContext context,
+  required String title,
+  required Function(double) onDeposit,
+}) {
+  final _formKey = GlobalKey<FormState>();
+  final _amountController = TextEditingController();
+  final _focusNode = FocusNode();
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: AlertDialog(
+          contentPadding: const EdgeInsets.all(25),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: const Text('Deposit', 
+            style: TextStyle(fontWeight: FontWeight.bold)),
+          content: SingleChildScrollView(  // Prevents overflow
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(title, 
+                    style: Theme.of(context).textTheme.bodyMedium),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _amountController,
+                    autofocus: true,
+                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    decoration: InputDecoration(
+                      prefixText: 'RWF ',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      hintText: 'Enter amount',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an amount';
+                      }
+                      final amount = double.tryParse(value);
+                      if (amount == null) {
+                        return 'Please enter a valid number';
+                      }
+                      if (amount <= 0) {
+                        return 'Amount must be greater than zero';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("CANCEL", 
+                style: TextStyle(color: Colors.grey)),
+            ),
+            TextButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  final amount = double.parse(_amountController.text);
+                  // Navigator.pop(context); // Close dialog first
+                
+                    onDeposit(amount); // Execute callback after frame
+                
+                }
+              },
+              child: const Text("DEPOSIT",
+                style: TextStyle(
+                  color: Colors.amber, 
+                  fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      );
+    },
+  ).then((_) {
+    // Proper disposal management
+    _amountController.dispose();
+     _focusNode.dispose();
+  });
+}

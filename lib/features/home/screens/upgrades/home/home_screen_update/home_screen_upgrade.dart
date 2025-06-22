@@ -27,8 +27,9 @@ import 'package:upgrader/upgrader.dart';
 class MzaziScreen extends StatefulWidget {
   static String routeName = 'MzaziScreen';
   final  bool isShop;
+  final int isNavigation;
 
-  const MzaziScreen({super.key,required this.isShop});
+  const MzaziScreen({super.key,required this.isShop, this.isNavigation=0});
 
   @override
   _MzaziScreenState createState() => _MzaziScreenState();
@@ -287,7 +288,7 @@ class _MzaziScreenState extends State<MzaziScreen> {
           ),
         ],
       ),
-floatingActionButton:!kIsWeb?  FloatingActionButtonWidget(
+floatingActionButton:widget.isNavigation==1?null:   !kIsWeb?  FloatingActionButtonWidget(
             strokeWidth: 1.5,
             radius: 40,
             gradient:LinearGradient(

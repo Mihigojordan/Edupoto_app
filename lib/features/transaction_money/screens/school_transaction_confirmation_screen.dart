@@ -32,6 +32,7 @@ import 'package:hosomobile/features/transaction_money/widgets/bottom_sheet_with_
 import 'package:hosomobile/features/transaction_money/widgets/for_student_widget.dart';
 import 'package:hosomobile/helper/price_converter_helper.dart';
 import 'package:hosomobile/helper/transaction_type.dart';
+import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
 import 'package:hosomobile/util/styles.dart';
@@ -119,13 +120,9 @@ class _TransactionConfirmationScreenState
       Get.find<TransactionMoneyController>();
   final MtnMomoApiClient mtnMomoApiClient = MtnMomoApiClient();
   String? transactionId;
-  final double vatPercentage = 18.0; // Example VAT percentage
 
-  final double serviceChargePercentage =
-      4.0; // Example service charge percentage
   Random random = Random();
   double totalPrice = 0.0;
-  double deliveryCost = 3000.0;
   double subTotalPrice = 0.0;
   double calculatedTotal = 0.0;
   int checkedProducts = 0;
@@ -190,68 +187,18 @@ class _TransactionConfirmationScreenState
     });
   }
 
-  double calculateVAT(double amount) {
-    return (amount * vatPercentage) / 100;
-  }
-
-  double calculateServiceCharge(double amount) {
-    return (amount * serviceChargePercentage) / 100;
-  }
-
-  double calculateOriginalAmaount(double amount) {
-    return amount -
-        calculateVAT(double.parse('$calculatedTotal')) -
-        calculateServiceCharge(double.parse('$calculatedTotal'));
-  }
-
-  double calculateOriginalVat(double amount) {
-    return ((amount - calculateVAT(double.parse('$calculatedTotal'))) *
-            vatPercentage) /
-        100;
-  }
-
-  double calculateTotalWithService(double amount) {
-    double serviceCharge = calculateServiceCharge(amount);
-    return amount + serviceCharge;
-  }
-
-  double calculateTotal(double amount) {
-    double vat = calculateVAT(amount);
-    double serviceCharge = calculateServiceCharge(amount);
-    //double originalAmount = calculateOriginalAmaount(amount);
-    return amount + vat + serviceCharge + deliveryCost;
-  }
-
-  double calculateServiceCharge0fPrice() {
-    return widget.price! * serviceChargePercentage / 100;
-  }
-
-  double remainingAmount(double amount) {
-    double serviceCharge = calculateServiceCharge0fPrice();
-
-    return double.parse('${widget.price}') - amount;
-  }
-
-  double availableBalance({required double amount, required double balance}) {
-    return balance - amount;
-  }
-
-  double deliveryCostWithMAterialCost() {
-    return calculatedTotal + deliveryCost;
-  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
     final bottomSliderController = Get.find<BottomSliderController>();
-    final String totalAmount =
-        calculateTotal(double.parse('$calculatedTotal')).toStringAsFixed(2);
-    final String deliveryWithMaterial =
-        deliveryCostWithMAterialCost().toStringAsFixed(2);
-
-    String phoneNumber = widget.contactModel!.phoneNumber!.replaceAll('+', '');
-    int randomNumber = random.nextInt(90000000) + 10000000;
+  final totalAmount = AppConstants.calculateTotal(double.parse('${widget.inputBalance}')).toStringAsFixed(2);
+    final  SchoolLists product = widget.dataList![widget.productIndex!];
+    final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('${widget.inputBalance}')); 
+    final vat =AppConstants.calculateVAT(double.parse('${widget.inputBalance}')) ;
+    final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse('${widget.inputBalance}')).toStringAsFixed(2);
+      int randomNumber = random.nextInt(90000000) + 10000000;
 
     void validateForm() {
       if (deliveryOptionsValue == 'Choose Delivery Company') {
@@ -354,7 +301,7 @@ class _TransactionConfirmationScreenState
                                   ),
                                   Expanded(
                                     child: Text(
-                                      '${widget.dataList![selectedIndex].transactionId!} ${widget.dataList![selectedIndex].amount!} RWF',
+                                      '${widget.dataList![selectedIndex].transactionId!} ${widget.dataList![selectedIndex].amount!} ${AppConstants.currency}',
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium,
@@ -391,7 +338,10 @@ class _TransactionConfirmationScreenState
                             className: widget.className,
                             schoolName: widget.schoolName,
                             orderId: '1234',
-                            productName: widget.productName!),
+                            productName: widget.productName!,
+                            convenienceFee: convenienceFee,
+                            vat: vat
+                            ),
                         // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
 
                         title: 'SCHOOL',
@@ -410,7 +360,7 @@ class _TransactionConfirmationScreenState
                             )
                           : DeliveryMapScreenSl(
                               isShop: 0,
-                              deliveryCost: deliveryCost,
+                              deliveryCost: AppConstants.deliveryCost,
                               schoolId: widget.schoolId,
                               classId: widget.classId,
                               className: widget.className,
@@ -430,48 +380,45 @@ class _TransactionConfirmationScreenState
                               pinCodeFieldController:
                                   _pinCodeFieldController.text,
                               transactionType: widget.transactionType??'',
-                              calculatedTotalWithServices:
-                                  calculateTotalWithService(
-                                      double.parse('$calculatedTotal')),
+                              calculatedTotalWithServices:totalPrice,
                               productIndex: widget.productIndex??0,
                               purpose: widget.purpose??'',
-                              calculateServiceCharge:calculateServiceCharge(
-                                    double.parse('$calculatedTotal')),
-                              calculateVAT: calculateVAT(double.parse('$calculatedTotal')),
+                              calculateServiceCharge:convenienceFee,
+                              calculateVAT: vat,
                               productName: widget.productName??'',
                               randomNumber: randomNumber,
                               serviceIndex: widget.serviceIndex??0,
                               totalAmount: double.parse(totalAmount),
-                              vatPercentage: vatPercentage),
+                              vatPercentage: AppConstants.vatPercentage),
                     ],
                   ),
                   sizedBox10,
                   // Delivery Cost
 
-                  // PreviewAmountWidget(
-                  //     amountText: calculatedTotal.toStringAsFixed(2) ?? "",
-                  //     onTap: widget.callBack),
-                  // Container(
-                  //   height: Dimensions.dividerSizeMedium,
-                  //   color: Theme.of(context).dividerColor,
-                  // ),
+                  PreviewAmountWidget(
+                      amountText: calculatedTotal.toStringAsFixed(2) ?? "",
+                      onTap: widget.callBack),
+                  Container(
+                    height: Dimensions.dividerSizeMedium,
+                    color: Theme.of(context).dividerColor,
+                  ),
                   Text(
-                    'Delivery Cost: ${deliveryCost.toStringAsFixed(2)} RWF',
+                    'Delivery Cost: ${AppConstants.deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.normal,
                         ),
                   ),
                   // Display Total Price
 
-                  Text('Material Cost: $calculatedTotal RWF'),
-                  // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} RWF'),
-                  Text('VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateVAT(double.parse('$calculatedTotal')).toStringAsFixed(2)} RWF'),
+                  Text('Material Cost: $calculatedTotal ${AppConstants.currency}'),
+                  // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
+                  Text('VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
 
-                  Text( 'Convinience Fee (${serviceChargePercentage.toStringAsFixed(1)}%): ${calculateServiceCharge(double.parse('$calculatedTotal')).toStringAsFixed(2)} RWF'),
+                  Text( 'Convenience Fee: $convenienceFee ${AppConstants.currency}'),
                   const Divider(),
 
                   Text(
-                    'Total Amount paid now: $totalAmount RWF',
+                    'Total Amount paid now: $totalAmount ${AppConstants.currency}',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -646,9 +593,9 @@ sizedBox
 //                                   //             edubox_service: widget.edubox_service!,
 //                                   //             amountToPay: calculateTotalWithService(double.parse('$calculatedTotal')).toStringAsFixed(2),
 //                                   //             nowPaid: calculatedTotal.toStringAsFixed(2),
-//                                   //             vat: 'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('$calculatedTotal')).toStringAsFixed(2)} RWF',
+//                                   //             vat: 'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('$calculatedTotal')).toStringAsFixed(2)} ${AppConstants.currency}',
 //                                   //             serviceCharge: calculateServiceCharge(double.parse('$calculatedTotal')).toStringAsFixed(2),
-//                                   //             totalNowPaid: 'Total Amount paid now: $totalAmount RWF',
+//                                   //             totalNowPaid: 'Total Amount paid now: $totalAmount ${AppConstants.currency}',
 //                                   //             serviceValue: widget.productName,
 //                                   //             serviceIndex: widget.serviceIndex,
 //                                   //             classDetails: widget.classDetails,
@@ -678,7 +625,7 @@ sizedBox
 //                                       //             .toInt()
 //                                       //             .toString(),
 //                                       //         message:
-//                                       //             'You have paid for ${widget.edubox_service} VAT Inc, ${calculateServiceCharge(double.parse('$calculatedTotal')).toInt()} RWF Service Charge',
+//                                       //             'You have paid for ${widget.edubox_service} VAT Inc, ${calculateServiceCharge(double.parse('$calculatedTotal')).toInt()} ${AppConstants.currency} Service Charge',
 //                                       //         phoneNumber: phoneNumber)
 //                                       //     .then((value) async {
 //                                       //     String? status =
@@ -728,14 +675,14 @@ sizedBox
 //                                               nowPaid: calculatedTotal
 //                                                   .toStringAsFixed(2),
 //                                               vat:
-//                                                   'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateVAT(double.parse('$calculatedTotal')).toStringAsFixed(2)} RWF',
+//                                                   'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateVAT(double.parse('$calculatedTotal')).toStringAsFixed(2)} ${AppConstants.currency}',
 //                                               serviceCharge:
 //                                                   calculateServiceCharge(
 //                                                           double.parse(
 //                                                               '$calculatedTotal'))
 //                                                       .toStringAsFixed(2),
 //                                               totalNowPaid:
-//                                                   'Total Amount paid now: $totalAmount RWF',
+//                                                   'Total Amount paid now: $totalAmount ${AppConstants.currency}',
 //                                               serviceValue: widget.productName,
 //                                               serviceIndex: widget.serviceIndex,
 //                                               randomNumber: randomNumber,
@@ -928,10 +875,14 @@ sizedBox
       required String schoolName,
       required String className,
       required String productName,
-      required String orderId}) {
+      required String orderId,
+      required double vat,
+      required double convenienceFee
+      }) {
     showDialog(
       context: context,
       builder: (context) {
+
         return AlertDialog(
           title: const Text('Confirm'),
           content: Column(
@@ -994,7 +945,7 @@ sizedBox
                           //             .toInt()
                           //             .toString(),
                           //         message:
-                          //             'You have paid for ${widget.edubox_service} VAT Inc, ${calculateServiceCharge(double.parse('$calculatedTotal')).toInt()} RWF Service Charge',
+                          //             'You have paid for ${widget.edubox_service} VAT Inc, ${calculateServiceCharge(double.parse('$calculatedTotal')).toInt()} ${AppConstants.currency} Service Charge',
                           //         phoneNumber: phoneNumber)
                           //     .then((value) async {
                           //     String? status =
@@ -1031,13 +982,12 @@ sizedBox
                                   dataList: widget.dataList,
                                   productIndex: widget.productIndex,
                                   edubox_service: widget.edubox_service!,
-                                  amountToPay: 'Delivery Cost: ${deliveryCost
-                                      .toStringAsFixed(2)}',
-                                  nowPaid: 'Material Cost: ${calculatedTotal.toStringAsFixed(2)} RWF',
+                                  amountToPay: 'Delivery Cost: ${AppConstants.deliveryCost.toStringAsFixed(2)}',
+                                  nowPaid: 'Material Cost: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}',
                                   vat:
-                                      'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateVAT(double.parse('$calculatedTotal')).toStringAsFixed(2)} RWF',
-                                  serviceCharge:'Convinience fee (${serviceChargePercentage.toStringAsFixed(1)}%): ${ calculateServiceCharge( double.parse('$calculatedTotal')).toStringAsFixed(2)} RWF',
-                                  totalNowPaid:'Total Amount paid now: $totalAmount RWF',
+                                      'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
+                                  serviceCharge:'Convenience fee: $convenienceFee ${AppConstants.currency}',
+                                  totalNowPaid:'Total Amount paid now: $totalAmount ${AppConstants.currency}',
                                   serviceValue: widget.productName,
                                   serviceIndex: widget.serviceIndex,
                                   randomNumber: randomNumber,

@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/common/widgets/custom_back_button_widget.dart';
 import 'package:hosomobile/features/history/domain/models/transaction_model.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/components/custom_buttons.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/component/payment_method.dart';
+import 'package:hosomobile/features/map/screens/map_screen.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/transaction_money/widgets/bottom_sheet_with_slider_sl.dart';
 import 'package:http/http.dart';
@@ -104,9 +106,6 @@ class _TransactionConfirmationScreenState
       Get.find<TransactionMoneyController>();
   final MtnMomoApiClient mtnMomoApiClient = MtnMomoApiClient();
   String? transactionId;
-  final double vatPercentage = 18.0; // Example VAT percentage
-  final double serviceChargePercentage =
-      4.0; // Example service charge percentage
   Random random = Random();
   final String data =
       'Amafaranga y’ishuri ,Minerval/School fees ni 65.500 Frw/ku gihembwe.\n'
@@ -115,66 +114,35 @@ class _TransactionConfirmationScreenState
       'Ntamubyeyi zongera kubibazwa.\n'
       'Amafaranga y’ifunguro rya saa sita ni 13.000 Frw /ku kwezi.';
 
+bool isHomeDelivery=false;
+
+
   @override
   void initState() {
     Get.find<TransactionMoneyController>().changeTrueFalse();
     super.initState();
   }
 
-  double calculateVAT(double amount) {
-    return (amount * vatPercentage) / 100;
-  }
 
-  double calculateServiceCharge(double amount) {
-    return (amount * serviceChargePercentage) / 100;
-  }
 
-  double calculateOriginalAmaount(double amount) {
-    return amount -
-        calculateVAT(double.parse('${widget.inputBalance}')) -
-        calculateServiceCharge(double.parse('${widget.inputBalance}'));
-  }
-
-  double calculateOriginalVat(double amount) {
-    return ((amount - calculateVAT(double.parse('${widget.inputBalance}'))) *
-            vatPercentage) /
-        100;
-  }
-
-  double calculateTotalWithService(double amount) {
-    double serviceCharge = calculateServiceCharge(amount);
-    return amount + serviceCharge;
-  }
-
-  double calculateTotal(double amount) {
-    double vat = calculateVAT(amount);
-    double serviceCharge = calculateServiceCharge(amount);
-    double originalAmount = calculateOriginalAmaount(amount);
-    return originalAmount + vat + serviceCharge;
-  }
-
-  double calculateServiceCharge0fPrice() {
-    return widget.price! * serviceChargePercentage / 100;
-  }
-
-  double remainingAmount(double amount) {
-    double serviceCharge = calculateServiceCharge0fPrice();
-
-    return double.parse('${widget.price}') - amount;
-  }
-
-  double availableBalance({required double amount, required double balance}) {
-    return balance - amount;
+homeDeliveryAction() {
+    setState(() {
+      isHomeDelivery = !isHomeDelivery;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final bottomSliderController = Get.find<BottomSliderController>();
-    final String totalAmount =
-        calculateTotal(double.parse('${widget.inputBalance}'))
-            .toStringAsFixed(2);
+    final totalAmount = AppConstants.calculateTotal(double.parse('${widget.inputBalance}')).toStringAsFixed(2);
+    final  EduboxMaterialModel product = widget.dataList![widget.productIndex!];
+    final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('${product.price}')); 
+    final vat =AppConstants.calculateVAT(double.parse('${product.price}')) ;
+    final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse(widget.availableBalance!)).toStringAsFixed(2);
+
     String phoneNumber = widget.contactModel!.phoneNumber!.replaceAll('+', '');
     int randomNumber = random.nextInt(90000000) + 10000000;
+    final StudentModel student = widget.studentInfo![widget.studentIndex!]; 
     //   bottomSliderController.setIsPinCompleted(isCompleted: false, isNotify: false);
 
     return Scaffold(
@@ -204,22 +172,22 @@ class _TransactionConfirmationScreenState
                   Column(children: [
                     ForStudentWidget(
                         studentInfo:
-                            'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}'),
+                            'Code: ${student.code!}\nName: ${student.name}'),
                   ]),
                   sizedBox10,
                   Text(
                       'Product: ${widget.serviceValue}. Class: N1'),//${widget.studentInfo![widget.studentIndex!].studentClass}
                   sizedBox05h,
-                  // DropDownEduboxMaterial(
-                  //     onChanged: (value) {
-                  //       setState(() {
-                  //         widget.dataList![widget.productIndex!].name = value!;
-                  //       });
-                  //     },
-                  //     itemLists: widget.dataList!,
-                  //     title:
-                  //         '${widget.dataList![widget.productIndex!].name!}-${widget.dataList![widget.productIndex!].price!}RWF',
-                  //     isExpanded: true),
+                  DropDownEduboxMaterial(
+                      onChanged: (value) {
+                        setState(() {
+                         product.name = value!;
+                        });
+                      },
+                      itemLists: widget.dataList!,
+                      title:
+                          '${product.name!}-${product.price!}RWF',
+                      isExpanded: true),
                   sizedBox15,
                   PreviewAmountWidget(
                       amountText: widget.inputBalance?.toStringAsFixed(2) ?? "",
@@ -228,15 +196,97 @@ class _TransactionConfirmationScreenState
                     height: Dimensions.dividerSizeMedium,
                     color: Theme.of(context).dividerColor,
                   ),
+                                  const SizedBox(height: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        ' Delivery Options',
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                      sizedBox15,
+                      DefaultButton2(
+                        color1: kamber300Color,
+                        color2: kyellowColor,
+                        onPress: () => _captureInformation(
+                          studentCode: student.code!,
+                          studentName: student.name!,
+                           calculatedTotal: totalAmount,
+                            context,
+                            randomNumber: randomNumber,
+                            totalAmount: totalAmount,
+                            className: student.studentClass!,
+                            schoolName: student.school!,
+                            orderId: '1234',
+                            productName: widget.dataList![widget.productIndex!].name!
+                            
+                            ),
+                        // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
+
+                        title: 'SCHOOL',
+                        iconData: Icons.arrow_forward_outlined,
+                      ),
+                      sizedBox15,
+                      isHomeDelivery == false
+                          ? DefaultButton2(
+                              color1: kamber300Color,
+                              color2: kyellowColor,
+                              onPress: () => homeDeliveryAction(),
+                              // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
+
+                              title: 'HOME',
+                              iconData: Icons.arrow_forward_outlined,
+                            )
+                          : DeliveryMapScreen(
+                            
+                              isShop: 0,
+                              deliveryCost: AppConstants.deliveryCost,
+                              schoolId: student.schoolId!,
+                              classId: student.classId!,
+                              className: student.studentClass!,
+                              schoolName: student.school!,
+                              studentCode: student.name!,
+                              studentId: student.id!,
+                              studentName: student.name!,
+                              screenId: 0,
+                              calculatedTotal: double.parse(totalAmount),
+                              contactModel: widget.contactModel!,
+                              eduboxService: widget.edubox_service??'',
+                              dataList: widget.dataList??[],
+                              shipper: 'widget.shipper',
+                              destination: 'widget.destination',
+                              homePhone: 'widget.homePhone',
+                              productId: widget.productId??0,
+                              pinCodeFieldController:
+                                  _pinCodeFieldController.text,
+                              transactionType: widget.transactionType??'',
+                              calculatedTotalWithServices:double.parse(totalAmount),
+                              productIndex: widget.productIndex??0,
+                              purpose: widget.purpose??'',
+                              calculateServiceCharge:convenienceFee,
+                              calculateVAT: vat,
+                              productName: product.name??'',
+                              randomNumber: randomNumber,
+                              serviceIndex: widget.serviceIndex??0,
+                              totalAmount: double.parse(totalAmount),
+                              vatPercentage: AppConstants.vatPercentage),
+                    ],
+                  ),
                   sizedBox10,
+
                   Text(
-                      'Amount to be Paid: ${calculateTotalWithService(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF'),
+                      'Amount to be Paid: ${product.price} RWF'),
                   Text(
                       'Now Paying: ${widget.inputBalance!.toStringAsFixed(2)} RWF'),
                   Text(
-                      'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF'),
+                      'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat RWF'),
                   Text(
-                      'Service Charge (${serviceChargePercentage.toStringAsFixed(1)}%): ${calculateServiceCharge(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF'),
+                      'Convenience Fee: $convenienceFee RWF'),
                   const Divider(),
                   Text(
                     'Total Amount paid now: $totalAmount RWF',
@@ -247,457 +297,129 @@ class _TransactionConfirmationScreenState
                 ],
               ),
               sizedBox10,
-              // Text('Pending/Remaing Amount to be paid',
-              //     style: rubikSemiBold.copyWith(
-              //         fontSize: Dimensions.fontSizeLarge,
-              //         color: ColorResources.getGreyBaseGray1())),
-              // Text(
-              //     '${availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse(widget.availableBalance!)).toStringAsFixed(2)}RWF',
-              //     style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              //           fontWeight: FontWeight.bold,
-              //         )),
-//               const SizedBox(height: 15),
+              Text('Pending/Remaing Amount to be paid',
+                  style: rubikSemiBold.copyWith(
+                      fontSize: Dimensions.fontSizeLarge,
+                      color: ColorResources.getGreyBaseGray1())),
+              Text(
+                  '$availableBalance RWF',
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      )),
+              const SizedBox(height: 15),
               if (widget.transactionType == TransactionType.withdrawRequest)
                 PreviewAmountWidget(
                   amountText:
                       '${PriceConverterHelper.calculation(widget.inputBalance, Get.find<SplashController>().configModel!.withdrawChargePercent, 'percent')?.toStringAsFixed(2)}',
                   title: 'charge'.tr,
                 ),
-//               if (widget.transactionType == TransactionType.withdrawRequest)
-//                 PreviewAmountWidget(
-//                     amountText: PriceConverterHelper.balanceWithCharge(
-//                       widget.inputBalance,
-//                       Get.find<SplashController>()
-//                           .configModel!
-//                           .withdrawChargePercent,
-//                       true,
-//                     ).toStringAsFixed(2),
-//                     title: 'total_amount'.tr),
-//               if (widget.transactionType != TransactionType.withdrawRequest)
-//                 Container(
-//                   height: Dimensions.dividerSizeMedium,
-//                   color: Theme.of(context).dividerColor,
-//                 ),
-//               if (widget.transactionType == TransactionType.withdrawRequest)
-//                 Padding(
-//                   padding: const EdgeInsets.symmetric(
-//                     horizontal: Dimensions.paddingSizeDefault,
-//                     vertical: Dimensions.paddingSizeSmall,
-//                   ),
-//                   child: Container(
-//                     padding: const EdgeInsets.all(10),
-//                     decoration: BoxDecoration(
-//                         color: Theme.of(context).cardColor,
-//                         borderRadius:
-//                             const BorderRadius.all(Radius.circular(10))),
-//                     child: Column(children: [
-//                       _MethodFieldWidget(
-//                         type: 'withdraw_method'.tr,
-//                         value: widget.withdrawMethod!.methodName!,
-//                       ),
-//                       const SizedBox(
-//                         height: 10,
-//                       ),
-//                       Column(
-//                         children: widget.withdrawMethod!.methodFields
-//                             .map(
-//                               (method) => Padding(
-//                                 padding:
-//                                     const EdgeInsets.symmetric(vertical: 10),
-//                                 child: _MethodFieldWidget(
-//                                   type: method.inputName!
-//                                       .replaceAll('_', ' ')
-//                                       .capitalizeFirst!,
-//                                   value: method.inputValue!,
-//                                 ),
-//                               ),
-//                             )
-//                             .toList(),
-//                       ),
-//                     ]),
-//                   ),
-//                 ),
-//               Padding(
-//                 padding: const EdgeInsets.symmetric(
-//                     horizontal: Dimensions.paddingSizeLarge),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Padding(
-//                       padding: const EdgeInsets.only(
-//                         top: Dimensions.paddingSizeExtraExtraLarge,
-//                         bottom: Dimensions.paddingSizeDefault,
-//                       ),
-//                       child: Text('4digit_pin'.tr,
-//                           style: rubikMedium.copyWith(
-//                             fontSize: Dimensions.fontSizeLarge,
-//                           )),
-//                     ),
-//                     Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: [
-//                         Expanded(
-//                           child: Container(
-//                             alignment: Alignment.center,
-//                             height: 50,
-//                             decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.circular(27.0),
-//                               color: ColorResources.getGreyBaseGray6(),
-//                             ),
-//                             child: //Text('Next', style: rubikMedium.copyWith(color: ColorResources.getGreyBaseGray4()),)
-//                                 PinCodeTextField(
-//                               controller: _pinCodeFieldController,
-//                               length: 4,
-//                               appContext: context,
-//                               onChanged: (value) => bottomSliderController
-//                                   .updatePinCompleteStatus(value),
-//                               keyboardType: TextInputType.number,
-//                               inputFormatters: <TextInputFormatter>[
-//                                 FilteringTextInputFormatter.allow(
-//                                     RegExp(r'[0-9]'))
-//                               ],
-//                               obscureText: true,
-//                               hintCharacter: '•',
-//                               hintStyle: rubikMedium.copyWith(
-//                                   color: ColorResources.getGreyBaseGray4()),
-//                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                               cursorColor: Theme.of(context).highlightColor,
-//                               pinTheme: PinTheme.defaults(
-//                                 shape: PinCodeFieldShape.circle,
-//                                 activeColor: ColorResources.getGreyBaseGray6(),
-//                                 activeFillColor: Colors.red,
-//                                 selectedColor:
-//                                     ColorResources.getGreyBaseGray6(),
-//                                 borderWidth: 0,
-//                                 inactiveColor:
-//                                     ColorResources.getGreyBaseGray6(),
-//                               ),
-//                             ),
-//                           ),
-//                         ),
-//                         const SizedBox(width: Dimensions.paddingSizeDefault),
-//                         GestureDetector(
-//                           onTap: () {
-//                             final configModel =
-//                                 Get.find<SplashController>().configModel;
-//                             if (!Get.find<BottomSliderController>()
-//                                 .isPinCompleted) {
-//                               showCustomSnackBarHelper(
-//                                   'please_input_4_digit_pin'.tr);
-//                             } else {
-//                               Get.find<TransactionMoneyController>()
-//                                   .pinVerify(
-//                                 pin: _pinCodeFieldController.text,
-//                               )
-//                                   .then((isCorrect) {
-//                                 if (isCorrect) {
-//                                   if (widget.transactionType ==
-//                                       TransactionType.withdrawRequest) {
-//                                     _placeWithdrawRequest();
-//                                   } else if (configModel!.twoFactor! &&
-//                                       Get.find<ProfileController>()
-//                                           .userInfo!
-//                                           .twoFactor!) {
-//                                     Get.find<AuthController>()
-//                                         .checkOtp()
-//                                         .then((value) => value.isOk
-//                                             ? Get.defaultDialog(
-//                                                 barrierDismissible: false,
-//                                                 title: 'otp_verification'.tr,
-//                                                 content: Column(
-//                                                   children: [
-//                                                     CustomPinCodeFieldWidget(
-//                                                       onCompleted: (pin) =>
-//                                                           Get.find<
-//                                                                   AuthController>()
-//                                                               .verifyOtp(pin)
-//                                                               .then((value) {
-//                                                         if (value.isOk) {
-//                                                           showModalBottomSheet(
-//                                                             isScrollControlled:
-//                                                                 true,
-//                                                             context:
-//                                                                 Get.context!,
-//                                                             isDismissible:
-//                                                                 false,
-//                                                             enableDrag: false,
-//                                                             shape:
-//                                                                 const RoundedRectangleBorder(
-//                                                               borderRadius: BorderRadius.vertical(
-//                                                                   top: Radius.circular(
-//                                                                       Dimensions
-//                                                                           .radiusSizeLarge)),
-//                                                             ),
-//                                                             builder: (context) =>
-//                                                                 BottomSheetWithSliderSl(
-//                                                               amount: widget
-//                                                                   .inputBalance
-//                                                                   .toString(),
-//                                                               availableBalance: availableBalance(
-//                                                                       amount: double
-//                                                                           .parse(
-//                                                                               '${widget.inputBalance}'),
-//                                                                       balance: double
-//                                                                           .parse(widget
-//                                                                               .availableBalance!))
-//                                                                   .toStringAsFixed(
-//                                                                       2),
-//                                                               contactModel: widget
-//                                                                   .contactModel,
-//                                                               contactModelMtn:
-//                                                                   widget
-//                                                                       .contactModelMtn,
-//                                                               pinCode: Get.find<
-//                                                                       BottomSliderController>()
-//                                                                   .pin,
-//                                                               transactionType:
-//                                                                   widget
-//                                                                       .transactionType,
-//                                                               purpose: widget
-//                                                                   .purpose,
-//                                                               inputBalance: widget
-//                                                                   .inputBalance,
-//                                                               dataList: widget
-//                                                                   .dataList,
-//                                                               productIndex: widget
-//                                                                   .productIndex,
-//                                                               edubox_service: widget
-//                                                                   .edubox_service!,
-//                                                               amountToPay:
-//                                                                   'Amount to be Paid: ${calculateTotalWithService(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
-//                                                               nowPaid:
-//                                                                   'Now Paid: ${widget.inputBalance!.toStringAsFixed(2)} RWF',
-//                                                               vat:
-//                                                                   'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
-//                                                               serviceCharge:
-//                                                                   'Service Charge (${serviceChargePercentage.toStringAsFixed(1)}%): ${calculateServiceCharge(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
-//                                                               totalNowPaid:
-//                                                                   'Total Amount paid now: $totalAmount RWF',
-//                                                             ),
-//                                                           );
-//                                                         }
-//                                                       }),
-//                                                     ),
-//                                                     const DemoOtpHintWidget(),
-//                                                     GetBuilder<AuthController>(
-//                                                       builder: (verifyController) =>
-//                                                           verifyController
-//                                                                   .isVerifying
-//                                                               ? CircularProgressIndicator(
-//                                                                   color: Theme.of(
-//                                                                           context)
-//                                                                       .textTheme
-//                                                                       .titleLarge!
-//                                                                       .color,
-//                                                                 )
-//                                                               : const SizedBox
-//                                                                   .shrink(),
-//                                                     )
-//                                                   ],
-//                                                 ),
-//                                               )
-//                                             : null);
-//                                   } else {
-//                                     // Generate a random integer between 10000000 and 99999999
-//                                     int randomNumber =
-//                                         random.nextInt(90000000) + 10000000;
 
-//                                     // mtnMomoApiClient
-//                                     //     .postMtnMomo(
-//                                     //         transactionId:
-//                                     //             randomNumber.toString(),
-//                                     //         amount: calculateTotalWithService(
-//                                     //                 double.parse(
-//                                     //                     '${widget.inputBalance}'))
-//                                     //             .toInt()
-//                                     //             .toString(),
-//                                     //         message:
-//                                     //             'You have paid for ${widget.edubox_service} VAT Inc, ${calculateServiceCharge(double.parse('${widget.inputBalance}')).toInt()} RWF Service Charge',
-//                                     //         phoneNumber: phoneNumber)
-//                                     //     .then((value) async {
-//                                     //   String? status = await mtnMomoApiClient
-//                                     //       .getPaymentStatus();
-
-//                                       // Ensure the reference ID is available
-//                                       // if (status == '202') {
-//                                         // showModalBottomSheet(
-//                                         //     isScrollControlled: true,
-//                                         //     context: Get.context!,
-//                                         //     isDismissible: false,
-//                                         //     enableDrag: false,
-//                                         //     shape: const RoundedRectangleBorder(
-//                                         //         borderRadius:
-//                                         //             BorderRadius.vertical(
-//                                         //       top: Radius.circular(
-//                                         //           Dimensions.radiusSizeLarge),
-//                                         //     )),
-//                                         //     builder: (context) {
-//                                         //       return BottomSheetWithSliderP(
-//                                         //         availableBalance: availableBalance(
-//                                         //                 amount: double.parse(
-//                                         //                     '${widget.inputBalance}'),
-//                                         //                 balance: double.parse(widget.availableBalance!))
-//                                         //             .toStringAsFixed(2),
-//                                         //         amount: widget.inputBalance
-//                                         //             .toString(),
-//                                         //         productId: widget.productId!,
-//                                         //         contactModel:
-//                                         //             widget.contactModel,
-//                                         //         studentIndex:
-//                                         //             widget.studentIndex,
-//                                         //         pinCode: Get.find<
-//                                         //                 BottomSliderController>()
-//                                         //             .pin,
-//                                         //         transactionType:
-//                                         //             widget.transactionType,
-//                                         //         purpose: widget.purpose,
-//                                         //         studentInfo: widget.studentInfo,
-//                                         //         inputBalance:
-//                                         //             widget.inputBalance,
-//                                         //         dataList: widget.dataList,
-//                                         //         productIndex:
-//                                         //             widget.productIndex,
-//                                         //         edubox_service:
-//                                         //             widget.edubox_service!,
-//                                         //         amountToPay:
-//                                         //             calculateTotalWithService(
-//                                         //                     double.parse(
-//                                         //                         '${widget.inputBalance}'))
-//                                         //                 .toStringAsFixed(2),
-//                                         //         nowPaid: widget.inputBalance!
-//                                         //             .toStringAsFixed(2),
-//                                         //         vat:
-//                                         //             'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
-//                                         //         serviceCharge:
-//                                         //             calculateServiceCharge(
-//                                         //                     double.parse(
-//                                         //                         '${widget.inputBalance}'))
-//                                         //                 .toStringAsFixed(2),
-//                                         //         totalNowPaid:
-//                                         //             'Total Amount paid now: $totalAmount RWF',
-//                                         //         serviceValue:
-//                                         //             widget.serviceValue,
-//                                         //         serviceIndex:
-//                                         //             widget.serviceIndex,
-//                                         //       );
-//                                         //     });
-//                                       // } else {
-//                                       //   print('payment not done $status');
-//                                       // }
-// Get.to(PaymentMethod(amountTotal: widget.availableBalance!,parent: widget.parent,student: widget.studentInfo![widget.studentIndex!].name,product:widget.serviceValue ,material:'${widget.dataList![widget.productIndex!].transactionId!}-${widget.dataList![widget.productIndex!].amount!}RWF' ,classes: widget.studentInfo![widget.studentIndex!].studentClass,));
-
-
-//                                             //                       showModalBottomSheet(
-//                                             // isScrollControlled: true,
-//                                             // context: Get.context!,
-//                                             // isDismissible: false,
-//                                             // enableDrag: false,
-//                                             // shape: const RoundedRectangleBorder(
-//                                             //     borderRadius:
-//                                             //         BorderRadius.vertical(
-//                                             //   top: Radius.circular(
-//                                             //       Dimensions.radiusSizeLarge),
-//                                             // )),
-//                                             // builder: (context) {
-//                                             //   return BottomSheetWithSliderP(
-//                                             //     availableBalance: availableBalance(
-//                                             //             amount: double.parse(
-//                                             //                 '${widget.inputBalance}'),
-//                                             //             balance: double.parse(widget.availableBalance!))
-//                                             //         .toStringAsFixed(2),
-//                                             //     amount: widget.inputBalance
-//                                             //         .toString(),
-//                                             //     productId: widget.productId!,
-//                                             //     contactModel:
-//                                             //         widget.contactModel,
-//                                             //     studentIndex:
-//                                             //         widget.studentIndex,
-//                                             //     pinCode: Get.find<
-//                                             //             BottomSliderController>()
-//                                             //         .pin,
-//                                             //     transactionType:
-//                                             //         widget.transactionType,
-//                                             //     purpose: widget.purpose,
-//                                             //     studentInfo: widget.studentInfo,
-//                                             //     inputBalance:
-//                                             //         widget.inputBalance,
-//                                             //     dataList: widget.dataList,
-//                                             //     productIndex:
-//                                             //         widget.productIndex,
-//                                             //     edubox_service:
-//                                             //         widget.edubox_service!,
-//                                             //     amountToPay:
-//                                             //         calculateTotalWithService(
-//                                             //                 double.parse(
-//                                             //                     '${widget.inputBalance}'))
-//                                             //             .toStringAsFixed(2),
-//                                             //     nowPaid: widget.inputBalance!
-//                                             //         .toStringAsFixed(2),
-//                                             //     vat:
-//                                             //         'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
-//                                             //     serviceCharge:
-//                                             //         calculateServiceCharge(
-//                                             //                 double.parse(
-//                                             //                     '${widget.inputBalance}'))
-//                                             //             .toStringAsFixed(2),
-//                                             //     totalNowPaid:
-//                                             //         'Total Amount paid now: $totalAmount RWF',
-//                                             //     serviceValue:
-//                                             //         widget.serviceValue,
-//                                             //     serviceIndex:
-//                                             //         widget.serviceIndex,
-//                                             //   );
-//                                             // });
-//                                     // });
-//                                   }
-//                                 }
-//                                 _pinCodeFieldController.clear();
-//                               });
-//                             }
-//                           },
-//                           child: GetBuilder<AuthController>(
-//                             builder: (otpCheckController) {
-//                               return GetBuilder<TransactionMoneyController>(
-//                                 builder: (pinVerify) {
-//                                   return pinVerify.isLoading ||
-//                                           otpCheckController.isLoading
-//                                       ? SizedBox(
-//                                           width: Dimensions.radiusSizeOverLarge,
-//                                           height:
-//                                               Dimensions.radiusSizeOverLarge,
-//                                           child: Center(
-//                                             child: CircularProgressIndicator(
-//                                                 color: Theme.of(context)
-//                                                     .primaryColor),
-//                                           ),
-//                                         )
-//                                       : Container(
-//                                           width: Dimensions.radiusSizeOverLarge,
-//                                           height:
-//                                               Dimensions.radiusSizeOverLarge,
-//                                           decoration: BoxDecoration(
-//                                             borderRadius:
-//                                                 BorderRadius.circular(25),
-//                                             color: Theme.of(context)
-//                                                 .secondaryHeaderColor,
-//                                           ),
-//                                           child: Icon(Icons.arrow_forward,
-//                                               color: ColorResources.blackColor),
-//                                         );
-//                                 },
-//                               );
-//                             },
-//                           ),
-//                         ),
-//                       ],
-//                     )
-//                   ],
-//                 ),
-//               )
             ],
           ),
         ),
       ),
+    );
+  }
+
+   void _captureInformation(context,
+      {required int randomNumber,
+      required String totalAmount,
+      required String schoolName,
+      required String className,
+      required String productName,
+      required String orderId,
+      required String calculatedTotal,
+      required String studentName,
+      required String studentCode
+      }) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirm'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Your School materials will be delivered at;'),
+              Text('School Name: $schoolName'),
+              Text('Class: $className'),
+              Text('Customer Product: $productName'),
+              Text('Order ID: $orderId'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            const SizedBox(width: 10),
+            TextButton(
+              onPressed: () {
+                final configModel = Get.find<SplashController>().configModel;
+                // if (!Get.find<BottomSliderController>()
+                //     .isPinCompleted) {
+                //   showCustomSnackBarHelper(
+                //       'please_input_4_digit_pin'.tr);
+                // }
+                // else {
+                // Get.find<TransactionMoneyController>()
+                //     .pinVerify(
+                //   pin: _pinCodeFieldController.text,
+                // )
+                //     .then((isCorrect) {
+                  // if (isCorrect) {
+                    if (widget.transactionType ==
+                        TransactionType.withdrawRequest) {
+                      _placeWithdrawRequest();
+                    } else {
+                     Get.to(PaymentMethod(
+                              amountTotal: calculatedTotal.toString(),
+                              parent: widget.contactModel!.name,
+                              studentName: studentName,
+                              studentCode:studentCode,
+                              schoolName: schoolName,
+                              className: className,
+                              product: widget.edubox_service,
+                              material: widget.dataList,
+                            ));
+                        
+                          // mtnMomoApiClient
+                          //     .postMtnMomo(
+                          //         transactionId:
+                          //             randomNumber.toString(),
+                          //         amount: calculateTotalWithService(
+                          //                 double.parse(
+                          //                     '$calculatedTotal'))
+                          //             .toInt()
+                          //             .toString(),
+                          //         message:
+                          //             'You have paid for ${widget.edubox_service} VAT Inc, ${calculateServiceCharge(double.parse('$calculatedTotal')).toInt()} RWF Service Charge',
+                          //         phoneNumber: phoneNumber)
+                          //     .then((value) async {
+                          //     String? status =
+                          //         await mtnMomoApiClient
+                          //             .getPaymentStatus();
+
+                          //     // Ensure the reference ID is available
+                          //     if (status == '202') {
+            
+                      // } else {
+                      //   print('payment not done $status');
+                      // }
+                      // });
+                    }
+                  // }
+                  // _pinCodeFieldController.clear();
+                // });
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 

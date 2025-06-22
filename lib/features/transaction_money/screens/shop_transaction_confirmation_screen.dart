@@ -26,6 +26,7 @@ import 'package:hosomobile/features/transaction_money/widgets/for_person_widget.
 import 'package:hosomobile/features/transaction_money/widgets/for_student_widget.dart';
 import 'package:hosomobile/helper/price_converter_helper.dart';
 import 'package:hosomobile/helper/transaction_type.dart';
+import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
 import 'package:hosomobile/util/styles.dart';
@@ -73,9 +74,7 @@ class _TransactionConfirmationScreenState
   final TransactionMoneyController transactionMoneyController =
       Get.find<TransactionMoneyController>();
   final MtnMomoApiClient mtnMomoApiClient = MtnMomoApiClient();
-  final double vatPercentage = 18.0; // Example VAT percentage
-  final double serviceChargePercentage =
-      4.0; // Example service charge percentage
+
   Random random = Random();
 
   // List to store indices of selected students
@@ -175,12 +174,13 @@ class _TransactionConfirmationScreenState
 
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+   final bottomSliderController = Get.find<BottomSliderController>();
+  final totalAmount = AppConstants.calculateTotal(double.parse('${widget.totalAmount}')).toStringAsFixed(2);
+    final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('${widget.totalAmount}')); 
+    final vat =AppConstants.calculateVAT(double.parse('${widget.totalAmount}')) ;
+    final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.totalAmount}'), balance: double.parse('${widget.totalAmount}')).toStringAsFixed(2);
+      int randomNumber = random.nextInt(90000000) + 10000000;
 
-    final String totalAmount =
-        calculateTotal(double.parse('${widget.totalAmount}'))
-            .toStringAsFixed(2);
-    String phoneNumber = widget.contactModel.phoneNumber!.replaceAll('+', '');
-    int randomNumber = random.nextInt(90000000) + 10000000;
 
     return Scaffold(
       body: GetBuilder<StudentController>(builder: (studentController) {
@@ -312,7 +312,7 @@ class _TransactionConfirmationScreenState
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'RWF ${product.price.toStringAsFixed(2)}',
+                          '${AppConstants.currency} ${product.price.toStringAsFixed(2)}',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(height: 4),
@@ -322,7 +322,7 @@ class _TransactionConfirmationScreenState
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Total: RWF ${totalPrice.toStringAsFixed(2)}',
+                          'Total: ${AppConstants.currency} ${totalPrice.toStringAsFixed(2)}',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -522,15 +522,14 @@ class _TransactionConfirmationScreenState
                                                           product:
                                                               widget.product,
                                                           amountToPay:
-                                                              'Amount to be Paid: ${calculateTotalWithService(double.parse('${widget.totalAmount}')).toStringAsFixed(2)} RWF',
+                                                              'Amount to be Paid: ${widget.totalAmount} ${AppConstants.currency}',
                                                           nowPaid:
-                                                              'Now Paid: ${widget.totalAmount.toStringAsFixed(2)} RWF',
+                                                              'Now Paid: ${widget.totalAmount.toStringAsFixed(2)} ${AppConstants.currency}',
                                                           vat:
-                                                              'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateVAT(double.parse('${widget.totalAmount}')).toStringAsFixed(2)} RWF',
-                                                          serviceCharge:
-                                                              calculateServiceCharge(double.parse('${widget.totalAmount}')).toStringAsFixed(2),
+                                                              'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
+                                                          serviceCharge:convenienceFee.toStringAsFixed(2),
                                                           totalNowPaid:
-                                                              'Total Amount paid now: $totalAmount RWF',
+                                                              'Total Amount paid now: $totalAmount ${AppConstants.currency}',
                                                         ),
                                                       );
                                                     }
@@ -596,10 +595,10 @@ class _TransactionConfirmationScreenState
                                         nowPaid:
                                             'Material Cost: ${widget.totalAmount.toStringAsFixed(2)}',
                                         vat:
-                                            'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateVAT(double.parse('${widget.totalAmount}')).toStringAsFixed(2)} RWF',
-                                        serviceCharge:calculateServiceCharge(double.parse('${widget.totalAmount}')).toStringAsFixed(2),
+                                            'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
+                                        serviceCharge:convenienceFee.toStringAsFixed(2),
                                         totalNowPaid:
-                                            'Total Amount paid now: $totalAmount RWF',
+                                            'Total Amount paid now: $totalAmount ${AppConstants.currency}',
                                         serviceValue: widget.product.name,
                                       );
                                     });
@@ -655,23 +654,19 @@ class _TransactionConfirmationScreenState
                               pinCodeFieldController:
                                   _pinCodeFieldController.text,
                               transactionType: widget.transactionType ?? '',
-                              calculatedTotalWithServices:
-                                  calculateTotalWithService(
-                                      double.parse('${widget.totalAmount}')),
+                              calculatedTotalWithServices:double.parse(totalAmount),
                               productIndex: 0,
                               purpose: '',
-                              calculateServiceCharge: calculateServiceCharge(
-                                  double.parse('${widget.totalAmount}')),
-                              calculateVAT: calculateVAT(
-                                  double.parse('${widget.totalAmount}')),
+                              calculateServiceCharge: convenienceFee,
+                              calculateVAT: vat,
                               productName: widget.product.name,
                               randomNumber: randomNumber,
                               serviceIndex: 0,
                               totalAmount: double.parse(totalAmount),
-                              vatPercentage: vatPercentage),
+                              vatPercentage: AppConstants.vatPercentage),
 
                       Text(
-                        'Delivery Cost: ${deliveryCost.toStringAsFixed(2)} RWF',
+                        'Delivery Cost: ${deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
                         style:
                             Theme.of(context).textTheme.titleMedium!.copyWith(
                                   fontWeight: FontWeight.normal,
@@ -679,17 +674,17 @@ class _TransactionConfirmationScreenState
                       ),
                       // Display Total Price
 
-                      Text('Material Cost: ${widget.totalAmount} RWF'),
-                      // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} RWF'),
+                      Text('Material Cost: ${widget.totalAmount} ${AppConstants.currency}'),
+                      // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
                       Text(
-                          'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateVAT(double.parse('${widget.totalAmount}')).toStringAsFixed(2)} RWF'),
+                          'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
 
                       Text(
-                          'Convinience Fee (${serviceChargePercentage.toStringAsFixed(1)}%): ${calculateServiceCharge(double.parse('${widget.totalAmount}')).toStringAsFixed(2)} RWF'),
+                          'Convenience Fee: $convenienceFee ${AppConstants.currency}'),
                       const Divider(),
 
                       Text(
-                        'Total Amount paid now: $totalAmount RWF',
+                        'Total Amount paid now: $totalAmount ${AppConstants.currency}',
                         style:
                             Theme.of(context).textTheme.titleMedium!.copyWith(
                                   fontWeight: FontWeight.bold,
@@ -737,24 +732,7 @@ class _TransactionConfirmationScreenState
     );
   }
 
-  double calculateVAT(double amount) {
-    return (amount * vatPercentage) / 100;
-  }
-
-  double calculateServiceCharge(double amount) {
-    return (amount * serviceChargePercentage) / 100;
-  }
-
-  double calculateTotalWithService(double amount) {
-    return amount + calculateServiceCharge(amount);
-  }
-
-  double calculateTotal(double amount) {
-    return amount +
-        calculateServiceCharge(amount) +
-        deliveryCost +
-        calculateVAT(amount);
-  }
+ 
 
   TextFormField buildFormField(
       String labelText,

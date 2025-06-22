@@ -29,9 +29,6 @@ class OptionCardWidget extends StatelessWidget {
                child: SizedBox(height: 25, width: 25,
                  child: Image.asset(image!, fit: BoxFit.contain))),
              const SizedBox(height: 10),
-
-
-
              Padding(padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeExtraSmall+1),
                child: Text(text!, textAlign: TextAlign.center, maxLines: 2, style: rubikRegular.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).textTheme.bodyLarge!.color),),
              )

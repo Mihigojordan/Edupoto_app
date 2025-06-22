@@ -258,7 +258,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderPS> {
                                     Text(widget.vat!),
 
                                     Text(
-                                        'Service Charge (${widget.serviceCharge!} RWF'),
+                                        'Convenience Fee (${widget.serviceCharge!} RWF'),
                                     const Divider(),
                                     Text(
                                       widget.totalNowPaid!,
@@ -306,7 +306,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderPS> {
                                     edubox_service: widget.edubox_service ??
                                         'No Edubox Service',
                                     service_charge: widget.serviceCharge ??
-                                        'No Service Charge',
+                                        'No Convenience Fee',
                                     transactionMoneyController:
                                         transactionMoneyController,
                                     transactionId: transactionId ??

@@ -104,9 +104,7 @@ class _TransactionConfirmationScreenState
       Get.find<TransactionMoneyController>();
   final MtnMomoApiClient mtnMomoApiClient = MtnMomoApiClient();
   String? transactionId;
-  final double vatPercentage = 18.0; // Example VAT percentage
-  final double serviceChargePercentage =
-      4.0; // Example service charge percentage
+
   Random random = Random();
   final String data =
       'Amafaranga y’ishuri ,Minerval/School fees ni 65.500 Frw/ku gihembwe.\n'
@@ -121,58 +119,18 @@ class _TransactionConfirmationScreenState
     super.initState();
   }
 
-  double calculateVAT(double amount) {
-    return (amount * vatPercentage) / 100;
-  }
 
-  double calculateServiceCharge(double amount) {
-    return (amount * serviceChargePercentage) / 100;
-  }
-
-  double calculateOriginalAmaount(double amount) {
-    return amount -
-        calculateVAT(double.parse('${widget.inputBalance}')) -
-        calculateServiceCharge(double.parse('${widget.inputBalance}'));
-  }
-
-  double calculateOriginalVat(double amount) {
-    return ((amount - calculateVAT(double.parse('${widget.inputBalance}'))) *
-            vatPercentage) /
-        100;
-  }
-
-  double calculateTotalWithService(double amount) {
-    double serviceCharge = calculateServiceCharge(amount);
-    return amount + serviceCharge;
-  }
-
-  double calculateTotal(double amount) {
-    double vat = calculateVAT(amount);
-    double serviceCharge = calculateServiceCharge(amount);
-    double originalAmount = calculateOriginalAmaount(amount);
-    return originalAmount + vat + serviceCharge;
-  }
-
-  double calculateServiceCharge0fPrice() {
-    return widget.price! * serviceChargePercentage / 100;
-  }
-
-  double remainingAmount(double amount) {
-    double serviceCharge = calculateServiceCharge0fPrice();
-
-    return double.parse('${widget.price}') - amount;
-  }
-
-  double availableBalance({required double amount, required double balance}) {
-    return balance - amount;
-  }
 
   @override
   Widget build(BuildContext context) {
     final bottomSliderController = Get.find<BottomSliderController>();
-    final String totalAmount =
-        calculateTotal(double.parse('${widget.inputBalance}'))
-            .toStringAsFixed(2);
+     final totalAmount = AppConstants.calculateTotal(double.parse('${widget.inputBalance}')).toStringAsFixed(2);
+    final  SchoolLists product = widget.dataList![widget.productIndex!];
+    final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('${widget.inputBalance}')); 
+    final vat =AppConstants.calculateVAT(double.parse('${widget.inputBalance}')) ;
+    final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse(widget.availableBalance!)).toStringAsFixed(2);
+
+
     String phoneNumber = widget.contactModel!.phoneNumber!.replaceAll('+', '');
     int randomNumber = random.nextInt(90000000) + 10000000;
     //   bottomSliderController.setIsPinCompleted(isCompleted: false, isNotify: false);
@@ -218,7 +176,7 @@ class _TransactionConfirmationScreenState
                   //     },
                   //     itemLists: widget.dataList!,
                   //     title:
-                  //         '${widget.dataList![widget.productIndex!].name!}-${widget.dataList![widget.productIndex!].price!}RWF',
+                  //         '${widget.dataList![widget.productIndex!].name!}-${widget.dataList![widget.productIndex!].price!}${AppConstants.currency}',
                   //     isExpanded: true),
                   sizedBox15,
                   PreviewAmountWidget(
@@ -230,16 +188,16 @@ class _TransactionConfirmationScreenState
                   ),
                   sizedBox10,
                   Text(
-                      'Amount to be Paid: ${calculateTotalWithService(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF'),
+                      'Amount to be Paid: ${widget.price}${AppConstants.currency}'),
                   Text(
-                      'Now Paying: ${widget.inputBalance!.toStringAsFixed(2)} RWF'),
+                      'Now Paying: ${widget.inputBalance!.toStringAsFixed(2)} ${AppConstants.currency}'),
                   Text(
-                      'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF'),
+                      'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
                   Text(
-                      'Service Charge (${serviceChargePercentage.toStringAsFixed(1)}%): ${calculateServiceCharge(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF'),
+                      'Convenience Fee: $convenienceFee ${AppConstants.currency}'),
                   const Divider(),
                   Text(
-                    'Total Amount paid now: $totalAmount RWF',
+                    'Total Amount paid now: $totalAmount ${AppConstants.currency}',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -247,16 +205,16 @@ class _TransactionConfirmationScreenState
                 ],
               ),
               sizedBox10,
-              // Text('Pending/Remaing Amount to be paid',
-              //     style: rubikSemiBold.copyWith(
-              //         fontSize: Dimensions.fontSizeLarge,
-              //         color: ColorResources.getGreyBaseGray1())),
-              // Text(
-              //     '${availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse(widget.availableBalance!)).toStringAsFixed(2)}RWF',
-              //     style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              //           fontWeight: FontWeight.bold,
-              //         )),
-//               const SizedBox(height: 15),
+              Text('Pending/Remaing Amount to be paid',
+                  style: rubikSemiBold.copyWith(
+                      fontSize: Dimensions.fontSizeLarge,
+                      color: ColorResources.getGreyBaseGray1())),
+              Text(
+                  '$availableBalance ${AppConstants.currency}',
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      )),
+              const SizedBox(height: 15),
               if (widget.transactionType == TransactionType.withdrawRequest)
                 PreviewAmountWidget(
                   amountText:
@@ -464,15 +422,15 @@ class _TransactionConfirmationScreenState
 //                                                               edubox_service: widget
 //                                                                   .edubox_service!,
 //                                                               amountToPay:
-//                                                                   'Amount to be Paid: ${calculateTotalWithService(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
+//                                                                   'Amount to be Paid: ${calculateTotalWithService(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} ${AppConstants.currency}',
 //                                                               nowPaid:
-//                                                                   'Now Paid: ${widget.inputBalance!.toStringAsFixed(2)} RWF',
+//                                                                   'Now Paid: ${widget.inputBalance!.toStringAsFixed(2)} ${AppConstants.currency}',
 //                                                               vat:
-//                                                                   'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
+//                                                                   'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} ${AppConstants.currency}',
 //                                                               serviceCharge:
-//                                                                   'Service Charge (${serviceChargePercentage.toStringAsFixed(1)}%): ${calculateServiceCharge(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
+//                                                                   'Convenience Fee (${AppConstants.serviceChargePercentage.toStringAsFixed(1)}%): ${calculateServiceCharge(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} ${AppConstants.currency}',
 //                                                               totalNowPaid:
-//                                                                   'Total Amount paid now: $totalAmount RWF',
+//                                                                   'Total Amount paid now: $totalAmount ${AppConstants.currency}',
 //                                                             ),
 //                                                           );
 //                                                         }
@@ -512,7 +470,7 @@ class _TransactionConfirmationScreenState
 //                                     //             .toInt()
 //                                     //             .toString(),
 //                                     //         message:
-//                                     //             'You have paid for ${widget.edubox_service} VAT Inc, ${calculateServiceCharge(double.parse('${widget.inputBalance}')).toInt()} RWF Service Charge',
+//                                     //             'You have paid for ${widget.edubox_service} VAT Inc, ${calculateServiceCharge(double.parse('${widget.inputBalance}')).toInt()} ${AppConstants.currency} Convenience Fee',
 //                                     //         phoneNumber: phoneNumber)
 //                                     //     .then((value) async {
 //                                     //   String? status = await mtnMomoApiClient
@@ -567,14 +525,14 @@ class _TransactionConfirmationScreenState
 //                                         //         nowPaid: widget.inputBalance!
 //                                         //             .toStringAsFixed(2),
 //                                         //         vat:
-//                                         //             'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
+//                                         //             'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} ${AppConstants.currency}',
 //                                         //         serviceCharge:
 //                                         //             calculateServiceCharge(
 //                                         //                     double.parse(
 //                                         //                         '${widget.inputBalance}'))
 //                                         //                 .toStringAsFixed(2),
 //                                         //         totalNowPaid:
-//                                         //             'Total Amount paid now: $totalAmount RWF',
+//                                         //             'Total Amount paid now: $totalAmount ${AppConstants.currency}',
 //                                         //         serviceValue:
 //                                         //             widget.serviceValue,
 //                                         //         serviceIndex:
@@ -584,7 +542,7 @@ class _TransactionConfirmationScreenState
 //                                       // } else {
 //                                       //   print('payment not done $status');
 //                                       // }
-// Get.to(PaymentMethod(amountTotal: widget.availableBalance!,parent: widget.parent,student: widget.studentInfo![widget.studentIndex!].name,product:widget.serviceValue ,material:'${widget.dataList![widget.productIndex!].transactionId!}-${widget.dataList![widget.productIndex!].amount!}RWF' ,classes: widget.studentInfo![widget.studentIndex!].studentClass,));
+// Get.to(PaymentMethod(amountTotal: widget.availableBalance!,parent: widget.parent,student: widget.studentInfo![widget.studentIndex!].name,product:widget.serviceValue ,material:'${widget.dataList![widget.productIndex!].transactionId!}-${widget.dataList![widget.productIndex!].amount!}${AppConstants.currency}' ,classes: widget.studentInfo![widget.studentIndex!].studentClass,));
 
 
 //                                             //                       showModalBottomSheet(
@@ -634,14 +592,14 @@ class _TransactionConfirmationScreenState
 //                                             //     nowPaid: widget.inputBalance!
 //                                             //         .toStringAsFixed(2),
 //                                             //     vat:
-//                                             //         'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF',
+//                                             //         'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} ${AppConstants.currency}',
 //                                             //     serviceCharge:
 //                                             //         calculateServiceCharge(
 //                                             //                 double.parse(
 //                                             //                     '${widget.inputBalance}'))
 //                                             //             .toStringAsFixed(2),
 //                                             //     totalNowPaid:
-//                                             //         'Total Amount paid now: $totalAmount RWF',
+//                                             //         'Total Amount paid now: $totalAmount ${AppConstants.currency}',
 //                                             //     serviceValue:
 //                                             //         widget.serviceValue,
 //                                             //     serviceIndex:

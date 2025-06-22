@@ -294,7 +294,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                     Text(widget.vat!),
 
                                     Text(
-                                        'Convinience fee (${widget.serviceCharge!} RWF'),
+                                        'Convenience fee (${widget.serviceCharge!} RWF'),
                                     const Divider(),
                                     Text(
                                       widget.totalNowPaid!,
@@ -450,7 +450,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                           nowPaid: widget.nowPaid,
                           remainingAmount: widget.availableBalance,
                           vat: widget.vat,
-                          serviceCharge:'Convinience fee: ${widget.serviceCharge}',
+                          serviceCharge:'Convenience fee: ${widget.serviceCharge}',
                           totalNowPaid: widget.totalNowPaid,
                           serviceValue: widget.serviceValue,
                           serviceIndex: widget.serviceIndex,

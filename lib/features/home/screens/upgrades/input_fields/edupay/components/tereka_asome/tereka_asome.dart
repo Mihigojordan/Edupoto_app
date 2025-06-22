@@ -447,8 +447,8 @@ class _HomeCard1State extends State<HomeCard1> {
                                           .eduboxMaterials![materialIndex];
                                       return ListTile(
                                         title: Text(
-                                          '${material.name} ${material.price} RWF\n'
-                                          'Balance to be Paid: ${material.paymentHistory?.balance != null && double.parse(material.paymentHistory!.balance!) > 0.00 ? material.paymentHistory!.balance : material.price} RWF',
+                                          '${material.name} ${material.price} ${AppConstants.currency}\n'
+                                          'Balance to be Paid: ${material.paymentHistory?.balance != null && double.parse(material.paymentHistory!.balance!) > 0.00 ? material.paymentHistory!.balance : material.price} ${AppConstants.currency}',
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       );
@@ -569,127 +569,149 @@ class _HomeCard1State extends State<HomeCard1> {
                               // ),
 
                             
-                              DefaultButton2(
-                                color1: kamber300Color,
-                                color2: kyellowColor,
-                                onPress: () {
-                                  // Ensure material exists
-                                  if (material == null) {
-                                    showCustomSnackBarHelper(
-                                        'Material information not available',
-                                        isError: true);
-                                    return;
-                                  }
-
-                                  // Get material balance with proper null checks
-                                  double materialBalance;
-                                  try {
-                                    materialBalance = (material
-                                                    .paymentHistory?.balance !=
-                                                null &&
-                                            double.tryParse(material
-                                                        .paymentHistory!
-                                                        .balance ??
-                                                    '0.00')! >
-                                                0.00)
-                                        ? double.parse(
-                                            material.paymentHistory!.balance!)
-                                        : double.parse(
-                                            material.price?.toString() ??
-                                                '0.00');
-                                  } catch (e) {
-                                    materialBalance = 0.00;
-                                  }
-
-                                  // Check input amount
-                                  if (_inputAmountController.text.isEmpty) {
-                                    showCustomSnackBarHelper(
-                                        'please_input_amount'.tr,
-                                        isError: true);
-                                    return;
-                                  }
-
-                                  // Process amount
-                                  String balance = _inputAmountController.text;
-                                  balance = balance
-                                      .replaceAll(
-                                          splashController.configModel
-                                                  ?.currencySymbol ??
-                                              '',
-                                          '')
-                                      .replaceAll(',', '')
-                                      .replaceAll(' ', '');
-
-                                  double amount;
-                                  try {
-                                    amount = double.parse(balance);
-                                  } catch (e) {
-                                    showCustomSnackBarHelper(
-                                        'invalid_amount_format'.tr,
-                                        isError: true);
-                                    return;
-                                  }
-
-                                  if (amount <= 0) {
-                                    showCustomSnackBarHelper(
-                                        'transaction_amount_must_be'.tr,
-                                        isError: true);
-                                    return;
-                                  }
-
-                                  // Check product list bounds
-                                  if (widget.productList.isEmpty ||
-                                      selectedIndex >=
-                                          widget.productList.length ||
-                                      widget.productList[selectedIndex]
-                                              .eduboxMaterials ==
-                                          null ||
-                                      materialIndex >=
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  DefaultButtonWidth(
+                                    width: 123,
+                                    color1: kamber300Color,
+                                    color2: kyellowColor,
+                                    onPress: () {
+                                      // Ensure material exists
+                                      if (material == null) {
+                                        showCustomSnackBarHelper(
+                                            'Material information not available',
+                                            isError: true);
+                                        return;
+                                      }
+                                  
+                                      // Get material balance with proper null checks
+                                      double materialBalance;
+                                      try {
+                                        materialBalance = (material
+                                                        .paymentHistory?.balance !=
+                                                    null &&
+                                                double.tryParse(material
+                                                            .paymentHistory!
+                                                            .balance ??
+                                                        '0.00')! >
+                                                    0.00)
+                                            ? double.parse(
+                                                material.paymentHistory!.balance!)
+                                            : double.parse(
+                                                material.price?.toString() ??
+                                                    '0.00');
+                                      } catch (e) {
+                                        materialBalance = 0.00;
+                                      }
+                                  
+                                      // Check input amount
+                                      if (_inputAmountController.text.isEmpty) {
+                                        showCustomSnackBarHelper(
+                                            'please_input_amount'.tr,
+                                            isError: true);
+                                        return;
+                                      }
+                                  
+                                      // Process amount
+                                      String balance = _inputAmountController.text;
+                                      balance = balance
+                                          .replaceAll(
+                                              splashController.configModel
+                                                      ?.currencySymbol ??
+                                                  '',
+                                              '')
+                                          .replaceAll(',', '')
+                                          .replaceAll(' ', '');
+                                  
+                                      double amount;
+                                      try {
+                                        amount = double.parse(balance);
+                                      } catch (e) {
+                                        showCustomSnackBarHelper(
+                                            'invalid_amount_format'.tr,
+                                            isError: true);
+                                        return;
+                                      }
+                                  
+                                      if (amount <= 0) {
+                                        showCustomSnackBarHelper(
+                                            'transaction_amount_must_be'.tr,
+                                            isError: true);
+                                        return;
+                                      }
+                                  
+                                      // Check product list bounds
+                                      if (widget.productList.isEmpty ||
+                                          selectedIndex >=
+                                              widget.productList.length ||
                                           widget.productList[selectedIndex]
-                                              .eduboxMaterials!.length) {
-                                    showCustomSnackBarHelper(
-                                        'product_information_not_available'.tr,
-                                        isError: true);
-                                    return;
-                                  }
+                                                  .eduboxMaterials ==
+                                              null ||
+                                          materialIndex >=
+                                              widget.productList[selectedIndex]
+                                                  .eduboxMaterials!.length) {
+                                        showCustomSnackBarHelper(
+                                            'product_information_not_available'.tr,
+                                            isError: true);
+                                        return;
+                                      }
+                                  
+                                      // Get current material safely
+                                      final currentMaterial = widget
+                                          .productList[selectedIndex]
+                                          .eduboxMaterials![materialIndex];
+                                  
+                                      // if (amount < 100 ||
+                                      //     amount > materialBalance ||
+                                      //     materialBalance <= 0.00) {
+                                      //   dialog.showWarningDialog(
+                                      //       context: context,
+                                      //       balance: materialBalance,
+                                      //       amount: double.tryParse(currentMaterial
+                                      //                   .price
+                                      //                   ?.toString() ??
+                                      //               '0.00') ??
+                                      //           0.00,
+                                      //       inputAmaount: amount);
+                                      // } else {
+                                        _confirmationRoute(
+                                            amount: amount,
+                                            price: double.tryParse(currentMaterial
+                                                        .price
+                                                        ?.toString() ??
+                                                    '0.00') ??
+                                                0.00,
+                                            balance: double.tryParse(currentMaterial
+                                                        .price
+                                                        ?.toString() ??
+                                                    '0.00') ??
+                                                0.00,
+                                            );
+                                      // }
+                                    },
+                                    title: 'PAY CASH',
+                                  
+                                  ),
+                                  DefaultButtonWidth(
+  width: 123,
+  color1: kamber300Color,
+  color2: kyellowColor,
+  onPress: () => showDepositDialog(
+    context: context,
+    title: 'How much would you like to deposit?',
+    onDeposit: (amount) {
+      _handleDeposit(amount:amount,material: material);
+      
+    },
+  ),
+  title: 'DEPOSIT',
+),
 
-                                  // Get current material safely
-                                  final currentMaterial = widget
-                                      .productList[selectedIndex]
-                                      .eduboxMaterials![materialIndex];
-
-                                  // if (amount < 100 ||
-                                  //     amount > materialBalance ||
-                                  //     materialBalance <= 0.00) {
-                                  //   dialog.showWarningDialog(
-                                  //       context: context,
-                                  //       balance: materialBalance,
-                                  //       amount: double.tryParse(currentMaterial
-                                  //                   .price
-                                  //                   ?.toString() ??
-                                  //               '0.00') ??
-                                  //           0.00,
-                                  //       inputAmaount: amount);
-                                  // } else {
-                                    _confirmationRoute(
-                                        amount: double.tryParse(currentMaterial
-                                                    .price
-                                                    ?.toString() ??
-                                                '0.00') ??
-                                            0.00,
-                                        price: double.tryParse(currentMaterial
-                                                    .price
-                                                    ?.toString() ??
-                                                '0.00') ??
-                                            0.00,
-                                        balance: materialBalance);
-                                  // }
-                                },
-                                title: 'PAY CASH',
-                                iconData: Icons.arrow_forward_outlined,
+                                ],
                               ),
 
-                              sizedBox05h,
+                              sizedBox10,
 
                               DefaultButton2(
                                 color1: kamber300Color,
@@ -883,6 +905,80 @@ class _HomeCard1State extends State<HomeCard1> {
       });
     });
   }
+
+  // Separate method for deposit handling
+void _handleDeposit({required double amount, EduboxMaterialModel? material}) {
+  // Validate material exists
+  if (material == null) {
+    showCustomSnackBarHelper('Material information not available', isError: true);
+    return;
+  }
+
+  // Calculate material balance safely
+  final materialBalance = _calculateMaterialBalance(material!);
+
+  // Validate amount
+  if (amount <= 0) {
+    showCustomSnackBarHelper('transaction_amount_must_be'.tr, isError: true);
+    return;
+  }
+
+  // Validate product information
+  if (!_validateProductInfo()) {
+    showCustomSnackBarHelper('product_information_not_available'.tr, isError: true);
+    return;
+  }
+
+  final currentMaterial = _getCurrentMaterial();
+  if (currentMaterial == null) {
+    showCustomSnackBarHelper('Selected material not found', isError: true);
+    return;
+  }
+
+  // Validate amount against balance
+  if (amount < 100 || amount > materialBalance || materialBalance <= 0.00) {
+    dialog.showWarningDialog(
+      context: context,
+      balance: materialBalance,
+      amount: _parseMaterialPrice(currentMaterial),
+      inputAmaount: amount,
+    );
+  } else {
+    _confirmationRoute(
+      amount:amount,
+      price: _parseMaterialPrice(currentMaterial),
+      balance: materialBalance,
+    );
+  }
+}
+
+// Helper methods
+double _calculateMaterialBalance(EduboxMaterialModel material) {
+  try {
+    return (material.paymentHistory?.balance != null && 
+            double.tryParse(material.paymentHistory!.balance ?? '0.00')! > 0.00)
+        ? double.parse(material.paymentHistory!.balance!)
+        : double.parse(material.price?.toString() ?? '0.00');
+  } catch (e) {
+    return 0.00;
+  }
+}
+
+bool _validateProductInfo() {
+  return widget.productList.isNotEmpty &&
+      selectedIndex < widget.productList.length &&
+      widget.productList[selectedIndex].eduboxMaterials != null &&
+      materialIndex < widget.productList[selectedIndex].eduboxMaterials!.length;
+}
+
+EduboxMaterialModel? _getCurrentMaterial() {
+  if (!_validateProductInfo()) return null;
+  return widget.productList[selectedIndex].eduboxMaterials![materialIndex];
+}
+
+double _parseMaterialPrice(EduboxMaterialModel material) {
+  return double.tryParse(material.price?.toString() ?? '0.00') ?? 0.00;
+}
 
   sendMoney() {
     _contact = ContactModel(
@@ -1082,6 +1178,7 @@ class _HomeCard1State extends State<HomeCard1> {
       } else {
         Get.to(() => TransactionConfirmationScreen(
               inputBalance: amount,
+              availableBalance: balance.toStringAsFixed(2),
               productId: widget.productId!,
               transactionType: TransactionType.withdrawRequest,
               contactModel: null,
@@ -1226,7 +1323,8 @@ class _HomeCard1State extends State<HomeCard1> {
             serviceIndex: widget.productIndex,
             studentIndex: widget.studentIndex,
             price: price,
-            parent: widget.parent!));
+            parent: widget.parent!
+            ));
       }
     } else {
       Get.to(() => CreditTransactionConfirmationScreen(

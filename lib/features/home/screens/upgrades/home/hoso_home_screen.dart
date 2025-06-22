@@ -9,6 +9,7 @@ import 'package:hosomobile/features/home/controllers/class_controller.dart';
 import 'package:hosomobile/features/home/domain/models/announcement_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/add_account.dart';
 import 'package:hosomobile/features/home/widgets/announcement_widget.dart';
+import 'package:hosomobile/features/introduction/screen/appbar_header_widget.dart';
 import 'package:hosomobile/features/school/controllers/school_list_controller.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/helper/route_helper.dart';
@@ -221,7 +222,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(height: screenHeight >= 763 ? 101 : 51),
+                        SizedBox(height: screenHeight >= 763 ? 101 : 81),
                         Center(
                           child: SizedBox(
                             width: screenWidth >= 520 ? 340 : screenWidth,
@@ -423,14 +424,10 @@ class _HomeCard1State extends State<HomeCard1> {
                           screenHeight >= 763
                               ? sizedBox
                               : const SizedBox(height: 10),
-                          SizedBox(
-                              height: screenHeight >= 763 ? 60 : 25,
-                              width: screenHeight >= 763 ? 300 : 120,
-                              child:
-                                  const IconImages('assets/image/edubox.png')),
+                       const   AppBarHeaderWidget()
                         ],
                       ),
-                      SizedBox(height: screenHeight >= 763 ? 40 : 20),
+                      SizedBox(height: screenHeight >= 763 ? 30 : 10),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [

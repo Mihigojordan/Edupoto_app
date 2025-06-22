@@ -1,6 +1,7 @@
 import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/hoso_home_screen.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/hoso_services/hoso_services.dart';
+import 'package:hosomobile/features/home/screens/upgrades/no_connection/no_connection.dart';
 import 'package:hosomobile/features/setting/screens/profile_screen.dart';
 
 import 'package:flutter/material.dart';
@@ -14,8 +15,8 @@ class MenuItemController extends GetxController implements GetxService{
   final List<Widget> screen = [
    const HosoHomeScreen(),
   //  const HomeScreen(),
-    const MzaziScreen(isShop: false,),
-     const HosoServices(),
+    const MzaziScreen(isShop: false,isNavigation:1),
+     const NoConnection(),
     const ProfileScreen()
 
   ];

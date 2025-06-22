@@ -102,14 +102,11 @@ class _TransactionConfirmationScreenState
       Get.find<TransactionMoneyController>();
   final MtnMomoApiClient mtnMomoApiClient = MtnMomoApiClient();
   String? transactionId;
-  final double vatPercentage = 18.0; // Example VAT percentage
-  final double serviceChargePercentage =
-      4.0; // Example service charge percentage
+
   Random random = Random();
 
 bool isHomeDelivery =false;
- double totalPrice = 0.0;
-  double deliveryCost = 3000.0;
+
   double subTotalPrice = 0.0;
   double calculatedTotal = 0.0;
   int checkedProducts = 0;
@@ -152,60 +149,19 @@ bool isHomeDelivery =false;
     Get.back();
   }
 
-  double calculateVAT(double amount) {
-    return (amount * vatPercentage) / 100;
-  }
 
-  double calculateServiceCharge(double amount) {
-    return (amount * serviceChargePercentage) / 100;
-  }
-
-  double calculateOriginalAmaount(double amount) {
-    return amount -
-        calculateVAT(double.parse('${widget.inputBalance}')) -
-        calculateServiceCharge(double.parse('${widget.inputBalance}'));
-  }
-
-  double calculateOriginalVat(double amount) {
-    return ((amount - calculateVAT(double.parse('${widget.inputBalance}'))) *
-            vatPercentage) /
-        100;
-  }
-
-  double calculateTotalWithService(double amount) {
-    double serviceCharge = calculateServiceCharge(amount);
-    return amount + serviceCharge;
-  }
-
-  double calculateTotal(double amount) {
-    double vat = calculateVAT(amount);
-    double serviceCharge = calculateServiceCharge(amount);
-    double originalAmount = calculateOriginalAmaount(amount);
-    return originalAmount + vat + serviceCharge;
-  }
-
-  double calculateServiceCharge0fPrice() {
-    return widget.price! * serviceChargePercentage / 100;
-  }
-
-  double remainingAmount(double amount) {
-    double serviceCharge = calculateServiceCharge0fPrice();
-
-    return double.parse('${widget.price}') - amount;
-  }
-
-  double availableBalance({required double amount, required double balance}) {
-    return balance - amount;
-  }
 
   @override
   Widget build(BuildContext context) {
-    final bottomSliderController = Get.find<BottomSliderController>();
-    final String totalAmount =
-        calculateTotal(double.parse('${widget.inputBalance}'))
-            .toStringAsFixed(2);
-    String phoneNumber = widget.contactModel!.phoneNumber!.replaceAll('+', '');
-    int randomNumber = random.nextInt(90000000) + 10000000;
+      final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+   final bottomSliderController = Get.find<BottomSliderController>();
+  final totalAmount = AppConstants.calculateTotal(double.parse('${widget.price}')).toStringAsFixed(2);
+    final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('${widget.inputBalance}')); 
+    final vat =AppConstants.calculateVAT(double.parse('${widget.inputBalance}')) ;
+    final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse('${widget.availableBalance}')).toStringAsFixed(2);
+      int randomNumber = random.nextInt(90000000) + 10000000;;
+   
     final student = widget.studentInfo![widget.studentIndex!];
     //   bottomSliderController.setIsPinCompleted(isCompleted: false, isNotify: false);
 
@@ -252,7 +208,7 @@ bool isHomeDelivery =false;
                       },
                       itemLists: widget.dataList!,
                       title:
-                          '${widget.dataList![widget.productIndex!].name}-${widget.dataList![widget.productIndex!].price}RWF',
+                          '${widget.dataList![widget.productIndex!].name}-${widget.dataList![widget.productIndex!].price}${AppConstants.currency}',
                       isExpanded: true),
                   sizedBox15,
      Column(
@@ -277,6 +233,8 @@ bool isHomeDelivery =false;
       color1: kamber300Color,
       color2: kyellowColor,
       onPress: () => _captureInformation(
+        vat: vat,
+        convenienceFee: convenienceFee,
         context,
         randomNumber: randomNumber,
         totalAmount: totalAmount,
@@ -299,7 +257,7 @@ bool isHomeDelivery =false;
           )
         : DeliveryMapScreen(
             isShop: 0,
-            deliveryCost: deliveryCost ,
+            deliveryCost: AppConstants.deliveryCost ,
             schoolId: student.schoolId ?? 0,
             classId: student.classId ?? 0,
             className: student.studentClass ?? 'Unknown Class',
@@ -322,22 +280,16 @@ bool isHomeDelivery =false;
             productId: widget.productId ?? 0,
             pinCodeFieldController: _pinCodeFieldController.text,
             transactionType: widget.transactionType!,
-            calculatedTotalWithServices: calculateTotalWithService(
-              double.tryParse(calculatedTotal?.toString() ?? '0') ?? 0,
-            ),
+            calculatedTotalWithServices:widget.price!,
             productIndex: widget.productIndex ?? 0,
             purpose: widget.purpose ?? '',
-            calculateServiceCharge: calculateServiceCharge(
-              double.tryParse(calculatedTotal?.toString() ?? '0') ?? 0,
-            ),
-            calculateVAT: calculateVAT(
-              double.tryParse(calculatedTotal?.toString() ?? '0') ?? 0,
-            ),
+            calculateServiceCharge: convenienceFee,
+            calculateVAT: vat,
             productName: widget.edubox_service ?? '',
             randomNumber: randomNumber,
             serviceIndex: widget.serviceIndex ?? 0,
             totalAmount: double.tryParse(totalAmount ?? '0') ?? 0,
-            vatPercentage: vatPercentage,
+            vatPercentage: AppConstants.vatPercentage,
           ),
   ],
 ),
@@ -348,16 +300,16 @@ sizedBox10,
                   ),
                   sizedBox10,
                   Text(
-                      'Amount to be Paid: ${calculateTotalWithService(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF'),
+                      'Amount to be Paid: ${widget.price} ${AppConstants.currency}'),
                   Text(
-                      'Now Paying: ${widget.inputBalance!.toStringAsFixed(2)} RWF'),
+                      'Now Paying: ${widget.inputBalance!.toStringAsFixed(2)} ${AppConstants.currency}'),
                   Text(
-                      'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF'),
+                      'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
                   Text(
-                      'Service Charge (${serviceChargePercentage.toStringAsFixed(1)}%): ${calculateServiceCharge(double.parse('${widget.inputBalance}')).toStringAsFixed(2)} RWF'),
+                      'Convenience Fee: $convenienceFee ${AppConstants.currency}'),
                   const Divider(),
                   Text(
-                    'Total Amount paid now: $totalAmount RWF',
+                    'Total Amount paid now: $totalAmount ${AppConstants.currency}',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -370,7 +322,7 @@ sizedBox10,
                       fontSize: Dimensions.fontSizeLarge,
                       color: ColorResources.getGreyBaseGray1())),
               Text(
-                  '${availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse(widget.availableBalance!)).toStringAsFixed(2)}RWF',
+                  '$availableBalance ${AppConstants.currency}',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.bold,
                       )),
@@ -384,7 +336,7 @@ sizedBox10,
               if (widget.transactionType == TransactionType.withdrawRequest)
                 PreviewAmountWidget(
                     amountText: PriceConverterHelper.balanceWithCharge(
-                      widget.inputBalance,
+                     double.parse( '${widget.availableBalance}'),
                       Get.find<SplashController>()
                           .configModel!
                           .withdrawChargePercent,
@@ -509,7 +461,10 @@ sizedBox10,
       required String schoolName,
       required String className,
       required String productName,
-      required String orderId}) {
+      required String orderId,
+      required double vat,
+      required double convenienceFee
+      }) {
     showDialog(
       context: context,
       builder: (context) {
@@ -571,6 +526,7 @@ TextButton(
             ),
             builder: (context) {
               return BottomSheetWithSliderP(
+                
                 schoolName: student?.school ?? 'Unknown School',
                 className: student?.studentClass ?? 'Unknown Class',
                 shipper: '',
@@ -598,11 +554,11 @@ TextButton(
                 dataList: widget.dataList ?? [],
                 productIndex: widget.productIndex ?? 0,
                 edubox_service: widget.edubox_service ?? '',
-                amountToPay: 'Amount to be Paid: ${calculateTotalWithService(inputBalance).toStringAsFixed(2)} RWF',
-                nowPaid: 'Now Paid: ${inputBalance.toStringAsFixed(2)} RWF',
-                vat: 'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(inputBalance).toStringAsFixed(2)} RWF',
-                serviceCharge: calculateServiceCharge(inputBalance).toStringAsFixed(2),
-                totalNowPaid: 'Total Amount paid now: $totalAmount RWF',
+                amountToPay: 'Amount to be Paid: ${widget.price} ${AppConstants.currency}',
+                nowPaid: 'Now Paid: ${inputBalance.toStringAsFixed(2)} ${AppConstants.currency}',
+                vat: 'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
+                serviceCharge: convenienceFee.toStringAsFixed(2),
+                totalNowPaid: 'Total Amount paid now: $totalAmount ${AppConstants.currency}',
               );
             },
           );

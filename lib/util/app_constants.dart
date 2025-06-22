@@ -14,6 +14,10 @@ class AppConstants {
   static const String customerPhoneCheckUri =
       '/api/v1/customer/auth/check-phone';
 
+ //******************************* introduction screen ******************************
+ static const String appShareLink = 'https://skoollist.web.app';
+ 
+
   static const String customerPhoneVerifyUri =
       '/api/v1/customer/auth/verify-phone';
   static const String customerRegistrationUri =
@@ -132,6 +136,73 @@ class AppConstants {
 
   //input balance digit length
   static const int balanceInputLen = 10;
+
+  //payment invoices
+  static String currency='RWF';
+  static double vatPercentage=18;
+  static double convenienceFeePercentage = 1.0;
+  static double deliveryCost=3000.00;
+
+  static  double calculateVAT(double amount) {
+    return (amount * vatPercentage) / 100;
+  }
+
+ static double calculateConvenienceFee(double amount) {
+    return (amount * convenienceFeePercentage) / 100;
+  }
+
+ static double calculateOriginalAmaount(double amount) {
+    return amount -
+        calculateVAT(amount) -
+        calculateConvenienceFee(amount);
+  }
+
+ static double calculateOriginalVat(double amount) {
+    return ((amount - calculateVAT(amount)) *
+            vatPercentage) /
+        100;
+  }
+
+ static double calculateTotalWithService(double amount) {
+    double convenienceFee = calculateConvenienceFee(amount);
+    return amount + convenienceFee;
+  }
+
+ static double calculateTotal(double amount) {
+    double vat = calculateVAT(amount);
+    double convenienceFee = calculateConvenienceFee(amount);
+    return amount + vat + convenienceFee+deliveryCost;
+  }
+
+static  double calculateServiceCharge0fPrice(double amount) {
+    return amount * convenienceFeePercentage / 100;
+  }
+
+static double remainingAmount({
+  required double amount,
+  required double remainingBalance
+}) {
+  final double remainingAmount;
+       
+  if (remainingBalance == 0) {
+    remainingAmount = amount;
+  } else {
+    remainingAmount = remainingBalance;
+  }
+
+  return remainingAmount;
+}
+
+ static double availableBalance({required double amount, required double balance}) {
+    return balance - amount;
+  }
+
+    double deliveryCostWithMAterialCost(amount) {
+      final calculatedTotal=calculateTotal(amount);
+    return calculatedTotal + deliveryCost;
+  }
+
+// Language Model
 
   static List<LanguageModel> languages = [
     LanguageModel(
