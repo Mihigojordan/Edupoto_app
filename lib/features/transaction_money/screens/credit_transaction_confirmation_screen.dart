@@ -345,7 +345,7 @@ homeDeliveryAction() {
               Text('School Name: $schoolName'),
               Text('Class: $className'),
               Text('Customer Product: $productName'),
-              Text('Order ID: $orderId'),
+              Text('Order ID: $randomNumber'),
             ],
           ),
           actions: [

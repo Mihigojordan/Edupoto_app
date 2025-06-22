@@ -75,8 +75,10 @@ class DeliveryMapScreenSl extends StatefulWidget {
     this.product,
     this.quantity,
     this.studentIndex,
+    required this.availableBalance
   });
 
+  final double availableBalance;
   final int schoolId;
   final int studentId;
   final int classId;

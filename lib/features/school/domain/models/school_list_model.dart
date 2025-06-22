@@ -1,3 +1,5 @@
+import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
+
 class SchoolListModel {
   int? totalSize;
   int? limit;
@@ -41,6 +43,8 @@ class SchoolLists {
   double? amount;
   Receiver? receiver;
   Sender? sender;
+  PaymentHistoryModel? paymentHistory;
+
 
   SchoolLists(
       {this.transactionType,
@@ -51,7 +55,9 @@ class SchoolLists {
         this.createdAt,
         this.receiver,
         this.sender,
-        this.amount});
+        this.amount,
+        this.paymentHistory
+        });
 
   SchoolLists.fromJson(Map<String, dynamic> json) {
     transactionType = json['transaction_type'];
@@ -67,6 +73,9 @@ class SchoolLists {
     sender = json['sender'] != null
         ? Sender.fromJson(json['sender'])
         : null;
+   paymentHistory = json['payments'] != null
+        ? PaymentHistoryModel.fromJson(json['payments'])
+        : null;    
     createdAt = json['created_at'];
     amount = json['amount'].toDouble();
   }
@@ -79,6 +88,9 @@ class SchoolLists {
     data['credit'] = credit;
     if (userInfo != null) {
       data['user_info'] = userInfo!.toJson();
+    }
+    if (paymentHistory != null) {
+      data['[payments]'] = paymentHistory!.toJson();
     }
     data['created_at'] = createdAt;
     data['amount'] = amount;

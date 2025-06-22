@@ -75,9 +75,11 @@ class SchoolTransactionConfirmationScreen extends StatefulWidget {
   final String homePhone;
   final String destination;
   final String shipper;
+  final double availableBalance;
 
   const SchoolTransactionConfirmationScreen(
       {super.key,
+   required this.availableBalance,
       required this.inputBalance,
       required this.transactionType,
       required this.homePhone,
@@ -193,11 +195,11 @@ class _TransactionConfirmationScreenState
     final screenWidth = MediaQuery.of(context).size.width;
 
     final bottomSliderController = Get.find<BottomSliderController>();
-  final totalAmount = AppConstants.calculateTotal(double.parse('${widget.inputBalance}')).toStringAsFixed(2);
+  final totalAmount = AppConstants.calculateTotal(double.parse('$subTotalPrice')).toStringAsFixed(2);
     final  SchoolLists product = widget.dataList![widget.productIndex!];
-    final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('${widget.inputBalance}')); 
-    final vat =AppConstants.calculateVAT(double.parse('${widget.inputBalance}')) ;
-    final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse('${widget.inputBalance}')).toStringAsFixed(2);
+    final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('$subTotalPrice')); 
+    final vat =AppConstants.calculateVAT(double.parse('$subTotalPrice')) ;
+    final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse('${widget.availableBalance}')).toStringAsFixed(2);
       int randomNumber = random.nextInt(90000000) + 10000000;
 
     void validateForm() {
@@ -340,7 +342,8 @@ class _TransactionConfirmationScreenState
                             orderId: '1234',
                             productName: widget.productName!,
                             convenienceFee: convenienceFee,
-                            vat: vat
+                            vat: vat,
+                            availableBalance:double.parse(availableBalance)
                             ),
                         // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
 
@@ -389,15 +392,17 @@ class _TransactionConfirmationScreenState
                               randomNumber: randomNumber,
                               serviceIndex: widget.serviceIndex??0,
                               totalAmount: double.parse(totalAmount),
-                              vatPercentage: AppConstants.vatPercentage),
+                              vatPercentage: AppConstants.vatPercentage,
+                              availableBalance:double.parse(availableBalance)
+                              ),
                     ],
                   ),
                   sizedBox10,
                   // Delivery Cost
 
-                  PreviewAmountWidget(
-                      amountText: calculatedTotal.toStringAsFixed(2) ?? "",
-                      onTap: widget.callBack),
+                  // PreviewAmountWidget(
+                  //     amountText: calculatedTotal.toStringAsFixed(2) ?? "",
+                  //     onTap: widget.callBack),
                   Container(
                     height: Dimensions.dividerSizeMedium,
                     color: Theme.of(context).dividerColor,
@@ -410,7 +415,7 @@ class _TransactionConfirmationScreenState
                   ),
                   // Display Total Price
 
-                  Text('Material Cost: $calculatedTotal ${AppConstants.currency}'),
+                  Text('Material Cost: $subTotalPrice ${AppConstants.currency}'),
                   // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
                   Text('VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
 
@@ -423,6 +428,19 @@ class _TransactionConfirmationScreenState
                           fontWeight: FontWeight.bold,
                         ),
                   ),
+sizedBox10,
+           sizedBox10,
+              Text('Pending/Remaing Amount to be paid',
+                  style: rubikSemiBold.copyWith(
+                      fontSize: Dimensions.fontSizeLarge,
+                      color: ColorResources.getGreyBaseGray1())),
+              Text(
+                  '$availableBalance RWF',
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      )),
+              const SizedBox(height: 15),
+
                 ],
               ),
               sizedBox10,
@@ -877,7 +895,8 @@ sizedBox
       required String productName,
       required String orderId,
       required double vat,
-      required double convenienceFee
+      required double convenienceFee,
+      required double availableBalance
       }) {
     showDialog(
       context: context,
@@ -893,7 +912,7 @@ sizedBox
               Text('School Name: $schoolName'),
               Text('Class: $className'),
               Text('Customer Product: $productName'),
-              Text('Order ID: $orderId'),
+              Text('Order ID: $randomNumber'),
             ],
           ),
           actions: [
@@ -967,10 +986,10 @@ sizedBox
                               builder: (context) {
                                 //**************** Bottom Sheet with slider */
                                 return BottomSheetWithSliderSl(
+                                  availableBalance:availableBalance.toStringAsFixed(2),
                                   shipper: widget.shipper,
                                   homePhone: widget.homePhone,
                                   destination: widget.destination,
-                                  availableBalance: '0.00',
                                   amount: calculatedTotal.toString(),
                                   productId: widget.productId!,
                                   contactModel: widget.contactModel,

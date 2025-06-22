@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "edupoto",
+   "site": "babyeyi",
     "public": "build/web",
     "ignore": [
       "firebase.json",
@@ -15,5 +15,6 @@
     ]
 
   }
+  
  
 }

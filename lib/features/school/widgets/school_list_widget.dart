@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/common/models/contact_model_mtn.dart';
 import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
+import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/tereka_asome/widget/widget_dialog.dart';
 import 'package:hosomobile/features/school/controllers/school_list_controller.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/school/widgets/school_list_shimmer_widget.dart';
@@ -59,6 +60,8 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
   double totalPrice = 0.0; // Total price for all items
   List<bool> isChecked = [];
   Map<int, double> caseTotals = {}; // Map to store totals for each case
+
+  WidgetDialog dialog = WidgetDialog();
 
   @override
   void initState() {
@@ -134,6 +137,7 @@ void _calculateTotals() {
   Widget build(BuildContext context) {
     return GetBuilder<SchoolListController>(builder: (schoolLists) {
       List<SchoolLists> schoolList = _getFilteredSchoolList(schoolLists);
+      
 
       // Ensure `isChecked` length matches `schoolList`
       if (isChecked.length != schoolList.length) {
@@ -184,8 +188,8 @@ void _calculateTotals() {
   if (widget.isHome != null && !widget.isHome!) {
     switch (schoolLists.schoolListIndex) {
       case 1:
-      //   return schoolLists.headteacherMessageList;
-      // case 2:
+        return schoolLists.headteacherMessageList;
+      case 2:
         return schoolLists.classRequirementList;
       case 3:
         return schoolLists.domitoryEssentialList;
@@ -201,7 +205,7 @@ void _calculateTotals() {
         // Filter out tuition fee items when showing all school lists
         return schoolLists.schoolList.where((item) => 
           item.transactionType != AppConstants.tuitionFee 
-          // && item.transactionType != AppConstants.headteacherMessage
+           && item.transactionType != AppConstants.headteacherMessage
         ).toList();
     }
   }
@@ -233,7 +237,7 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
           itemBuilder: (ctx, index) {
             // Skip tuition fee items and headteacher messages when showing all lists
             if (schoolListIndex == 0 && 
-                (schoolList[index].transactionType == AppConstants.tuitionFee )) {
+                (schoolList[index].transactionType == AppConstants.tuitionFee ) ) {
               return const SizedBox.shrink();
             }
             
@@ -266,6 +270,8 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
 
   Widget _buildTotalPriceAndButtons(BuildContext context, {required int schoolListIndex,required String heading, required List<SchoolLists> schoolList,required List<bool> isChecked}) {
   final  userData = Get.find<AuthController>().getUserData();
+   late SchoolLists schoolListModel=SchoolLists();
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -334,11 +340,12 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               DefaultButtonWidth(
                 onPress: () => Get.to(
             () => SchoolTransactionConfirmationScreen(
+              availableBalance: totalPrice,
               shipper:widget.shipper,
               homePhone:widget.homePhone,
               destination:widget.destination,
               studentId: widget.studentId!,
-              inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              inputBalance: schoolList.isNotEmpty ? totalPrice : 0,
               productId: schoolListIndex,
               isChecked: isChecked,
               schoolId: widget.schoolId!,
@@ -362,7 +369,7 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               studentCode:widget.studentCode,
               edubox_service:schoolListIndex>0? heading:'All School Lists',
               serviceIndex: 0,
-              price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              price: schoolList.isNotEmpty ? totalPrice : 0,
             ),
           ),
                 title: 'PAY NOW',
@@ -372,13 +379,31 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
                 width: 123,
               ),
         DefaultButtonWidth(
-                onPress: () => Get.to(
+                onPress: () => showDepositDialog(
+    context: context,
+    title: 'How much would you like to deposit?$schoolListModel',
+    onDeposit: (amount) {
+
+
+final materialBalance=_calculateMaterialBalance(schoolListModel);
+        // Validate amount against balance
+  if (amount < 100 || amount > materialBalance || materialBalance <= 0.00) {
+    dialog.showWarningDialog(
+      context: context,
+      balance: materialBalance,
+      amount: totalPrice,
+      inputAmaount: amount,
+    );
+  } else {
+   
+        Get.to(
             () => SchoolTransactionConfirmationScreen(
+              availableBalance: materialBalance,
               shipper:widget.shipper,
               homePhone:widget.homePhone,
               destination:widget.destination,
               studentId: widget.studentId!,
-              inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              inputBalance: schoolList.isNotEmpty ? amount : 0,
               productId: schoolListIndex,
               isChecked: isChecked,
               schoolId: widget.schoolId!,
@@ -402,9 +427,14 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               studentCode:widget.studentCode,
               edubox_service:schoolListIndex>0? heading:'All School Lists',
               serviceIndex: 0,
-              price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              price: schoolList.isNotEmpty ? totalPrice : 0,
             ),
-          ),
+          );
+  }  
+    },
+  ),
+                
+      
                 title: 'DEPOSIT',
                
                 color1: kamber300Color,
@@ -418,11 +448,12 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
             iconData: Icons.credit_card,
                 onPress: ()=>  Get.to(
             () => SchoolTransactionConfirmationScreen(
+              availableBalance: totalPrice,
               screenId:1,
               homePhone:widget.homePhone,
               shipper:widget.shipper,
               destination:widget.destination,
-              inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              inputBalance: schoolList.isNotEmpty ? totalPrice : 0,
               productId: schoolListIndex,
               isChecked: isChecked,
               schoolId: widget.schoolId!,
@@ -447,7 +478,7 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               studentId: widget.studentId!,
               edubox_service:schoolListIndex>0? heading:'All School Lists',
               serviceIndex: schoolListIndex,
-              price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              price: schoolList.isNotEmpty ? totalPrice : 0,
             )),
         
                 title: 'REQUEST CREDIT',
@@ -541,11 +572,12 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               DefaultButtonWidth(
                 onPress: () => Get.to(
             () => SchoolTransactionConfirmationScreen(
+              availableBalance: totalPrice,
               studentId: widget.studentId!,
               shipper: widget.shipper,
               homePhone:widget.homePhone,
               destination:widget.destination,
-              inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              inputBalance: schoolList.isNotEmpty ? totalPrice : 0,
               productId: schoolListIndex,
               isChecked: isChecked,
               schoolId: widget.schoolId!,
@@ -569,7 +601,7 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               studentCode:widget.studentCode,
               edubox_service:schoolListIndex>0? heading:'All School Lists',
               serviceIndex: 0,
-              price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              price: schoolList.isNotEmpty ? totalPrice : 0,
             ),
           ),
                 title: 'PAY NOW',
@@ -578,14 +610,35 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
                 color2: kyellowColor,
                 width: 123,
               ),
+
+
         DefaultButtonWidth(
-                onPress: () => Get.to(
+
+                onPress: () {  showDepositDialog(
+    context: context,
+    title: 'How much would you like to deposit?$schoolListModel',
+    onDeposit: (amount) {
+
+
+final materialBalance=_calculateMaterialBalance(schoolListModel);
+        // Validate amount against balance
+  if (amount < 100 || amount > materialBalance || materialBalance <= 0.00) {
+    dialog.showWarningDialog(
+      context: context,
+      balance: materialBalance,
+      amount: totalPrice,
+      inputAmaount: amount,
+    );
+  } else {
+   
+        Get.to(
             () => SchoolTransactionConfirmationScreen(
+              availableBalance: materialBalance,
               studentId: widget.studentId!,
               shipper: widget.shipper,
               homePhone:widget.homePhone,
               destination:widget.destination,
-              inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              inputBalance: schoolList.isNotEmpty ?amount : 0,
               productId: schoolListIndex,
               isChecked: isChecked,
               schoolId: widget.schoolId!,
@@ -609,9 +662,13 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               studentCode:widget.studentCode,
               edubox_service:schoolListIndex>0? heading:'All School Lists',
               serviceIndex: 0,
-              price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              price: schoolList.isNotEmpty ? totalPrice : 0,
             ),
-          ),
+          );
+  }
+    });
+    },
+
                 title: 'DEPOSIT',
                
                 color1: kamber300Color,
@@ -625,11 +682,12 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
                     iconData: Icons.credit_card,
                 onPress: ()=>  Get.to(
             () => SchoolTransactionConfirmationScreen(
+              availableBalance: totalPrice,
               homePhone: widget.homePhone,
               destination: widget.destination,
               screenId:1,
               shipper: widget.shipper,
-              inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              inputBalance: schoolList.isNotEmpty ? totalPrice : 0,
               productId: schoolListIndex,
               isChecked: isChecked,
               schoolId: widget.schoolId!,
@@ -654,7 +712,7 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               studentId: widget.studentId!,
               edubox_service:schoolListIndex>0? heading:'All School Lists',
               serviceIndex: 0,
-              price: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              price: schoolList.isNotEmpty ? totalPrice : 0,
             )),
         
                 title: 'REQUEST CREDIT',
@@ -678,6 +736,19 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
       ),
     );
   }
+
+  
+
+double _calculateMaterialBalance(SchoolLists material) {
+  try {
+    return (material.paymentHistory?.balance != null && 
+            double.tryParse(material.paymentHistory!.balance ?? '0.00')! > 0.00)
+        ? double.parse(material.paymentHistory!.balance!)
+        : double.parse('$totalPrice');
+  } catch (e) {
+    return 0.00;
+  }
+}
 
   Widget _buildRichText(BuildContext context, String prefix, String value, String suffix) {
     return RichText(

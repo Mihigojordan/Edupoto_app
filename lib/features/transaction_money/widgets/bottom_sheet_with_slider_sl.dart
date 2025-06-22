@@ -281,18 +281,25 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                   ],
                                 ),
                                 sizedBox10,
-                                // Text('Pending/Remaing Amount to be paid',
-                                //     style: rubikSemiBold.copyWith(
-                                //         fontSize: Dimensions.fontSizeLarge,
-                                //         color:
-                                //             ColorResources.getGreyBaseGray1())),
-                                Text(widget.availableBalance,
+                              //  isDeposit==1?   
+                                Column(
+                                  children: [
+                                     Text('Pending/Remaing Amount to be paid',
+                                    style: rubikSemiBold.copyWith(
+                                        fontSize: Dimensions.fontSizeLarge,
+                                        color:
+                                            ColorResources.getGreyBaseGray1())),
+                             Text(widget.availableBalance,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium!
                                         .copyWith(
                                           fontWeight: FontWeight.bold,
-                                        )),
+                                        ))
+                                  ],
+                                ),
+                                // : const SizedBox.shrink(),
+                               
                                 const SizedBox(height: 15),
                               ])
                             : const SizedBox(),
