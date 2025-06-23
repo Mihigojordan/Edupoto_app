@@ -324,17 +324,20 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                         return null;
                                       },
                                     ),
+  
                                     const SizedBox(height: 15),
                                   ],
                                 ),
+                              
+           
                                                           ],
                                                       ),
                               ),
                             ),
                             sizedBox15,
-                            Row(
+                                         Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.end,
                                 children: [
                                   BorderButton1(
                                       borderColor: Colors.black,
@@ -368,7 +371,10 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                   .getStudentList(true,
                                                       id: widget.parentId);
                                             });
-                                            setAddAccount();
+                                        
+                                          });
+                                               setAddAccount();
+  //************************************************SHOW SUCCESSFULLY DIALOG FOR ADDED STUDENT IF THERE IS SELECTED STUDENT*/
                                             showInfoDialog(context,
                                                 student_name: studentNameEditingController.text,
                                                 student_code:studentCodeEditingController.text,
@@ -383,7 +389,6 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                 selectedIndex:
                                                     widget.selectedIndex,
                                                 parentId: widget.parentId);
-                                          });
 
                                        }   widget.studentRegistrationController
                                               .addStudent(
@@ -405,7 +410,11 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                   .getStudentList(true,
                                                       id: widget.parentId);
                                             });
-                                            setAddAccount();
+                                          
+                                          });
+
+  setAddAccount();
+  //************************************************SHOW SUCCESSFULLY DIALOG FOR ADDED STUDENT IF THERE IS SELECTED STUDENT*/
                                             showInfoDialog(context,
                                                 student_name: selectedStudent!.name!,
                                                 student_code: selectedStudent!.code!,
@@ -420,7 +429,7 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                 selectedIndex:
                                                     widget.selectedIndex,
                                                 parentId: widget.parentId);
-                                          });
+
                                         } else {
                                           setAddAccount();
                                         }
@@ -440,117 +449,7 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                           ? 'assets/icons1/save.png'
                                           : 'assets/icons1/add_account.png',
                                       clas: ''),
-                                  screenHeight >= 763
-                                      ? PartinerServices(
-                                          borderColor: Colors.black,
-                                          vertical: 5,
-                                          textColor: Colors.black,
-                                          horizontal: 5,
-                                          onPress: () => Get.to(TerekaAsome(
-                                                productId: widget
-                                                    .eduboxController
-                                                    .eduboxMaterialList![6]
-                                                    .id,
-                                                studentId: widget
-                                                    .studentController
-                                                    .studentList![0]
-                                                    .id,
-                                                schoolId: widget
-                                                    .studentController
-                                                    .studentList![0]
-                                                    .schoolId!,
-                                                classId: widget
-                                                    .studentController
-                                                    .studentList![0]
-                                                    .classId!,
-                                                contactModelMtn: ContactModelMtn(
-                                                    phoneNumber:
-                                                        '${widget.userData?.countryCode}${widget.userData?.phone}' ??
-                                                            '',
-                                                    name:
-                                                        '${widget.userData?.name}'),
-                                                transactionType:
-                                                    TransactionType.sendMoney,
-                                                contactModel: ContactModel(
-                                                    phoneNumber:
-                                                        '${widget.userData?.countryCode}${widget.userData?.phone}' ??
-                                                            '',
-                                                    name:
-                                                        '${widget.userData?.name}',
-                                                    avatarImage:
-                                                        '${Get.find<SplashController>().configModel!.baseUrls!.customerImageUrl}/${'image' ?? ''}'),
-                                                studentIndex:
-                                                    widget.selectedIndex,
-                                                productValue:
-                                                    productValueList[0]
-                                                        ['action'],
-                                                productIndex: 6,
-                                                iconImages:
-                                                    'assets/image/Partner services.png',
-                                                edubox_service: 'SAVE/DEPOSIT',
-                                              )),
-                                          height: 40,
-                                          width: screenWidth >= 520
-                                              ? 148
-                                              : screenWidth / 2.8,
-                                          icon: 'SAVE/DEPOSIT',
-                                          title: 'assets/image/edubox_icon.png',
-                                          clas: '')
-                                      : PartinerServices(
-                                          borderColor: Colors.black,
-                                          vertical: 2,
-                                          textColor: Colors.black,
-                                          horizontal: 2,
-                                          onPress: () => Get.to(TerekaAsome(
-                                                productId: widget
-                                                    .eduboxController
-                                                    .eduboxMaterialList![6]
-                                                    .id,
-                                                studentId: widget
-                                                    .studentController
-                                                    .studentList![0]
-                                                    .id,
-                                                schoolId: widget
-                                                    .studentController
-                                                    .studentList![0]
-                                                    .schoolId!,
-                                                classId: widget
-                                                    .studentController
-                                                    .studentList![0]
-                                                    .classId!,
-                                                contactModelMtn: ContactModelMtn(
-                                                    phoneNumber:
-                                                        '${widget.userData?.countryCode}${widget.userData?.phone}' ??
-                                                            '',
-                                                    name:
-                                                        '${widget.userData?.name}'),
-                                                transactionType:
-                                                    TransactionType.sendMoney,
-                                                contactModel: ContactModel(
-                                                    phoneNumber:
-                                                        '${widget.userData?.countryCode}${widget.userData?.phone}' ??
-                                                            '', //'${userData?.countryCode}${userData?.phone}' ?? ,
-                                                    name:
-                                                        '${widget.userData?.name}',
-                                                    avatarImage:
-                                                        '${Get.find<SplashController>().configModel!.baseUrls!.customerImageUrl}/${'image' ?? ''}'),
-                                                studentIndex:
-                                                    widget.selectedIndex,
-                                                productValue:
-                                                    productValueList[0]
-                                                        ['action'],
-                                                productIndex: 6,
-                                                iconImages:
-                                                    'assets/image/Partner services.png',
-                                                edubox_service: 'SAVE/DEPOSIT',
-                                              )),
-                                          height: 20,
-                                          width: screenWidth >= 520
-                                              ? 148
-                                              : screenWidth / 2.7,
-                                          icon: 'SAVE/DEPOSIT',
-                                          title: 'assets/image/edubox_icon.png',
-                                          clas: ''),
+                                 
                                 ]),
                           ],
                         );

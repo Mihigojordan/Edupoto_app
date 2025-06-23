@@ -4,6 +4,7 @@ import 'package:hosomobile/features/home/screens/upgrades/home/constants/constan
 import 'package:hosomobile/features/introduction/widget/custom_help_widget.dart';
 import 'package:hosomobile/features/introduction/widget/custom_share_widget.dart';
 import 'package:hosomobile/features/introduction/widget/custom_user_guider_widget.dart';
+import 'package:hosomobile/features/introduction/widget/custom_user_install_widget.dart';
 import 'package:hosomobile/features/language/controllers/localization_controller.dart';
 import 'package:hosomobile/helper/route_helper.dart';
 import 'package:hosomobile/util/app_constants.dart';
@@ -27,7 +28,7 @@ class AppBarHeaderWidget extends StatelessWidget {
             onTap: () => showInstallPrompt(context),
             child: Column(
               children: [
-                const CustomLogoWidget(height: 50.0, width: 50.0,borderRadius: 5.0),
+                const CustomInstallWidget(height: 50.0, width: 50.0,borderRadius: 5.0),
                 sizedBox5,
                 Text('Install', style: Theme.of(context).textTheme.titleSmall!.copyWith(
                   fontWeight: FontWeight.w500, color: Colors.black))

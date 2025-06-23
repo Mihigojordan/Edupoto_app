@@ -15,7 +15,7 @@ class CustomLogoWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         color: Colors.transparent, // Ensures background doesn't cover image
       ),
-      child: Image.asset(Images.logo),
+      child: Image.asset(Images.install),
     );
   }
 }

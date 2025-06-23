@@ -8,6 +8,7 @@ import 'package:hosomobile/features/home/controllers/banner_controller.dart';
 import 'package:hosomobile/features/home/controllers/bilboard_controller.dart';
 import 'package:hosomobile/features/home/controllers/menu_controller.dart';
 import 'package:hosomobile/features/home/domain/models/banner_model.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/widgets/banner_widget.dart';
 import 'package:hosomobile/features/home/widgets/bilboard_widget.dart';
 import 'package:hosomobile/features/setting/controllers/profile_screen_controller.dart';
@@ -259,21 +260,43 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-      floatingActionButton: Padding(
+    floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 20, right: 10),
         child: GetBuilder<AuthController>(
           builder: (controller) {
-            return FloatingActionButton(
-              onPressed: () {
-                _login(context);
-              },
+            return FloatingActionButton.extended(
+              onPressed: controller.isLoading ? null : () => _login(context),
               elevation: 0,
-              backgroundColor: const Color(0xfffed114),
-              child: controller.isLoading
-                  ? CircularProgressIndicator(
-                      color: Theme.of(context).textTheme.bodyLarge!.color,
+              backgroundColor: kyellow800Color,
+              disabledElevation: 0,
+              extendedPadding: const EdgeInsets.symmetric(horizontal: 16),
+              label: controller.isLoading
+                  ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Theme.of(context).textTheme.bodyLarge!.color,
+                      ),
                     )
-                  : Icon(Icons.arrow_forward, color: ColorResources.blackColor, size: 28),
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Next',
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: ColorResources.blackColor,
+                                  ),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.arrow_forward,
+                          color: ColorResources.blackColor,
+                          size: 24,
+                        ),
+                      ],
+                    ),
             );
           },
         ),

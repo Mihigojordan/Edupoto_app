@@ -543,14 +543,14 @@ class _StudentWidgetState extends State<StudentWidget> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 SizedBox(
-                    height: screenHeight >= 763 ? 185 : 50,
-                    width: screenHeight >= 763 ? 115 : 30,
+                    height: screenHeight >= 763 ? 175 : 35,
+                    width: screenHeight >= 763 ? 115 : 25,
                     child: const IconImages('assets/image/edubox_kid.png')),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: SizedBox(
-                      height: screenHeight >= 763 ? 40 : 35,
-                      width: screenHeight >= 763 ? 180 : 160,
+                      height: screenHeight >= 763 ? 25 : 20,
+                      width: screenHeight >= 763 ? 190 : 170,
                       child: const IconImages('assets/image/edubox.png')),
                 ),
               ],
@@ -579,6 +579,7 @@ class _StudentWidgetState extends State<StudentWidget> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          //*********************************FOR ADDING MORE STUDENTS IN YOUR ACCOUNT *******************************/
                           isAddAccount == true
                               ? addAccout(
                                   student: student,
@@ -683,6 +684,7 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                                     .w400),
                                                       ),
                                                       const Spacer(),
+                                                      //*********************************** EDIT STUDENT INFORMATION  ****************************************/
                                                       IconButton(
                                                           onPressed: () {
                                                             setState(() => studentId =
@@ -778,26 +780,23 @@ class _StudentWidgetState extends State<StudentWidget> {
 
                                                 if (studentRegistrationController
                                                         .isNextBottomSheet ==
-                                                    true) {
-                                                  setAddAccount();
-                                                  showInfoDialog(context,
-                                                      student_code:
-                                                          student.code!,
-                                                      student_name:
-                                                          student.name!,
-                                                      studentRegController:
-                                                          studentRegistrationController,
-                                                      title: 'Student Info',
-                                                      description:
-                                                          'Student added successfully\nYou can continue by adding uniform details',
-                                                      studentController:
-                                                          studentController,
-                                                      studentId: student.id,
-                                                      selectedIndex:
-                                                          selectedIndex,
-                                                      parentId: parentId!);
-                                                }
+                                                    true) {}
                                               });
+
+                                              setAddAccount();
+                                              showInfoDialog(context,
+                                                  student_code: student.code!,
+                                                  student_name: student.name!,
+                                                  studentRegController:
+                                                      studentRegistrationController,
+                                                  title: 'Student Info',
+                                                  description:
+                                                      'Student added successfully\nYou can continue by adding uniform details',
+                                                  studentController:
+                                                      studentController,
+                                                  studentId: student.id,
+                                                  selectedIndex: selectedIndex,
+                                                  parentId: parentId!);
                                             } else {
                                               setAddAccount();
                                             }

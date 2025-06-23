@@ -1,11 +1,11 @@
 {
-    "name": "Edupoto Mobile",
-    "short_name": "Edupoto Mobile",
+    "name": "EBabyeyi",
+    "short_name": "Babyeyi",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#fed114",
     "theme_color": "#fed114",
-    "description": "Edupoto Mobile reach for the Stars.",
+    "description": "Babyeyi Mobile reach for the Stars.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

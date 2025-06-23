@@ -131,7 +131,7 @@ class _NavBarScreenState extends State<NavBarScreen> {
                       color: const Color(0xFFFFA000), // Amber 700 as base color
                     ),
                     child: Image.asset(
-                      'assets/image/stationery.png',
+                      'assets/image/shop.png',
                       // height: screenHeight * 0.025,
                       // width: screenHeight * 0.025,
                       fit: BoxFit.cover,

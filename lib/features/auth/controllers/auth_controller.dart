@@ -271,40 +271,79 @@ class AuthController extends GetxController implements GetxService {
   }
 
 
-Future<Response> login({String? code, String? phone, String? password}) async {
+Future<Response>  login({String? code, String? phone, String? password}) async {
   _isLoading = true;
   update();
 
-  print('lets check for response ================= 1');
-
   try {
+    print('Attempting login with phone: $phone');
     Response response = await authRepo.login(phone: phone, password: password, dialCode: code);
-    print('lets check for response ================= 2: ');
     
-    if (response.statusCode == 200 && 
-        response.body['response_code'] == 'auth_login_200' && 
-        response.body['content'] != null) {
-      await authRepo.saveUserToken(response.body['content']).then((_) async {
-        await authRepo.updateToken();
-      });
+    print('Raw API response: ${response.body}');
+  
 
-      if (Get.currentRoute != RouteHelper.navbar) {
-        Get.offAllNamed(RouteHelper.getNavBarRoute(destination: 'home'), arguments: true);
-        authRepo.setUserId(response.body['id'].toString());
+    final responseBody = response.body;
+
+    // Check status code and response code
+    if (response.statusCode == 200 && 
+        responseBody['response_code'] == 'auth_login_200') {
+      
+      // Safely access content
+      if (responseBody['content'] != null) {
+        await authRepo.saveUserToken(responseBody['content'].toString());
+        // await authRepo.updateToken();
+
+        // Navigate only if not already there
+        if (Get.currentRoute != RouteHelper.navbar) {
+          Get.offAllNamed(
+            RouteHelper.getNavBarRoute(destination: 'home'), 
+            arguments: true
+          );
+        }
+
+        // Safely get user ID
+        if (responseBody['id'] != null) {
+          authRepo.setUserId(responseBody['id'].toString());
+        }
+      } else {
+         showCustomSnackBarHelper('Content is null in successful response 2: ${response.body}',
+          isError: true);
+        throw Exception('Content is null in successful response');
       }
     } else {
-      print('lets check for response ================= 3');
-      ApiChecker.checkApi(response);
+      // Handle API error
+       showCustomSnackBarHelper('Unknown error occurred 3: ${response.body}',
+          isError: true);
+      final errorMessage = responseBody['message'] ?? 'Unknown error occurred';
+      throw Exception(errorMessage);
     }
-  } catch (e) {
-    print('Error during login process: $e');
-    return const Response(statusCode: 500, statusText: 'Error during login process.');
+
+    return  Response(
+      statusCode: response.statusCode,
+      body: response.body,
+      statusText: 'Login successful'
+    );
+    
+  } on FormatException catch (e) {
+    print('Format Exception: $e');
+    showCustomSnackBarHelper('Unknown error occurred 3: $e',
+          isError: true);
+    return Response(
+      statusCode: 500,
+      statusText: 'Invalid response format from server'
+    );
+  } on Exception catch (e) {
+    print('Login Exception: $e');
+     showCustomSnackBarHelper('Login Exception4: $e',
+          isError: true);
+    return Response(
+      statusCode: 500,
+      statusText: e.toString()
+    );
   } finally {
     _isLoading = false;
     update();
   }
-
-  return const Response(statusCode: 200, statusText: 'Completed');
 }
 
 
