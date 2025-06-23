@@ -4,19 +4,18 @@ import 'package:hosomobile/common/models/on_boarding_model.dart';
 import 'images.dart';
 
 class AppConstants {
-  static const String appName = 'Edupoto Mobile';
+  static const String appName = 'Babyeyi';
   // 'http://192.168.1.83/edupoto_rw_admin';
 
   static const String baseUrl = 'https://edupoto.com';
-    //  'http://127.0.0.1/edupoto_rw_admin'; //  'http://192.168.1.76/edupoto_rw_admin''https://www.hosomobile.rw' ;                                         //'http://192.168.1.69/edupoto_rw_admin'; //'http://192.168.1.66/edupoto_rw_admin';
+  //  'http://127.0.0.1/edupoto_rw_admin'; //  'http://192.168.1.76/edupoto_rw_admin''https://www.hosomobile.rw' ;                                         //'http://192.168.1.69/edupoto_rw_admin'; //'http://192.168.1.66/edupoto_rw_admin';
   static const bool demo = false;
   static const double appVersion = 4.3;
   static const String customerPhoneCheckUri =
       '/api/v1/customer/auth/check-phone';
 
- //******************************* introduction screen ******************************
- static const String appShareLink = 'https://skoollist.web.app';
- 
+  //******************************* introduction screen ******************************
+  static const String appShareLink = 'https://skoollist.web.app';
 
   static const String customerPhoneVerifyUri =
       '/api/v1/customer/auth/verify-phone';
@@ -27,8 +26,10 @@ class AppConstants {
   static const String customerLogoutUri = '/api/v1/customer/logout';
   static const String customerForgetPassOtpUri =
       '/api/v1/customer/auth/forgot-password';
-  static const String customerForgetPassVerification = '/api/v1/customer/auth/verify-token';
-  static const String customerForgetPassReset = '/api/v1/customer/auth/reset-password';
+  static const String customerForgetPassVerification =
+      '/api/v1/customer/auth/verify-token';
+  static const String customerForgetPassReset =
+      '/api/v1/customer/auth/reset-password';
   static const String customerLinkedWebsite = '/api/v1/customer/linked-website';
   static const String student = '/api/v1/customer/student';
   static const String school = '/api/v1/customer/school';
@@ -40,7 +41,8 @@ class AppConstants {
   static const String announcement = '/api/v1/customer/announcement';
   static const String paymentHistory = '/api/v1/customer/payment';
   static const String customerBanner = '/api/v1/customer/get-banner';
-  static const String customerTransactionHistory =  '/api/v1/customer/transaction-history';
+  static const String customerTransactionHistory =
+      '/api/v1/customer/transaction-history';
   static const String schoolList = '/api/v1/customer/school-list';
   static const String customerPurposeUrl = '/api/v1/customer/get-purpose';
   static const String configUri = '/api/v1/config';
@@ -138,67 +140,62 @@ class AppConstants {
   static const int balanceInputLen = 10;
 
   //payment invoices
-  static String currency='RWF';
-  static double vatPercentage=18;
+  static String currency = 'RWF';
+  static double vatPercentage = 18;
   static double convenienceFeePercentage = 1.0;
-  static double deliveryCost=3000.00;
+  static double deliveryCost = 3000.00;
 
-  static  double calculateVAT(double amount) {
+  static double calculateVAT(double amount) {
     return (amount * vatPercentage) / 100;
   }
 
- static double calculateConvenienceFee(double amount) {
+  static double calculateConvenienceFee(double amount) {
     return (amount * convenienceFeePercentage) / 100;
   }
 
- static double calculateOriginalAmaount(double amount) {
-    return amount -
-        calculateVAT(amount) -
-        calculateConvenienceFee(amount);
+  static double calculateOriginalAmaount(double amount) {
+    return amount - calculateVAT(amount) - calculateConvenienceFee(amount);
   }
 
- static double calculateOriginalVat(double amount) {
-    return ((amount - calculateVAT(amount)) *
-            vatPercentage) /
-        100;
+  static double calculateOriginalVat(double amount) {
+    return ((amount - calculateVAT(amount)) * vatPercentage) / 100;
   }
 
- static double calculateTotalWithService(double amount) {
+  static double calculateTotalWithService(double amount) {
     double convenienceFee = calculateConvenienceFee(amount);
     return amount + convenienceFee;
   }
 
- static double calculateTotal(double amount) {
+  static double calculateTotal(double amount) {
     double vat = calculateVAT(amount);
     double convenienceFee = calculateConvenienceFee(amount);
-    return amount + vat + convenienceFee+deliveryCost;
+    return amount + vat + convenienceFee + deliveryCost;
   }
 
-static  double calculateServiceCharge0fPrice(double amount) {
+  static double calculateServiceCharge0fPrice(double amount) {
     return amount * convenienceFeePercentage / 100;
   }
 
-static double remainingAmount({
-  required double amount,
-  required double remainingBalance
-}) {
-  final double remainingAmount;
-       
-  if (remainingBalance == 0) {
-    remainingAmount = amount;
-  } else {
-    remainingAmount = remainingBalance;
+  static double remainingAmount(
+      {required double amount, required double remainingBalance}) {
+    final double remainingAmount;
+
+    if (remainingBalance == 0) {
+      remainingAmount = amount;
+    } else {
+      remainingAmount = remainingBalance;
+    }
+
+    return remainingAmount;
   }
 
-  return remainingAmount;
-}
-
- static double availableBalance({required double amount, required double balance}) {
+  static double availableBalance(
+      {required double amount, required double balance}) {
     return balance - amount;
   }
 
-    double deliveryCostWithMAterialCost(amount) {
-      final calculatedTotal=calculateTotal(amount);
+  double deliveryCostWithMAterialCost(amount) {
+    final calculatedTotal = calculateTotal(amount);
     return calculatedTotal + deliveryCost;
   }
 
@@ -210,11 +207,24 @@ static double remainingAmount({
         languageName: 'English',
         countryCode: 'US',
         languageCode: 'en'),
+
     LanguageModel(
-        imageUrl: Images.saudi,
-        languageName: 'Kinyarwanda',
-        countryCode: 'SA',
-        languageCode: 'ar'),
+       imageUrl: Images.english,
+      languageName: 'Français',
+      languageCode: 'fr',
+      countryCode: 'FR',
+    ),
+    LanguageModel(
+       imageUrl: Images.english,
+      languageName: 'Kinyarwanda',
+      languageCode: 'rw',
+      countryCode: 'RW',
+    ),
+    // LanguageModel(
+    //     imageUrl: Images.saudi,
+    //     languageName: 'Kinyarwanda',
+    //     countryCode: 'SA',
+    //     languageCode: 'ar'),
   ];
 
   static List<OnboardModel> onboardList = [
