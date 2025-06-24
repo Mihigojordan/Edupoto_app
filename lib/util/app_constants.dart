@@ -220,6 +220,12 @@ class AppConstants {
       languageCode: 'rw',
       countryCode: 'RW',
     ),
+       LanguageModel(
+       imageUrl: Images.english,
+      languageName: 'Swahili',
+      languageCode: 'sw',
+      countryCode: 'TZ',
+    ),
     // LanguageModel(
     //     imageUrl: Images.saudi,
     //     languageName: 'Kinyarwanda',

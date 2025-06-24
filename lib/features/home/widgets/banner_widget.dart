@@ -27,7 +27,7 @@ class BannerWidget extends StatelessWidget {
             child: Stack(
               children: [
                 SizedBox(
-                  height: size.width>=520?170:size.height>=763?170 :170, width:size.width>=520? 340: size.width,
+                  height: size.width>=520?180:size.height>=763?180 :180, width:size.width>=520? 340: size.width,
                   child: CarouselSlider.builder(itemCount: bannerController.bannerList!.length,
                     itemBuilder: (context, index, realIndex) {
                       final image = bannerController.bannerList!.isNotEmpty ? bannerController.bannerList![index].image : '';

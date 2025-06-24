@@ -97,7 +97,7 @@ class _NavBarScreenState extends State<NavBarScreen> {
                         color: const Color(0xFFFFA000),
                       ),
                       child: Image.asset(
-                        'assets/image/stationery.png',
+                        'assets/image/shop.png',
                         // height: screenHeight * 0.025,
                         // width: screenHeight * 0.025,
                         fit: BoxFit.cover,
@@ -105,39 +105,33 @@ class _NavBarScreenState extends State<NavBarScreen> {
                     ),
                   ),
                 )
-              : FloatingActionButton(
-                  shape: const CircleBorder(),
-                  backgroundColor: Theme.of(context).secondaryHeaderColor,
-                  elevation: 1,
-                  onPressed: () {Get.to(const ShoppingScreen());
-                  mtnMomoApiClient.createMomoToken();
-                  },
-                  //  Get.to(()=> const CameraScreen(
-                  //   fromEditProfile: false, isBarCodeScan: true, isHome: true,
-                  // )),
-                  child: Container(
-                    height: screenHeight * 0.1,
-                    width: screenHeight * 0.1,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFFFFA000).withOpacity(0.1),
-                          spreadRadius: 3,
-                          blurRadius: 7,
-                          offset: const Offset(0, 3),
-                        )
-                      ],
-                      color: const Color(0xFFFFA000), // Amber 700 as base color
-                    ),
-                    child: Image.asset(
-                      'assets/image/shop.png',
-                      // height: screenHeight * 0.025,
-                      // width: screenHeight * 0.025,
-                      fit: BoxFit.cover,
-                    ),
+              : InkWell(
+                onTap:  () {Get.to(const ShoppingScreen());
+              mtnMomoApiClient.createMomoToken();
+              },
+                child: Container(
+                  height: 80,
+                  width: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFFFA000).withOpacity(0.1),
+                        spreadRadius: 3,
+                        blurRadius: 7,
+                        offset: const Offset(0, 3),
+                      )
+                    ],
+                    color: const Color(0xFFFFA000), // Amber 700 as base color
+                  ),
+                  child: Image.asset(
+                    'assets/image/shop.png',
+                    // height: screenHeight * 0.025,
+                    // width: screenHeight * 0.025,
+                    fit: BoxFit.cover,
                   ),
                 ),
+              ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: Container(

@@ -59,7 +59,7 @@ class _StudentWidgetState extends State<StudentWidget> {
   int? studentId;
   int? classId;
   int? schoolId;
-  bool isAddAccount = false;
+  // bool isAddAccount = false;
   final _formKey = GlobalKey<FormState>(); // Form key for validation
 
   TextEditingController studentEditingController = TextEditingController();
@@ -75,11 +75,11 @@ class _StudentWidgetState extends State<StudentWidget> {
     });
   }
 
-  setAddAccount() {
-    setState(() {
-      isAddAccount = !isAddAccount;
-    });
-  }
+  // setAddAccount() {
+  //   setState(() {
+  //     isAddAccount = !isAddAccount;
+  //   });
+  // }
 
   onClickServices() async {
     setState(() {
@@ -181,6 +181,7 @@ class _StudentWidgetState extends State<StudentWidget> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+     
 
     return GetBuilder<StudentRegistrationController>(
         builder: (studentRegistrationController) {
@@ -190,30 +191,12 @@ class _StudentWidgetState extends State<StudentWidget> {
           return eduboxController.isLoading
               ? const WebSiteShimmer()
               : GetBuilder<StudentController>(builder: (studentController) {
+          final student = studentController.studentList![selectedIndex];
+
                   //*************** Check if studentList is null or empty */
                   if (studentController.studentList == null ||
                       studentController.studentList!.isEmpty) {
-                    return Container(
-                      margin: const EdgeInsets.only(top: 100),
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              color: kTextLightColor,
-                              spreadRadius: 3,
-                              blurRadius: 7,
-                              offset: Offset(0, 3)),
-                        ],
-                        color: kTextWhiteColor,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: addAccout(
-                          student: studentController.studentList ?? [],
-                          studentRegController: studentRegistrationController,
-                          studentController: studentController,
-                          eduboxController: eduboxController),
-                    );
+                  showAddAccountBottomSheet( context:context, student: student, studentRegController: studentRegistrationController, studentController: studentController, eduboxController: eduboxController);
                   }
 
                   // Validate selectedIndex
@@ -222,7 +205,7 @@ class _StudentWidgetState extends State<StudentWidget> {
                     return const Center(
                         child: Text('Invalid student selected.'));
                   }
-                  final student = studentController.studentList![selectedIndex];
+                 
                   return studentController.isLoading
                       ? const WebSiteShimmer()
                       : Form(
@@ -543,8 +526,8 @@ class _StudentWidgetState extends State<StudentWidget> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 SizedBox(
-                    height: screenHeight >= 763 ? 175 : 35,
-                    width: screenHeight >= 763 ? 115 : 25,
+                    height: screenHeight >= 763 ? 90 : 35,
+                    width: screenHeight >= 763 ? 65 : 25,
                     child: const IconImages('assets/image/edubox_kid.png')),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -580,21 +563,8 @@ class _StudentWidgetState extends State<StudentWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           //*********************************FOR ADDING MORE STUDENTS IN YOUR ACCOUNT *******************************/
-                          isAddAccount == true
-                              ? addAccout(
-                                  student: student,
-                                  studentRegController:
-                                      studentRegistrationController,
-                                  studentController: studentController,
-                                  eduboxController: eduboxController)
-                              : studentController.studentList!.isEmpty
-                                  ? addAccout(
-                                      student: student,
-                                      studentRegController:
-                                          studentRegistrationController,
-                                      studentController: studentController,
-                                      eduboxController: eduboxController)
-                                  : Column(
+                         
+                           Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
@@ -749,8 +719,7 @@ class _StudentWidgetState extends State<StudentWidget> {
                                       ],
                                     ),
                           sizedBox05h,
-                          isAddAccount == false
-                              ? Row(
+                         Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
@@ -760,9 +729,16 @@ class _StudentWidgetState extends State<StudentWidget> {
                                           textColor: Colors.black,
                                           horizontal: 5,
                                           onPress: () {
-                                            if (isAddAccount == true ||
-                                                studentController
-                                                    .studentList!.isEmpty) {
+                                            showAddAccountBottomSheet(
+                                              context: context,
+                                                student: student,
+                                                studentRegController:
+                                                    studentRegistrationController,
+                                                studentController:
+                                                    studentController,
+                                                eduboxController:
+                                                    eduboxController);
+    
                                               studentRegistrationController
                                                   .addStudent(
                                                       name: student.name!,
@@ -782,8 +758,6 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                         .isNextBottomSheet ==
                                                     true) {}
                                               });
-
-                                              setAddAccount();
                                               showInfoDialog(context,
                                                   student_code: student.code!,
                                                   student_name: student.name!,
@@ -797,24 +771,14 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                   studentId: student.id,
                                                   selectedIndex: selectedIndex,
                                                   parentId: parentId!);
-                                            } else {
-                                              setAddAccount();
-                                            }
+                                    
                                           },
                                           height: 50,
                                           width: screenWidth >= 520
                                               ? 148
                                               : screenWidth / 2.8,
-                                          icon: (isAddAccount == true ||
-                                                  studentController
-                                                      .studentList!.isEmpty)
-                                              ? 'Save'
-                                              : 'Add Student',
-                                          title: (isAddAccount == true ||
-                                                  studentController
-                                                      .studentList!.isEmpty)
-                                              ? 'assets/icons1/save.png'
-                                              : 'assets/icons1/add_account.png',
+                                          icon: 'Add Student',
+                                          title:  'assets/icons1/add_account.png',
                                           clas: ''),
                                       screenHeight >= 763
                                           ? PartinerServices(
@@ -917,8 +881,7 @@ class _StudentWidgetState extends State<StudentWidget> {
                                               title:
                                                   'assets/image/edubox_icon.png',
                                               clas: ''),
-                                    ])
-                              : SizedBox(),
+                                    ]),
                         ],
                       ),
                     ],
@@ -932,39 +895,67 @@ class _StudentWidgetState extends State<StudentWidget> {
     );
   }
 
-  Widget addAccout({
-    required student,
-    required StudentRegistrationController studentRegController,
-    required StudentController studentController,
-    required EduboxMaterialController eduboxController,
-  }) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
-    ClassModel? classModel;
+void showAddAccountBottomSheet({
+  required dynamic student,
+  required StudentRegistrationController studentRegController,
+  required StudentController studentController,
+  required EduboxMaterialController eduboxController,
+  required BuildContext context,
+}) {
+  final screenHeight = MediaQuery.of(context).size.height;
+  final screenWidth = MediaQuery.of(context).size.width;
 
-    return SizedBox(
-      height: screenHeight / 1.3,
-      child: SingleChildScrollView(
-        child: Stack(
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true, // Allows content to scroll
+    backgroundColor: Colors.transparent,
+    builder: (BuildContext context) {
+      return Container(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom, // Accounts for keyboard
+        ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+        child: Wrap(
           children: [
-            Column(
-              children: [
-                sizedBox10,
-                Text(
-                  'Please Register Your Student Here',
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: Colors.black,
-                        fontSize: screenHeight >= 763 ? 12 : 10,
-                        fontWeight: FontWeight.bold,
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header with title and close button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Register Your Student',
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
-                ),
-                const SizedBox(height: 5),
-
-                //********************THIS IS THE DEPENDENCE DROPDOWN FOR REGISTERING STUDENTS *********************/
-                SizedBox(
-                  width: screenWidth / 1.1,
-                  child: DependentSchoolDropdowns(
-                    isAddAccount: isAddAccount,
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                  
+                  const SizedBox(height: 10),
+                  
+                  // Instruction text
+                  Text(
+                    'Please provide student details',
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Colors.grey[600],
+                        ),
+                  ),
+                  
+                  const SizedBox(height: 20),
+                  
+                  // Main content
+                  DependentSchoolDropdowns(
+                    isAddAccount: true,
                     studentController: studentController,
                     studentRegistrationController: studentRegController,
                     selectedIndex: selectedIndex,
@@ -972,23 +963,99 @@ class _StudentWidgetState extends State<StudentWidget> {
                     eduboxController: eduboxController,
                     parentId: parentId!,
                   ),
-                ),
-                sizedBox15,
-              ],
-            ),
-            Positioned(
-              top: -7,
-              right: 2,
-              child: IconButton(
-                onPressed: setAddAccount, // ✅ No parentheses
-                icon: const Icon(Icons.cancel_outlined),
+                  
+                  const SizedBox(height: 20),
+                  
+                  // Action buttons
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: OutlinedButton(
+                  //         onPressed: () => Navigator.pop(context),
+                  //         child: const Text('CANCEL'),
+                  //       ),
+                  //     ),
+                  //     const SizedBox(width: 10),
+                  //     Expanded(
+                  //       child: ElevatedButton(
+                  //         onPressed: () {
+                  //           // Handle registration logic
+                  //           Navigator.pop(context);
+                  //         },
+                  //         style: ElevatedButton.styleFrom(
+                  //           backgroundColor: Colors.amber,
+                  //         ),
+                  //         child: const Text(
+                  //           'REGISTER',
+                  //           style: TextStyle(color: Colors.white),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 20 : 0),
+                ],
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
+      );
+    },
+  );
+}
+
+  // Widget addAccout({
+  //   required student,
+  //   required StudentRegistrationController studentRegController,
+  //   required StudentController studentController,
+  //   required EduboxMaterialController eduboxController,
+  // }) {
+  //   double screenHeight = MediaQuery.of(context).size.height;
+  //   double screenWidth = MediaQuery.of(context).size.width;
+  //   ClassModel? classModel;
+
+  //   return Stack(
+  //     children: [
+  //       Column(
+  //         children: [
+  //           sizedBox10,
+  //           Text(
+  //             'Please Register Your Student Here',
+  //             style: Theme.of(context).textTheme.titleSmall!.copyWith(
+  //                   color: Colors.black,
+  //                   fontSize: screenHeight >= 763 ? 12 : 10,
+  //                   fontWeight: FontWeight.bold,
+  //                 ),
+  //           ),
+  //           const SizedBox(height: 5),
+
+  //           //********************THIS IS THE DEPENDENCE DROPDOWN FOR REGISTERING STUDENTS *********************/
+  //           SizedBox(
+  //             width: screenWidth / 1.1,
+  //             child: DependentSchoolDropdowns(
+  //               isAddAccount: isAddAccount,
+  //               studentController: studentController,
+  //               studentRegistrationController: studentRegController,
+  //               selectedIndex: selectedIndex,
+  //               userData: userData!,
+  //               eduboxController: eduboxController,
+  //               parentId: parentId!,
+  //             ),
+  //           ),
+  //           sizedBox15,
+  //         ],
+  //       ),
+  //       Positioned(
+  //         top: -7,
+  //         right: 2,
+  //         child: IconButton(
+  //           onPressed: setAddAccount, // ✅ No parentheses
+  //           icon: const Icon(Icons.cancel_outlined),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   void _showTermsDialog(BuildContext context) {
     showDialog(
@@ -1024,7 +1091,7 @@ class _StudentWidgetState extends State<StudentWidget> {
               onPressed: () {
                 Navigator.of(dialogContext).pop();
                 _handleLoanAgreement(context);
-                setAddAccount(); // ✅ Moved inside callback
+                // setAddAccount(); // ✅ Moved inside callback
               },
               child: const Text("OK"),
             ),

@@ -49,7 +49,7 @@ class _AddStudentInfoWidgetState extends State<AddStudentInfoWidget> {
   bool isSelected = false;
   UserShortDataModel? userData;
   String? parentId;
-  bool isEditStudentInfo=false;
+  // bool isEditStudentInfo=false;
 
   TextEditingController EditingController = TextEditingController();
   TextEditingController heightSizeEditingController = TextEditingController();
@@ -119,11 +119,11 @@ class _AddStudentInfoWidgetState extends State<AddStudentInfoWidget> {
     });
   }
 
-editStudentProfileAction(){
-  setState(() {
-    isEditStudentInfo =! isEditStudentInfo;
-  });
-}
+// editStudentProfileAction(){
+//   setState(() {
+//     isEditStudentInfo =! isEditStudentInfo;
+//   });
+// }
 
   @override
   void initState() {
@@ -159,16 +159,12 @@ editStudentProfileAction(){
             child: ListView(
               // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                   isEditStudentInfo==false?const SizedBox():  Text(
-          'Find Your Student Profile',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.blueGrey.shade800,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.2,
-              ),
-        ),
-     isEditStudentInfo==false?   InkWell(
-  onTap: () =>editStudentProfileAction(),
+              
+     InkWell(
+  onTap: () =>  showEditStudentBottomSheet(
+      context: context,
+      parentId: parentId!
+    ),
   onHover: (isHovering) {
     // Optional: Add hover effect state management
   },
@@ -193,13 +189,18 @@ editStudentProfileAction(){
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'Click to Edit Student Profile',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.blueGrey.shade800,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.2,
-              ),
+        SizedBox(
+          width: screenWidth/1.6,
+          child: Text(
+            'Click to Edit Student Profile',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Colors.blueGrey.shade800,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.2,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+          ),
         ),
         Container(
           padding: const EdgeInsets.all(6),
@@ -216,17 +217,9 @@ editStudentProfileAction(){
       ],
     ),
   ),
-):DependentStudentDropdowns(
-                    isAddAccount: true,
-                    isStudentEdit: true,
-                    studentController: widget.studentController,
-                    studentRegistrationController: widget.studentRegController,
-                    selectedIndex: widget.selectedIndex,
-                    parentId: parentId!,
-
-                  ) ,
+) ,
 sizedBox10,
-isEditStudentInfo==true?const SizedBox():    Column(
+   Column(
   crossAxisAlignment: CrossAxisAlignment.start,
   children:[
 
@@ -272,7 +265,51 @@ sizedBox10,
                     const SizedBox(width: 15),
                     buildFormField('  Age (Years)', studentAgeEditingController,
                         TextInputType.number,
-                        width: 150,)
+                          width: screenWidth / 2.7,
+                          
+                        )
+                  ],
+                ),
+                SizedBox(
+                  height: 15,
+                  child: Divider(
+                    color: Colors.black.withOpacity(0.3),
+                  ),
+                ),
+                                Text(
+                          'Shirt | Brouse | Tie',
+                          style: TextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                              fontWeight: FontWeight.w400),
+                        ),
+                        sizedBox5,
+                Wrap(
+                  direction: Axis.horizontal,
+                  spacing: 15,
+                  runSpacing: 15,
+                  children: [
+                    DropDownStudentInfo(
+                      menuHeight: 300,
+                      onChanged: (onChanged) {
+                        setState(() {
+                          topWearValue = onChanged!;
+                        });
+                      },
+                      itemLists: topWear,
+                      title: topWearValue,
+                      width: screenWidth / 2.5,
+                      menuWidth: screenWidth / 2.5,
+                 
+                    ),
+                    buildFormField('Chest Size(ft)', chestSizeEditingController,
+                        TextInputType.number,
+                        width: 150),
+                    buildFormField('Shoulder Size(ft)',
+                        shoulderSizeEditingController, TextInputType.number,
+                        width: 150),
+                    buildFormField('Hand Size(ft)', handSizeEditingController,
+                        TextInputType.number,
+                        width: 150)
                   ],
                 ),
                 SizedBox(
@@ -349,48 +386,7 @@ sizedBox10,
                     color: Colors.black.withOpacity(0.3),
                   ),
                 ),
-                            Text(
-                          'Shirt | Brouse | Tie',
-                          style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                              fontWeight: FontWeight.w400),
-                        ),
-                        sizedBox5,
-                Wrap(
-                  direction: Axis.horizontal,
-                  spacing: 15,
-                  runSpacing: 15,
-                  children: [
-                    DropDownStudentInfo(
-                      menuHeight: 300,
-                      onChanged: (onChanged) {
-                        setState(() {
-                          topWearValue = onChanged!;
-                        });
-                      },
-                      itemLists: topWear,
-                      title: topWearValue,
-                      width: screenWidth / 2.5,
-                      menuWidth: screenWidth / 2.5,
-                 
-                    ),
-                    buildFormField('Chest Size(ft)', chestSizeEditingController,
-                        TextInputType.number,
-                        width: 150),
-                    buildFormField('Shoulder Size(ft)',
-                        shoulderSizeEditingController, TextInputType.number,
-                        width: 150),
-                    buildFormField('Hand Size(ft)', handSizeEditingController,
-                        TextInputType.number,
-                        width: 150)
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                  child: Divider(
-                    color: Colors.black.withOpacity(0.3),
-                  ),
-                ),
+            
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -501,8 +497,8 @@ sizedBox10,
                           },
                           itemLists: size,
                           title: shoeSizeValue,
-                          width: 220,
-                          menuWidth: 220,
+                          width: screenWidth / 2.5,
+                          menuWidth: screenWidth / 2.5,
                         ),
                       ],
                     ),
@@ -514,8 +510,7 @@ sizedBox10,
             ),
            ]),   
           ),
-      
-           isEditStudentInfo==true?const SizedBox() :   DefaultButton2(
+        DefaultButton2(
                                      color1: kamber300Color,
                                      color2: kyellowColor,
                                      onPress: () {
@@ -601,6 +596,109 @@ sizedBox10,
       ),
     );
   }
+
+void showEditStudentBottomSheet({
+  required BuildContext context,
+  required String parentId
+}) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      return Container(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 16,
+          right: 16,
+          top: 16,
+        ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header with title and close button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Edit Student Profile',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueGrey.shade800,
+                        ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Find and update your student information',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.blueGrey.shade600,
+                    ),
+              ),
+              const SizedBox(height: 20),
+              
+              // Your dropdown widget
+              DependentStudentDropdowns(
+                isAddAccount: true,
+                isStudentEdit: true,
+                studentController: widget.studentController,
+                studentRegistrationController: widget.studentRegController,
+                selectedIndex: widget.selectedIndex,
+                parentId: parentId,
+              ),
+              
+              // const SizedBox(height: 20),
+              
+              // // Action buttons
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: OutlinedButton(
+              //         style: OutlinedButton.styleFrom(
+              //           padding: const EdgeInsets.symmetric(vertical: 16),
+              //           side: BorderSide(color: Colors.blueGrey.shade300),
+              //         ),
+              //         onPressed: () => Navigator.pop(context),
+              //         child: const Text('Cancel'),
+              //       ),
+              //     ),
+              //     const SizedBox(width: 12),
+              //     Expanded(
+              //       child: ElevatedButton(
+              //         style: ElevatedButton.styleFrom(
+              //           backgroundColor: Colors.blueGrey.shade800,
+              //           padding: const EdgeInsets.symmetric(vertical: 16),
+              //         ),
+              //         onPressed: () {
+              //           // Handle save logic here
+              //           Navigator.pop(context);
+              //         },
+              //         child: const Text(
+              //           'Save Changes',
+              //           style: TextStyle(color: Colors.white),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              const SizedBox(height: 25),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 
   _launchURL(url) async {
     final uri = Uri.parse(url);

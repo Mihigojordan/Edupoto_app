@@ -26,10 +26,10 @@ import 'package:upgrader/upgrader.dart';
 
 class MzaziScreen extends StatefulWidget {
   static String routeName = 'MzaziScreen';
-  final  bool isShop;
+  final bool isShop;
   final int isNavigation;
 
-  const MzaziScreen({super.key,required this.isShop, this.isNavigation=0});
+  const MzaziScreen({super.key, required this.isShop, this.isNavigation = 0});
 
   @override
   _MzaziScreenState createState() => _MzaziScreenState();
@@ -42,8 +42,8 @@ class _MzaziScreenState extends State<MzaziScreen> {
   bool isParentLoggedIn = false;
   bool? isUserLoggedIn = false;
   bool isDeposite = false;
-  bool isAddAccount=false;
-  late  UserShortDataModel? userData;
+  bool isAddAccount = false;
+  late UserShortDataModel? userData;
 
   late String videoTitle;
   // Url List
@@ -54,14 +54,11 @@ class _MzaziScreenState extends State<MzaziScreen> {
     'https://youtu.be/S3npWREXr8s',
   ];
 
-
   onDeposit() {
     setState(() {
       isDeposite = !isDeposite;
     });
   }
-
-  
 
   Map<String, dynamic> cStates = {};
   //changes current state
@@ -71,79 +68,80 @@ class _MzaziScreenState extends State<MzaziScreen> {
     // TODO: implement initState
     // _checkVersion();
     userData = Get.find<AuthController>().getUserData();
-      
+
     super.initState();
-
   }
-
 
   @override
   Widget build(BuildContext context) {
-     double screenHeight = MediaQuery.of(context).size.height;
+    double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
     return UpgradeAlert(
         child: Scaffold(
-      backgroundColor: const Color(0xFF777777),
-      //  drawer: NavDrawer(),
-
-      body: Stack(
+              backgroundColor: const Color(0xFF777777),
+              //  drawer: NavDrawer(),
+        
+              body: Stack(
         children: [
           Column(
             children: [
               Container(
-                height: screenHeight/3,
+                height: screenHeight / 3,
                 width: screenWidth,
                 color: kyellowColor,
                 child: Stack(
-                  children: [    
-                // ImagesUp (  Images.launch_page),
+                  children: [
+                    // ImagesUp (  Images.launch_page),
                     Padding(
-                      padding:  EdgeInsets.only(top: 20.0,left: screenHeight>=763?123:110),
+                      padding: EdgeInsets.only(
+                          top: 20.0, left: screenHeight >= 763 ? 123 : 110),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                           screenHeight>=763?  Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          screenHeight >= 763
+                              ? Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                
-                       Column( 
-                        
-                         children:  [       
-                            userData?.name != null
-                                        ? Text(
-                                            'Welcome, ${userData?.name}' ?? '',
-                                            textAlign: TextAlign.start,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style:  TextStyle(
-                                                fontSize: 14,
-                                                color: kTextBlackColor,
-                                                fontWeight: FontWeight.w200),
-                                          )
-                                        : Text(
-                                            'Welcome, Parent'.tr,
-                                            overflow: TextOverflow.clip,
-                                            textAlign: TextAlign.center,
-                                            style:  TextStyle(
-                                                fontSize: 14,
-                                                color: kTextBlackColor,
-                                                fontWeight: FontWeight.w200),
+                                    Column(children: [
+                                      userData?.name != null
+                                          ? Text(
+                                              'Welcome, ${userData?.name}' ??
+                                                  '',
+                                              textAlign: TextAlign.start,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: kTextBlackColor,
+                                                  fontWeight: FontWeight.w200),
+                                            )
+                                          : Text(
+                                              'Welcome, Parent'.tr,
+                                              overflow: TextOverflow.clip,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: kTextBlackColor,
+                                                  fontWeight: FontWeight.w200),
+                                            ),
+                                      GetBuilder<HomeController>(
+                                          builder: (controller) {
+                                        return Text(
+                                          controller.greetingMessage(),
+                                          style: rubikRegular.copyWith(
+                                            fontSize: screenHeight >= 763
+                                                ? Dimensions.fontSizeExtraLarge
+                                                : Dimensions.fontSizeDefault,
+                                            color: Colors.white,
                                           ),
-                                           GetBuilder<HomeController>(builder: (controller){
-                                return Text(
-                                  controller.greetingMessage(), style: rubikRegular.copyWith(
-                                  fontSize:screenHeight>=763? Dimensions.fontSizeExtraLarge:Dimensions.fontSizeDefault, color: Colors.white,
-                                ),
-                                );
-                              }),
-                                          ]),
-                            
+                                        );
+                                      }),
+                                    ]),
                                   ],
-                                ): const SizedBox(),
-                         
-                     
+                                )
+                              : const SizedBox(),
                         ],
                       ),
                     ),
@@ -162,7 +160,7 @@ class _MzaziScreenState extends State<MzaziScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                       sizedBox15,
+                      sizedBox15,
                       // Column(
                       //   children: [
                       //     sizedBox,
@@ -170,7 +168,7 @@ class _MzaziScreenState extends State<MzaziScreen> {
                       //         mainAxisAlignment: MainAxisAlignment.start,
                       //         children: [
                       //           sizedBox,
-
+              
                       //           // Container(
                       //           //   height: 40,
                       //           //   width: 195,
@@ -186,7 +184,7 @@ class _MzaziScreenState extends State<MzaziScreen> {
                       // SizedBox(
                       //   height: 5,
                       // ),
-
+              
                       // ImageSlider(
                       //   list: [
                       //     'assets/icons1/1.png',
@@ -219,7 +217,7 @@ class _MzaziScreenState extends State<MzaziScreen> {
                       // ),
                       Column(
                         children: [
-                           sizedBox,
+                          sizedBox,
                           // HomeCard2(
                           //   isDeposite: isDeposite,
                           // ),
@@ -228,161 +226,158 @@ class _MzaziScreenState extends State<MzaziScreen> {
                             thickness: 1.0,
                             color: kTextLightColor,
                           ),
-         Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.01,
-                              vertical: screenHeight * 0.005),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              BorderButton1(
-                                  borderColor: kTextBlackColor,
-                                  vertical: screenHeight * 0.005,
-                                  textColor: kTextBlackColor,
-                                  horizontal: screenWidth * 0.025,
-                                  onPress: () => Get.to(
-                                                 AddAccount( isDirectory: true, productIndex: 0,iconImages: 
-                                                                      "${AppConstants.baseUrl}/storage/app/public/edupoto_product/titleImage",)),
-                                  height: screenHeight * 0.05,
-                                  width: screenWidth * 0.30,
-                                  icon: 'Schools\nDirectory',
-                                  title: 'assets/image/Schools Directory.png',
-                                  clas: ''),
-                              BorderButton1(
-                                  borderColor: kTextBlackColor,
-                                  vertical: screenHeight * 0.005,
-                                  textColor: kTextBlackColor,
-                                  horizontal: screenWidth * 0.025,
-                                  onPress: () =>Get.to(const HosoServices()),
-                                
-                                  height: screenHeight * 0.05,
-                                  width: screenWidth * 0.30,
-                                  icon: 'Recharge\nSchool Card',
-                                  title: 'assets/image/cashout3.png',
-                                  clas: ''),
-                            ],
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.01,
+                                vertical: screenHeight * 0.005),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                BorderButton1(
+                                    borderColor: kTextBlackColor,
+                                    vertical: screenHeight * 0.005,
+                                    textColor: kTextBlackColor,
+                                    horizontal: screenWidth * 0.025,
+                                    onPress: () => Get.to(AddAccount(
+                                          isDirectory: true,
+                                          productIndex: 0,
+                                          iconImages:
+                                              "${AppConstants.baseUrl}/storage/app/public/edupoto_product/titleImage",
+                                        )),
+                                    height: screenHeight * 0.05,
+                                    width: screenWidth * 0.30,
+                                    icon: 'Schools\nDirectory',
+                                    title: 'assets/image/Schools Directory.png',
+                                    clas: ''),
+                                BorderButton1(
+                                    borderColor: kTextBlackColor,
+                                    vertical: screenHeight * 0.005,
+                                    textColor: kTextBlackColor,
+                                    horizontal: screenWidth * 0.025,
+                                    onPress: () => Get.to(const NoConnection()),
+                                    height: screenHeight * 0.05,
+                                    width: screenWidth * 0.30,
+                                    icon: 'Recharge\nSchool Card',
+                                    title: 'assets/image/cashout3.png',
+                                    clas: ''),
+                              ],
+                            ),
                           ),
-                        ),
                         ],
                       ),
-      
                     ],
                   ),
                 ),
               ),
             ],
           ),
-            Positioned(
-      top:screenHeight>=763? 10:10,
-         left:10,
-
-            child:const CustomBackButton(),
-          ),
-
           Positioned(
-      top:screenHeight>=763? 20:20,
-         left:screenWidth>=520? screenWidth/6.5:20,
-              right:screenWidth>=520?screenWidth/6.5:20,
-            child:const StudentWidget(),
+            top: screenHeight >= 763 ? 10 : 10,
+            left: 10,
+            child: const CustomBackButton(),
+          ),
+          Positioned(
+            top: screenHeight >= 763 ? 20 : 20,
+            left: screenWidth >= 520 ? screenWidth / 6.5 : 20,
+            right: screenWidth >= 520 ? screenWidth / 6.5 : 20,
+            child: const StudentWidget(),
           ),
         ],
-      ),
-floatingActionButton:widget.isNavigation==1?null:   !kIsWeb?  FloatingActionButtonWidget(
-            strokeWidth: 1.5,
-            radius: 40,
-            gradient:LinearGradient(
-              colors: [
-                ColorResources.gradientColor,
-                ColorResources.gradientColor.withOpacity(0.5),
-                ColorResources.secondaryColor.withOpacity(0.3),
-                ColorResources.gradientColor.withOpacity(0.05),
-                ColorResources.gradientColor.withOpacity(0),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-            child: FloatingActionButton(
-              shape: const CircleBorder(),
-              backgroundColor: Theme.of(context).secondaryHeaderColor,
-              elevation: 1,
-              onPressed: ()=>Get.back(),
-              //  Get.to(()=> const CameraScreen(
-              //   fromEditProfile: false, isBarCodeScan: true, isHome: true,
-              // )),
-              child: Container(
-          height: screenHeight * 0.1,
-          width: screenHeight * 0.1,
-         
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                  color: const Color(0xFFFFFFFF).withOpacity(0.1),
-                  spreadRadius: 3,
-                  blurRadius: 7,
-                  offset: const Offset(0, 3)),
-            ],
-            color: const Color(0xFFFFFFFF),
-          ),
-          child: 
-            Padding(
-              padding: const EdgeInsets.all(15),
-              child: Image.asset(
-                'assets/image/home_bold.png',
-                height: screenHeight * 0.015,
-                width: screenHeight * 0.015,
-                fit: BoxFit.cover,
               ),
-            ),
-
-        ),
-            ),
-          ): FloatingActionButton(
-              shape: const CircleBorder(),
-              backgroundColor: Theme.of(context).secondaryHeaderColor,
-              elevation: 1,
-              onPressed: ()=>Get.back(),
-              //  Get.to(()=> const CameraScreen(
-              //   fromEditProfile: false, isBarCodeScan: true, isHome: true,
-              // )),
-              child: Container(
-          height: screenHeight * 0.1,
-          width: screenHeight * 0.1,
-         
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                  color: const Color(0xFFFFFFFF).withOpacity(0.1),
-                  spreadRadius: 3,
-                  blurRadius: 7,
-                  offset: const Offset(0, 3)),
-            ],
-            color: const Color(0xFFFFFFFF),
-          ),
-          child: 
-            Padding(
-              padding: const EdgeInsets.all(15),
-              child: Image.asset(
-                'assets/image/home_bold.png',
-                height: screenHeight * 0.015,
-                width: screenHeight * 0.015,
-                fit: BoxFit.cover,
-              ),
-            ),
-
-        ),
-            ),
-    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      //       actions: <Widget>[
-      //   IconButton(
-      //     icon: const Icon(Icons.add_circle),
-      //     tooltip: 'Add new entry',
-      //     onPressed: () { /* ... */ },
-      //   ),
-      // ],
-    ));
+              floatingActionButton: widget.isNavigation == 1
+          ? null
+          : !kIsWeb
+              ? FloatingActionButtonWidget(
+                  strokeWidth: 1.5,
+                  radius: 40,
+                  gradient: LinearGradient(
+                    colors: [
+                      ColorResources.gradientColor,
+                      ColorResources.gradientColor.withOpacity(0.5),
+                      ColorResources.secondaryColor.withOpacity(0.3),
+                      ColorResources.gradientColor.withOpacity(0.05),
+                      ColorResources.gradientColor.withOpacity(0),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  child: FloatingActionButton(
+                    shape: const CircleBorder(),
+                    backgroundColor: Theme.of(context).secondaryHeaderColor,
+                    elevation: 1,
+                    onPressed: () => Get.back(),
+                    //  Get.to(()=> const CameraScreen(
+                    //   fromEditProfile: false, isBarCodeScan: true, isHome: true,
+                    // )),
+                    child: Container(
+                      height: screenHeight * 0.1,
+                      width: screenHeight * 0.1,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                              color: const Color(0xFFFFFFFF).withOpacity(0.1),
+                              spreadRadius: 3,
+                              blurRadius: 7,
+                              offset: const Offset(0, 3)),
+                        ],
+                        color: const Color(0xFFFFFFFF),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Image.asset(
+                          'assets/image/home_bold.png',
+                          height: screenHeight * 0.015,
+                          width: screenHeight * 0.015,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : FloatingActionButton(
+                  shape: const CircleBorder(),
+                  backgroundColor: Theme.of(context).secondaryHeaderColor,
+                  elevation: 1,
+                  onPressed: () => Get.back(),
+                  //  Get.to(()=> const CameraScreen(
+                  //   fromEditProfile: false, isBarCodeScan: true, isHome: true,
+                  // )),
+                  child: Container(
+                    height: screenHeight * 0.1,
+                    width: screenHeight * 0.1,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                            color: const Color(0xFFFFFFFF).withOpacity(0.1),
+                            spreadRadius: 3,
+                            blurRadius: 7,
+                            offset: const Offset(0, 3)),
+                      ],
+                      color: const Color(0xFFFFFFFF),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Image.asset(
+                        'assets/image/home_bold.png',
+                        height: screenHeight * 0.015,
+                        width: screenHeight * 0.015,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+              //       actions: <Widget>[
+              //   IconButton(
+              //     icon: const Icon(Icons.add_circle),
+              //     tooltip: 'Add new entry',
+              //     onPressed: () { /* ... */ },
+              //   ),
+              // ],
+            ));
   }
 
   _onWillPop() async {
@@ -404,13 +399,12 @@ floatingActionButton:widget.isNavigation==1?null:   !kIsWeb?  FloatingActionButt
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
                   children: [
-                    
                     BorderButton1(
                         borderColor: Colors.black,
                         vertical: 5.0,
                         textColor: Colors.black,
                         horizontal: 10,
-                        onPress: (){},
+                        onPress: () {},
                         height: 30,
                         width: 110,
                         icon: 'Parent',
@@ -454,21 +448,16 @@ class _BottomNavState extends State<BottomNav> {
     });
   }
 
-  void saveBottomNavItem() async {
-  
-  }
+  void saveBottomNavItem() async {}
 
   String getItem = '';
   void getBottomnavItem() async {
-
     print('dah $getItem');
   }
 
   bool? isUserLoggedIn = false;
 
-  showDetails() async {
-
-  }
+  showDetails() async {}
 
   @override
   void initState() {
@@ -497,7 +486,11 @@ class _BottomNavState extends State<BottomNav> {
               InkWell(
                   enableFeedback: false,
                   onTap: () {
-                    Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context)=>const HosoHomeScreen()),(route)=>false);
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HosoHomeScreen()),
+                        (route) => false);
                   },
                   child: const SizedBox(
                       height: 40,
@@ -513,12 +506,14 @@ class _BottomNavState extends State<BottomNav> {
                   children: [
                     InkWell(
                         enableFeedback: false,
-                        onTap: (){}, //=> Navigator.push(context, MaterialPageRoute(builder: (context) => const StudentpotoScreen(),)),
+                        onTap:
+                            () {}, //=> Navigator.push(context, MaterialPageRoute(builder: (context) => const StudentpotoScreen(),)),
                         child: const SizedBox(
                           height: 40,
                           width: 40,
                           //radius: 40,
-                          child: IconImages('assets/icons1/mzazi lower icon.png'),
+                          child:
+                              IconImages('assets/icons1/mzazi lower icon.png'),
                         )
                         //  pageIndex == 0
                         //     ?
@@ -547,7 +542,13 @@ class _BottomNavState extends State<BottomNav> {
             children: [
               InkWell(
                 enableFeedback: false,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MzaziScreen(isShop: false,),)),
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MzaziScreen(
+                        isShop: false,
+                      ),
+                    )),
                 child:
                     //  pageIndex == 1
                     //     ?
@@ -598,30 +599,28 @@ class _BottomNavState extends State<BottomNav> {
   }
 }
 
-
-
-
-
-
 class _BalanceWidgetUp extends StatelessWidget {
   const _BalanceWidgetUp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ProfileController>(
-        builder: (profileController) {
-          return Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(PriceConverterHelper.balanceWithSymbol(balance: '${profileController.userInfo?.balance ?? 0}'), style: ktextBBlack16),
-              const SizedBox(width: Dimensions.paddingSizeExtraSmall),
-              if(profileController.userInfo != null) Text(
-                '(${'sent'.tr} ${PriceConverterHelper.balanceWithSymbol(balance: '${profileController.userInfo?.pendingBalance ?? 0}')} ${'withdraw_req'.tr})',
-                style:ktextBBlack,
-              ),
-
-            ],
-          );
-        }
-    );
+    return GetBuilder<ProfileController>(builder: (profileController) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+              PriceConverterHelper.balanceWithSymbol(
+                  balance: '${profileController.userInfo?.balance ?? 0}'),
+              style: ktextBBlack16),
+          const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+          if (profileController.userInfo != null)
+            Text(
+              '(${'sent'.tr} ${PriceConverterHelper.balanceWithSymbol(balance: '${profileController.userInfo?.pendingBalance ?? 0}')} ${'withdraw_req'.tr})',
+              style: ktextBBlack,
+            ),
+        ],
+      );
+    });
   }
 }

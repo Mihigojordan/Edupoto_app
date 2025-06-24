@@ -32,7 +32,8 @@ class OnBoardingScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Column(
                   children: [
-                    SizedBox(height: size.width, width: size.width, child: Stack(
+                    SizedBox(height: size.height, width: size.width, child:
+                     Stack(
                       children: [
                         SizedBox(
                           width: double.infinity,
@@ -42,36 +43,37 @@ class OnBoardingScreen extends StatelessWidget {
                           ),
                         ),
 
-                        Align(alignment: Alignment.bottomCenter, child: SizedBox(
-                          height: MediaQuery.of(context).size.width * 0.6,
-                          child: Image.asset(AppConstants.onboardList[index].image, fit: BoxFit.fitHeight),
+                        Align(alignment: Alignment.topCenter, child: SizedBox(
+                           width:  double.infinity,
+                          child: Image.asset(AppConstants.onboardList[index].image, fit: BoxFit.fill),
                         )),
                       ],
                     )),
-                    const Spacer(),
+                    
+                    // const Spacer(),
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-                      child: Column(
-                        children: [
-                          Text(AppConstants.onboardList[index].title, style: rubikSemiBold.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color, fontSize: Dimensions.fontSizeExtraLarge,), textAlign: TextAlign.center,),
-                          const SizedBox(height: Dimensions.paddingSizeDefault,),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: Dimensions.radiusSizeSmall),
-                            child: Text(AppConstants.onboardList[index].subtitle, maxLines: 2,overflow: TextOverflow.ellipsis, style: rubikMedium.copyWith(color: ColorResources.getOnboardGreyColor(), fontSize: Dimensions.fontSizeLarge,), textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: Dimensions.paddingSizeOverLarge),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+                    //   child: Column(
+                    //     children: [
+                    //       Text(AppConstants.onboardList[index].title, style: rubikSemiBold.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color, fontSize: Dimensions.fontSizeExtraLarge,), textAlign: TextAlign.center,),
+                    //       const SizedBox(height: Dimensions.paddingSizeDefault,),
+                    //       Padding(
+                    //         padding: const EdgeInsets.symmetric(horizontal: Dimensions.radiusSizeSmall),
+                    //         child: Text(AppConstants.onboardList[index].subtitle, maxLines: 2,overflow: TextOverflow.ellipsis, style: rubikMedium.copyWith(color: ColorResources.getOnboardGreyColor(), fontSize: Dimensions.fontSizeLarge,), textAlign: TextAlign.center,
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    // const SizedBox(height: Dimensions.paddingSizeOverLarge),
                   ],
                 );
               },
             )),
 
             const IndicatorWidget(),
-            const SizedBox(height: Dimensions.paddingSizeDefault),
+             const SizedBox(height: Dimensions.paddingSizeDefault),
 
           ],
         )),
