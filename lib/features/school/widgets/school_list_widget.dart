@@ -159,12 +159,12 @@ void _calculateTotals() {
     //       ? 'Headteachers Message'
     //       : 
       schoolList[schoolListIndex].transactionType == AppConstants.classRequirement
-              ? 'Class Requirements': schoolList[schoolListIndex].transactionType == AppConstants.dormitoryEssential
-          ? 'Dormitory Essentials'
+              ? 'class_requirements'.tr: schoolList[schoolListIndex].transactionType == AppConstants.dormitoryEssential
+          ? 'dormitory_essentials'.tr
           : schoolList[schoolListIndex].transactionType == AppConstants.tuitionFee
-              ? 'Paid at School'
+              ? 'paid_at_school'.tr
           : schoolList[schoolListIndex].transactionType == AppConstants.textBook
-              ? 'Text Books'
+              ? 'text_books'.tr
                           : '';
 
 
@@ -202,8 +202,8 @@ void _calculateTotals() {
       case 7:
         return schoolLists.paymentList;
       default:
-        // Filter out tuition fee items when showing all school lists
-        return schoolLists.schoolList.where((item) => 
+        // Filter out tuition fee items when showing all_school_list
+       return schoolLists.schoolList.where((item) => 
           item.transactionType != AppConstants.tuitionFee 
            && item.transactionType != AppConstants.headteacherMessage
         ).toList();
@@ -282,9 +282,9 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
                 _buildRichTextSutitle(
                   context,
                   heading,
-                  ' Sub Total:',
+                  '${'sub_total'.tr}:',
                   '${caseTotals[schoolListIndex]}',
-                  'RWF'
+                  AppConstants.currency
                 ),
                 const SizedBox(height: 10),
           //       DefaultButton2(
@@ -331,7 +331,7 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
           //         context,
           //         'Add',
           //         '${caseTotals[schoolListIndex]}',
-          //         ' RWF Sub Total to All Total Invoice to pay or request credit at once.\nOR',
+          //         AppConstants.currencySub Total to All Total Invoice to pay or request_credit .trat once.\nOR',
           //       ),
           //       sizedBox10,
                  Row(
@@ -367,12 +367,12 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               productIndex: 0,
               studentName: widget.studentName,
               studentCode:widget.studentCode,
-              edubox_service:schoolListIndex>0? heading:'All School Lists',
+              edubox_service:schoolListIndex>0? heading:'all_school_list'.tr,
               serviceIndex: 0,
               price: schoolList.isNotEmpty ? totalPrice : 0,
             ),
           ),
-                title: 'PAY NOW',
+                title: 'pay_now'.tr,
                
                 color1: kamber300Color,
                 color2: kyellowColor,
@@ -381,7 +381,7 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
         DefaultButtonWidth(
                 onPress: () => showDepositDialog(
     context: context,
-    title: 'How much would you like to deposit?$schoolListModel',
+    title: '${'how_much_would_you_like_to_deposit'.tr}? $schoolListModel',
     onDeposit: (amount) {
 
 
@@ -425,7 +425,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               productIndex: 0,
               studentName: widget.studentName,
               studentCode:widget.studentCode,
-              edubox_service:schoolListIndex>0? heading:'All School Lists',
+              edubox_service:schoolListIndex>0? heading:'all_school_list'.tr,
               serviceIndex: 0,
               price: schoolList.isNotEmpty ? totalPrice : 0,
             ),
@@ -435,7 +435,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
   ),
                 
       
-                title: 'DEPOSIT',
+                title: 'deposit'.tr.tr,
                
                 color1: kamber300Color,
                 color2: kyellowColor,
@@ -476,12 +476,12 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               studentName: widget.studentName,
               studentCode: widget.studentCode,
               studentId: widget.studentId!,
-              edubox_service:schoolListIndex>0? heading:'All School Lists',
+              edubox_service:schoolListIndex>0? heading:'all_school_list'.tr,
               serviceIndex: schoolListIndex,
               price: schoolList.isNotEmpty ? totalPrice : 0,
             )),
         
-                title: 'REQUEST CREDIT',
+                title: 'request_credit'.tr,
             
                 color1: kamber300Color,
                 color2: kyellowColor,
@@ -494,9 +494,9 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               children: [
                 _buildRichText(
                   context,
-                  'Total All : ',
+                  '${'total_all'.tr} : ',
                   '${caseTotals[schoolListIndex]}',
-                  ' RWF',
+                  AppConstants.currency,
                 ),
         
           const SizedBox(height: 10),
@@ -543,7 +543,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
     //     phoneNumber: '*123*1*1234567890*${schoolList.isNotEmpty ? schoolList[0].amount : 0}#',
     //   ),
     // ),
-                title: 'PAY NOW',
+                title: 'pay_now'.tr,
                
                 color1: kamber300Color,
                 color2: kyellowColor,
@@ -559,9 +559,9 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               children: [
                 _buildRichText(
                   context,
-                  'Total All : ',
+                  '${'total_all'.tr} : ',
                   '$totalPrice',
-                  ' RWF',
+                  AppConstants.currency,
                 ),
                   const SizedBox(height: 10),
         
@@ -599,12 +599,12 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               productIndex: 0,
               studentName: widget.studentName,
               studentCode:widget.studentCode,
-              edubox_service:schoolListIndex>0? heading:'All School Lists',
+              edubox_service:schoolListIndex>0? heading:'all_school_list'.tr,
               serviceIndex: 0,
               price: schoolList.isNotEmpty ? totalPrice : 0,
             ),
           ),
-                title: 'PAY NOW',
+                title: 'pay_now'.tr,
                
                 color1: kamber300Color,
                 color2: kyellowColor,
@@ -616,7 +616,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
 
                 onPress: () {  showDepositDialog(
     context: context,
-    title: 'How much would you like to deposit?$schoolListModel',
+    title: '${'how_much_would_you_like_to_deposit'.tr}?$schoolListModel',
     onDeposit: (amount) {
 
 
@@ -660,7 +660,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               productIndex: 0,
               studentName: widget.studentName,
               studentCode:widget.studentCode,
-              edubox_service:schoolListIndex>0? heading:'All School Lists',
+              edubox_service:schoolListIndex>0? heading:'all_school_list'.tr,
               serviceIndex: 0,
               price: schoolList.isNotEmpty ? totalPrice : 0,
             ),
@@ -669,7 +669,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
     });
     },
 
-                title: 'DEPOSIT',
+                title: 'deposit'.tr,
                
                 color1: kamber300Color,
                 color2: kyellowColor,
@@ -710,12 +710,12 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               studentName: widget.studentName,
               studentCode: widget.studentCode,
               studentId: widget.studentId!,
-              edubox_service:schoolListIndex>0? heading:'All School Lists',
+              edubox_service:schoolListIndex>0? heading:'all_school_list'.tr,
               serviceIndex: 0,
               price: schoolList.isNotEmpty ? totalPrice : 0,
             )),
         
-                title: 'REQUEST CREDIT',
+                title: 'request_credit'.tr,
             
                 color1: kamber300Color,
                 color2: kyellowColor,
@@ -729,7 +729,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
           //     context,
           //     'Case ${entry.key} Total: ',
           //     '${entry.value}',
-          //     ' RWF',
+          //     AppConstants.currency,
           //   );
           // }).toList(),
         ],

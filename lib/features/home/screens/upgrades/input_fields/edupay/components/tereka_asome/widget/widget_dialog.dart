@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 
 class WidgetDialog {
@@ -16,7 +17,7 @@ class WidgetDialog {
           contentPadding: const EdgeInsets.only(left: 25),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          title: const Text('Student Info'),
+          title:  Text('student_info'.tr),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,8 +39,8 @@ class WidgetDialog {
               onPressed: () {
                 Navigator.of(context).pop(); // Closes the dialog
               },
-              child: const Text(
-                "OK",
+              child:  Text(
+                "ok".tr,
                 style: TextStyle(color: Colors.black),
               ),
             ),

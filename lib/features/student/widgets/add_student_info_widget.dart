@@ -34,18 +34,19 @@ class _AddStudentInfoWidgetState extends State<AddStudentInfoWidget> {
   bool? isTeacherLoggedIn = false;
   bool? isParentLoggedIn = false;
   bool? isUserLoggedIn = false;
-  String studentCardValue = 'Choose Uniform Type';
-  String genderValue = 'Choose Gender';
-  String topWearValue = 'Choose Top Wear';
-  String sportSizeValue = 'Choose Size';
-  String shoeSizeValue = 'Choose Size';
-  String topSizeValue = 'Choose Size';
-  String bottomWearValue = 'Choose Bottom Wear';
-  String sportsWearValue = 'Choose Sports Wear';
-  String feetWearValue = 'Choose Feet Wear';
-  String feetWearSizeValue = 'Choose Size';
-  String classValue = 'Od Level';
-  String classCategoryValue = 'Class';
+  // Replace your declarations with these tr() keys
+  String studentCardValue = 'choose_uniform_type'.tr;
+  String genderValue = 'choose_gender'.tr;
+  String topWearValue = 'choose_top_wear'.tr;
+  String sportSizeValue = 'choose_size'.tr;
+  String shoeSizeValue = 'choose_size'.tr;
+  String topSizeValue = 'choose_size'.tr;
+  String bottomWearValue = 'choose_bottom_wear'.tr;
+  String sportsWearValue = 'choose_sports_wear'.tr;
+  String feetWearValue = 'choose_feet_wear'.tr;
+  String feetWearSizeValue = 'choose_size'.tr;
+  String classValue = 'od_level'.tr;
+  String classCategoryValue = 'class'.tr;
   bool isSelected = false;
   UserShortDataModel? userData;
   String? parentId;
@@ -60,56 +61,57 @@ class _AddStudentInfoWidgetState extends State<AddStudentInfoWidget> {
   TextEditingController chestSizeEditingController = TextEditingController();
   TextEditingController handSizeEditingController = TextEditingController();
 
-  List<Map<dynamic, String>> gender = const [
-    {'name': 'Male'},
-    {'name': 'Female'}
-  ];
+  
 
-  List<Map<dynamic, String>> bottomWear = const [
-    {'name': 'Short'},
-    {'name': 'Trouser'},
-    {'name': 'Skirt'},
-  ];
+List<Map<dynamic, String>> gender =  [
+  {'name': 'male'.tr},
+  {'name': 'female'.tr}
+];
 
-  List<Map<dynamic, String>> topWear = const [
-    {'name': 'Shirt'},
-    {'name': 'Brouse'},
-    {'name': 'Tie'}
-  ];
+List<Map<dynamic, String>> bottomWear =  [
+  {'name': 'short'.tr},
+  {'name': '${'trouser'.tr}'.tr},
+  {'name': 'skirt'.tr},
+];
 
-  List<Map<dynamic, String>> sportsWear = const [
-    {'name': 'Sports Wear'},
-  ];
+List<Map<dynamic, String>> topWear =  [
+  {'name': 'shirt'.tr},
+  {'name': 'brouse'.tr},
+  {'name': 'tie'.tr}
+];
 
-  List<Map<dynamic, String>> feetWear = const [
-    {'name': 'Shoes'},
-    {'name': 'Socs'}
-  ];
+List<Map<dynamic, String>> sportsWear =  [
+  {'name': 'sports_wear'.tr},
+];
 
-  List<Map<dynamic, String>> size = const [
-    {'name': 'Size 1'},
-    {'name': 'Size 2'},
-    {'name': 'Size 3'},
-    {'name': 'Size 4'},
-    {'name': 'Size 5'},
-    {'name': 'Size 6'},
-    {'name': 'Size 7'},
-    {'name': 'Size 8'},
-    {'name': 'Size 9'},
-    {'name': 'Size 10'},
-    {'name': 'Size 11'},
-    {'name': 'Size 12'},
-    {'name': 'Size 13'},
-  ];
+List<Map<dynamic, String>> feetWear =  [
+  {'name': 'shoes'.tr},
+  {'name': 'socs'.tr}
+];
 
-  List<Map<dynamic, String>> topSize = const [
-    {'name': 'S'},
-    {'name': 'M'},
-    {'name': 'L'},
-    {'name': 'XL'},
-    {'name': 'XXL'},
-    {'name': 'XXL'},
-  ];
+List<Map<dynamic, String>> size =[
+  {'name': 'size_1'.tr},
+  {'name': 'size_2'.tr},
+  {'name': 'size_3'.tr},
+  {'name': 'size_4'.tr},
+  {'name': 'size_5'.tr},
+  {'name': 'size_6'.tr},
+  {'name': 'size_7'.tr},
+  {'name': 'size_8'.tr},
+  {'name': 'size_9'.tr},
+  {'name': 'size_10'.tr},
+  {'name': 'size_11'.tr},
+  {'name': 'size_12'.tr},
+  {'name': 'size_13'.tr},
+];
+
+List<Map<dynamic, String>> topSize = [
+  {'name': 'size_s'.tr},
+  {'name': 'size_m'.tr},
+  {'name': 'size_l'.tr},
+  {'name': 'size_xl'.tr},
+  {'name': 'size_xxl'.tr},
+];
 
   showDetails() async {}
   selectedVale() {
@@ -133,8 +135,6 @@ class _AddStudentInfoWidgetState extends State<AddStudentInfoWidget> {
     parentId = Get.find<AuthController>().getUserId();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -152,405 +152,407 @@ class _AddStudentInfoWidgetState extends State<AddStudentInfoWidget> {
           borderRadius: BorderRadius.all(Radius.circular(10))),
       padding: const EdgeInsets.all(8.0),
       width: 340,
-      child: Column(
-        children: [
-          SizedBox(
-           height: screenHeight/1.5,
-            child: ListView(
+      child: Column(children: [
+        SizedBox(
+          height: screenHeight / 1.5,
+          child: ListView(
               // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              
-     InkWell(
-  onTap: () =>  showEditStudentBottomSheet(
-      context: context,
-      parentId: parentId!
-    ),
-  onHover: (isHovering) {
-    // Optional: Add hover effect state management
-  },
-  borderRadius: BorderRadius.circular(8),
-  child: Container(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(8),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.05),
-          blurRadius: 6,
-          offset: const Offset(0, 2),
-        ),
-      ],
-      border: Border.all(
-        color: Colors.grey.shade200,
-        width: 1,
-      ),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SizedBox(
-          width: screenWidth/1.6,
-          child: Text(
-            'Click to Edit Student Profile',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.blueGrey.shade800,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.2,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: Colors.blue.shade50,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.edit_rounded,
-            size: 18,
-            color: Colors.blue.shade700,
-          ),
-        ),
-      ],
-    ),
-  ),
-) ,
-sizedBox10,
-   Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children:[
-
-   Text(
-                        'Find Your Uniform List',
-                        textAlign: TextAlign.left,
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            decoration: TextDecoration.underline,
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
+                InkWell(
+                  onTap: () => showEditStudentDialog(
+                      context: context, parentId: parentId!),
+                  onHover: (isHovering) {
+                    // Optional: Add hover effect state management
+                  },
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                      border: Border.all(
+                        color: Colors.grey.shade200,
+                        width: 1,
                       ),
-sizedBox10,
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: screenWidth / 1.6,
+                          child: Text(
+                            'click_to_edit_student_profile'.tr,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  color: Colors.blueGrey.shade800,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.2,
+                                ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade50,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.edit_rounded,
+                            size: 18,
+                            color: Colors.blue.shade700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                sizedBox10,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                      
-                    Column(
+                    Text(
+                      'find_your_uniform_list'.tr,
+                      textAlign: TextAlign.left,
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          decoration: TextDecoration.underline,
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    sizedBox10,
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                             Text(
-                        'Gender',
-                          style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                              fontWeight: FontWeight.w400),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'gender'.tr,
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.w400),
                               textAlign: TextAlign.left,
-                        ),
-                        sizedBox5,
-                        DropDownStudentInfo(
-                          menuHeight: 200,
-                          onChanged: (onChanged) {
-                            setState(() {
-                              genderValue = onChanged!;
-                            });
-                          },
-                          itemLists: gender,
-                          title: genderValue,
-                          width: screenWidth / 2.5,
-                          menuWidth: screenWidth / 2.5,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(width: 15),
-                    buildFormField('  Age (Years)', studentAgeEditingController,
-                        TextInputType.number,
-                          width: screenWidth / 2.7,
-                          
-                        )
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                  child: Divider(
-                    color: Colors.black.withOpacity(0.3),
-                  ),
-                ),
-                                Text(
-                          'Shirt | Brouse | Tie',
-                          style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                              fontWeight: FontWeight.w400),
-                        ),
-                        sizedBox5,
-                Wrap(
-                  direction: Axis.horizontal,
-                  spacing: 15,
-                  runSpacing: 15,
-                  children: [
-                    DropDownStudentInfo(
-                      menuHeight: 300,
-                      onChanged: (onChanged) {
-                        setState(() {
-                          topWearValue = onChanged!;
-                        });
-                      },
-                      itemLists: topWear,
-                      title: topWearValue,
-                      width: screenWidth / 2.5,
-                      menuWidth: screenWidth / 2.5,
-                 
-                    ),
-                    buildFormField('Chest Size(ft)', chestSizeEditingController,
-                        TextInputType.number,
-                        width: 150),
-                    buildFormField('Shoulder Size(ft)',
-                        shoulderSizeEditingController, TextInputType.number,
-                        width: 150),
-                    buildFormField('Hand Size(ft)', handSizeEditingController,
-                        TextInputType.number,
-                        width: 150)
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                  child: Divider(
-                    color: Colors.black.withOpacity(0.3),
-                  ),
-                ),
-                    Text(
-                          'Trouser | Short | Skirt',
-                          style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                              fontWeight: FontWeight.w400),
-                        ),
-                        sizedBox5,
-                genderValue == 'Female'
-                    ? Wrap(
-                        direction: Axis.horizontal,
-                        spacing: 15,
-                        runSpacing: 15,
-                        children: [
-                          DropDownStudentInfo(
-                            menuHeight: 250,
+                            ),
+                            sizedBox5,
+                            DropDownStudentInfo(
+                              menuHeight: 200,
                               onChanged: (onChanged) {
                                 setState(() {
-                                  bottomWearValue = onChanged!;
+                                  genderValue = onChanged!;
                                 });
                               },
-                              itemLists: bottomWear,
-                              title: bottomWearValue,
+                              itemLists: gender,
+                              title: genderValue,
                               width: screenWidth / 2.5,
                               menuWidth: screenWidth / 2.5,
-                         ),
-                          buildFormField('Hip Size(ft)', hipSizeEditingController,
-                              TextInputType.number,
-                              width: 150),
-                          buildFormField('Waist Size(ft)',
-                              waistSizeEditingController, TextInputType.number,
-                              width: 150),
-                          buildFormField('Height Size(ft)',
-                              heightSizeEditingController, TextInputType.number,
-                              width: 150)
-                        ],
-                      )
-                    : Wrap(
-                        direction: Axis.horizontal,
-                        spacing: 15,
-                        runSpacing: 15,
-                        children: [
-                          DropDownStudentInfo(
-                            menuHeight: 250,
-                            onChanged: (onChanged) {
-                              setState(() {
-                                bottomWearValue = onChanged!;
-                              });
-                            },
-                            itemLists: bottomWear,
-                            title: bottomWearValue,
-                            width: screenWidth / 2.5,
-                            menuWidth: screenWidth / 2.5,
-                      
-                          ),
-                          buildFormField('Waist Size(ft)',
-                              waistSizeEditingController, TextInputType.number,
-                              width: 150),
-                          buildFormField('Height Size(ft)',
-                              heightSizeEditingController, TextInputType.number,
-                              width: 150)
-                        ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 15),
+                        buildFormField(
+                          '  ${'age'.tr} (${'years'.tr})',
+                          studentAgeEditingController,
+                          TextInputType.number,
+                          width: screenWidth / 2.7,
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                      child: Divider(
+                        color: Colors.black.withOpacity(0.3),
                       ),
-                SizedBox(
-                  height: 15,
-                  child: Divider(
-                    color: Colors.black.withOpacity(0.3),
-                  ),
-                ),
-            
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                      
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    ),
+                    Text(
+                      '${'shirt'.tr} | ${'brouse'.tr} | ${'tie'.tr}',
+                      style: TextStyle(
+                          color: Colors.black.withOpacity(0.5),
+                          fontWeight: FontWeight.w400),
+                    ),
+                    sizedBox5,
+                    Wrap(
+                      direction: Axis.horizontal,
+                      spacing: 15,
+                      runSpacing: 15,
                       children: [
-                                 Text(
-                          'Sports Wear',
-                          style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                              fontWeight: FontWeight.w400),
-                        ),
-                        sizedBox5,
                         DropDownStudentInfo(
-                          menuHeight: 150,
+                          menuHeight: 300,
                           onChanged: (onChanged) {
                             setState(() {
-                              sportsWearValue = onChanged!;
+                              topWearValue = onChanged!;
                             });
                           },
-                          itemLists: sportsWear,
-                          title: sportsWearValue,
+                          itemLists: topWear,
+                          title: topWearValue,
                           width: screenWidth / 2.5,
                           menuWidth: screenWidth / 2.5,
-                    
+                        ),
+                        buildFormField('${'chest_size'.tr}(${'ft'.tr})',
+                            chestSizeEditingController, TextInputType.number,
+                            width: 150),
+                        buildFormField('${'shoulder_size'.tr}(${'ft'.tr})',
+                            shoulderSizeEditingController, TextInputType.number,
+                            width: 150),
+                        buildFormField('${'hand_size'.tr}(${'ft'.tr})',
+                            handSizeEditingController, TextInputType.number,
+                            width: 150)
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                      child: Divider(
+                        color: Colors.black.withOpacity(0.3),
+                      ),
+                    ),
+                    Text(
+                      '${'trouser'.tr} | ${'short'.tr} | ${'skirt'.tr}',
+                      style: TextStyle(
+                          color: Colors.black.withOpacity(0.5),
+                          fontWeight: FontWeight.w400),
+                    ),
+                    sizedBox5,
+                    genderValue == 'female'.tr
+                        ? Wrap(
+                            direction: Axis.horizontal,
+                            spacing: 15,
+                            runSpacing: 15,
+                            children: [
+                              DropDownStudentInfo(
+                                menuHeight: 250,
+                                onChanged: (onChanged) {
+                                  setState(() {
+                                    bottomWearValue = onChanged!;
+                                  });
+                                },
+                                itemLists: bottomWear,
+                                title: bottomWearValue,
+                                width: screenWidth / 2.5,
+                                menuWidth: screenWidth / 2.5,
+                              ),
+                              buildFormField(
+                                  '${'hip_size'.tr}(${'ft'.tr})',
+                                  hipSizeEditingController,
+                                  TextInputType.number,
+                                  width: 150),
+                              buildFormField(
+                                  '${'waist_size'.tr}(${'ft'.tr})',
+                                  waistSizeEditingController,
+                                  TextInputType.number,
+                                  width: 150),
+                              buildFormField(
+                                  '${'height_size'.tr}(${'ft'.tr})',
+                                  heightSizeEditingController,
+                                  TextInputType.number,
+                                  width: 150)
+                            ],
+                          )
+                        : Wrap(
+                            direction: Axis.horizontal,
+                            spacing: 15,
+                            runSpacing: 15,
+                            children: [
+                              DropDownStudentInfo(
+                                menuHeight: 250,
+                                onChanged: (onChanged) {
+                                  setState(() {
+                                    bottomWearValue = onChanged!;
+                                  });
+                                },
+                                itemLists: bottomWear,
+                                title: bottomWearValue,
+                                width: screenWidth / 2.5,
+                                menuWidth: screenWidth / 2.5,
+                              ),
+                              buildFormField(
+                                  '${'waist_size'.tr}(${'ft'.tr})',
+                                  waistSizeEditingController,
+                                  TextInputType.number,
+                                  width: 150),
+                              buildFormField(
+                                  '${'height_size'.tr}(${'ft'.tr})',
+                                  heightSizeEditingController,
+                                  TextInputType.number,
+                                  width: 150)
+                            ],
+                          ),
+                    SizedBox(
+                      height: 15,
+                      child: Divider(
+                        color: Colors.black.withOpacity(0.3),
+                      ),
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'sports_wear'.tr,
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            sizedBox5,
+                            DropDownStudentInfo(
+                              menuHeight: 150,
+                              onChanged: (onChanged) {
+                                setState(() {
+                                  sportsWearValue = onChanged!;
+                                });
+                              },
+                              itemLists: sportsWear,
+                              title: sportsWearValue,
+                              width: screenWidth / 2.5,
+                              menuWidth: screenWidth / 2.5,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 15),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'size'.tr,
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            sizedBox5,
+                            DropDownStudentInfo(
+                              menuHeight: 320,
+                              onChanged: (onChanged) {
+                                setState(() {
+                                  feetWearSizeValue = onChanged!;
+                                });
+                              },
+                              itemLists: topSize,
+                              title: feetWearSizeValue,
+                              width: screenWidth / 2.5,
+                              menuWidth: screenWidth / 2.5,
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(width: 15),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    SizedBox(
+                      height: 15,
+                      child: Divider(
+                        color: Colors.black.withOpacity(0.3),
+                      ),
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                             Text(
-                          'Size',
-                          style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                              fontWeight: FontWeight.w400),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${'shoes'.tr} | ${'socs'.tr}',
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            sizedBox5,
+                            DropDownStudentInfo(
+                              menuHeight: 200,
+                              onChanged: (onChanged) {
+                                setState(() {
+                                  feetWearValue = onChanged!;
+                                });
+                              },
+                              itemLists: feetWear,
+                              title: feetWearValue,
+                              width: screenWidth / 2.5,
+                              menuWidth: screenWidth / 2.5,
+                            ),
+                          ],
                         ),
-                        sizedBox5,
-                        DropDownStudentInfo(
-                          menuHeight: 320,
-                          onChanged: (onChanged) {
-                            setState(() {
-                              feetWearSizeValue = onChanged!;
-                            });
-                          },
-                          itemLists: topSize,
-                          title: feetWearSizeValue,
-                          width: screenWidth / 2.5,
-                          menuWidth: screenWidth / 2.5,
-                        
+                        const SizedBox(width: 15),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'size'.tr,
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            sizedBox5,
+                            DropDownStudentInfo(
+                              menuHeight: 500,
+                              onChanged: (onChanged) {
+                                setState(() {
+                                  shoeSizeValue = onChanged!;
+                                });
+                              },
+                              itemLists: size,
+                              title: shoeSizeValue,
+                              width: screenWidth / 2.5,
+                              menuWidth: screenWidth / 2.5,
+                            ),
+                          ],
                         ),
                       ],
                     ),
+                    sizedBox15,
                   ],
                 ),
-                SizedBox(
-                  height: 15,
-                  child: Divider(
-                    color: Colors.black.withOpacity(0.3),
-                  ),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Shoes | Socs',
-                          style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                              fontWeight: FontWeight.w400),
-                        ),
-                        sizedBox5,
-                        DropDownStudentInfo(
-                          menuHeight: 200,
-                          onChanged: (onChanged) {
-                            setState(() {
-                              feetWearValue = onChanged!;
-                            });
-                          },
-                          itemLists: feetWear,
-                          title: feetWearValue,
-                          width: screenWidth / 2.5,
-                          menuWidth: screenWidth / 2.5,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(width: 15),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Size',
-                          style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                              fontWeight: FontWeight.w400),
-                        ),
-                        sizedBox5,
-                        DropDownStudentInfo(
-                          menuHeight: 500,
-                          onChanged: (onChanged) {
-                            setState(() {
-                              shoeSizeValue = onChanged!;
-                            });
-                          },
-                          itemLists: size,
-                          title: shoeSizeValue,
-                          width: screenWidth / 2.5,
-                          menuWidth: screenWidth / 2.5,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                sizedBox15,
-                   
-              ],
-            ),
-           ]),   
-          ),
+              ]),
+        ),
         DefaultButton2(
-                                     color1: kamber300Color,
-                                     color2: kyellowColor,
-                                     onPress: () {
-                    Get.off( const MzaziScreen(isShop: false,));
-                    print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee$parentId');
-                    Future.delayed(
-                        const Duration(milliseconds: 200),
-                        () => widget.studentRegController.updateStudent(
-                            name: widget.studentController
-                                .studentList![widget.selectedIndex].name!,
-                            code: widget.studentController
-                                .studentList![widget.selectedIndex].code!,
-                            schoolCode: widget.studentController
-                                .studentList![widget.selectedIndex].schoolId!
-                                .toString(),
-                            parentId: parentId!,
-                            classId: widget.studentController
-                                .studentList![widget.selectedIndex].classId!,
-                            id: widget.studentId,
-                            gender: genderValue,
-                            age: studentAgeEditingController.text,
-                            hipSize: hipSizeEditingController.text,
-                            waistSize: waistSizeEditingController.text,
-                            heightSize: heightSizeEditingController.text,
-                            topWear: topWearValue,
-                            bottomWear: bottomWearValue,
-                            sportsWear: sportsWearValue,
-                            feetWear: feetWearValue,
-                            topSize: chestSizeEditingController.text,
-                            shoeSize: shoeSizeValue,
-                            sportSize: sportSizeValue,
-                            shoulderSize: shoulderSizeEditingController.text,
-                            handSize: handSizeEditingController.text));
-                                     },
-                                     title: 'NEXT',
-                                     iconData: Icons.arrow_forward_outlined,
-                                   ),
-                                     ]
-),
-
+          color1: kamber300Color,
+          color2: kyellowColor,
+          onPress: () {
+            Get.off(const MzaziScreen(
+              isShop: false,
+            ));
+            print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee$parentId');
+            Future.delayed(
+                const Duration(milliseconds: 200),
+                () => widget.studentRegController.updateStudent(
+                    name: widget.studentController
+                        .studentList![widget.selectedIndex].name!,
+                    code: widget.studentController
+                        .studentList![widget.selectedIndex].code!,
+                    schoolCode: widget.studentController
+                        .studentList![widget.selectedIndex].schoolId!
+                        .toString(),
+                    parentId: parentId!,
+                    classId: widget.studentController
+                        .studentList![widget.selectedIndex].classId!,
+                    id: widget.studentId,
+                    gender: genderValue,
+                    age: studentAgeEditingController.text,
+                    hipSize: hipSizeEditingController.text,
+                    waistSize: waistSizeEditingController.text,
+                    heightSize: heightSizeEditingController.text,
+                    topWear: topWearValue,
+                    bottomWear: bottomWearValue,
+                    sportsWear: sportsWearValue,
+                    feetWear: feetWearValue,
+                    topSize: chestSizeEditingController.text,
+                    shoeSize: shoeSizeValue,
+                    sportSize: sportSizeValue,
+                    shoulderSize: shoulderSizeEditingController.text,
+                    handSize: handSizeEditingController.text));
+          },
+          title: 'NEXT',
+          iconData: Icons.arrow_forward_outlined,
+        ),
+      ]),
     );
   }
 
@@ -597,104 +599,87 @@ sizedBox10,
     );
   }
 
-void showEditStudentBottomSheet({
-  required BuildContext context,
-  required String parentId
-}) {
-  showModalBottomSheet(
+ void showEditStudentDialog(
+    {required BuildContext context, required String parentId}) {
+    final  screenWidth=MediaQuery.of(context).size.width;
+    final  screenHeight=MediaQuery.of(context).size.height;
+  showDialog(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
     builder: (context) {
-      return Container(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-          left: 16,
-          right: 16,
-          top: 16,
+      return AlertDialog(
+        contentPadding: const EdgeInsets.all(20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
         ),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header with title and close button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Edit Student Profile',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blueGrey.shade800,
-                        ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Find and update your student information',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.blueGrey.shade600,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: screenWidth*0.6,
+              child: Text(
+                'edit_student_profile'.tr,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blueGrey.shade800,
                     ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 20),
-              
-              // Your dropdown widget
-              DependentStudentDropdowns(
-                isAddAccount: true,
-                isStudentEdit: true,
-                studentController: widget.studentController,
-                studentRegistrationController: widget.studentRegController,
-                selectedIndex: widget.selectedIndex,
-                parentId: parentId,
-              ),
-              
-              // const SizedBox(height: 20),
-              
-              // // Action buttons
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: OutlinedButton(
-              //         style: OutlinedButton.styleFrom(
-              //           padding: const EdgeInsets.symmetric(vertical: 16),
-              //           side: BorderSide(color: Colors.blueGrey.shade300),
-              //         ),
-              //         onPressed: () => Navigator.pop(context),
-              //         child: const Text('Cancel'),
-              //       ),
-              //     ),
-              //     const SizedBox(width: 12),
-              //     Expanded(
-              //       child: ElevatedButton(
-              //         style: ElevatedButton.styleFrom(
-              //           backgroundColor: Colors.blueGrey.shade800,
-              //           padding: const EdgeInsets.symmetric(vertical: 16),
-              //         ),
-              //         onPressed: () {
-              //           // Handle save logic here
-              //           Navigator.pop(context);
-              //         },
-              //         child: const Text(
-              //           'Save Changes',
-              //           style: TextStyle(color: Colors.white),
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              const SizedBox(height: 25),
-            ],
-          ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => Navigator.pop(context),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
+          ],
         ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'find_and_update_your_student_information'.tr,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.blueGrey.shade600,
+                  ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+               width: screenWidth * 0.9,
+               height: screenHeight/1.7,
+              child: SingleChildScrollView(
+                child: DependentStudentDropdowns(
+                  isAddAccount: true,
+                  isStudentEdit: true,
+                  studentController: widget.studentController,
+                  studentRegistrationController: widget.studentRegController,
+                  selectedIndex: widget.selectedIndex,
+                  parentId: parentId,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+        // actions: [
+        //   TextButton(
+        //     onPressed: () => Navigator.pop(context),
+        //     child: const Text('Cancel'),
+        //   ),
+        //   ElevatedButton(
+        //     style: ElevatedButton.styleFrom(
+        //       backgroundColor: Colors.blueGrey.shade800,
+        //     ),
+        //     onPressed: () {
+        //       // Handle save logic here
+        //       Navigator.pop(context);
+        //     },
+        //     child: const Text(
+        //       'Save Changes',
+        //       style: TextStyle(color: Colors.white),
+        //     ),
+        //   ),
+        // ],
       );
     },
   );

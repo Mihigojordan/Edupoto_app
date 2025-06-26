@@ -14,8 +14,10 @@ import 'dart:convert';
 
 class SchoolDirectoryScreen extends StatefulWidget {
   static String routeName = 'SchoolDirectoryScreen';
+  final String schoolName; 
+  final String schoolDistrict;
 
-  const SchoolDirectoryScreen({super.key});
+  const SchoolDirectoryScreen({super.key,required this.schoolName,required this.schoolDistrict});
 
   @override
   SchoolDirectoryScreenState createState() => SchoolDirectoryScreenState();
@@ -100,14 +102,14 @@ class SchoolDirectoryScreenState extends State<SchoolDirectoryScreen> {
                           padding: const EdgeInsets.symmetric(horizontal:20.0,vertical:80),
                           child: RichText(
                                                     text: TextSpan(
-                                                      text: 'EP TABA',
+                                                      text:  widget.schoolName,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .titleLarge!
                                                           .copyWith(color: Colors.black, fontWeight: FontWeight.bold),
                                                       children: <TextSpan>[
                                                         TextSpan(
-                                                          text: '\nNyarugenge District',
+                                                          text: '\n${widget.schoolDistrict}',
                                                           style: Theme.of(context)
                                                               .textTheme
                                                               .titleMedium!
@@ -151,7 +153,8 @@ class SchoolDirectoryScreenState extends State<SchoolDirectoryScreen> {
             top: MediaQuery.of(context).size.height / 3.5,
             left: 20,
             right: 20,
-            child: const HomeCard1(
+            child:  HomeCard1(
+              schoolName: widget.schoolName,
                 phoneNumber: 'assets/icons1/edupotoERP.png',
                 title: 'title',
                 fromEdit: false),
@@ -215,11 +218,14 @@ class HomeCard1 extends StatefulWidget {
       {super.key,
       required this.phoneNumber,
       required this.title,
-      required this.fromEdit});
+      required this.fromEdit,
+      required this.schoolName
+      });
 
   final String phoneNumber;
   final String title;
   final bool? fromEdit;
+  final String schoolName;
   @override
   State<HomeCard1> createState() => _HomeCard1State();
 }
@@ -230,8 +236,8 @@ class _HomeCard1State extends State<HomeCard1> {
   bool? isUserLoggedIn = false;
 
   String? phoneNumber;
-  String studentcardValue = 'Choose student\'s card to fund';
-  String productValue = 'Choose product to save for';
+  String studentcardValue = 'choose_student_card_to_fund'.tr;
+  String productValue = 'choose_product_to_save_for'.tr;
   String transactionType = 'add_money';
   final TextEditingController _inputAmountController = TextEditingController();
   String? _selectedMethodId;
@@ -300,9 +306,9 @@ Widget build(BuildContext context) {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'School Site',
-            style: TextStyle(
+           Text(
+            'school_site'.tr,
+            style:const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF1b4922),
@@ -314,46 +320,46 @@ Widget build(BuildContext context) {
               children: [
                 _buildListTile(
                   icon: Icons.message,
-                  title: 'Babyeyi (From the Director)',
-                  onTap: () => Get.to(const SingleSchoolDirectoryScreen(title: 'Headteacher Messages')),
+                  title: '${'parent'.tr} (${'from_the_director'.tr})',
+                  onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'headteacher_messages'.tr)),
                 ),
                 _buildListTile(
                   icon: Icons.account_balance_wallet,
-                  title: 'School Burser',
-                  onTap: () => Get.to(const SingleSchoolDirectoryScreen(title: 'School Burser')),
+                  title: 'school_burser'.tr,
+                  onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'school_burser'.tr)),
                 ),
                 _buildListTile(
                   icon: Icons.list_alt,
-                  title: 'Requirements List',
-                  onTap: () => Get.to(const SingleSchoolDirectoryScreen(title: 'School Requirements')),
+                  title: 'requirements_list'.tr,
+                  onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'school_requirements'.tr)),
                 ),
                 _buildListTile(
                   icon: Icons.school,
-                  title: 'School Prospectus',
-                  onTap: () => Get.to(const SingleSchoolDirectoryScreen(title: 'School Prospectus')),
+                  title: 'school_prospectus'.tr,
+                  onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'school_prospectus'.tr)),
                 ),
                 _buildListTile(
                   icon: Icons.article,
-                  title: 'School News',
-                  onTap: () => Get.to(const SingleSchoolDirectoryScreen(title: 'School News')),
+                  title: 'school_news'.tr,
+                  onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'school_news'.tr)),
                 ),
                 _buildListTile(
                   icon: Icons.app_registration,
-                  title: 'Admissions',
-                  onTap: () => Get.to(const SingleSchoolDirectoryScreen(title: 'Admissions')),
+                  title: 'admissions'.tr,
+                  onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'admissions'.tr)),
                 ),
                 _buildListTile(
                   icon: Icons.download,
-                  title: 'Downloads (Reports, Bankslip)',
-                  onTap: () => Get.to(const SingleSchoolDirectoryScreen(title: 'Download')),
+                  title: '${'download'.tr}s (Reports, Bankslip)',
+                  onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'download'.tr)),
                 ),
               ],
             ),
           ),
           const Divider(height: 20),
-          const Text(
-            'Contact Us',
-            style: TextStyle(
+           Text(
+            'contact_us'.tr,
+            style:const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF1b4922),
@@ -373,16 +379,16 @@ Widget build(BuildContext context) {
               ),
               _buildContactButton(
                 icon: Icons.email,
-                label: 'Email',
+                label: 'email'.tr,
                 onTap: () => sendEmail(
                   'skatende@edupoto.com',
                   subject: 'Hello',
-                  body: 'This is a Parent from EP TABA.',
+                  body: 'This is a Parent from ${widget.schoolName}.',
                 ),
               ),
               _buildContactButton(
                 icon: Icons.call,
-                label: 'Call',
+                label: 'call'.tr,
                 onTap: () => makePhoneCall('+250793903844'),
               ),
             ],

@@ -43,8 +43,8 @@ showInfoDialog(
                   Get.back(); // Close the dialog
                 });
               },
-              child: const Text(
-                "Cancel",
+              child: Text(
+                "cancel".tr,
                 style: TextStyle(color: Colors.black),
               ),
             ),
@@ -65,7 +65,7 @@ showInfoDialog(
                     // Delay navigation slightly
                     Get.to(StudentAddInfo(
                       studentInfo:
-                          'Code: $student_code Name: $student_name',
+                          '${'code'.tr}: $student_code ${'name'.tr}: $student_name',
                       studentId: studentId,
                       studentRegController: studentRegController,
                       studentController: studentController,
@@ -76,8 +76,8 @@ showInfoDialog(
                   print("🚨 Error: Missing required student data!");
                 }
               },
-              child: const Text(
-                "OK",
+              child: Text(
+                "ok".tr,
                 style: TextStyle(color: Colors.black),
               ),
             ),

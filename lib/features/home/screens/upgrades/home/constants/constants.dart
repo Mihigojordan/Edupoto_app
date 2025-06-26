@@ -34,85 +34,85 @@ const Color korange300Color = Color(0xFFFF8A65);
 const Color korange200Color = Color(0xFFFFAB91);
 const Color korange100Color = Color(0xFFFFCCBC);
 
- const   List<Map<String, String>> messages = [
+ const List<Map<String, String>> messages = [
     {
-      'sender': 'Mr. John Doe',
+      'title': 'Assignment Submission Reminder',
       'message': 'Please ensure all students submit their assignments by Friday.',
     },
     {
-      'sender': 'Mrs. Jane Smith',
+      'title': 'School Closure Notice',
       'message': 'The school will be closed next Monday for maintenance.',
     },
     {
-      'sender': 'Mr. David Brown',
+      'title': 'Parent-Teacher Meetings',
       'message': 'Parent-teacher meetings are scheduled for next week.',
     },
     {
-      'sender': 'Ms. Emily White',
+      'title': 'Sports Day Reminder',
       'message': 'Reminder: School sports day is on the 25th of this month.',
     },
     {
-      'sender': 'Mr. Michael Green',
+      'title': 'Timetable Update',
       'message': 'Please check the updated timetable on the school portal.',
     },
     {
-      'sender': 'Mrs. Sarah Black',
+      'title': 'Library Renovation Notice',
       'message': 'The library will be closed for renovation next week.',
     },
     {
-      'sender': 'Mr. Robert Blue',
+      'title': 'Science Project Reminder',
       'message': 'Students are required to bring their science projects tomorrow.',
     },
     {
-      'sender': 'Ms. Laura Yellow',
+      'title': 'Annual School Festival',
       'message': 'The annual school festival is coming up. Stay tuned for updates!',
     },
     {
-      'sender': 'Mr. James Red',
+      'title': 'PE Kit Reminder',
       'message': 'Please ensure your child brings their PE kit every Monday.',
     },
     {
-      'sender': 'Mrs. Anna Purple',
+      'title': 'Canteen Closure Notice',
       'message': 'The school canteen will be closed for cleaning this Friday.',
     },
     {
-      'sender': 'Mr. Thomas Orange',
+      'title': 'School Photos Reminder',
       'message': 'Reminder: School photos will be taken next Wednesday.',
     },
     {
-      'sender': 'Ms. Rachel Pink',
+      'title': 'Bus Schedule Update',
       'message': 'The school bus schedule has been updated. Please check the notice board.',
     },
     {
-      'sender': 'Mr. William Gray',
+      'title': 'Uniform Requirement',
       'message': 'Students must wear their school uniform for the upcoming event.',
     },
     {
-      'sender': 'Mrs. Olivia Gold',
+      'title': 'Career Guidance Session',
       'message': 'The school will host a career guidance session next month.',
     },
     {
-      'sender': 'Mr. Daniel Silver',
+      'title': 'Math Extra Classes',
       'message': 'Please ensure your child attends the extra classes for math.',
     },
     {
-      'sender': 'Ms. Sophia Bronze',
+      'title': 'Field Trip Announcement',
       'message': 'The school will be organizing a field trip next week.',
     },
     {
-      'sender': 'Mr. Christopher Maroon',
+      'title': 'Consent Forms Reminder',
       'message': 'Reminder: Submit the consent forms for the upcoming trip.',
     },
     {
-      'sender': 'Mrs. Elizabeth Teal',
+      'title': 'Fire Safety Drill',
       'message': 'The school will be conducting fire safety drills tomorrow.',
     },
     {
-      'sender': 'Mr. Matthew Cyan',
+      'title': 'Art Supplies Reminder',
       'message': 'Please ensure your child brings their art supplies for the workshop.',
     },
     {
-      'sender': 'Ms. Victoria Magenta',
+      'title': 'Holiday Closure Notice',
       'message': 'The school will be closed for the holidays starting next week.',
     },
   ];

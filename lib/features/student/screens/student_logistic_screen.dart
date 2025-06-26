@@ -10,7 +10,6 @@ import 'package:hosomobile/features/home/controllers/all_school_controller.dart'
 import 'package:hosomobile/features/home/controllers/edubox_material_controller.dart';
 import 'package:hosomobile/features/home/controllers/student_controller.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/image.dart';
-import 'package:hosomobile/features/home/screens/upgrades/home/components/school_directory_dropdown.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/tereka_asome/tereka_asome.dart';
 import 'package:hosomobile/features/student/widgets/student_logistic_widget.dart';

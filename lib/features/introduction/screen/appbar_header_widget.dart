@@ -30,7 +30,7 @@ class AppBarHeaderWidget extends StatelessWidget {
               children: [
                 const CustomInstallWidget(height: 50.0, width: 50.0,borderRadius: 5.0),
                 sizedBox5,
-                Text('Install', style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                Text('install'.tr, style: Theme.of(context).textTheme.titleSmall!.copyWith(
                   fontWeight: FontWeight.w500, color: Colors.black))
               ],
             ),
@@ -41,7 +41,7 @@ class AppBarHeaderWidget extends StatelessWidget {
               children: [
                  const CustomUserGuideWidget(height: 50.0, width: 50.0),
                 sizedBox5,
-                Text('Guide', style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                Text('guide'.tr, style: Theme.of(context).textTheme.titleSmall!.copyWith(
                   fontWeight: FontWeight.w500, color: Colors.black))
               ],
             ),
@@ -52,7 +52,7 @@ class AppBarHeaderWidget extends StatelessWidget {
               children: [
             const CustomHelpWidget(height: 50.0, width: 50.0),
                 sizedBox5,
-                Text('Help', style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                Text('help'.tr, style: Theme.of(context).textTheme.titleSmall!.copyWith(
                   fontWeight: FontWeight.w500, color: Colors.black))
               ],
             ),
@@ -63,7 +63,7 @@ class AppBarHeaderWidget extends StatelessWidget {
               children: [
                  const CustomShareWidget(height: 50.0, width: 50.0),
                 sizedBox5,
-                Text('Share', style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                Text('share'.tr, style: Theme.of(context).textTheme.titleSmall!.copyWith(
                   fontWeight: FontWeight.w500, color: Colors.black))
               ],
             ),

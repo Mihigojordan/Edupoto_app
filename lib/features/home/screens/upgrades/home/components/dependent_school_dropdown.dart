@@ -52,6 +52,50 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
   Student? selectedStudent; // Selected value for the third dropdown
   TextEditingController studentCodeEditingController = TextEditingController();
   TextEditingController studentNameEditingController = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); // Form key for validation
+
+// Add these variables to your state class
+  String? _districtError;
+  String? _schoolError;
+  String? _classError;
+  String? _studentError;
+
+// Validation methods
+  void _validateDistrict(Districts? value) {
+    setState(() {
+      _districtError = value == null ? 'please_select_district'.tr : null;
+    });
+  }
+
+  void _validateSchool(AllSchoolModel? value) {
+    setState(() {
+      _schoolError = value == null ? 'please_select_school'.tr : null;
+    });
+  }
+
+  void _validateClass(ClassDetails? value) {
+    setState(() {
+      _classError = value == null ? 'please_select_class'.tr : null;
+    });
+  }
+
+  void _validateStudent(Student? value) {
+    setState(() {
+      _studentError = value == null ? 'please_select_student'.tr : null;
+    });
+  }
+
+  bool _validateAll() {
+    _validateDistrict(selectedDistrict);
+    _validateSchool(selectedCategory);
+    _validateClass(selectedSubCategory);
+    _validateStudent(selectedStudent);
+
+    return _districtError == null &&
+        _schoolError == null &&
+        _classError == null &&
+        _studentError == null;
+  }
 
   setAddAccount() {
     setState(() {
@@ -70,444 +114,516 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                   ? const WebSiteShimmer()
                   : allSchoolController.schoolList.isEmpty
                       ? const SizedBox()
-                      : Column(
-                          children: [
-                            SizedBox(
-                              height: screenHeight / 1.8,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    // Top Searchable dropdown
-                                    DropdownSearch<Districts>(
-                                      compareFn:
-                                          (Districts? item1, Districts? item2) {
-                                        if (item1 == null || item2 == null) {
-                                          allSchoolController.hasMore != false;
-                                          return false;
-                                        }
+                      : Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: screenHeight / 1.8,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      buildFormField(
+                                        'enter_student_code'
+                                            .tr, // Fixed label capitalization
+                                        studentCodeEditingController,
+                                        TextInputType
+                                            .number, // Consider using `TextInputType.text` if codes include letters
+                                        '', // Optional hint text
+                                        [], // Optional input formatters
+                                        FocusNode(), // Focus node
+                                        (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'please_enter_student_code'
+                                                .tr; // More specific error
+                                          } else if (value.length != 12) {
+                                            return 'student_code_must_be_exactly_12_digits'
+                                                .tr; // Clearer error
+                                          } else if (!RegExp(r'^[0-9]{12}$')
+                                              .hasMatch(value)) {
+                                            // Ensures only digits
+                                            return 'only_numbers_are_allowed'
+                                                .tr;
+                                          }
+                                          return null; // Validation passed
+                                        },
+                                      ),
+                                      const SizedBox(height: 15),
+                                      buildFormField(
+                                        'enter_student_name'.tr,
+                                        studentNameEditingController,
+                                        TextInputType.text,
+                                        '${'eg'.tr}; Juma Ally Omary',
+                                        [],
+                                        FocusNode(),
+                                        (value) {
+                                          if (value == null ||
+                                              value.trim().isEmpty) {
+                                            return 'please_enter_student_name_to_continue'
+                                                .tr;
+                                          }
 
-                                        return item1 == item2;
-                                      },
-                                      popupProps: PopupProps.menu(
-                                        showSearchBox: true,
-                                        searchFieldProps: TextFieldProps(
-                                          decoration: InputDecoration(
-                                            prefixIcon:
-                                                const Icon(Icons.search),
-                                            hintText: 'Search...',
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                                          // Regular expression: Allows names with any capitalization but ensures two words
+                                          RegExp nameRegExp = RegExp(
+                                              r'^[a-zA-Z]+(?:\s[a-zA-Z]+)+$');
+
+                                          if (!nameRegExp
+                                              .hasMatch(value.trim())) {
+                                            return '${'please_enter_atleast_two_name_to_continue'.tr}(${'eg'.tr}., Juma Ally)';
+                                          }
+
+                                          return null;
+                                        },
+                                      ),
+                                      sizedBox10,
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0),
+                                            child: Text(
+                                              'select_district_school_and_class'
+                                                  .tr,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleSmall!
+                                                  .copyWith(
+                                                      color: Colors.black,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 12),
                                           ),
-                                        ),
+                                        ],
                                       ),
-                                      decoratorProps:
-                                          const DropDownDecoratorProps(
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.grey),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(25.0)),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.amber),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(25.0)),
-                                          ),
-                                          labelStyle:
-                                              TextStyle(color: Colors.grey),
-                                          hintText: "Select Districts",
-                                          hintStyle:
-                                              TextStyle(color: Colors.grey),
-                                        ),
-                                      ),
-                                      items: (filter, infiniteScrollProps) =>
-                                          allSchoolController.schoolList,
-                                      itemAsString: (Districts? item) =>
-                                          item?.name ?? '',
-                                      selectedItem: selectedDistrict,
-                                      onChanged: (Districts? value) {
-                                        setState(() {
-                                          selectedDistrict = value;
-                                          print(
-                                              'this is district id::::::::::::::::::::::: ${selectedDistrict!.id}');
-                                          selectedSubCategory =
-                                              null; // Reset class dropdown
-                                          selectedStudent =
-                                              null; // Reset student dropdown
-                                        });
-                                      },
-                                    ),
-                                    const SizedBox(
-                                        height:
-                                            20), // Spacing between dropdowns
-                                    // First Searchable Dropdown
-                                    DropdownSearch<AllSchoolModel>(
-                                      compareFn: (AllSchoolModel? item1,
-                                          AllSchoolModel? item2) {
-                                        if (item1 == null || item2 == null) {
-                                          allSchoolController.hasMore != false;
-                                          return false;
-                                        }
+                                      // Top Searchable dropdown
+                                      DropdownSearch<Districts>(
+                                        compareFn: (Districts? item1,
+                                            Districts? item2) {
+                                          if (item1 == null || item2 == null) {
+                                            allSchoolController.hasMore !=
+                                                false;
+                                            return false;
+                                          }
 
-                                        return item1 == item2;
-                                      },
-                                      popupProps: PopupProps.menu(
-                                        showSearchBox: true,
-                                        searchFieldProps: TextFieldProps(
-                                          decoration: InputDecoration(
-                                            prefixIcon:
-                                                const Icon(Icons.search),
-                                            hintText: 'Search...',
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                                          return item1 == item2;
+                                        },
+                                        validator: (value) =>
+                                            value == null ? '' : null,
+                                        popupProps: PopupProps.menu(
+                                          showSearchBox: true,
+                                          searchFieldProps: TextFieldProps(
+                                            decoration: InputDecoration(
+                                              prefixIcon:
+                                                  const Icon(Icons.search),
+                                              hintText: '${'search'.tr}...',
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12),
                                             ),
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 12),
                                           ),
                                         ),
-                                      ),
-                                      decoratorProps:
-                                          const DropDownDecoratorProps(
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.grey),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(25.0)),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.amber),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(25.0)),
-                                          ),
-                                          labelStyle:
-                                              TextStyle(color: Colors.grey),
-                                          hintText:
-                                              "Select from our Parner Schools",
-                                          hintStyle:
-                                              TextStyle(color: Colors.grey),
-                                        ),
-                                      ),
-                                      items: (filter, infiniteScrollProps) =>
-                                          selectedDistrict?.schools ?? [],
-                                      itemAsString: (AllSchoolModel? item) =>
-                                          item?.schoolName ?? '',
-                                      selectedItem: selectedCategory,
-                                      onChanged: (AllSchoolModel? value) {
-                                        setState(() {
-                                          selectedCategory = value;
-                                          print(
-                                              'this is school id::::::::::::::::::::::: ${selectedCategory!.id}');
-                                          selectedSubCategory =
-                                              null; // Reset class dropdown
-                                          selectedStudent =
-                                              null; // Reset student dropdown
-                                        });
-                                      },
-                                    ),
-                                    const SizedBox(
-                                        height:
-                                            20), // Spacing between dropdowns
-
-                                    // Second Searchable Dropdown
-                                    DropdownSearch<ClassDetails>(
-                                      compareFn: (ClassDetails? item1,
-                                          ClassDetails? item2) {
-                                        if (item1 == null || item2 == null) {
-                                          return false;
-                                        }
-                                        return item1 == item2;
-                                      },
-                                      popupProps: PopupProps.menu(
-                                        showSearchBox: true,
-                                        searchFieldProps: TextFieldProps(
+                                        decoratorProps: DropDownDecoratorProps(
                                           decoration: InputDecoration(
-                                            prefixIcon:
-                                                const Icon(Icons.search),
-                                            hintText: 'Search...',
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                                            border: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(25.0)),
                                             ),
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 12),
+                                            focusedBorder:
+                                                const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.amber),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(25.0)),
+                                            ),
+                                            labelStyle: const TextStyle(
+                                                color: Colors.grey),
+                                            hintText: "select_district".tr,
+                                            hintStyle:
+                                                TextStyle(color: Colors.grey),
+                                            errorText: _districtError,
+                                            errorStyle: TextStyle(
+                                                color: Colors.red[700]),
                                           ),
                                         ),
+                                        items: (filter, infiniteScrollProps) =>
+                                            allSchoolController.schoolList,
+                                        itemAsString: (Districts? item) =>
+                                            item?.name ?? '',
+                                        selectedItem: selectedDistrict,
+                                        onChanged: (Districts? value) {
+                                          setState(() {
+                                            selectedDistrict = value;
+                                            print(
+                                                'this is district id::::::::::::::::::::::: ${selectedDistrict!.id}');
+                                            selectedSubCategory =
+                                                null; // Reset class dropdown
+                                            selectedStudent =
+                                                null; // Reset student dropdown
+                                          });
+                                          _validateDistrict(value);
+                                        },
                                       ),
-                                      decoratorProps:
-                                          const DropDownDecoratorProps(
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.grey),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(25.0)),
+                                      sizedBox10,
+                                      // First Searchable Dropdown
+                                      DropdownSearch<AllSchoolModel>(
+                                        compareFn: (AllSchoolModel? item1,
+                                            AllSchoolModel? item2) {
+                                          if (item1 == null || item2 == null) {
+                                            allSchoolController.hasMore !=
+                                                false;
+                                            return false;
+                                          }
+
+                                          return item1 == item2;
+                                        },
+                                        validator: (value) =>
+                                            value == null ? '' : null,
+                                        popupProps: PopupProps.menu(
+                                          showSearchBox: true,
+                                          searchFieldProps: TextFieldProps(
+                                            decoration: InputDecoration(
+                                              prefixIcon:
+                                                  const Icon(Icons.search),
+                                              hintText: '${'search'.tr}...',
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12),
+                                            ),
                                           ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.amber),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(25.0)),
-                                          ),
-                                          labelStyle:
-                                              TextStyle(color: Colors.grey),
-                                          hintText: "Select Class",
-                                          hintStyle:
-                                              TextStyle(color: Colors.grey),
                                         ),
+                                        decoratorProps: DropDownDecoratorProps(
+                                          decoration: InputDecoration(
+                                            border: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(25.0)),
+                                            ),
+                                            focusedBorder:
+                                                const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.amber),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(25.0)),
+                                            ),
+                                            labelStyle:
+                                                TextStyle(color: Colors.grey),
+                                            hintText:
+                                                "select_from_our_partner_schools"
+                                                    .tr,
+                                            hintStyle:
+                                                TextStyle(color: Colors.grey),
+                                            errorText: _schoolError,
+                                            errorStyle: TextStyle(
+                                                color: Colors.red[700]),
+                                          ),
+                                        ),
+                                        items: (filter, infiniteScrollProps) =>
+                                            selectedDistrict?.schools ?? [],
+                                        itemAsString: (AllSchoolModel? item) =>
+                                            item?.schoolName ?? '',
+                                        selectedItem: selectedCategory,
+                                        onChanged: (AllSchoolModel? value) {
+                                          setState(() {
+                                            selectedCategory = value;
+                                            print(
+                                                'this is school id::::::::::::::::::::::: ${selectedCategory!.id}');
+                                            selectedSubCategory =
+                                                null; // Reset class dropdown
+                                            selectedStudent =
+                                                null; // Reset student dropdown
+                                          });
+                                          _validateSchool(value);
+                                        },
                                       ),
-
-                                      items: (filter, infiniteScrollProps) =>
-                                          selectedCategory?.classes ??
-                                          [], // Populate based on the selected school
-                                      itemAsString: (ClassDetails? item) =>
-                                          item?.className ?? '',
-                                      selectedItem: selectedSubCategory,
-                                      onChanged: (ClassDetails? value) {
-                                        setState(() {
-                                          selectedSubCategory = value;
-                                          print(
-                                              'Class ID: ${selectedSubCategory!.id}');
-                                          widget.studentController.studentList;
-                                          selectedStudent =
-                                              null; // Reset student dropdown
-                                        });
-                                      },
-                                    ),
-                                    const SizedBox(
-                                        height:
-                                            20), // Spacing between dropdowns
-
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        sizedBox10,
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0),
-                                          child: Text(
-                                            'Please Enter student if has not been registered yet',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleSmall!
-                                                .copyWith(
-                                                    color: Colors.black
-                                                        .withOpacity(0.3),
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                            overflow: TextOverflow.ellipsis,
+                                      // Spacing between dropdowns
+                                      sizedBox10,
+                                      // Second Searchable Dropdown
+                                      DropdownSearch<ClassDetails>(
+                                        compareFn: (ClassDetails? item1,
+                                            ClassDetails? item2) {
+                                          if (item1 == null || item2 == null) {
+                                            return false;
+                                          }
+                                          return item1 == item2;
+                                        },
+                                        validator: (value) =>
+                                            value == null ? '' : null,
+                                        popupProps: PopupProps.menu(
+                                          showSearchBox: true,
+                                          searchFieldProps: TextFieldProps(
+                                            decoration: InputDecoration(
+                                              prefixIcon:
+                                                  const Icon(Icons.search),
+                                              hintText: '${'search'.tr}...',
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12),
+                                            ),
                                           ),
                                         ),
-                                        //                               TextFormField(
-                                        //   controller: studentCodeEditingController ,
-                                        //   keyboardType: TextInputType.number,
-                                        //   inputFormatters: [
-                                        //     FilteringTextInputFormatter.digitsOnly,
-                                        //       LengthLimitingTextInputFormatter(10), // For phone numbers
-                                        //   ],
-                                        //   decoration: InputDecoration(
-                                        //     hintText:'Enter student code',
-                                        //     prefixIcon:  const Icon(Icons.code),
-                                        //     border: OutlineInputBorder(
-                                        //       borderRadius: BorderRadius.circular(15),
-                                        //     ),
-                                        //   ),
-                                        //   validator: (value) {
-                                        //     if (value == null || value.isEmpty) {
-                                        //       return 'Please enter required details';
-                                        //     }
-                                        //     if (value.length != 12) {
-                                        //       return 'Enter a valid 12-digit number';
-                                        //     }
-                                        //     return null;
-                                        //   },
-                                        // ),
-                                        buildFormField(
-                                          'enter student code',
-                                          studentCodeEditingController,
-                                          TextInputType.text,
-                                          '',
-                                          [],
-                                          FocusNode(),
-                                          (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return 'Please enter required details to continue';
-                                            }
-                                            return null;
-                                          },
-                                        ),
-                                        const SizedBox(height: 15),
-                                        buildFormField(
-                                          'Enter student name',
-                                          studentNameEditingController,
-                                          TextInputType.text,
-                                          'Eg; Juma Ally Omary',
-                                          [],
-                                          FocusNode(),
-                                          (value) {
-                                            if (value == null ||
-                                                value.trim().isEmpty) {
-                                              return 'Please enter required details to continue';
-                                            }
-
-                                            // Regular expression: Allows names with any capitalization but ensures two words
-                                            RegExp nameRegExp = RegExp(
-                                                r'^[a-zA-Z]+(?:\s[a-zA-Z]+)+$');
-
-                                            if (!nameRegExp
-                                                .hasMatch(value.trim())) {
-                                              return 'Please enter atleast two names (e.g., Juma Ally)';
-                                            }
-
-                                            return null;
-                                          },
+                                        decoratorProps: DropDownDecoratorProps(
+                                          decoration: InputDecoration(
+                                            border: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(25.0)),
+                                            ),
+                                            focusedBorder:
+                                                const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.amber),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(25.0)),
+                                            ),
+                                            labelStyle: const TextStyle(
+                                                color: Colors.grey),
+                                            hintText: "select_class".tr,
+                                            hintStyle:
+                                                TextStyle(color: Colors.grey),
+                                            errorText: _classError,
+                                            errorStyle: TextStyle(
+                                                color: Colors.red[700]),
+                                          ),
                                         ),
 
-                                        const SizedBox(height: 15),
-                                      ],
-                                    ),
-                                  ],
+                                        items: (filter, infiniteScrollProps) =>
+                                            selectedCategory?.classes ??
+                                            [], // Populate based on the selected school
+                                        itemAsString: (ClassDetails? item) =>
+                                            item?.className ?? '',
+                                        selectedItem: selectedSubCategory,
+                                        onChanged: (ClassDetails? value) {
+                                          setState(() {
+                                            selectedSubCategory = value;
+                                            print(
+                                                'Class ID: ${selectedSubCategory!.id}');
+                                            widget
+                                                .studentController.studentList;
+                                            selectedStudent =
+                                                null; // Reset student dropdown
+                                          });
+                                          _validateClass(value);
+                                        },
+                                      ),
+                                      // Spacing between dropdowns
+
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          //                               TextFormField(
+                                          //   controller: studentCodeEditingController ,
+                                          //   keyboardType: TextInputType.number,
+                                          //   inputFormatters: [
+                                          //     FilteringTextInputFormatter.digitsOnly,
+                                          //       LengthLimitingTextInputFormatter(10), // For phone numbers
+                                          //   ],
+                                          //   decoration: InputDecoration(
+                                          //     hintText:'Enter student code',
+                                          //     prefixIcon:  const Icon(Icons.code),
+                                          //     border: OutlineInputBorder(
+                                          //       borderRadius: BorderRadius.circular(15),
+                                          //     ),
+                                          //   ),
+                                          //   validator: (value) {
+                                          //     if (value == null || value.isEmpty) {
+                                          //       return 'Please enter required details';
+                                          //     }
+                                          //     if (value.length != 12) {
+                                          //       return 'Enter a valid 12-digit number';
+                                          //     }
+                                          //     return null;
+                                          //   },
+                                          // ),
+
+                                          sizedBox,
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0),
+                                            child: Text(
+                                              'student_registration_note'.tr,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleSmall!
+                                                  .copyWith(
+                                                      color: Colors.red,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                              maxLines: 5,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            sizedBox15,
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  BorderButton1(
-                                      borderColor: Colors.black,
-                                      vertical: 5,
-                                      textColor: Colors.black,
-                                      horizontal: 5,
-                                      onPress: () {
-                                        //****************************Check if you want to edit student registration or you do not have student */
-                                        if (widget.isAddAccount == true ||
-                                            widget.studentController
-                                                .studentList!.isEmpty) {
-                                          //************************** Check if the student has been selected */
-                                          if (selectedStudent == null) {
-                                            widget.studentRegistrationController
-                                                .addStudent(
-                                                    name:
-                                                        studentNameEditingController
-                                                            .text,
-                                                    code:
-                                                        studentCodeEditingController
-                                                            .text,
-                                                    schoolCode:
-                                                        selectedCategory!.id
-                                                            .toString(),
-                                                    parentId: widget.parentId,
-                                                    classId:
-                                                        selectedSubCategory!
-                                                            .id!)
-                                                .then((onValue) {
-                                              setState(() {
-                                                widget.studentController
-                                                    .getStudentList(true,
-                                                        id: widget.parentId);
-                                              });
-                                            });
-                                            setAddAccount();
-                                            //************************************************SHOW SUCCESSFULLY DIALOG FOR ADDED STUDENT IF THERE IS SELECTED STUDENT*/
-                                            showInfoDialog(context,
-                                                student_name:
-                                                    studentNameEditingController
-                                                        .text,
-                                                student_code:
-                                                    studentCodeEditingController
-                                                        .text,
-                                                studentRegController: widget
-                                                    .studentRegistrationController,
-                                                title: 'Student Info',
-                                                description:
-                                                    'Student added successfully\nYou can continue by adding uniform details',
-                                                studentController:
-                                                    widget.studentController,
-                                                studentId: widget
-                                                    .studentController
-                                                    .studentList![
-                                                        widget.selectedIndex]
-                                                    .id!,
-                                                selectedIndex:
-                                                    widget.selectedIndex,
-                                                parentId: widget.parentId);
-                                          }
-                                          widget.studentRegistrationController
-                                              .addStudent(
-                                                  name: selectedStudent!.name ??
-                                                      studentNameEditingController
-                                                          .text,
-                                                  code: selectedStudent!.code ??
-                                                      studentCodeEditingController
-                                                          .text,
-                                                  schoolCode: selectedCategory!
-                                                      .id
-                                                      .toString(),
-                                                  parentId: widget.parentId,
-                                                  classId:
-                                                      selectedSubCategory!.id!)
-                                              .then((onValue) {
-                                            setState(() {
-                                              widget.studentController
-                                                  .getStudentList(true,
-                                                      id: widget.parentId);
-                                            });
-                                          });
+                              sizedBox15,
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    BorderButton1(
+                                        borderColor: Colors.black,
+                                        vertical: 5,
+                                        textColor: Colors.black,
+                                        horizontal: 5,
+                                        onPress: () {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            if (_validateAll()) {
+                                              //****************************Check if you want to edit student registration or you do not have student */
+                                              if (widget.isAddAccount == true ||
+                                                  widget.studentController
+                                                      .studentList!.isEmpty) {
+                                                //************************** Check if the student has been selected */
+                                                if (selectedStudent == null) {
+                                                  widget
+                                                      .studentRegistrationController
+                                                      .addStudent(
+                                                          name:
+                                                              studentNameEditingController
+                                                                  .text,
+                                                          code:
+                                                              studentCodeEditingController
+                                                                  .text,
+                                                          schoolCode:
+                                                              selectedCategory!
+                                                                  .id
+                                                                  .toString(),
+                                                          parentId:
+                                                              widget.parentId,
+                                                          classId:
+                                                              selectedSubCategory!
+                                                                  .id!)
+                                                      .then((onValue) {
+                                                    setState(() {
+                                                      widget.studentController
+                                                          .getStudentList(true,
+                                                              id: widget
+                                                                  .parentId);
+                                                    });
+                                                  });
+                                                  setAddAccount();
+                                                  //************************************************SHOW SUCCESSFULLY DIALOG FOR ADDED STUDENT IF THERE IS SELECTED STUDENT*/
+                                                  showInfoDialog(context,
+                                                      student_name:
+                                                          studentNameEditingController
+                                                              .text,
+                                                      student_code:
+                                                          studentCodeEditingController
+                                                              .text,
+                                                      studentRegController: widget
+                                                          .studentRegistrationController,
+                                                      title: 'student_info'.tr,
+                                                      description:
+                                                          '${'student_added_successfully'.tr}\n${'you_can_continue_by_adding_uniform_details'.tr}',
+                                                      studentController: widget
+                                                          .studentController,
+                                                      studentId: widget
+                                                          .studentController
+                                                          .studentList![widget
+                                                              .selectedIndex]
+                                                          .id!,
+                                                      selectedIndex:
+                                                          widget.selectedIndex,
+                                                      parentId:
+                                                          widget.parentId);
+                                                }
+                                                widget
+                                                    .studentRegistrationController
+                                                    .addStudent(
+                                                        name: selectedStudent!
+                                                                .name ??
+                                                            studentNameEditingController
+                                                                .text,
+                                                        code: selectedStudent!
+                                                                .code ??
+                                                            studentCodeEditingController
+                                                                .text,
+                                                        schoolCode:
+                                                            selectedCategory!.id
+                                                                .toString(),
+                                                        parentId:
+                                                            widget.parentId,
+                                                        classId:
+                                                            selectedSubCategory!
+                                                                .id!)
+                                                    .then((onValue) {
+                                                  setState(() {
+                                                    widget.studentController
+                                                        .getStudentList(true,
+                                                            id: widget
+                                                                .parentId);
+                                                  });
+                                                });
 
-                                          setAddAccount();
-                                          //************************************************SHOW SUCCESSFULLY DIALOG FOR ADDED STUDENT IF THERE IS SELECTED STUDENT*/
-                                          showInfoDialog(context,
-                                              student_name:
-                                                  selectedStudent!.name!,
-                                              student_code:
-                                                  selectedStudent!.code!,
-                                              studentRegController: widget
-                                                  .studentRegistrationController,
-                                              title: 'Student Info',
-                                              description:
-                                                  'Student added successfully\nYou can continue by adding uniform details',
-                                              studentController:
-                                                  widget.studentController,
-                                              studentId: selectedStudent!.id!,
-                                              selectedIndex:
-                                                  widget.selectedIndex,
-                                              parentId: widget.parentId);
-                                        } else {
-                                          setAddAccount();
-                                        }
-                                      },
-                                      height: 50,
-                                      width: screenWidth >= 520
-                                          ? 148
-                                          : screenWidth / 2.8,
-                                      icon: (widget.isAddAccount == true ||
-                                              widget.studentController
-                                                  .studentList!.isEmpty)
-                                          ? 'Save'
-                                          : 'Add Student',
-                                      title: (widget.isAddAccount == true ||
-                                              widget.studentController
-                                                  .studentList!.isEmpty)
-                                          ? 'assets/icons1/save.png'
-                                          : 'assets/icons1/add_account.png',
-                                      clas: ''),
-                                ]),
-                          ],
+                                                setAddAccount();
+                                                //************************************************SHOW SUCCESSFULLY DIALOG FOR ADDED STUDENT IF THERE IS SELECTED STUDENT*/
+                                                showInfoDialog(context,
+                                                    student_name:
+                                                        selectedStudent!.name!,
+                                                    student_code:
+                                                        selectedStudent!.code!,
+                                                    studentRegController: widget
+                                                        .studentRegistrationController,
+                                                    title: 'student_info'.tr,
+                                                    description:
+                                                        '${'student_added_successfully'.tr}\n${'you_can_continue_by_adding_uniform_details'.tr}',
+                                                    studentController: widget
+                                                        .studentController,
+                                                    studentId:
+                                                        selectedStudent!.id!,
+                                                    selectedIndex:
+                                                        widget.selectedIndex,
+                                                    parentId: widget.parentId);
+                                              } else {
+                                                setAddAccount();
+                                              }
+                                            }
+                                            ;
+                                          }
+                                        },
+                                        height: 50,
+                                        width: screenWidth >= 520
+                                            ? 148
+                                            : screenWidth / 2.8,
+                                        icon: (widget.isAddAccount == true ||
+                                                widget.studentController
+                                                    .studentList!.isEmpty)
+                                            ? 'save'.tr
+                                            : 'add_student'.tr,
+                                        title: (widget.isAddAccount == true ||
+                                                widget.studentController
+                                                    .studentList!.isEmpty)
+                                            ? 'assets/icons1/save.png'
+                                            : 'assets/icons1/add_account.png',
+                                        clas: ''),
+                                  ]),
+                            ],
+                          ),
                         );
             })
           : const SizedBox();
@@ -515,57 +631,62 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
   }
 
   TextFormField buildFormField(
-      String labelText,
-      TextEditingController editingController,
-      TextInputType textInputType,
-      String hint,
-      List<TextInputFormatter>? formatter,
-      FocusNode? focusNode,
-      FormFieldValidator<String>? validator) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
+    String labelText,
+    TextEditingController editingController,
+    TextInputType textInputType,
+    String hint,
+    List<TextInputFormatter>? formatter,
+    FocusNode? focusNode,
+    FormFieldValidator<String>? validator,
+  ) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isLargeScreen = screenHeight >= 763;
 
     return TextFormField(
-        textAlign: TextAlign.start,
-        controller: editingController,
-        keyboardType: textInputType,
-        style: screenHeight >= 763 ? kInputTextStyle : kInputTextStyle10,
-        inputFormatters: formatter,
-        focusNode: focusNode,
-        decoration: InputDecoration(
-            isCollapsed: true,
-            hintText: hint,
-            hintStyle: screenHeight >= 763 ? kHintTextStyle : kHintTextStyle10,
-            contentPadding: EdgeInsets.symmetric(
-                vertical: screenHeight >= 763 ? 13 : 15,
-                horizontal: 15), //Change this value to custom as you like
-            isDense: true,
-            focusedBorder: OutlineInputBorder(
-              ////<-- SEE HERE
-              borderSide: const BorderSide(width: 1, color: Colors.black),
-              borderRadius: screenHeight >= 763
-                  ? BorderRadius.circular(20.0)
-                  : BorderRadius.circular(15.0),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(width: 1, color: kTextLightColor),
-              borderRadius: screenHeight >= 763
-                  ? BorderRadius.circular(20.0)
-                  : BorderRadius.circular(15.0),
-            ),
-            errorBorder: OutlineInputBorder(
-              //<-- SEE HERE
-              borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-              borderRadius: screenHeight >= 763
-                  ? BorderRadius.circular(20.0)
-                  : BorderRadius.circular(15.0),
-              //<-- SEE HERE
-            ),
-            labelText: labelText,
-            labelStyle:
-                screenHeight >= 763 ? kLabelTextStyle : kLabelTextStyle10
-            // floatingLabelBehavior: FloatingLabelBehavior.always,
-            ),
-        validator: validator);
+      controller: editingController,
+      keyboardType: textInputType,
+      textAlign: TextAlign.start,
+      inputFormatters: formatter,
+      focusNode: focusNode,
+      validator: validator,
+      style: isLargeScreen ? kInputTextStyle : kInputTextStyle10,
+      decoration: InputDecoration(
+        labelText: labelText,
+        hintText: hint,
+        isCollapsed: true,
+        isDense: true,
+        contentPadding: EdgeInsets.symmetric(
+          vertical: isLargeScreen ? 13 : 15,
+          horizontal: 15,
+        ),
+        labelStyle: isLargeScreen ? kLabelTextStyle : kLabelTextStyle10,
+        hintStyle: isLargeScreen ? kHintTextStyle : kHintTextStyle10,
+        errorStyle: TextStyle(
+          fontSize: isLargeScreen ? 12 : 10,
+          color: Colors.red[700],
+        ),
+        errorMaxLines: 2,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(isLargeScreen ? 20 : 15),
+          borderSide: const BorderSide(color: kTextLightColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(isLargeScreen ? 20 : 15),
+          borderSide: const BorderSide(color: kTextLightColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(isLargeScreen ? 20 : 15),
+          borderSide: const BorderSide(width: 1, color: Colors.black),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(isLargeScreen ? 20 : 15),
+          borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(isLargeScreen ? 20 : 15),
+          borderSide: BorderSide(width: 1, color: Colors.red[700]!),
+        ),
+      ),
+    );
   }
 }

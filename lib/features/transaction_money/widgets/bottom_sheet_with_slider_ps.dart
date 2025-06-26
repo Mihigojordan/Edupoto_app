@@ -17,6 +17,7 @@ import 'package:hosomobile/features/transaction_money/widgets/for_student_widget
 import 'package:hosomobile/features/transaction_money/widgets/payment_methods/ps_payment_method_selector.dart';
 import 'package:hosomobile/helper/price_converter_helper.dart';
 import 'package:hosomobile/helper/route_helper.dart';
+import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
 import 'package:hosomobile/util/styles.dart';
@@ -200,7 +201,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderPS> {
                   //         ],
                   //       )
                   //     : Column(children: [
-                  //         ForStudentWidget(studentInfo: 'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}'),
+                  //         ForStudentWidget(studentInfo: '${'code'.tr}: ${widget.studentInfo![widget.studentIndex!].code!}\n${'name'.tr}: ${widget.studentInfo![widget.studentIndex!].name}'),
                   //       ]),
                   Container(
                     color: ColorResources.getBackgroundColor(),
@@ -228,7 +229,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderPS> {
                                   children: [
                                     transactionId != null
                                         ? Text(
-                                            'Receipt No:$transactionId',
+                                            '${'receipt_no'.tr}: $transactionId',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleLarge,
@@ -239,11 +240,11 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderPS> {
                                     Column(children: [
                                       ForStudentWidget(
                                           studentInfo:
-                                              'Code: ${widget.studentCode}\nName: ${widget.studentName}'),
+                                              '${'code'.tr}: ${widget.studentCode}\n${'name'.tr}: ${widget.studentName}'),
                                     ]),
                                     sizedBox15,
                                     Text(
-                                        'Product: ${widget.edubox_service}, Contains:${'${widget.dataList!.length} ${widget.edubox_service}, '}'), //${widget.studentInfo![widget.studentIndex!].studentClass}
+                                        '${'product'.tr}: ${widget.edubox_service}, ${'contains'.tr}:${'${widget.dataList!.length} ${widget.edubox_service}, '}'), //${widget.studentInfo![widget.studentIndex!].studentClass}
                                     sizedBox15,
                                     Container(
                                       height: Dimensions.dividerSizeMedium,
@@ -252,13 +253,13 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderPS> {
                                     sizedBox10,
 
                                     Text(
-                                        'Amount to be Paid: ${widget.amountToPay!} RWF'),
+                                        '${'amount_to_be_paid'.tr}: ${widget.amountToPay!} ${AppConstants.currency}'),
 
-                                    // Text('Now Paid: ${widget.nowPaid!} RWF'),
+                                    // Text('Now Paid: ${widget.nowPaid!} ${AppConstants.currency}'),
                                     Text(widget.vat!),
 
                                     Text(
-                                        'Convenience Fee (${widget.serviceCharge!} RWF'),
+                                        '${'convenience_fee'.tr}: ${widget.serviceCharge!} ${AppConstants.currency}'),
                                     const Divider(),
                                     Text(
                                       widget.totalNowPaid!,
@@ -272,7 +273,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderPS> {
                                   ],
                                 ),
                                 sizedBox10,
-                                // Text('Pending/Remaing Amount to be paid',
+                                // Text('Pending/Remaing ${'amount_to_be_paid'.tr}',
                                 //     style: rubikSemiBold.copyWith(
                                 //         fontSize: Dimensions.fontSizeLarge,
                                 //         color:
@@ -306,7 +307,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderPS> {
                                     edubox_service: widget.edubox_service ??
                                         'No Edubox Service',
                                     service_charge: widget.serviceCharge ??
-                                        'No Convenience Fee',
+                                        'No ${'convenience_fee'.tr}',
                                     transactionMoneyController:
                                         transactionMoneyController,
                                     transactionId: transactionId ??
@@ -392,7 +393,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderPS> {
             : cashOutCharge.toString(),
         trxId: transactionId,
         eduboxService: widget.edubox_service,
-        studentInfo: 'Code: ${widget.studentCode}\nName: ${widget.studentName}',
+        studentInfo: '${'code'.tr}: ${widget.studentCode}\n${'name'.tr}: ${widget.studentName}',
         inputBalance: widget.inputBalance,
         dataList: widget.dataList,
         productIndex: widget.productIndex,

@@ -14,7 +14,7 @@ import 'dart:convert';
 
 class SingleSchoolDirectoryScreen extends StatefulWidget {
   static String routeName = 'SingleSchoolDirectoryScreen';
-  final String  title;
+  final String title;
   const SingleSchoolDirectoryScreen({super.key, required this.title});
 
   @override
@@ -43,7 +43,6 @@ class SchoolDirectoryScreenState extends State<SingleSchoolDirectoryScreen> {
 
   final Map<String?, TextEditingController> _textControllers = {};
   final Map<String?, TextEditingController> _gridTextController = {};
-
 
   @override
   void initState() {
@@ -74,21 +73,22 @@ class SchoolDirectoryScreenState extends State<SingleSchoolDirectoryScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal:20.0,vertical:50),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 50),
                           child: RichText(
-                                                    text: TextSpan(
-                                                      text: widget.title,
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .titleMedium!
-                                                          .copyWith(color: Colors.black, fontWeight: FontWeight.bold),
-                                      
-                                                    ),
-                                                  ),
+                            text: TextSpan(
+                              text: widget.title,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         ),
                       ],
                     ),
-       
                   ],
                 ),
               ),
@@ -109,11 +109,10 @@ class SchoolDirectoryScreenState extends State<SingleSchoolDirectoryScreen> {
               ),
             ],
           ),
-       const       Positioned(
-      top:10,
-         left:10,
-
-            child:CustomBackButton(),
+          const Positioned(
+            top: 10,
+            left: 10,
+            child: CustomBackButton(),
           ),
           Positioned(
             top: MediaQuery.of(context).size.height / 3.5,
@@ -133,8 +132,6 @@ class SchoolDirectoryScreenState extends State<SingleSchoolDirectoryScreen> {
     ));
   }
 }
-
-
 
 class HomeCard1 extends StatefulWidget {
   const HomeCard1(
@@ -156,9 +153,6 @@ class _HomeCard1State extends State<HomeCard1> {
   bool? isUserLoggedIn = false;
 
   String? phoneNumber;
-  String studentcardValue = 'Choose student\'s card to fund';
-  String productValue = 'Choose product to save for';
-  String transactionType = 'add_money';
   final TextEditingController _inputAmountController = TextEditingController();
   String? _selectedMethodId;
 
@@ -171,7 +165,6 @@ class _HomeCard1State extends State<HomeCard1> {
   TextEditingController amountEditingController = TextEditingController();
   TextEditingController productEditingController = TextEditingController();
   ContactModel? _contact;
-
 
   @override
   void initState() {
@@ -187,7 +180,7 @@ class _HomeCard1State extends State<HomeCard1> {
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
           boxShadow: [
@@ -199,21 +192,26 @@ class _HomeCard1State extends State<HomeCard1> {
           ],
           color: kTextWhiteColor,
           borderRadius: BorderRadius.all(Radius.circular(10))),
-      height: MediaQuery.of(context).size.height/1.3,
+      height: MediaQuery.of(context).size.height / 1.3,
       width: 340,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: widget.title=='Headteacher Messages'?headteacherMessage(context):
-    widget.title=='School Burser'?schoolBurser(context):
-    widget.title=='School Requirements'?schoolBurser(context):
-    widget.title=='School Prospectus'? schoolProspectus(context): 
-    widget.title=='School News'? schoolNews(context):
-    widget.title=='Admissions'? schoolAdmissions(context):
-    widget.title=='Download'? schoolDownloads(context):
-  const  Text('No Data Available'),),);
+        child: widget.title == 'headteacher_messages'.tr
+            ? headteacherMessage(context)
+            : widget.title == 'school_bursor'.tr
+                ? schoolBurser(context)
+                : widget.title == 'school_requirements'.tr
+                    ? schoolBurser(context)
+                    : widget.title == 'school_prospectus'.tr
+                        ? schoolProspectus(context)
+                        : widget.title == 'school_news'.tr
+                            ? schoolNews(context)
+                            : widget.title == 'admissions'.tr
+                                ? schoolAdmissions(context)
+                                : widget.title == 'download'.tr
+                                    ? schoolDownloads(context)
+                                    : Text('no_data_available'.tr),
+      ),
+    );
   }
- 
-
-
 }
-

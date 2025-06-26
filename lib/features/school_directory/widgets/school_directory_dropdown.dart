@@ -67,20 +67,20 @@ TextEditingController schoolNameEditingController=TextEditingController();
                                   popupProps: const PopupProps.menu(
                                     showSearchBox: true,
                                   ),
-                                  decoratorProps: const DropDownDecoratorProps(
+                                  decoratorProps:  DropDownDecoratorProps(
                                     decoration: InputDecoration(
-                                      border: OutlineInputBorder(
+                                      border:const OutlineInputBorder(
                                         borderSide: BorderSide(color: Colors.grey),
                                         borderRadius:
                                             BorderRadius.all(Radius.circular(25.0)),
                                       ),
-                                      focusedBorder: OutlineInputBorder(
+                                      focusedBorder:const OutlineInputBorder(
                                         borderSide: BorderSide(color: Colors.amber),
                                         borderRadius:
                                             BorderRadius.all(Radius.circular(25.0)),
                                       ),
                                       labelStyle: TextStyle(color: Colors.grey),
-                                      hintText: "Select Districts",
+                                      hintText: "select_district".tr,
                                       hintStyle: TextStyle(color: Colors.grey),
                                     ),
                                   ),
@@ -103,10 +103,10 @@ TextEditingController schoolNameEditingController=TextEditingController();
                                 ),
                                 sizedBox5,
                                 selectedDistrict == null
-                                    ? const Padding(
+                                    ?  Padding(
                                         padding: EdgeInsets.only(left: 8.0),
                                         child: Text(
-                                          'Please Select District',
+                                          'please_select_district'.tr,
                                           style: TextStyle(color: Colors.red),
                                         ),
                                       )
@@ -126,20 +126,20 @@ TextEditingController schoolNameEditingController=TextEditingController();
                                   popupProps: const PopupProps.menu(
                                     showSearchBox: true,
                                   ),
-                                  decoratorProps: const DropDownDecoratorProps(
+                                  decoratorProps:  DropDownDecoratorProps(
                                     decoration: InputDecoration(
-                                      border: OutlineInputBorder(
+                                      border:const OutlineInputBorder(
                                         borderSide: BorderSide(color: Colors.grey),
                                         borderRadius:
                                             BorderRadius.all(Radius.circular(25.0)),
                                       ),
-                                      focusedBorder: OutlineInputBorder(
+                                      focusedBorder:const OutlineInputBorder(
                                         borderSide: BorderSide(color: Colors.amber),
                                         borderRadius:
                                             BorderRadius.all(Radius.circular(25.0)),
                                       ),
-                                      labelStyle: TextStyle(color: Colors.grey),
-                                      hintText: "Select from our Parner Schools",
+                                      labelStyle:const TextStyle(color: Colors.grey),
+                                      hintText: "select_from_our_partner_schools".tr,
                                       hintStyle: TextStyle(color: Colors.grey),
                                     ),
                                   ),
@@ -162,11 +162,11 @@ TextEditingController schoolNameEditingController=TextEditingController();
                                 ),
                                 sizedBox5,
                                 selectedCategory == null
-                                    ? const Padding(
-                                        padding: EdgeInsets.only(left: 8.0),
+                                    ?  Padding(
+                                        padding:const EdgeInsets.only(left: 8.0),
                                         child: Text(
-                                          'Please Select School',
-                                          style: TextStyle(color: Colors.red),
+                                          'please_select_school'.tr,
+                                          style:const TextStyle(color: Colors.red),
                                         ),
                                       )
                                     : const SizedBox(),
@@ -177,7 +177,7 @@ TextEditingController schoolNameEditingController=TextEditingController();
                            Padding(
                                         padding:const EdgeInsets.symmetric(vertical: 8.0),
                                         child: Text(
-                                          ' Schools Directory is a comprehensive digital platform that profiles all schools in Rwanda, providing detailed information about each institution.',
+                                          'about_school_directory'.tr,
                                           style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontWeight: FontWeight.w200), textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -192,10 +192,10 @@ TextEditingController schoolNameEditingController=TextEditingController();
                                   color2: kyellowColor,
                                   onPress: () => (selectedCategory == null)
                                       ? () {}
-                                      : Get.to(const SchoolDirectoryScreen()
+                                      : Get.to( SchoolDirectoryScreen(schoolName:selectedCategory!.schoolName??'no_school'.tr ,schoolDistrict:selectedDistrict!.name??'no_district'.tr ,)
                                           // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
                                           ),
-                                  title: 'NEXT',
+                                  title: 'next'.tr,
                                   iconData: Icons.arrow_forward_outlined,
                                 ),
                                

@@ -165,18 +165,18 @@ homeDeliveryAction() {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Invoice No: $randomNumber',
+                    '${'invoice'.tr} No: $randomNumber',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   sizedBox15,
                   Column(children: [
                     ForStudentWidget(
                         studentInfo:
-                            'Code: ${student.code!}\nName: ${student.name}'),
+                            '${'code'.tr}: ${student.code!}\n${'name'.tr}: ${student.name}'),
                   ]),
                   sizedBox10,
                   Text(
-                      'Product: ${widget.serviceValue}. Class: N1'),//${widget.studentInfo![widget.studentIndex!].studentClass}
+                      '${'product'.tr}: ${widget.serviceValue}. ${'class'.tr}: ${student.studentClass}'),//${widget.studentInfo![widget.studentIndex!].studentClass}
                   sizedBox05h,
                   DropDownEduboxMaterial(
                       onChanged: (value) {
@@ -186,7 +186,7 @@ homeDeliveryAction() {
                       },
                       itemLists: widget.dataList!,
                       title:
-                          '${product.name!}-${product.price!}RWF',
+                          '${product.name!}-${product.price!}${AppConstants.currency}',
                       isExpanded: true),
                   sizedBox15,
                   PreviewAmountWidget(
@@ -201,7 +201,7 @@ homeDeliveryAction() {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        ' Delivery Options',
+                        'delivery_options'.tr,
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
                             color: Colors.black,
                             fontSize: 16,
@@ -228,7 +228,7 @@ homeDeliveryAction() {
                             ),
                         // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
 
-                        title: 'SCHOOL',
+                        title: 'school_cap'.tr,
                         iconData: Icons.arrow_forward_outlined,
                       ),
                       sizedBox15,
@@ -239,7 +239,7 @@ homeDeliveryAction() {
                               onPress: () => homeDeliveryAction(),
                               // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
 
-                              title: 'HOME',
+                              title: 'home_cap'.tr,
                               iconData: Icons.arrow_forward_outlined,
                             )
                           : DeliveryMapScreen(
@@ -280,16 +280,16 @@ homeDeliveryAction() {
                   sizedBox10,
 
                   Text(
-                      'Amount to be Paid: ${product.price} RWF'),
+                      '${'amount_to_be_paid'.tr}: ${product.price} ${AppConstants.currency}'),
                   Text(
-                      'Now Paying: ${widget.inputBalance!.toStringAsFixed(2)} RWF'),
+                      '${'now_paying'.tr}: ${widget.inputBalance!.toStringAsFixed(2)} ${AppConstants.currency}'),
                   Text(
-                      'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat RWF'),
+                      '${'vat'.tr} (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
                   Text(
-                      'Convenience Fee: $convenienceFee RWF'),
+                      '${'convenience_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
                   const Divider(),
                   Text(
-                    'Total Amount paid now: $totalAmount RWF',
+                    '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -297,12 +297,12 @@ homeDeliveryAction() {
                 ],
               ),
               sizedBox10,
-              Text('Pending/Remaing Amount to be paid',
+              Text('${'pending'.tr}/${'remaining_amunt_to_be_paid'.tr}',
                   style: rubikSemiBold.copyWith(
                       fontSize: Dimensions.fontSizeLarge,
                       color: ColorResources.getGreyBaseGray1())),
               Text(
-                  '$availableBalance RWF',
+                  '$availableBalance ${AppConstants.currency}',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.bold,
                       )),
@@ -336,16 +336,16 @@ homeDeliveryAction() {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Confirm'),
+          title:  Text('confirm'.tr),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Your School materials will be delivered at;'),
-              Text('School Name: $schoolName'),
-              Text('Class: $className'),
-              Text('Customer Product: $productName'),
-              Text('Order ID: $randomNumber'),
+              Text('${'your_school_materials_will_be_delivered_at'.tr};'),
+              Text('${'school_name'.tr}: $schoolName'),
+              Text('${'class'.tr}: $className'),
+              Text('${'customer_product'.tr}: $productName'),
+              Text('${'order_id'.tr}: $randomNumber'),
             ],
           ),
           actions: [
@@ -353,7 +353,7 @@ homeDeliveryAction() {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel'),
+              child:  Text('cancel'.tr),
             ),
             const SizedBox(width: 10),
             TextButton(
@@ -396,7 +396,7 @@ homeDeliveryAction() {
                           //             .toInt()
                           //             .toString(),
                           //         message:
-                          //             'You have paid for ${widget.edubox_service} VAT Inc, ${calculateServiceCharge(double.parse('$calculatedTotal')).toInt()} RWF Service Charge',
+                          //             'You have paid for ${widget.edubox_service} VAT Inc, ${calculateServiceCharge(double.parse('$calculatedTotal')).toInt()} ${AppConstants.currency} Service Charge',
                           //         phoneNumber: phoneNumber)
                           //     .then((value) async {
                           //     String? status =
@@ -415,7 +415,7 @@ homeDeliveryAction() {
                   // _pinCodeFieldController.clear();
                 // });
               },
-              child: const Text('OK'),
+              child: Text('ok'.tr),
             ),
           ],
         );

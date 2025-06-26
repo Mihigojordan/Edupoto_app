@@ -88,7 +88,7 @@ class _TransactionConfirmationScreenState
   Student? selectedStudent; // Selected value for the third dropdown
   TextEditingController destinationEditingController = TextEditingController();
   TextEditingController phoneNumberEditingController = TextEditingController();
-  String deliveryOptionsValue = 'Choose Delivery Company';
+  String deliveryOptionsValue = 'choose_delivery_company'.tr;
   String? _deliveryOptionError;
 
   List<Map<dynamic, String>> topSize = const [
@@ -135,14 +135,14 @@ class _TransactionConfirmationScreenState
   }
 
   void _validateForm() {
-    if (deliveryOptionsValue == 'Choose Delivery Company') {
+    if (deliveryOptionsValue == 'choose_delivery_company'.tr) {
       setState(() {
-        _deliveryOptionError = 'Please select a delivery option';
+        _deliveryOptionError = 'please_select_delivery_option'.tr;
       });
       // Optionally show a snackbar for more visibility
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a delivery option'),
+         SnackBar(
+          content: Text('please_select_delivery_option'.tr),
           backgroundColor: Colors.red,
         ),
       );
@@ -196,14 +196,14 @@ class _TransactionConfirmationScreenState
             child: Column(
               children: [
                 Text(
-                  'No Student Available!, Please Add Your Student to Continue',
+                  '${'no_student_available'.tr}!, ${'please_add_student_to_continue'}',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 sizedBox10,
                 TextButton(
                   onPressed: () => const MzaziScreen(isShop: true),
                   child: Text(
-                    'Add',
+                    'add'.tr,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 )
@@ -224,7 +224,7 @@ class _TransactionConfirmationScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Invoice No:$randomNumber',
+                    '${'invoice_no'.tr}: $randomNumber',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   sizedBox15,
@@ -237,7 +237,7 @@ class _TransactionConfirmationScreenState
                         itemBuilder: (context, studentIndex) {
                           return ForStudentWidget(
                             studentInfo:
-                                'Code: ${studentController.studentList![studentIndex].code}\nName: ${studentController.studentList![studentIndex].name}\nSchool:${studentController.studentList![studentIndex].school}. Class: ${studentController.studentList![studentIndex].studentClass}',
+                                '${'code'.tr}: ${studentController.studentList![studentIndex].code}\n${'name'.tr}: ${studentController.studentList![studentIndex].name}\n${'school'.tr}:${studentController.studentList![studentIndex].school}. ${'class'.tr}: ${studentController.studentList![studentIndex].studentClass}',
                             onChecked: (isChecked) {
                               // Update the selectedStudents list
                               setState(() {
@@ -317,12 +317,12 @@ class _TransactionConfirmationScreenState
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Quantity: $quantity',
+                          '${'quantity'.tr}: $quantity',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Total: ${AppConstants.currency} ${totalPrice.toStringAsFixed(2)}',
+                          '${'total'.tr}: ${AppConstants.currency} ${totalPrice.toStringAsFixed(2)}',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -391,7 +391,7 @@ class _TransactionConfirmationScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        ' Delivery Options',
+                        'delivery_options',
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
                             color: Colors.black,
                             fontSize: 16,
@@ -404,8 +404,7 @@ class _TransactionConfirmationScreenState
                         color1: kamber300Color,
                         color2: kyellowColor,
                         onPress: () {
-                          print(
-                              'this is selected student:::::::::: $selectedStudents | $studentIndex');
+                          print('this is selected student:::::::::: $selectedStudents | $studentIndex');
                           // Check if no students are selected
                           if (selectedStudents.isEmpty) {
                             // Show an alert or snackbar to inform the user
@@ -413,16 +412,15 @@ class _TransactionConfirmationScreenState
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title: const Text('No Student Selected'),
-                                  content: const Text(
-                                      'Please select at least one student before proceeding.'),
+                                  title:  Text('no_student_selected'.tr),
+                                  content:  Text( 'please_select_at_least_one_student_to_proceed'.tr),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
                                         Navigator.pop(
                                             context); // Close the dialog
                                       },
-                                      child: const Text('OK'),
+                                      child: Text('ok'.tr),
                                     ),
                                   ],
                                 );
@@ -522,14 +520,14 @@ class _TransactionConfirmationScreenState
                                                           product:
                                                               widget.product,
                                                           amountToPay:
-                                                              'Amount to be Paid: ${widget.totalAmount} ${AppConstants.currency}',
+                                                              '${'amount_to_be_paid'.tr}: ${widget.totalAmount} ${AppConstants.currency}',
                                                           nowPaid:
-                                                              'Now Paid: ${widget.totalAmount.toStringAsFixed(2)} ${AppConstants.currency}',
+                                                              '${'now_paid'.tr}: ${widget.totalAmount.toStringAsFixed(2)} ${AppConstants.currency}',
                                                           vat:
-                                                              'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
+                                                              '${'vat'.tr}: $vat ${AppConstants.currency}',
                                                           serviceCharge:convenienceFee.toStringAsFixed(2),
                                                           totalNowPaid:
-                                                              'Total Amount paid now: $totalAmount ${AppConstants.currency}',
+                                                              '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
                                                         ),
                                                       );
                                                     }
@@ -589,16 +587,16 @@ class _TransactionConfirmationScreenState
                                         inputBalance: widget.totalAmount,
                                         product: widget.product,
                                         productIndex: productIndex,
-                                        edubox_service: 'Shop',
+                                        edubox_service: 'shop'.tr,
                                         amountToPay:
-                                            'Delivery Cost: ${deliveryCost.toStringAsFixed(2)}',
+                                            '${'delivery_cost'.tr}: ${deliveryCost.toStringAsFixed(2)}',
                                         nowPaid:
-                                            'Material Cost: ${widget.totalAmount.toStringAsFixed(2)}',
+                                            '${'material_cost'.tr}: ${widget.totalAmount.toStringAsFixed(2)}',
                                         vat:
-                                            'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
+                                            '${'vat'.tr}: $vat ${AppConstants.currency}',
                                         serviceCharge:convenienceFee.toStringAsFixed(2),
                                         totalNowPaid:
-                                            'Total Amount paid now: $totalAmount ${AppConstants.currency}',
+                                            '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
                                         serviceValue: widget.product.name,
                                       );
                                     });
@@ -606,7 +604,7 @@ class _TransactionConfirmationScreenState
                             }
                           });
                         },
-                        title: 'SCHOOL',
+                        title: 'school_cap'.tr,
                         iconData: Icons.arrow_forward_outlined,
                       ),
                       sizedBox15,
@@ -617,7 +615,7 @@ class _TransactionConfirmationScreenState
                               onPress: () => homeDeliveryAction(),
                               // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
 
-                              title: 'HOME',
+                              title: 'home_cap'.tr,
                               iconData: Icons.arrow_forward_outlined,
                             )
                           : DeliveryMapScreen(
@@ -635,7 +633,7 @@ class _TransactionConfirmationScreenState
                               className: studentController
                                   .studentList![studentIndex].studentClass!,
                               schoolName: studentController
-                                  .studentList![studentIndex].school??'Unkown School',
+                                  .studentList![studentIndex].school??'unknown_school'.tr,
                               studentCode: studentController
                                   .studentList![studentIndex].code!,
                               studentId: studentController
@@ -666,7 +664,7 @@ class _TransactionConfirmationScreenState
                               vatPercentage: AppConstants.vatPercentage),
 
                       Text(
-                        'Delivery Cost: ${deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
+                        '${'delivery_cost'.tr}: ${deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
                         style:
                             Theme.of(context).textTheme.titleMedium!.copyWith(
                                   fontWeight: FontWeight.normal,
@@ -674,17 +672,17 @@ class _TransactionConfirmationScreenState
                       ),
                       // Display Total Price
 
-                      Text('Material Cost: ${widget.totalAmount} ${AppConstants.currency}'),
+                      Text('${'material_cost'.tr}: ${widget.totalAmount} ${AppConstants.currency}'),
                       // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
                       Text(
-                          'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
+                          '${'vat'.tr}: $vat ${AppConstants.currency}'),
 
                       Text(
-                          'Convenience Fee: $convenienceFee ${AppConstants.currency}'),
+                          '${'convenince_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
                       const Divider(),
 
                       Text(
-                        'Total Amount paid now: $totalAmount ${AppConstants.currency}',
+                        '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
                         style:
                             Theme.of(context).textTheme.titleMedium!.copyWith(
                                   fontWeight: FontWeight.bold,

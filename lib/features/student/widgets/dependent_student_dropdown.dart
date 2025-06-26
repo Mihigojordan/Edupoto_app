@@ -40,9 +40,52 @@ class _DependentStudentDropdownsState extends State<DependentStudentDropdowns> {
   Student? selectedStudent;
   TextEditingController studentCodeEditingController = TextEditingController();
   TextEditingController studentNameEditingController = TextEditingController();
-  String displayCode = 'Enter Student Code';
-  String displayName = 'Enter Student Name';
+  String displayCode = 'enter_student_code'.tr;
+  String displayName = 'enter_student_name'.tr;
   List<Districts>? allSchoolList;
+
+  // Add these variables to your state class
+  String? _districtError;
+  String? _schoolError;
+  String? _classError;
+  String? _studentError;
+
+// Validation methods
+  void _validateDistrict(Districts? value) {
+    setState(() {
+      _districtError = value == null ? 'please_select_district'.tr : null;
+    });
+  }
+
+  void _validateSchool(AllSchoolModel? value) {
+    setState(() {
+      _schoolError = value == null ? 'please_select_school'.tr : null;
+    });
+  }
+
+  void _validateClass(ClassDetails? value) {
+    setState(() {
+      _classError = value == null ? 'please_select_class'.tr : null;
+    });
+  }
+
+  void _validateStudent(Student? value) {
+    setState(() {
+      _studentError = value == null ? 'please_select_student'.tr : null;
+    });
+  }
+
+  bool _validateAll() {
+    _validateDistrict(selectedDistrict);
+    _validateSchool(selectedCategory);
+    _validateClass(selectedSubCategory);
+    _validateStudent(selectedStudent);
+
+    return _districtError == null &&
+        _schoolError == null &&
+        _classError == null &&
+        _studentError == null;
+  }
 
   setAddAccount() {
     setState(() {
@@ -53,8 +96,8 @@ class _DependentStudentDropdownsState extends State<DependentStudentDropdowns> {
   void displayTextMethod() {
     final student = widget.studentController.studentList![widget.selectedIndex];
     setState(() {
-      displayCode = student.code ?? 'Enter Student Code';
-      displayName = student.name ?? 'Enter Student Name';
+      displayCode = student.code ?? 'enter_student_code'.tr;
+      displayName = student.name ?? 'enter_student_code'.tr;
       // Initialize controllers with existing values
       studentCodeEditingController.text = student.code ?? '';
       studentNameEditingController.text = student.name ?? '';
@@ -68,7 +111,7 @@ class _DependentStudentDropdownsState extends State<DependentStudentDropdowns> {
 
     setState(() {
       displayCode = (inputCode.isEmpty || inputCode != studentCode)
-          ? 'Enter Student Code'
+          ? 'enter_student_code'.tr
           : studentCode!;
     });
   }
@@ -80,31 +123,50 @@ class _DependentStudentDropdownsState extends State<DependentStudentDropdowns> {
 
     setState(() {
       displayName = (inputText.isEmpty || inputText != studentName)
-          ? 'Enter Student Name'
+          ? 'enter_student_name'.tr
           : studentName!;
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    Get.find<AllSchoolController>().getSchoolList(false).then((_) {
-      allSchoolList = Get.find<AllSchoolController>().schoolList;
-    });
-
-    // Initialize controllers with existing student data if in edit mode
+@override
+void initState() {
+  super.initState();
+  Get.find<AllSchoolController>().getSchoolList(false).then((_) {
+    allSchoolList = Get.find<AllSchoolController>().schoolList;
+    
+    // Initialize dropdown values if in edit mode
     if (widget.isStudentEdit) {
-      final student =
-          widget.studentController.studentList![widget.selectedIndex];
+      final student = widget.studentController.studentList![widget.selectedIndex];
       studentCodeEditingController.text = student.code ?? '';
       studentNameEditingController.text = student.name ?? '';
       displayTextMethod();
+      
+      // Find and set the district that contains the student's school
+      for (var district in allSchoolList!) {
+        var matchingSchool = district.schools.firstWhereOrNull(
+          (school) => school.id.toString() == student.schoolId
+        );
+        if (matchingSchool != null) {
+          setState(() {
+            selectedDistrict = district;
+            selectedCategory = matchingSchool;
+            
+            // Find and set the class if available
+            if (student.classId != null) {
+              selectedSubCategory = matchingSchool.classes.firstWhereOrNull(
+                (cls) => cls.id == student.classId
+              );
+            }
+          });
+          break;
+        }
+      }
     }
+  });
 
-    studentCodeEditingController.addListener(_updateDisplayCode);
-    studentNameEditingController.addListener(_updateDisplayName);
-  }
-
+  studentCodeEditingController.addListener(_updateDisplayCode);
+  studentNameEditingController.addListener(_updateDisplayName);
+}
   @override
   void dispose() {
     studentCodeEditingController.dispose();
@@ -138,315 +200,6 @@ class _DependentStudentDropdownsState extends State<DependentStudentDropdowns> {
                                   physics: const ClampingScrollPhysics(),
                                   child: Column(
                                     children: [
-                                      // Top Searchable dropdown
-                                      DropdownSearch<Districts>(
-                                        compareFn: (Districts? item1,
-                                            Districts? item2) {
-                                          if (item1 == null || item2 == null) {
-                                            // allSchoolController.hasMore != false;
-                                            return false;
-                                          }
-
-                                          return item1 == item2;
-                                        },
-                                        popupProps: PopupProps.menu(
-                                          showSearchBox: true,
-                                          searchFieldProps: TextFieldProps(
-                                            decoration: InputDecoration(
-                                              prefixIcon:
-                                                  const Icon(Icons.search),
-                                              hintText: 'Search...',
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 12),
-                                            ),
-                                          ),
-                                        ),
-                                        decoratorProps:
-                                            const DropDownDecoratorProps(
-                                          decoration: InputDecoration(
-                                            border: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(25.0)),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.amber),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(25.0)),
-                                            ),
-                                            labelStyle:
-                                                TextStyle(color: Colors.grey),
-                                            hintText: "Select Districts",
-                                            hintStyle:
-                                                TextStyle(color: Colors.grey),
-                                          ),
-                                        ),
-                                        items: (filter, infiniteScrollProps) =>
-                                            allSchoolController.schoolList,
-                                        itemAsString: (Districts? item) =>
-                                            item?.name ?? '',
-                                        selectedItem: selectedDistrict,
-                                        onChanged: (Districts? value) {
-                                          setState(() {
-                                            selectedDistrict = value;
-                                            print(
-                                                'this is district id::::::::::::::::::::::: ${selectedDistrict!.id}');
-                                            selectedSubCategory =
-                                                null; // Reset class dropdown
-                                            selectedStudent =
-                                                null; // Reset student dropdown
-                                          });
-                                        },
-                                      ),
-                                      const SizedBox(
-                                          height:
-                                              20), // Spacing between dropdowns
-                                      // First Searchable Dropdown
-                                      DropdownSearch<AllSchoolModel>(
-                                        compareFn: (AllSchoolModel? item1,
-                                            AllSchoolModel? item2) {
-                                          if (item1 == null || item2 == null) {
-                                            // allSchoolController.hasMore != false;
-                                            return false;
-                                          }
-
-                                          return item1 == item2;
-                                        },
-                                        popupProps: PopupProps.menu(
-                                          showSearchBox: true,
-                                          searchFieldProps: TextFieldProps(
-                                            decoration: InputDecoration(
-                                              prefixIcon:
-                                                  const Icon(Icons.search),
-                                              hintText: 'Search...',
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 12),
-                                            ),
-                                          ),
-                                        ),
-                                        decoratorProps:
-                                            const DropDownDecoratorProps(
-                                          decoration: InputDecoration(
-                                            border: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(25.0)),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.amber),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(25.0)),
-                                            ),
-                                            labelStyle:
-                                                TextStyle(color: Colors.grey),
-                                            hintText:
-                                                "Select from our Parner Schools",
-                                            hintStyle:
-                                                TextStyle(color: Colors.grey),
-                                          ),
-                                        ),
-                                        items: (filter, infiniteScrollProps) =>
-                                            selectedDistrict?.schools ?? [],
-                                        itemAsString: (AllSchoolModel? item) =>
-                                            item?.schoolName ?? '',
-                                        selectedItem: selectedCategory,
-                                        onChanged: (AllSchoolModel? value) {
-                                          setState(() {
-                                            selectedCategory = value;
-                                            print(
-                                                'this is school id::::::::::::::::::::::: ${selectedCategory!.id}');
-                                            selectedSubCategory =
-                                                null; // Reset class dropdown
-                                            selectedStudent =
-                                                null; // Reset student dropdown
-                                          });
-                                        },
-                                      ),
-                                      const SizedBox(
-                                          height:
-                                              20), // Spacing between dropdowns
-
-                                      // Second Searchable Dropdown
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          SizedBox(
-                                            width: screenWidth / 2.5,
-                                            child: DropdownSearch<ClassDetails>(
-                                              compareFn: (ClassDetails? item1,
-                                                  ClassDetails? item2) {
-                                                if (item1 == null ||
-                                                    item2 == null) {
-                                                  return false;
-                                                }
-                                                return item1 == item2;
-                                              },
-                                              popupProps: PopupProps.menu(
-                                                showSearchBox: true,
-                                                searchFieldProps:
-                                                    TextFieldProps(
-                                                  decoration: InputDecoration(
-                                                    prefixIcon: const Icon(
-                                                        Icons.search),
-                                                    hintText: 'Search...',
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                    contentPadding:
-                                                        const EdgeInsets
-                                                            .symmetric(
-                                                            vertical: 12),
-                                                  ),
-                                                ),
-                                              ),
-                                              decoratorProps:
-                                                  const DropDownDecoratorProps(
-                                                decoration: InputDecoration(
-                                                  border: OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                25.0)),
-                                                  ),
-                                                  focusedBorder:
-                                                      OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.amber),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                25.0)),
-                                                  ),
-                                                  labelStyle: TextStyle(
-                                                      color: Colors.grey),
-                                                  hintText: "Select Class",
-                                                  hintStyle: TextStyle(
-                                                      color: Colors.grey),
-                                                ),
-                                              ),
-                                              items: (filter,
-                                                      infiniteScrollProps) =>
-                                                  selectedCategory?.classes ??
-                                                  [], // Populate based on the selected school
-                                              itemAsString:
-                                                  (ClassDetails? item) =>
-                                                      item?.className ?? '',
-                                              selectedItem: selectedSubCategory,
-                                              onChanged: (ClassDetails? value) {
-                                                setState(() {
-                                                  selectedSubCategory = value;
-                                                  print(
-                                                      'Class ID: ${selectedSubCategory!.id}');
-                                                  widget.studentController
-                                                      .studentList;
-                                                  selectedStudent =
-                                                      null; // Reset student dropdown
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: screenWidth / 2.5,
-                                            child: DropdownSearch<ClassDetails>(
-                                              compareFn: (ClassDetails? item1,
-                                                  ClassDetails? item2) {
-                                                if (item1 == null ||
-                                                    item2 == null) {
-                                                  return false;
-                                                }
-                                                return item1 == item2;
-                                              },
-                                              popupProps:  PopupProps.menu(
-                                                showSearchBox: true,
-                                                     searchFieldProps: TextFieldProps(
-                                          decoration: InputDecoration(
-                                            prefixIcon:
-                                                const Icon(Icons.search),
-                                            hintText: 'Search...',
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 12),
-                                          ),
-                                        ),
-                                              ),
-                                              decoratorProps:
-                                                  const DropDownDecoratorProps(
-                                                decoration: InputDecoration(
-                                                  border: OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                25.0)),
-                                                  ),
-                                                  focusedBorder:
-                                                      OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.amber),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                25.0)),
-                                                  ),
-                                                  labelStyle: TextStyle(
-                                                      color: Colors.grey),
-                                                  hintText: "Select Grade",
-                                                  hintStyle: TextStyle(
-                                                      color: Colors.grey),
-                                                ),
-                                              ),
-                                              items: (filter,
-                                                      infiniteScrollProps) =>
-                                                  selectedCategory?.classes ??
-                                                  [], // Populate based on the selected school
-                                              itemAsString:
-                                                  (ClassDetails? item) =>
-                                                      item?.className ?? '',
-                                              selectedItem: selectedSubCategory,
-                                              onChanged: (ClassDetails? value) {
-                                                setState(() {
-                                                  selectedSubCategory = value;
-                                                  print(
-                                                      'Class ID: ${selectedSubCategory!.id}');
-                                                  widget.studentController
-                                                      .studentList;
-                                                  selectedStudent =
-                                                      null; // Reset student dropdown
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-
-                                      const SizedBox(
-                                          height:
-                                              20), // Spacing between dropdowns
-
                                       selectedStudent != null
                                           ? const SizedBox.shrink()
                                           : Column(
@@ -465,6 +218,235 @@ class _DependentStudentDropdownsState extends State<DependentStudentDropdowns> {
                                                 ),
                                               ],
                                             ),
+                                      sizedBox,
+                                      // Top Searchable dropdown
+                                      DropdownSearch<Districts>(
+                       compareFn: (item1, item2) => item1?.id == item2?.id,
+                       selectedItem: selectedDistrict,
+                          validator: (value) =>
+                                            value == null ? '' : null,
+                                        popupProps: PopupProps.menu(
+                                          showSearchBox: true,
+                                          searchFieldProps: TextFieldProps(
+                                            decoration: InputDecoration(
+                                              prefixIcon:
+                                                  const Icon(Icons.search),
+                                              hintText: '${'search'.tr}...',
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12),
+                                            ),
+                                          ),
+                                        ),
+                                        decoratorProps: DropDownDecoratorProps(
+                                          decoration: InputDecoration(
+                                            border: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(25.0)),
+                                            ),
+                                            focusedBorder:
+                                                const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.amber),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(25.0)),
+                                            ),
+                                            labelStyle: const TextStyle(
+                                                color: Colors.grey),
+                                            hintText: "select_district".tr,
+                                            hintStyle: const TextStyle(
+                                                color: Colors.grey),
+                                                errorText: _districtError,
+                                                errorStyle: TextStyle(
+                                                color: Colors.red[700]),
+                                          ),
+                                        ),
+                                        items: (filter, infiniteScrollProps) =>
+                                            allSchoolController.schoolList,
+                                        itemAsString: (Districts? item) =>
+                                            item?.name ?? '',
+                                        onChanged: (Districts? value) {
+                                          setState(() {
+                                            selectedDistrict = value;
+                                            print(
+                                                'this is district id::::::::::::::::::::::: ${selectedDistrict!.id}');
+                                            selectedSubCategory =
+                                                null; // Reset class dropdown
+                                            selectedStudent =
+                                                null; // Reset student dropdown
+                                          });
+                                           _validateDistrict(value);
+                                        },
+                                      ),
+                                      sizedBox10, // Spacing between dropdowns
+                                      // First Searchable Dropdown
+                                      DropdownSearch<AllSchoolModel>(
+                                        compareFn: (AllSchoolModel? item1,
+                                            AllSchoolModel? item2) {
+                                          if (item1 == null || item2 == null) {
+                                            // allSchoolController.hasMore != false;
+                                            return false;
+                                          }
+
+                                          return item1 == item2;
+                                        },
+                                                validator: (value) =>
+                                            value == null ? '' : null,
+                                        popupProps: PopupProps.menu(
+                                          showSearchBox: true,
+                                          searchFieldProps: TextFieldProps(
+                                            decoration: InputDecoration(
+                                              prefixIcon:
+                                                  const Icon(Icons.search),
+                                              hintText: '${'search'.tr}...',
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12),
+                                            ),
+                                          ),
+                                        ),
+                                        decoratorProps: DropDownDecoratorProps(
+                                          decoration: InputDecoration(
+                                            border: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(25.0)),
+                                            ),
+                                            focusedBorder:
+                                                const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.amber),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(25.0)),
+                                            ),
+                                            labelStyle: const TextStyle(
+                                                color: Colors.grey),
+                                            hintText:
+                                                "select_from_our_partner_schools"
+                                                    .tr,
+                                            hintStyle: const TextStyle(
+                                                color: Colors.grey),
+                                                errorText: _schoolError,
+                                                 errorStyle: TextStyle(
+                                                color: Colors.red[700]),
+                                          ),
+                                        ),
+                                        items: (filter, infiniteScrollProps) =>
+                                            selectedDistrict?.schools ?? [],
+                                        itemAsString: (AllSchoolModel? item) =>
+                                            item?.schoolName ?? '',
+                                        selectedItem: selectedCategory,
+                                        onChanged: (AllSchoolModel? value) {
+                                          setState(() {
+                                            selectedCategory = value;
+                                            print(
+                                                'this is school id::::::::::::::::::::::: ${selectedCategory!.id}');
+                                            selectedSubCategory =
+                                                null; // Reset class dropdown
+                                            selectedStudent =
+                                                null; // Reset student dropdown
+                                          });
+                                          _validateSchool(value);
+                                        },
+                                      ),
+                                      const SizedBox(
+                                          height:
+                                              20), // Spacing between dropdowns
+
+                                      // Second Searchable Dropdown
+                                      DropdownSearch<ClassDetails>(
+                                        compareFn: (ClassDetails? item1,
+                                            ClassDetails? item2) {
+                                          if (item1 == null ||
+                                              item2 == null) {
+                                            return false;
+                                          }
+                                          return item1 == item2;
+                                        },
+                                        validator: (value) => value==null?'':null,
+                                        popupProps: PopupProps.menu(
+                                          showSearchBox: true,
+                                          searchFieldProps:
+                                              TextFieldProps(
+                                            decoration: InputDecoration(
+                                              prefixIcon: const Icon(
+                                                  Icons.search),
+                                              hintText:
+                                                  '${'search'.tr}...',
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10),
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets
+                                                      .symmetric(
+                                                      vertical: 12),
+                                            ),
+                                          ),
+                                        ),
+                                        decoratorProps:
+                                            DropDownDecoratorProps(
+                                          decoration: InputDecoration(
+                                            border:
+                                                const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey),
+                                              borderRadius:
+                                                  BorderRadius.all(
+                                                      Radius.circular(
+                                                          25.0)),
+                                            ),
+                                            focusedBorder:
+                                                const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.amber),
+                                              borderRadius:
+                                                  BorderRadius.all(
+                                                      Radius.circular(
+                                                          25.0)),
+                                            ),
+                                            labelStyle: const TextStyle(
+                                                color: Colors.grey),
+                                            hintText: "select_class".tr,
+                                            hintStyle: const TextStyle(
+                                                color: Colors.grey),
+                                                errorText: _classError,
+                                                errorStyle: TextStyle(color: Colors.red[700])
+                                          ),
+                                        ),
+                                        items: (filter,
+                                                infiniteScrollProps) =>
+                                            selectedCategory?.classes ??
+                                            [], // Populate based on the selected school
+                                        itemAsString:
+                                            (ClassDetails? item) =>
+                                                item?.className ?? '',
+                                        selectedItem: selectedSubCategory,
+                                        onChanged: (ClassDetails? value) {
+                                          setState(() {
+                                            selectedSubCategory = value;
+                                            print(
+                                                'Class ID: ${selectedSubCategory!.id}');
+                                            widget.studentController
+                                                .studentList;
+                                            selectedStudent =
+                                                null; // Reset student dropdown
+                                          });
+                                          _validateClass(value);
+                                        },
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -479,6 +461,7 @@ class _DependentStudentDropdownsState extends State<DependentStudentDropdowns> {
                                         textColor: Colors.black,
                                         horizontal: 5,
                                         onPress: () {
+                                            if (_validateAll()) {
                                           //****************************Check if you want to edit student registration or you do not have student */
                                           if (widget.isAddAccount == true ||
                                               widget.studentController
@@ -518,9 +501,9 @@ class _DependentStudentDropdownsState extends State<DependentStudentDropdowns> {
                                                           .text,
                                                   studentRegController: widget
                                                       .studentRegistrationController,
-                                                  title: 'Student Info',
+                                                  title: 'student_info'.tr,
                                                   description:
-                                                      'Student added successfully\nYou can continue by adding uniform details',
+                                                      '${'student_added_successfully'.tr}\n${'you_can_continue_by_adding_uniform_details'.tr}',
                                                   studentController:
                                                       widget.studentController,
                                                   studentId: widget
@@ -565,9 +548,9 @@ class _DependentStudentDropdownsState extends State<DependentStudentDropdowns> {
                                                     selectedStudent!.code!,
                                                 studentRegController: widget
                                                     .studentRegistrationController,
-                                                title: 'Student Info',
+                                                title: 'student_info'.tr,
                                                 description:
-                                                    'Student added successfully\nYou can continue by adding uniform details',
+                                                    '${'student_added_successfully'.tr}\n${'you_can_continue_by_adding_uniform_details'.tr}',
                                                 studentController:
                                                     widget.studentController,
                                                 studentId: selectedStudent!.id!,
@@ -577,14 +560,15 @@ class _DependentStudentDropdownsState extends State<DependentStudentDropdowns> {
                                           } else {
                                             setAddAccount();
                                           }
+                                            }
                                         },
-                                        height: 50,
-                                        width: screenWidth >= 520 ? 100 : 100,
+                                        height: 60,
+                                        width: screenWidth >= 520 ? 150 : 150,
                                         icon: (widget.isAddAccount == true ||
                                                 widget.studentController
                                                     .studentList!.isEmpty)
-                                            ? 'Save'
-                                            : 'Add Student',
+                                            ? 'save'.tr
+                                            : 'add_student'.tr,
                                         title: (widget.isAddAccount == true ||
                                                 widget.studentController
                                                     .studentList!.isEmpty)
@@ -620,7 +604,7 @@ class _DependentStudentDropdownsState extends State<DependentStudentDropdowns> {
         FocusNode(),
         (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter required details to continue';
+            return 'please_enter_required_information_to_continue'.tr;
           }
           if (labelText.contains('name')) {
             RegExp nameRegExp = RegExp(r'^[a-zA-Z]+(?:\s[a-zA-Z]+)+$');
@@ -631,7 +615,7 @@ class _DependentStudentDropdownsState extends State<DependentStudentDropdowns> {
                   controller.selection = selection;
                 }
               });
-              return 'Please enter at least two names (e.g., Juma Ally)';
+              return '${'please_enter_atleast_two_name_to_continue'.tr} (${'eg'.tr}., Juma Ally)';
             }
           }
           return null;

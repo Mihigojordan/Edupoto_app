@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hosomobile/features/shop/domain/product_lists.dart';
 import 'package:hosomobile/features/shop/widget/cart_view.dart';
 import 'package:hosomobile/features/shop/widget/company.dart';
@@ -32,7 +33,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       name: '     Librairie Caritas           ',
       companies: [
         Company(
-          name: 'Stationery',
+          name: 'stationery'.tr,
           logo: 'assets/image/stationery.png',
           products: mAndGProducts
               .map((product) => Product(
@@ -43,7 +44,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               .toList(),
         ),
         Company(
-          name: 'Books',
+          name: 'books'.tr,
           logo: 'assets/image/book.png',
           products: natarajProducts
               .map((product) => Product(
@@ -60,7 +61,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       name: 'Edubox',
       companies: [
         Company(
-          name: 'Stationery',
+          name: 'stationery'.tr,
           logo: 'assets/image/stationery.png',
           products: mAndGProducts
               .map((product) => Product(
@@ -71,7 +72,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               .toList(),
         ),
         Company(
-          name: 'Classkit',
+          name: 'class_kit'.tr,
           logo: 'assets/image/Button01.png',
           products: rwandaPensProducts
               .map((product) => Product(
@@ -82,7 +83,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               .toList(),
         ),
         Company(
-          name: 'School shoes',
+          name: 'school_shoes'.tr,
           logo: 'assets/image/shoebox.png',
           products: natarajProducts
               .map((product) => Product(
@@ -93,7 +94,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               .toList(),
         ),
         Company(
-          name: 'Domitory Essentials',
+          name: 'dormitory_sssentials'.tr,
           logo: 'assets/image/dormitory.png',
           products: bicProducts
               .map((product) => Product(
@@ -184,7 +185,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Shopping Screen'),
+        title:  Text('shopping_screen'.tr),
         actions: [
           IconButton(
             icon: Icon(_isGridView ? Icons.list : Icons.grid_view),
@@ -229,7 +230,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               decoration: InputDecoration(
-                hintText: 'Search products...',
+                hintText: '${'search_products'.tr}...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
@@ -267,6 +268,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                 : ProductList(
                     products: filteredProducts,
                     onAddToCart: _addToCart,
+                    cart: _cart
                   ),
           ),
         ],

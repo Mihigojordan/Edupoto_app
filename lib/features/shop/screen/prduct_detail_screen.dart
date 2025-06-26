@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/util/app_constants.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
   final Product product;
@@ -15,7 +17,7 @@ class ProductDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Product Details'),
+        title: Text('product_details'.tr),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -40,23 +42,23 @@ class ProductDetailsScreen extends StatelessWidget {
             const SizedBox(height: 8),
             // Product Price
             Text(
-              'RWF ${product.price.toStringAsFixed(2)}',
+              '${AppConstants.currency} ${product.price.toStringAsFixed(2)}',
               style: const TextStyle(fontSize: 18, color: Colors.green),
             ),
             const SizedBox(height: 16),
             // Additional Properties
             Text(
-              'Color: ${product.color}',
+              '${'color'.tr}: ${product.color}',
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 8),
             Text(
-              'Size: ${product.size}',
+              '${'size'.tr}: ${product.size}',
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 8),
             Text(
-              'Type: ${product.type}',
+              '${'type'.tr}: ${product.type}',
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 16),
@@ -71,7 +73,7 @@ class ProductDetailsScreen extends StatelessWidget {
                   //   SnackBar(content: Text('Added ${product.name} to cart')),
                   // );
                 },
-                child: const Text('Add to Cart'),
+                child:  Text('add_to_cart'.tr),
               ),
             ),
           ],

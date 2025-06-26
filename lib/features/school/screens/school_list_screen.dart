@@ -70,7 +70,7 @@ class SchoolListScreen extends StatelessWidget {
                                     horizontal: 18.0, vertical: 30),
                                 child: RichText(
                                   text: TextSpan(
-                                    text: 'Preparing list for:\n',
+                                    text: '${'preparing_list_for'.tr}:\n',
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleSmall!
@@ -235,25 +235,25 @@ Widget requirementList(BuildContext context,{required int studentId,required int
                     // ),
                     const SizedBox(width: 10),
                     SchoolListButtonWidget(
-                      text: 'Class Requirements'.tr,
+                      text: 'class_requirements'.tr,
                       index: 2,
                       schoolList: schoolListController.classRequirementList,
                     ),
                     const SizedBox(width: 10),
                     SchoolListButtonWidget(
-                      text: 'Paid at School'.tr,
+                      text: 'paid_at_school'.tr,
                       index: 5,
                       schoolList: schoolListController.tuitionFeeList,
                     ),
                     const SizedBox(width: 10),
                     SchoolListButtonWidget(
-                      text: 'Dormitory Essentials'.tr,
+                      text: 'dormitory_essentials'.tr,
                       index: 3,
                       schoolList: schoolListController.domitoryEssentialList,
                     ),
                     const SizedBox(width: 10),
                     SchoolListButtonWidget(
-                      text: 'Text Books'.tr,
+                      text: 'text_books'.tr,
                       index: 4,
                       schoolList: schoolListController.textBookList,
                     ),

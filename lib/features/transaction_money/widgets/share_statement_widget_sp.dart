@@ -110,7 +110,7 @@ class ShareStatementWidgetState extends State<ShareStatementWidgetSp> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Receipt No:${widget.trxId}',
+                            '${'receipt_no'.tr}:${widget.trxId}',
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           sizedBox10,
@@ -121,7 +121,7 @@ class ShareStatementWidgetState extends State<ShareStatementWidgetSp> {
                           Text(
                               ' ${widget.dataList!.name}, ${widget.dataList!.price}'),
                           sizedBox10,
-                          Text('Destination: ${widget.destination}'),
+                          Text('${'destination'.tr}: ${widget.destination}'),
                           sizedBox10,
                           Container(
                             height: Dimensions.dividerSizeMedium,
@@ -145,7 +145,7 @@ class ShareStatementWidgetState extends State<ShareStatementWidgetSp> {
                         ],
                       ),
                       sizedBox10,
-                      Text('Pending/Remaing Amount to be paid',
+                      Text('${'pending'.tr}/${'remaining_amount_to_be_paid'.tr}',
                           style: rubikSemiBold.copyWith(
                               fontSize: Dimensions.fontSizeLarge,
                               color: ColorResources.getGreyBaseGray1())),

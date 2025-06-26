@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hosomobile/common/widgets/custom_back_button_widget.dart';
 import 'package:hosomobile/features/home/controllers/student_controller.dart';
 import 'package:hosomobile/features/home/controllers/student_registration_controller.dart';
@@ -114,7 +115,7 @@ class _AddAccountState extends State<StudentAddInfo> {
                           padding: const EdgeInsets.all(8.0),
                           child: RichText(
                             text: TextSpan(
-                              text: 'Please Add Student  ',
+                              text: '${'please_add_student'.tr}  ',
                                style: Theme.of(context).textTheme.titleSmall!.copyWith(
                                         color: Colors.black,
                                         fontWeight: FontWeight.normal, // Regular weight for the rest of the text
@@ -129,7 +130,7 @@ class _AddAccountState extends State<StudentAddInfo> {
 
                                 ),
                                 TextSpan(
-                              text: '  Uniform information to continue',
+                              text: '  ${'uniform_information_to_continue'.tr}',
                                style: Theme.of(context).textTheme.titleSmall!.copyWith(
                                         color: Colors.black,
                                         fontWeight: FontWeight.normal, // Regular weight for the rest of the text

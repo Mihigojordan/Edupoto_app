@@ -162,7 +162,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                                     Column(children: [
                                       userData?.name != null
                                           ? Text(
-                                              'Welcome, ${userData?.name}' ??
+                                              '${'welcome'.tr}, ${userData?.name}' ??
                                                   '',
                                               textAlign: TextAlign.start,
                                               maxLines: 1,
@@ -173,7 +173,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                                                   fontWeight: FontWeight.w200),
                                             )
                                           : Text(
-                                              'Welcome, Parent'.tr,
+                                              '${'welcome'.tr}, ${'parent'.tr}',
                                               overflow: TextOverflow.clip,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
@@ -229,7 +229,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Itangazo:',
+                                Text('${'announcement'.tr}:',
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium!
@@ -239,7 +239,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 8.0, vertical: 3.0),
-                                    child: Text('More',
+                                    child: Text('more'.tr,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium!
@@ -282,7 +282,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                                       )),
                                   height: screenHeight * 0.05,
                                   width: screenWidth * 0.30,
-                                  icon: 'Schools\nDirectory',
+                                  icon: '${'school'.tr}\n${'directory'.tr}',
                                   title: 'assets/image/Schools Directory.png',
                                   clas: ''),
                               BorderButton1(
@@ -293,7 +293,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                                   onPress: () => Get.to(const NoConnection()),
                                   height: screenHeight * 0.05,
                                   width: screenWidth * 0.30,
-                                  icon: 'Recharge\nSchool Card',
+                                  icon: '${'recharge'.tr}\n${'school'.tr} ${'card'.tr}',
                                   title: 'assets/image/cashout3.png',
                                   clas: ''),
                             ],
@@ -444,7 +444,7 @@ class _HomeCard1State extends State<HomeCard1> {
                               height: 30,
                               width:
                                   screenWidth >= 520 ? 148 : screenWidth / 2.5,
-                              icon: 'Ababyeyi',
+                              icon: 'parent'.tr,
                               title: 'assets/image/Ababyeyi Icon.png',
                               clas: ''),
                           const Spacer(),
@@ -458,7 +458,7 @@ class _HomeCard1State extends State<HomeCard1> {
                               height: 30,
                               width:
                                   screenWidth >= 520 ? 148 : screenWidth / 2.5,
-                              icon: 'Amashuli',
+                              icon: 'school'.tr,
                               title: 'assets/image/School Amashuri Icon.png',
                               clas: ''),
                         ],

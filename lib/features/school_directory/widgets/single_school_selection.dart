@@ -1,5 +1,7 @@
  import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
+import 'package:hosomobile/util/app_constants.dart';
 
 Widget schoolBurser(BuildContext context) {
     return ListView.builder(
@@ -35,7 +37,7 @@ Widget schoolBurser(BuildContext context) {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${requirement['amount'].toStringAsFixed(2)}RWF',
+                      '${requirement['amount'].toStringAsFixed(2)}${AppConstants.currency}',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -53,9 +55,9 @@ Widget schoolBurser(BuildContext context) {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text(
-                        'Pay Now',
-                        style: TextStyle(color: Colors.white),
+                      child:  Text(
+                        'pay_now'.tr,
+                        style:const TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
@@ -88,7 +90,7 @@ Widget schoolBurser(BuildContext context) {
           child: ListTile(
             contentPadding: const EdgeInsets.all(16),
             title: Text(
-              message['sender']!,
+              message['title']!,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -233,7 +235,7 @@ Widget schoolBurser(BuildContext context) {
           children: [
             _buildSubSection(
               title: 'Fee Structure',
-              content: 'Tuition fees for the academic year 2023-2024 are as follows:\n- Primary School: RWF 5,000,000 per term\n- Secondary School: RWF 6,500,000 per term\nAdditional costs include uniforms, textbooks, and extracurricular activities.',
+              content: 'Tuition fees for the academic year 2023-2024 are as follows:\n- Primary School: ${AppConstants.currency} 5,000,000 per term\n- Secondary School: ${AppConstants.currency} 6,500,000 per term\nAdditional costs include uniforms, textbooks, and extracurricular activities.',
             ),
           ],
         ),
@@ -414,7 +416,7 @@ Widget _buildSubSection({required String title, required String content}) {
               _buildStep(
                 step: 3,
                 title: 'Pay Admission Fees',
-                description: 'Pay the admission fee of RWF 50,000 to complete the process.',
+                description: 'Pay the admission fee of ${AppConstants.currency} 50,000 to complete the process.',
                 actionText: 'Pay Now',
                 onAction: () {
                   print('Payment initiated');

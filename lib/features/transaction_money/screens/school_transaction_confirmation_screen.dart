@@ -137,7 +137,7 @@ class _TransactionConfirmationScreenState
   TextEditingController mapDestinationEditingController =
       TextEditingController();
   TextEditingController phoneNumberEditingController = TextEditingController();
-  String deliveryOptionsValue = 'Choose Delivery Company';
+  String deliveryOptionsValue = 'choose_delivery_company'.tr;
   String? _deliveryOptionError;
 
   List<Map<dynamic, String>> topSize = const [
@@ -203,14 +203,14 @@ class _TransactionConfirmationScreenState
       int randomNumber = random.nextInt(90000000) + 10000000;
 
     void validateForm() {
-      if (deliveryOptionsValue == 'Choose Delivery Company') {
+      if (deliveryOptionsValue == 'choose_delivery_company'.tr) {
         setState(() {
-          _deliveryOptionError = 'Please select a delivery option';
+          _deliveryOptionError = 'please_select_delivery_option'.tr;
         });
         // Optionally show a snackbar for more visibility
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please select a delivery option'),
+         SnackBar(
+            content: Text('please_select_delivery_option'.tr),
             backgroundColor: Colors.red,
           ),
         );
@@ -251,18 +251,18 @@ class _TransactionConfirmationScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Invoice No:$randomNumber',
+                    '${'invoice_no'.tr}:$randomNumber',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   sizedBox15,
                   Column(children: [
                     ForStudentWidget(
                         studentInfo:
-                            'Code: ${widget.studentName}\nName: ${widget.studentCode}'),
+                            '${'code'.tr}: ${widget.studentName}\n${'name'.tr}: ${widget.studentCode}'),
                   ]),
                   sizedBox10,
                   Text(
-                      'Product:${widget.edubox_service}. Contains:$checkedProducts products\n School:${widget.schoolName}. Class:${widget.className}'),
+                      '${'product'.tr}:${widget.edubox_service}. ${'contains'.tr}:$checkedProducts ${'product'.tr}s\n ${'school'.tr}:${widget.schoolName}. ${'class'.tr}:${widget.className}'),
                   sizedBox05h,
                   Container(
                     // height: MediaQuery.of(context).size.height / 5,
@@ -322,7 +322,7 @@ class _TransactionConfirmationScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        ' Delivery Options',
+                        'delivery_options'.tr,
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
                             color: Colors.black,
                             fontSize: 16,
@@ -347,7 +347,7 @@ class _TransactionConfirmationScreenState
                             ),
                         // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
 
-                        title: 'SCHOOL',
+                        title: 'school_cap'.tr,
                         iconData: Icons.arrow_forward_outlined,
                       ),
                       sizedBox15,
@@ -358,7 +358,7 @@ class _TransactionConfirmationScreenState
                               onPress: () => homeDeliveryAction(),
                               // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
 
-                              title: 'HOME',
+                              title: 'home_cap'.tr,
                               iconData: Icons.arrow_forward_outlined,
                             )
                           : DeliveryMapScreenSl(
@@ -398,7 +398,7 @@ class _TransactionConfirmationScreenState
                     ],
                   ),
                   sizedBox10,
-                  // Delivery Cost
+                  // ${'delivery_cost'.tr}
 
                   // PreviewAmountWidget(
                   //     amountText: calculatedTotal.toStringAsFixed(2) ?? "",
@@ -408,34 +408,34 @@ class _TransactionConfirmationScreenState
                     color: Theme.of(context).dividerColor,
                   ),
                   Text(
-                    'Delivery Cost: ${AppConstants.deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
+                    '${'delivery_cost'.tr}: ${AppConstants.deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.normal,
                         ),
                   ),
                   // Display Total Price
 
-                  Text('Material Cost: $subTotalPrice ${AppConstants.currency}'),
+                  Text('${'material_cost'.tr}: $subTotalPrice ${AppConstants.currency}'),
                   // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
-                  Text('VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
+                  Text('${'vat'.tr} (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
 
-                  Text( 'Convenience Fee: $convenienceFee ${AppConstants.currency}'),
+                  Text( '${'convenient_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
                   const Divider(),
 
                   Text(
-                    'Total Amount paid now: $totalAmount ${AppConstants.currency}',
+                    '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                   ),
 sizedBox10,
            sizedBox10,
-              Text('Pending/Remaing Amount to be paid',
+              Text('${'pending'.tr}/${'remaining_amount_to_be_paid'.tr}',
                   style: rubikSemiBold.copyWith(
                       fontSize: Dimensions.fontSizeLarge,
                       color: ColorResources.getGreyBaseGray1())),
               Text(
-                  '$availableBalance RWF',
+                  '$availableBalance ${AppConstants.currency}',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.bold,
                       )),
@@ -611,9 +611,9 @@ sizedBox
 //                                   //             edubox_service: widget.edubox_service!,
 //                                   //             amountToPay: calculateTotalWithService(double.parse('$calculatedTotal')).toStringAsFixed(2),
 //                                   //             nowPaid: calculatedTotal.toStringAsFixed(2),
-//                                   //             vat: 'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('$calculatedTotal')).toStringAsFixed(2)} ${AppConstants.currency}',
+//                                   //             vat: '${'vat'.tr} (${vatPercentage.toStringAsFixed(1)}%): ${calculateOriginalVat(double.parse('$calculatedTotal')).toStringAsFixed(2)} ${AppConstants.currency}',
 //                                   //             serviceCharge: calculateServiceCharge(double.parse('$calculatedTotal')).toStringAsFixed(2),
-//                                   //             totalNowPaid: 'Total Amount paid now: $totalAmount ${AppConstants.currency}',
+//                                   //             totalNowPaid: '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
 //                                   //             serviceValue: widget.productName,
 //                                   //             serviceIndex: widget.serviceIndex,
 //                                   //             classDetails: widget.classDetails,
@@ -693,14 +693,14 @@ sizedBox
 //                                               nowPaid: calculatedTotal
 //                                                   .toStringAsFixed(2),
 //                                               vat:
-//                                                   'VAT (${vatPercentage.toStringAsFixed(1)}%): ${calculateVAT(double.parse('$calculatedTotal')).toStringAsFixed(2)} ${AppConstants.currency}',
+//                                                   '${'vat'.tr} (${vatPercentage.toStringAsFixed(1)}%): ${calculateVAT(double.parse('$calculatedTotal')).toStringAsFixed(2)} ${AppConstants.currency}',
 //                                               serviceCharge:
 //                                                   calculateServiceCharge(
 //                                                           double.parse(
 //                                                               '$calculatedTotal'))
 //                                                       .toStringAsFixed(2),
 //                                               totalNowPaid:
-//                                                   'Total Amount paid now: $totalAmount ${AppConstants.currency}',
+//                                                   '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
 //                                               serviceValue: widget.productName,
 //                                               serviceIndex: widget.serviceIndex,
 //                                               randomNumber: randomNumber,
@@ -903,16 +903,16 @@ sizedBox
       builder: (context) {
 
         return AlertDialog(
-          title: const Text('Confirm'),
+          title:  Text('confirm'.tr),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Your School materials will be delivered at;'),
-              Text('School Name: $schoolName'),
-              Text('Class: $className'),
-              Text('Customer Product: $productName'),
-              Text('Order ID: $randomNumber'),
+              Text('${'your_school_materials_will_be_delivered_at'.tr};'),
+              Text('${'school_name'.tr}: $schoolName'),
+              Text('${'class'.tr}: $className'),
+              Text('${'customer_product'.tr}: $productName'),
+              Text('${'order_id'.tr}: $randomNumber'),
             ],
           ),
           actions: [
@@ -920,7 +920,7 @@ sizedBox
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel'),
+              child:  Text('cancel'.tr),
             ),
             const SizedBox(width: 10),
             TextButton(
@@ -1001,12 +1001,12 @@ sizedBox
                                   dataList: widget.dataList,
                                   productIndex: widget.productIndex,
                                   edubox_service: widget.edubox_service!,
-                                  amountToPay: 'Delivery Cost: ${AppConstants.deliveryCost.toStringAsFixed(2)}',
-                                  nowPaid: 'Material Cost: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}',
+                                  amountToPay: '${'delivery_cost'.tr}: ${AppConstants.deliveryCost.toStringAsFixed(2)}',
+                                  nowPaid: '${'material_cost'.tr}: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}',
                                   vat:
-                                      'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
-                                  serviceCharge:'Convenience fee: $convenienceFee ${AppConstants.currency}',
-                                  totalNowPaid:'Total Amount paid now: $totalAmount ${AppConstants.currency}',
+                                      '${'vat'.tr} (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
+                                  serviceCharge:'${'convenient_fee'.tr}: $convenienceFee ${AppConstants.currency}',
+                                  totalNowPaid:'${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
                                   serviceValue: widget.productName,
                                   serviceIndex: widget.serviceIndex,
                                   randomNumber: randomNumber,
@@ -1025,7 +1025,7 @@ sizedBox
                   // _pinCodeFieldController.clear();
                 });
               },
-              child: const Text('OK'),
+              child:  Text('ok'.tr),
             ),
           ],
         );

@@ -283,7 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Next',
+                          'next_cap'.tr,
                           style:
                               Theme.of(context).textTheme.titleMedium?.copyWith(
                                     color: ColorResources.blackColor,

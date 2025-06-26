@@ -143,26 +143,24 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
   Student? selectedStudent;
   TextEditingController studentCodeEditingController = TextEditingController();
   TextEditingController studentNameEditingController = TextEditingController();
-  String displayCode = 'Enter Student Code';
-  String displayName = 'Enter Student Name';
   List<Districts>? allSchoolList;
-  String deliveryOptionsValue = 'Choose Delivery Company';
+  String deliveryOptionsValue = 'choose_delivery_company'.tr;
   String? _deliveryOptionError;
   TextEditingController phoneNumberEditingController = TextEditingController();
 
-  List<Map<dynamic, String>> topSize = const [
-    {'name': 'Dropp', 'logo': 'assets/icons1/dropp.jpeg', 'status': 'busy'},
+  List<Map<dynamic, String>> topSize = [
+    {'name': 'Dropp', 'logo': 'assets/icons1/dropp.jpeg', 'status': 'busy'.tr},
     {
       'name': 'i-Posita',
       'logo': 'assets/icons1/iposita.jpeg',
-      'status': 'available'
+      'status': 'available'.tr
     },
     {
       'name': 'Vuba Vuba',
       'logo': 'assets/icons1/vuba.png',
-      'status': 'available'
+      'status': 'available'.tr
     },
-    {'name': 'Zugu', 'logo': 'assets/icons1/zugu.jpeg', 'status': 'busy'},
+    {'name': 'Zugu', 'logo': 'assets/icons1/zugu.jpeg', 'status': 'busy'.tr},
   ];
 
   // Controllers for source and destination text fields
@@ -178,7 +176,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation(); // Fetch current location and set it as the default source
+    _getCurrentLocation(); // Fetch current_location .trand set it as the default source
     addressFocusNode = FocusNode();
     cityFocusNode = FocusNode();
     stateFocusNode = FocusNode();
@@ -356,8 +354,8 @@ Widget build(BuildContext context) {
                     TextField(
                       controller: _destinationController,
                       decoration: InputDecoration(
-                        labelText: 'Where to',
-                        hintText: 'Eg; KN 360 St 6',
+                        labelText: 'where_to'.tr,
+                        hintText: '${'eg'.tr}; KN 360 St 6',
                         hintStyle: const TextStyle(color: Colors.grey,fontWeight: FontWeight.normal),
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
@@ -366,12 +364,12 @@ Widget build(BuildContext context) {
                         ),
                       ),
                       onChanged: (value) {
-                        if (value != 'Current Location') {
+                        if (value != 'current_location'.tr) {
                           setState(() => _destinationLatLng = null);
                         }
                       },
                       onTap: () {
-                        if (_destinationController.text == 'Current Location') {
+                        if (_destinationController.text == 'current_location'.tr) {
                           _destinationController.clear();
                         }
                       },
@@ -412,15 +410,15 @@ Widget build(BuildContext context) {
                       ],
                     ),
               _buildListTile(
-                  icon: Icons.star, title: 'Choose saved place', onTap: () {}),
+                  icon: Icons.star, title: 'choose_saved_place'.tr, onTap: () {}),
               sizedBox10,
               Text(
-                'Please Provide the phone number that is currently available at the destinaltion location',
+                'please_provide_phone_number_available_at_your_current_location'.tr,
                 style: Theme.of(context).textTheme.titleSmall!.copyWith(
                     color: kErrorBorderColor, fontWeight: FontWeight.normal),
               ),
               sizedBox10,
-              buildFormField('Home Phone Number', phoneNumberEditingController,
+              buildFormField('receiver_phone_number'.tr, phoneNumberEditingController,
                   TextInputType.name, '07XXXXXXXX'),
               sizedBox10,
               CustomDropdown(
@@ -456,8 +454,8 @@ Widget build(BuildContext context) {
                           ),
                         ],
                       ),
-                      child: const Text(
-                        'Next',
+                      child:  Text(
+                        'next_cap'.tr,
                         style: TextStyle(
                           fontSize: 16.0,
                           color: Colors.white,
@@ -581,9 +579,9 @@ Widget build(BuildContext context) {
     final currentLocationMarker = Marker(
       markerId: const MarkerId('current_location'),
       position: LatLng(position.latitude, position.longitude),
-      infoWindow: const InfoWindow(
-        title: 'Your Location',
-        snippet: 'You are here!',
+      infoWindow: InfoWindow(
+        title: 'your_location'.tr,
+        snippet: '${'you_are_here'.tr}!',
       ),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
     );
@@ -622,13 +620,13 @@ Widget build(BuildContext context) {
           addressParts.add(place.country!);
 
         String address = addressParts.join(', ');
-        return address.isNotEmpty ? address : 'Current Location';
+        return address.isNotEmpty ? address : 'current_location'.tr;
       }
 
-      return 'Current Location';
+      return 'current_location'.tr;
     } catch (e) {
       print('Reverse geocoding error: $e');
-      return 'Current Location';
+      return 'current_location'.tr;
     }
   }
 
@@ -649,18 +647,18 @@ Widget build(BuildContext context) {
   void _setDestinationFromInput() async {
     final destination = _destinationController.text;
 
-    if (destination.isEmpty || destination == 'Current Location') {
-      // If the source field is empty or set to "Current Location", use the current location
-      setState(() {
+    if (destination.isEmpty || destination == 'current_location'.tr) {
+      // If the source field is empty or set to "current_location".tr, use the current_location
+    setState(() {
         _sourceLatLng = _initialPosition;
-        _addMarker(_initialPosition, 'Source', BitmapDescriptor.hueGreen);
+        _addMarker(_initialPosition, 'source'.tr, BitmapDescriptor.hueGreen);
       });
     } else {
       final destinationLatLng = await _geocodeAddress(destination);
       if (destinationLatLng != null) {
         setState(() {
           _destinationLatLng = destinationLatLng;
-          _addMarker(destinationLatLng, 'Destination', BitmapDescriptor.hueRed);
+          _addMarker(destinationLatLng, 'destination'.tr, BitmapDescriptor.hueRed);
         });
         _drawRoute();
       }
@@ -734,7 +732,7 @@ Widget build(BuildContext context) {
       position: position,
       infoWindow: InfoWindow(
         title: title,
-        snippet: 'Coordinates: ${position.latitude}, ${position.longitude}',
+        snippet: '${'coordinates'.tr}: ${position.latitude}, ${position.longitude}',
       ),
       icon: BitmapDescriptor.defaultMarkerWithHue(hue),
     );
@@ -750,28 +748,28 @@ Widget build(BuildContext context) {
     if (_sourceLatLng == null || _destinationLatLng == null) {
       print('Source or destination coordinates are missing.');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter where to'),
+        SnackBar(
+          content: Text('please_enter_where_to'.tr),
           backgroundColor: Colors.red,
         ),
       );
       return;
-    } else if (deliveryOptionsValue == 'Choose Delivery Company') {
+    } else if (deliveryOptionsValue == 'choose_delivery_company'.tr) {
       setState(() {
-        _deliveryOptionError = 'Please select a delivery option';
+        _deliveryOptionError = 'please_select_delivery_option'.tr;
       });
       // Optionally show a snackbar for more visibility
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a delivery option'),
+         SnackBar(
+          content: Text('please_select_delivery_option'.tr),
           backgroundColor: Colors.red,
         ),
       );
       return;
     } else if (phoneNumberEditingController.text == '') {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a home phone number'),
+         SnackBar(
+          content: Text('please_select_receiver_phone_number'.tr),
           backgroundColor: Colors.red,
         ),
       );
@@ -781,14 +779,14 @@ Widget build(BuildContext context) {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Confirm'),
+          title:  Text('confirm'.tr),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Where to: ${_destinationController.text}'),
-              Text('Distance: $_distance'),
-              Text('Time Remaining: $_duration'),
+              Text('${'where_to'.tr}: ${_destinationController.text}'),
+              Text('${'distance'.tr}: $_distance'),
+              Text('${'time_remaining'.tr}: $_duration'),
             ],
           ),
           actions: [
@@ -836,15 +834,15 @@ Widget build(BuildContext context) {
                                   productIndex: widget.productIndex,
                                   edubox_service: widget.eduboxService,
                                   amountToPay:
-                                      'Delivery Cost: ${widget.deliveryCost.toStringAsFixed(2)}',
+                                      '${'delivery_cost'.tr}: ${widget.deliveryCost.toStringAsFixed(2)}',
                                   nowPaid:
-                                      'Material Cost: ${widget.calculatedTotal.toStringAsFixed(2)}',
+                                      '${'material_cost'.tr}: ${widget.calculatedTotal.toStringAsFixed(2)}',
                                   vat:
-                                      'VAT (${widget.vatPercentage.toStringAsFixed(1)}%): ${widget.calculateVAT.toStringAsFixed(2)} RWF',
+                                      '${'vat'.tr} (${widget.vatPercentage.toStringAsFixed(1)}%): ${widget.calculateVAT.toStringAsFixed(2)} ${AppConstants.currency}',
                                   serviceCharge:
-                                      'Convinience fee: ${widget.calculateServiceCharge.toStringAsFixed(2)}',
+                                      '${'convenient_fee'.tr}: ${widget.calculateServiceCharge.toStringAsFixed(2)}',
                                   totalNowPaid:
-                                      'Total Amount paid now: ${widget.totalAmount} RWF',
+                                      '${'total_amount_paid_now'.tr}: ${widget.totalAmount} ${AppConstants.currency}',
                                   serviceValue: widget.productName,
                                   serviceIndex: widget.serviceIndex,
                                   randomNumber: widget.randomNumber,
@@ -875,24 +873,24 @@ Widget build(BuildContext context) {
                                   inputBalance: widget.totalAmount,
                                   product: widget.product!,
                                   productIndex: widget.productIndex,
-                                  edubox_service: 'Shop',
+                                  edubox_service: 'shop'.tr,
                                   amountToPay:
-                                      'Delivery Cost: ${widget.deliveryCost.toStringAsFixed(2)}',
+                                      '${'delivery_cost'.tr}: ${widget.deliveryCost.toStringAsFixed(2)}',
                                   nowPaid:
-                                      'Material Cost: ${widget.calculatedTotal.toStringAsFixed(2)}',
+                                      '${'material_cost'.tr}: ${widget.calculatedTotal.toStringAsFixed(2)}',
                                   vat:
-                                      'VAT (${widget.vatPercentage.toStringAsFixed(1)}%): ${widget.calculateVAT.toStringAsFixed(2)} RWF',
+                                      '${'vat'.tr} (${widget.vatPercentage.toStringAsFixed(1)}%): ${widget.calculateVAT.toStringAsFixed(2)} ${AppConstants.currency}',
                                   serviceCharge: widget.calculateServiceCharge
                                       .toStringAsFixed(2),
                                   totalNowPaid:
-                                      'Total Amount paid now: ${widget.totalAmount}RWF',
+                                      '${'total_amount_paid_now'.tr}: ${widget.totalAmount}${AppConstants.currency}',
                                   serviceValue: widget.product!.name,
                                 );
                         });
               },
               // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
 
-              title: 'NEXT',
+              title: 'next'.tr,
               iconData: Icons.arrow_forward_outlined,
             ),
           ],

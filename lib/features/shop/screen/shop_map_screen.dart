@@ -55,10 +55,7 @@ class _ShopMapScreenState extends State<ShopMapScreen> {
   bool? isTeacherLoggedIn = false;
   bool? isParentLoggedIn = false;
   bool? isUserLoggedIn = false;
-  String studentCardValue = 'Choose from a list of partner Schools';
-  String districtValue = 'Choose The District of your School';
-  String classValue = 'Od Level';
-  String classCategoryValue = 'Class';
+
   bool isSelected = false;
   UserShortDataModel? userData;
 

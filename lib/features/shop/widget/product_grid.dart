@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hosomobile/features/shop/screen/prduct_detail_screen.dart';
 import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/util/app_constants.dart';
 
 class ProductGrid extends StatefulWidget {
   final List<Product> products;
@@ -77,7 +79,7 @@ class _ProductGridState extends State<ProductGrid> {
                         style: DefaultTextStyle.of(context).style,
                         children: [
                       TextSpan(
-                        text: 'RWF ${product.price.toStringAsFixed(2)}',
+                        text: '${AppConstants.currency} ${product.price.toStringAsFixed(2)}',
                         style:
                             const TextStyle(fontSize: 14, color: Colors.green),
                       ),
@@ -95,7 +97,7 @@ class _ProductGridState extends State<ProductGrid> {
                 const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () => _addToCart(product, 1),
-                  child: const Text('Add to Cart'),
+                  child: Text('add_to_cart'.tr),
                 ),
               ],
             ),

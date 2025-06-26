@@ -16,6 +16,7 @@ import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/features/transaction_money/widgets/payment_methods/payment_method_selector.dart';
 import 'package:hosomobile/helper/price_converter_helper.dart';
 import 'package:hosomobile/helper/route_helper.dart';
+import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
 import 'package:hosomobile/util/styles.dart';
@@ -236,7 +237,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                   children: [
                                     transactionId != null
                                         ? Text(
-                                            'Receipt No:$transactionId',
+                                            '${'receipt'.tr}:$transactionId',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleLarge,
@@ -252,7 +253,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                       children:
                                           widget.studentInfo!.map((student) {
                                         return Text(
-                                          'Code: ${student.code!}\nName: ${student.name}',
+                                          '${'code'.tr}: ${student.code!}\n${'name'.tr}: ${student.name}',
                                         );
                                       }).toList(),
                                     ),
@@ -262,7 +263,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                       color: Theme.of(context).dividerColor,
                                     ),
                                     sizedBox5,
-                                    const Text('Product:'),
+                                     Text('${'product'.tr}:'),
                                     Wrap(
                                       spacing:
                                           8.0, // Horizontal space between items
@@ -273,12 +274,12 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                         final product = entry.key;
                                         final quantity = entry.value;
                                         return Text(
-                                          '${product.name} (${product.price} RWF) x $quantity, ',
+                                          '${product.name} (${product.price} ${AppConstants.currency}) x $quantity, ',
                                         );
                                       }).toList(),
                                     ),
                                     sizedBox10,
-                                    Text('Destination: ${widget.destination}'),
+                                    Text('${'destination'.tr}: ${widget.destination}'),
                                     //${widget.studentInfo![widget.studentIndex!].studentClass}
                                     sizedBox10,
                                     Container(
@@ -287,14 +288,14 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                     ),
                                     sizedBox10,
                                     Text(
-                                        'Delivery Cost: ${widget.deliveryCost!} RWF'),
+                                        '${'delivery_cost'.tr}: ${widget.deliveryCost} ${AppConstants.currency}'),
                                     Text(
-                                        'Material Cost: ${widget.materialCost} RWF'),
+                                        '${'material_cost'.tr}: ${widget.materialCost} ${AppConstants.currency}'),
 
                                     Text(widget.vat!),
 
                                     Text(
-                                        'Convenience fee (${widget.serviceCharge!} RWF'),
+                                        '${'convenience_fee'.tr} (${widget.serviceCharge!} ${AppConstants.currency}'),
                                     const Divider(),
                                     Text(
                                       widget.totalNowPaid!,
@@ -340,7 +341,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                         .map((entry) {
                                       final product = entry.key;
                                       final quantity = entry.value;
-                                      return '${product.name} (${product.price} RWF) x $quantity, ';
+                                      return '${product.name} (${product.price} ${AppConstants.currency}) x $quantity, ';
                                     }).toList(),
 
                                     productName: widget.edubox_service ??
@@ -428,7 +429,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                       CustomInkWellWidget(
                         onTap: () async => await Get.find<ShareControllerSp>()
                             .statementScreenShootFunction(
-                              deliveryCost: 'Delivery Cost: ${widget.deliveryCost!} RWF',
+                              deliveryCost: '${'delivery_cost'.tr}: ${widget.deliveryCost!} ${AppConstants.currency}',
                           destination: widget.destination,
                           amount: widget.materialCost,
                           transactionType: widget.transactionType,
@@ -442,7 +443,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                           trxId: transactionId,
                           eduboxService: widget.edubox_service,
                           studentInfo:
-                              'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}',
+                              '${'code'.tr}: ${widget.studentInfo![widget.studentIndex!].code!}\n${'code'.tr}: ${widget.studentInfo![widget.studentIndex!].name}',
                           inputBalance: widget.inputBalance,
                           product: widget.product,
                           productIndex: widget.productIndex,
@@ -450,7 +451,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                           nowPaid: widget.nowPaid,
                           remainingAmount: widget.availableBalance,
                           vat: widget.vat,
-                          serviceCharge:'Convenience fee: ${widget.serviceCharge}',
+                          serviceCharge:'${'convenience_fee'.tr}: ${widget.serviceCharge}',
                           totalNowPaid: widget.totalNowPaid,
                           serviceValue: widget.serviceValue,
                           serviceIndex: widget.serviceIndex,

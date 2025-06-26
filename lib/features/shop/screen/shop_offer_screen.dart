@@ -243,21 +243,21 @@ class _HomeCard1State extends State<HomeCard1> {
               width: 50,
             ),
             const SizedBox(height: 10),
-            const Text('Verify Your Identity'),
+             Text('cerify_your_identity'.tr),
             TextField(
               controller: _idController,
-              decoration: const InputDecoration(
-                labelText: 'ID Number',
-                hintText: 'Enter your ID number',
+              decoration:  InputDecoration(
+                labelText: 'id_number'.tr,
+                hintText: 'enter_your_id_number'.tr,
               ),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _passwordController,
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                hintText: 'Enter your password',
+              decoration:  InputDecoration(
+                labelText: 'password'.tr,
+                hintText: 'enter_your_password'.tr,
               ),
             ),
             const SizedBox(
@@ -272,7 +272,7 @@ class _HomeCard1State extends State<HomeCard1> {
                     Navigator.pop(context); // Close the dialog
                     Navigator.pop(context); // Go back to the previous page
                   },
-                  child: const Text('Cancel'),
+                  child:  Text('cancel'.tr),
                 ),
                 // Submit Button
                 TextButton(
@@ -285,21 +285,21 @@ class _HomeCard1State extends State<HomeCard1> {
                       });
                       Get.to(const ShoppingScreen(isOffer: true));
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Verification successful!'),
+                         SnackBar(
+                          content: Text('verification_successfully'.tr),
                           backgroundColor: Colors.green,
                         ),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please enter your ID and password.'),
+                         SnackBar(
+                          content: Text('please_enter_your_id_and_password'.tr),
                           backgroundColor: Colors.red,
                         ),
                       );
                     }
                   },
-                  child: const Text('Submit'),
+                  child: Text('submit'.tr),
                 ),
               ],
             )

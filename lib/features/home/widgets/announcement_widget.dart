@@ -53,7 +53,7 @@ class AnnouncementWidget extends StatelessWidget {
                       child: SizedBox(
                         width: screenWidth,
                         child: Text(
-                          announcementController.announcementList![0].name ?? "No Announcement",
+                          announcementController.announcementList![0].name ?? "no_announcement".tr,
                           style: screenHeight >= 763
                               ? Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.normal)
                               : Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.normal, fontSize: 10),

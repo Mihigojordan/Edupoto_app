@@ -12,6 +12,7 @@ import 'package:hosomobile/features/transaction_money/controllers/transaction_co
 import 'package:hosomobile/features/transaction_money/domain/enums/suggest_type_enum.dart';
 import 'package:hosomobile/helper/custom_snackbar_helper.dart';
 import 'package:hosomobile/helper/normalize_phone_number.dart';
+import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
 import 'package:hosomobile/util/images.dart';
@@ -102,7 +103,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
           _buildDragHandle(),
           const SizedBox(height: 20),
           Text(
-            'Select Payment Method',
+            'select_payment_method'.tr,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -128,7 +129,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Select Mobile Money Provider',
+          'select_mobile_money_provider'.tr,
           style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: 10),
@@ -159,7 +160,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Select Bank',
+          'select_bank'.tr,
           style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: 10),
@@ -233,13 +234,13 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             if (_selectedMethod == 0 && _selectedMobileProvider == null) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('Please select a mobile money provider')));
+              ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                  content: Text('please_select_mobile_money_provider'.tr)));
               return;
             }
             if (_selectedMethod == 2 && _selectedBankProvider == null) {
               ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please select a bank')));
+                   SnackBar(content: Text('please_select_bank'.tr)));
               return;
             }
 
@@ -248,10 +249,10 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
                 : _cardController.text;
 
             final method = _selectedMethod == 0
-                ? 'Mobile Money'
+                ? 'mobile_money'.tr
                 : _selectedMethod == 1
-                    ? 'Card'
-                    : 'Bank';
+                    ? 'card'.tr
+                    : 'bank'.tr;
 
             String? provider;
             if (_selectedMethod == 0) {
@@ -265,7 +266,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
           }
         },
         child: Text(
-          'Pay ${widget.initialAmount}',
+          '${'pay'.tr} ${widget.initialAmount}',
           style: const TextStyle(fontSize: 16),
         ),
       ),
@@ -292,7 +293,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
             : ConfirmationSlider(
                 height: 60.0,
                 backgroundColor: ColorResources.getGreyBaseGray6(),
-                text: 'Swipe to Pay',
+                text: 'swipe_to_pay'.tr,
                 textStyle: rubikRegular.copyWith(
                     fontSize: Dimensions.paddingSizeLarge),
                 shadow: const BoxShadow(),
@@ -306,10 +307,10 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
                 ),
                 onConfirmation: () async {
                    _selectedMobileProvider!=null?   showCustomSnackBarHelper(
-        'Processing payment... Please wait to receive payment prompt on your phone.',
+        '${'processing_payment'.tr}... ${'please_wait_to_receive_payment_prompt'.tr}.',
         isError: false,
       ):showCustomSnackBarHelper(
-        'Processing payment... Please wait.',
+        '${'processing_payment'.tr}... ${'please_wait'.tr}.',
         isError: false,
       );
                   // Initiate payment
@@ -317,7 +318,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
                       transactionId: widget.randomNumber.toString(),
                       amount: double.parse(widget.amount).toInt().toString(),
                       message:
-                          'You have paid for ${widget.edubox_service} VAT , ${double.parse(widget.service_charge).toInt()} RWF Convenience fee',
+                          '${'you_have_paid_for'.tr} ${widget.edubox_service} ${'vat'.tr} , ${double.parse(widget.service_charge).toInt()} ${AppConstants.currency} ${'convenience_fee'.tr}',
                       phoneNumber:
                           normalizeRwandaPhoneNumber(_phoneController.text));
 
@@ -375,7 +376,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
         print('Error checking payment status: $e');
         if (attempts >= maxAttempts) {
           showCustomSnackBarHelper(
-            'Payment verification timeout. Please check your transaction history.',
+            'payment_transaction_timeout'.tr,
             isError: false,
           );
         }
@@ -384,7 +385,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
 
     if (!paymentCompleted) {
       showCustomSnackBarHelper(
-        'Payment verification timeout. Please check your transaction history.',
+        'payment_verification_timeout'.tr,
         isError: false,
       );
     }
@@ -409,8 +410,8 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
         widget.transactionId = transaction.body['transaction_id'];
 
         await widget.transactionMoneyController.makePayment(
-           payment_method:_selectedMethod==0?'Mobile Money':_selectedMethod==1?'Card':_selectedMethod==2?'Bank':'No Method',
-          payment_media:_selectedMobileProvider==0?'MTN':_selectedMobileProvider==1?'Airtel':_selectedBankProvider==0?'BK':'No Bank',
+           payment_method:_selectedMethod==0?'mobile_money'.tr:_selectedMethod==1?'card'.tr:_selectedMethod==2?'bank'.tr:'no_method'.tr,
+          payment_media:_selectedMobileProvider==0?'MTN':_selectedMobileProvider==1?'Airtel':_selectedBankProvider==0?'BK':'no_bank'.tr,
           payment_phone: _phoneController.text,
            parent_id: userId!,
            product_name: widget.edubox_service,
@@ -428,12 +429,12 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
             charge: double.parse(widget.serviceCharge),
             );
 
-        showCustomSnackBarHelper('Payment successful!', isError: false);
+        showCustomSnackBarHelper('${'payment_successfully'.tr}!', isError: false);
       }
     } catch (e) {
       print('Error processing successful payment: $e');
       showCustomSnackBarHelper(
-        'Payment verification failed. Please check your transaction history.',
+        'payment_verification_failed'.tr,
         isError: true,
       );
     }
@@ -445,17 +446,17 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
       children: [
         _buildMethodOption(
           icon: Icons.phone_android,
-          label: 'Mobile Money',
+          label: 'mobile_money'.tr,
           index: 0,
         ),
         _buildMethodOption(
           icon: Icons.credit_card,
-          label: 'Card',
+          label: 'card'.tr,
           index: 1,
         ),
         _buildMethodOption(
           icon: Icons.account_balance,
-          label: 'Bank',
+          label: 'bank'.tr,
           index: 2,
         ),
       ],
@@ -509,10 +510,10 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
         children: [
           Text(
             _selectedMethod == 0
-                ? 'Enter Mobile Money Number'
+                ? 'enter_mobile_money_number'.tr
                 : _selectedMethod == 1
-                    ? 'Enter Card Details'
-                    : 'Enter Account Number',
+                    ? 'enter_card_details'.tr
+                    : 'enter_account_number'.tr,
             style: Theme.of(context).textTheme.titleSmall,
           ),
           const SizedBox(height: 10),
@@ -531,8 +532,8 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
               hintText: _selectedMethod == 0
                   ? '07X XXX XXXX'
                   : _selectedMethod == 1
-                      ? 'Card number'
-                      : 'Account number',
+                      ? 'card_number'.tr
+                      : 'account_number'.tr,
               prefixIcon: _selectedMethod == 0
                   ? const Icon(Icons.phone)
                   : const Icon(Icons.credit_card),
@@ -542,10 +543,10 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter required details';
+                return 'please_enter_required_details'.tr;
               }
               if (_selectedMethod == 0 && value.length != 10) {
-                return 'Enter a valid 10-digit number';
+                return 'enter_a_valid_10_digit_number'.tr;
               }
               return null;
             },
@@ -554,7 +555,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
-                'You will receive a payment request on this number',
+                'you_will_receive_payment_request_on_this_number'.tr,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Colors.grey,
                     ),

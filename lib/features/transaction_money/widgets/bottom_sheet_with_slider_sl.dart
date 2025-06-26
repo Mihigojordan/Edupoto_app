@@ -17,6 +17,7 @@ import 'package:hosomobile/features/transaction_money/widgets/for_student_widget
 import 'package:hosomobile/features/transaction_money/widgets/payment_methods/payment_method_selector.dart';
 import 'package:hosomobile/helper/price_converter_helper.dart';
 import 'package:hosomobile/helper/route_helper.dart';
+import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
 import 'package:hosomobile/util/styles.dart';
@@ -207,7 +208,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                   //         ],
                   //       )
                   //     : Column(children: [
-                  //         ForStudentWidget(studentInfo: 'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}'),
+                  //         ForStudentWidget(studentInfo: '${'code'.tr}: ${widget.studentInfo![widget.studentIndex!].code!}\n${'name'.tr}: ${widget.studentInfo![widget.studentIndex!].name}'),
                   //       ]),
                   Container(
                     color: ColorResources.getBackgroundColor(),
@@ -235,7 +236,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                   children: [
                                     transactionId != null
                                         ? Text(
-                                            'Receipt No:${widget.randomNumber}',
+                                            '${'receipt_no'.tr}:${widget.randomNumber}',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleLarge,
@@ -246,13 +247,13 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                     Column(children: [
                                       ForStudentWidget(
                                           studentInfo:
-                                              'Code: ${widget.studentCode}\nName: ${widget.studentName}'),
+                                              '${'${'code'.tr}'.tr}: ${widget.studentCode}\n${'name'.tr}: ${widget.studentName}'),
                                     ]),
                                     sizedBox15,
                                     Text(
-                                        'Product: ${widget.edubox_service}, Contains: ${'${widget.dataList!.length} (${widget.dataList![widget.productIndex!].amount} RWF), '}'), //${widget.studentInfo![widget.studentIndex!].studentClass}
+                                        '${'product'.tr}: ${widget.edubox_service}, ${'contains'.tr}: ${'${widget.dataList!.length} (${widget.dataList![widget.productIndex!].amount} ${AppConstants.currency}), '}'), //${widget.studentInfo![widget.studentIndex!].studentClass}
                                     sizedBox10,
-                                    Text('Destination: ${widget.destination}'),
+                                    Text('${'destination'.tr}: ${widget.destination}'),
                                     sizedBox10,
                                     Container(
                                       height: Dimensions.dividerSizeMedium,
@@ -261,13 +262,13 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                     sizedBox10,
 
                                     Text(
-                                        'Amount to be Paid: ${widget.amountToPay!} RWF'),
+                                        '${'amount_to_be_paid'.tr}: ${widget.amountToPay!} ${AppConstants.currency}'),
 
-                                    // Text('Now Paid: ${widget.nowPaid!} RWF'),
+                                    // Text('Now Paid: ${widget.nowPaid!} ${AppConstants.currency}'),
                                     Text(widget.vat!),
 
                                     Text(
-                                        'Convenience fee (${widget.serviceCharge!} RWF'),
+                                        '${'convenient_fee'.tr} (${widget.serviceCharge!} ${AppConstants.currency}'),
                                     const Divider(),
                                     Text(
                                       widget.totalNowPaid!,
@@ -284,7 +285,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                               //  isDeposit==1?   
                                 Column(
                                   children: [
-                                     Text('Pending/Remaing Amount to be paid',
+                                     Text('${'pending'.tr}/${'remaining_amount_to_be_paid'.tr}',
                                     style: rubikSemiBold.copyWith(
                                         fontSize: Dimensions.fontSizeLarge,
                                         color:
@@ -374,7 +375,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                               transactionMoneyController.isNextBottomSheet
                                   ? transactionId != null
                                       ? Text(
-                                          'TrxID: ${widget.randomNumber}',
+                                          '${'trx_id'.tr}: ${widget.randomNumber}',
                                           style: rubikLight.copyWith(
                                               fontSize:
                                                   Dimensions.fontSizeDefault),
@@ -416,7 +417,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                 trxId: transactionId,
                                 eduboxService: widget.edubox_service,
                                 studentInfo:
-                                    'Code: ${widget.studentCode}\nName: ${widget.studentName}',
+                                    '${'code'.tr}: ${widget.studentCode}\n${'name'.tr}: ${widget.studentName}',
                                 inputBalance: widget.inputBalance,
                                 dataList: widget.dataList,
                                 productIndex: widget.productIndex,

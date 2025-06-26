@@ -305,7 +305,7 @@ class _HomeCard1State extends State<HomeCard1> {
   bool? isUserLoggedIn = false;
 
   String? phoneNumber;
-  String studentcardValue = 'Choose student\'s card to fund';
+  String studentcardValue = '${'choose_student_card_to_fund'.tr}';
 
   String transactionType = 'add_money';
 
@@ -377,7 +377,7 @@ class _HomeCard1State extends State<HomeCard1> {
                             // crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Deposit on your child\'s school requirements',
+                                'deposit_on_your_child_school_requirements'.tr,
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleSmall!
@@ -394,7 +394,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                     contactModel: widget.contactModel),
                               sizedBox,
                               Text(
-                                'Student Code Number:',
+                                '${'student_code'.tr}:',
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.black.withOpacity(0.5),
@@ -416,12 +416,12 @@ class _HomeCard1State extends State<HomeCard1> {
                                 },
                                 itemLists: studentController.studentList!,
                                 title:
-                                    'Code: ${studentController.studentList![widget.studentIndex].code!}\nName: ${studentController.studentList![widget.studentIndex].name}',
+                                    '${'code'.tr}: ${studentController.studentList![widget.studentIndex].code!}\n${'name'.tr}: ${studentController.studentList![widget.studentIndex].name}',
                                 isExpanded: true,
                               ),
                               sizedBox15,
                               Text(
-                                'Product: ${widget.edubox_service} (${studentController.studentList?[widget.studentIndex]?.studentClass ?? ''}):',
+                                '${'product'.tr}: ${widget.edubox_service} (${studentController.studentList?[widget.studentIndex]?.studentClass ?? ''}):',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.black.withOpacity(0.5),
@@ -448,7 +448,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                       return ListTile(
                                         title: Text(
                                           '${material.name} ${material.price} ${AppConstants.currency}\n'
-                                          'Balance to be Paid: ${material.paymentHistory?.balance != null && double.parse(material.paymentHistory!.balance!) > 0.00 ? material.paymentHistory!.balance : material.price} ${AppConstants.currency}',
+                                          '${'balance_to_be_paid'.tr}: ${material.paymentHistory?.balance != null && double.parse(material.paymentHistory!.balance!) > 0.00 ? material.paymentHistory!.balance : material.price} ${AppConstants.currency}',
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       );
@@ -478,12 +478,12 @@ class _HomeCard1State extends State<HomeCard1> {
                                   itemLists: widget.productList,
                                   title: widget.productList.isNotEmpty
                                       ? widget.productList[0].name ??
-                                          'Select Product'
-                                      : 'No Products',
+                                          'select_product'.tr
+                                      : 'no_products'.tr,
                                   isExpanded: true,
                                 )
                               else
-                                Text('No products available'),
+                                Text('no_products_available'.tr),
 
                               sizedBox15,
                               //DependentDropdowns(),
@@ -580,7 +580,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                       // Ensure material exists
                                       if (material == null) {
                                         showCustomSnackBarHelper(
-                                            'Material information not available',
+                                            'material_information_not_available'.tr,
                                             isError: true);
                                         return;
                                       }
@@ -676,7 +676,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                       //       inputAmaount: amount);
                                       // } else {
                                         _confirmationRoute(
-                                            amount: amount,
+                                            amount: material.price!,
                                             price: double.tryParse(currentMaterial
                                                         .price
                                                         ?.toString() ??
@@ -690,7 +690,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                             );
                                       // }
                                     },
-                                    title: 'PAY CASH',
+                                    title: 'pay_cash'.tr,
                                   
                                   ),
                                   DefaultButtonWidth(
@@ -699,13 +699,13 @@ class _HomeCard1State extends State<HomeCard1> {
   color2: kyellowColor,
   onPress: () => showDepositDialog(
     context: context,
-    title: 'How much would you like to deposit?',
+    title: 'how_much_would_you_like_to_deposit'.tr,
     onDeposit: (amount) {
       _handleDeposit(amount:amount,material: material);
       
     },
   ),
-  title: 'DEPOSIT',
+  title: 'deposit'.tr,
 ),
 
                                 ],
@@ -720,7 +720,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                   // Same safety checks as above button
                                   if (material == null) {
                                     showCustomSnackBarHelper(
-                                        'Material information not available',
+                                        'material_information_not_available'.tr,
                                         isError: true);
                                     return;
                                   }
@@ -824,7 +824,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                         balance: materialBalance);
                                   // }
                                 },
-                                title: 'REQUEST FOR CREDIT',
+                                title: 'request_for_credit'.tr,
                                 iconData: Icons.arrow_forward_outlined,
                               ),
                               sizedBox10,
@@ -838,19 +838,19 @@ class _HomeCard1State extends State<HomeCard1> {
                                     InkWell(
                                       onTap: () => dialog.showSntDialog(
                                           school:
-                                              'School: ${studentController.studentList![widget.studentIndex].school}\nClass: ${studentController.studentList![widget.studentIndex].studentClass}',
+                                              '${'school'.tr}: ${studentController.studentList![widget.studentIndex].school}\n${'class'.tr}: ${studentController.studentList![widget.studentIndex].studentClass}',
                                           context: context,
                                           index: widget.studentIndex,
                                           title:
-                                              'Code: ${studentController.studentList![widget.studentIndex].code!}\nName: ${studentController.studentList![widget.studentIndex].name}'),
-                                      child: const Column(
+                                              '${'code'.tr}: ${studentController.studentList![widget.studentIndex].code!}\n${'name'.tr}: ${studentController.studentList![widget.studentIndex].name}'),
+                                      child:  Column(
                                         children: [
-                                          Icon(
+                                         const Icon(
                                             Icons.person,
                                             color: kgrey800Color,
                                           ),
                                           Text(
-                                            'Beneficiary Profile',
+                                            'beneficiary_profile'.tr,
                                             style: ktextGrey,
                                           )
                                         ],
@@ -861,14 +861,14 @@ class _HomeCard1State extends State<HomeCard1> {
                                           context: context,
                                           index: selectedIndex,
                                           indexM: materialIndex),
-                                      child: const Column(
+                                      child:  Column(
                                         children: [
-                                          Icon(
+                                         const Icon(
                                             Icons.info,
                                             color: kgrey800Color,
                                           ),
                                           Text(
-                                            'Product Details',
+                                            'profile_details'.tr,
                                             style: ktextGrey,
                                           )
                                         ],
@@ -876,14 +876,14 @@ class _HomeCard1State extends State<HomeCard1> {
                                     ),
                                     InkWell(
                                       onTap: () => Get.to(HistoryScreen()),
-                                      child: const Column(
+                                      child:  Column(
                                         children: [
-                                          Icon(
+                                       const   Icon(
                                             Icons.monetization_on,
                                             color: kgrey800Color,
                                           ),
                                           Text(
-                                            'Transactions',
+                                            '${'transaction'.tr}s',
                                             style: ktextGrey,
                                           )
                                         ],
@@ -1336,7 +1336,7 @@ double _parseMaterialPrice(EduboxMaterialModel material) {
             //     studentController.studentList![widget.studentIndex].code!,
             // studentName:
             //     studentController.studentList![widget.studentIndex].name!,
-            inputBalance: amount,
+            inputBalance:amount ,
             availableBalance: balance.toStringAsFixed(2),
             productId: widget.productId!,
             transactionType: TransactionType.sendMoney,
@@ -1374,12 +1374,12 @@ double _parseMaterialPrice(EduboxMaterialModel material) {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           title: Text(widget.productIndex == 6
-              ? "Partner Services"
+              ? '${"partner_service".tr}s'
               : widget.productIndex == 0
-                  ? "Edubox Birashoboka"
+                  ? "classkit".tr
                   : widget.productIndex == 2
-                      ? "Edubox Shoebox"
-                      : "Edubox Uniform"),
+                      ? "edubox_shoebox".tr
+                      : "uniform".tr),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -1388,16 +1388,16 @@ double _parseMaterialPrice(EduboxMaterialModel material) {
                       widget.productList[index].eduboxMaterials!.isNotEmpty
                   ? Text(
                       widget.productIndex == 6
-                          ? "Partner Services Details:\n${widget.productList[index].eduboxMaterials![indexM].description ?? 'No Info Available'}"
+                          ? "${'partner_service'.tr} ${'details'.tr}:\n${widget.productList[index].eduboxMaterials![indexM].description ?? 'no_info_available'.tr}"
                           : widget.productIndex == 0
-                              ? "Product Details:\n${widget.productList[index].eduboxMaterials![indexM].description ?? 'No Info Available'}"
+                              ? "${'product'.tr} ${'details'.tr}:\n${widget.productList[index].eduboxMaterials![indexM].description ?? 'no_info_available'.tr}"
                               : widget.productIndex == 2
-                                  ? "Edubox Shoebox Details:\n${widget.productList[index].eduboxMaterials![indexM].description ?? 'No Info Available'}"
-                                  : "Edubox Uniform Details:\n${widget.productList[index].eduboxMaterials![indexM].description ?? 'No Info Available'}",
+                                  ? "${"edubox_shoebox".tr} ${'details'.tr}:\n${widget.productList[index].eduboxMaterials![indexM].description ?? 'no_info_available'.tr}"
+                                  : "${"uniform".tr} ${'details'.tr}:\n${widget.productList[index].eduboxMaterials![indexM].description ?? 'no_info_available'.tr}",
                       textAlign: TextAlign.center,
                     )
-                  : const Text(
-                      'No Info Available',
+                  :  Text(
+                      'no_info_available'.tr,
                       textAlign: TextAlign.center,
                     ),
             ],
@@ -1407,9 +1407,9 @@ double _parseMaterialPrice(EduboxMaterialModel material) {
               onPressed: () {
                 Navigator.of(context).pop(); // Closes the dialog
               },
-              child: const Text(
-                "OK",
-                style: TextStyle(color: Colors.black),
+              child:  Text(
+                "ok".tr,
+                style:const TextStyle(color: Colors.black),
               ),
             ),
           ],

@@ -206,8 +206,8 @@ class ShareControllerSp extends GetxController implements GetxService {
       final imageFile = File('${directory.path}/share_${DateTime.now().millisecondsSinceEpoch}.png');
       await imageFile.writeAsBytes(image);
       await Share.shareXFiles([XFile(imageFile.path)],
-          subject: 'Transaction Statement',
-          text: 'Here is your transaction statement');
+          subject: 'transaction_statement'.tr,
+          text: 'here_is_your_transaction_statement'.tr);
     } catch (e) {
       debugPrint('Error sharing image: $e');
       rethrow;

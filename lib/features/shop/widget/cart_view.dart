@@ -9,6 +9,7 @@ import 'package:hosomobile/features/shop/widget/product.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/screens/shop_transaction_confirmation_screen.dart';
 import 'package:hosomobile/helper/transaction_type.dart';
+import 'package:hosomobile/util/app_constants.dart';
 
 // Cart View Widget
 class CartView extends StatefulWidget {
@@ -46,7 +47,7 @@ class _CartViewState extends State<CartView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cart'),
+        title:  Text('cart'.tr),
       ),
       body: Column(
         children: [
@@ -65,7 +66,7 @@ class _CartViewState extends State<CartView> {
                   ),
                   title: Text(product.name),
                   subtitle: Text(
-                      'RWF ${product.price.toStringAsFixed(2)} x $quantity'),
+                      '${AppConstants.currency} ${product.price.toStringAsFixed(2)} x $quantity'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -115,7 +116,7 @@ class _CartViewState extends State<CartView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Total: RWF ${totalAmount.toStringAsFixed(2)}',
+                  '${'total'.tr}: ${AppConstants.currency} ${totalAmount.toStringAsFixed(2)}',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -126,7 +127,7 @@ class _CartViewState extends State<CartView> {
                     // Handle checkout logic here
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: const Text('Proceeding to checkout...'),
+                        content:  Text('${'proceed_to_checkout'.tr}...'),
                         behavior: SnackBarBehavior
                             .floating, // Makes the SnackBar float
                         margin: const EdgeInsets.only(
@@ -170,7 +171,7 @@ class _CartViewState extends State<CartView> {
                           ),
                     );
                   },
-                  child: const Text('Checkout'),
+                  child:  Text('checkout'.tr),
                 ),
               ],
             ),

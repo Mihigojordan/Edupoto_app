@@ -167,18 +167,18 @@ class _TransactionConfirmationScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Invoice No:$randomNumber',
+                    '${'invoice_no'.tr}:$randomNumber',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   sizedBox15,
                   Column(children: [
                     ForStudentWidget(
                         studentInfo:
-                            'Code: ${widget.studentName}\nName: ${widget.studentCode}'),
+                            '${'code'.tr}: ${widget.studentName}\n${'name'.tr}: ${widget.studentCode}'),
                   ]),
                   sizedBox10,
                   Text(
-                      'Product:${widget.edubox_service} \n School:${widget.schoolName}. Class:${widget.className}'),
+                      '${'product'.tr}:${widget.edubox_service} \n ${'school'.tr}:${widget.schoolName}. ${'class'.tr}:${widget.className}'),
                   sizedBox05h,
                   Container(
                     // height: MediaQuery.of(context).size.height / 5,
@@ -235,7 +235,7 @@ class _TransactionConfirmationScreenState
                   const SizedBox(height: 16),
                   // Display Total Price
                   Text(
-                    'Total Price: ${totalPrice.toStringAsFixed(2)} ${AppConstants.currency}',
+                    '${'total_price'.tr}: ${totalPrice.toStringAsFixed(2)} ${AppConstants.currency}',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -250,15 +250,15 @@ class _TransactionConfirmationScreenState
                   ),
                   sizedBox10,
                   Text(
-                      'Amount to be Paid: $totalPrice ${AppConstants.currency}'),
+                      '${'amount_to_be_paid'.tr}: $totalPrice ${AppConstants.currency}'),
                   // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
                   Text(
-                      'VAT : $vat ${AppConstants.currency}'),
+                      '${'vat'.tr} : $vat ${AppConstants.currency}'),
                   Text(
-                      'Convenience Fee : $convenienceFee ${AppConstants.currency}'),
+                      '${'convenience_fee'.tr} : $convenienceFee ${AppConstants.currency}'),
                   const Divider(),
                   Text(
-                    'Total Amount paid now: $totalAmount ${AppConstants.currency}',
+                    '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -519,10 +519,10 @@ class _TransactionConfirmationScreenState
                                                       nowPaid: calculatedTotal
                                                           .toStringAsFixed(2),
                                                       vat:
-                                                          'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
+                                                          '${'vat'.tr}: $vat ${AppConstants.currency}',
                                                       serviceCharge:convenienceFee.toStringAsFixed(2),
                                                       totalNowPaid:
-                                                          'Total Amount paid now: $totalAmount ${AppConstants.currency}',
+                                                          '${'total_amount_paid_now'}: $totalAmount ${AppConstants.currency}',
                                                       serviceValue:
                                                           widget.productName,
                                                       serviceIndex:

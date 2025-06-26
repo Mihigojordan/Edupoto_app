@@ -1,11 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hosomobile/common/widgets/custom_back_button_widget.dart';
 import 'package:hosomobile/common/widgets/custom_image_widget.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/image.dart';
-import 'package:hosomobile/features/home/screens/upgrades/home/components/school_directory_dropdown.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/widgets/all_school_widget.dart';
+import 'package:hosomobile/features/school_directory/widgets/school_directory_dropdown.dart';
 import 'package:hosomobile/util/images.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:http/http.dart' as http;
@@ -109,7 +110,7 @@ class _AddAccountState extends State<AddAccount> {
                                             padding: const EdgeInsets.symmetric(horizontal:18.0,vertical: 30),
                                             child: RichText(
                                                   text: TextSpan(
-                                                    text: 'School Directory',
+                                                    text: 'School_directory'.tr,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .titleLarge!

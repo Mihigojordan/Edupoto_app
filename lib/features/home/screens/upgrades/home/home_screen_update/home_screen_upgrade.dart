@@ -107,7 +107,7 @@ class _MzaziScreenState extends State<MzaziScreen> {
                                     Column(children: [
                                       userData?.name != null
                                           ? Text(
-                                              'Welcome, ${userData?.name}' ??
+                                              '${'welcome'.tr}, ${userData?.name}' ??
                                                   '',
                                               textAlign: TextAlign.start,
                                               maxLines: 1,
@@ -118,7 +118,7 @@ class _MzaziScreenState extends State<MzaziScreen> {
                                                   fontWeight: FontWeight.w200),
                                             )
                                           : Text(
-                                              'Welcome, Parent'.tr,
+                                              '${'welcome'.tr}, ${'parent'.tr}',
                                               overflow: TextOverflow.clip,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
@@ -247,7 +247,7 @@ class _MzaziScreenState extends State<MzaziScreen> {
                                         )),
                                     height: screenHeight * 0.05,
                                     width: screenWidth * 0.30,
-                                    icon: 'Schools\nDirectory',
+                                    icon: '${'schools'.tr}\n${'directory'.tr}',
                                     title: 'assets/image/Schools Directory.png',
                                     clas: ''),
                                 BorderButton1(
@@ -258,7 +258,7 @@ class _MzaziScreenState extends State<MzaziScreen> {
                                     onPress: () => Get.to(const NoConnection()),
                                     height: screenHeight * 0.05,
                                     width: screenWidth * 0.30,
-                                    icon: 'Recharge\nSchool Card',
+                                    icon: '${'recharge'.tr}\n${'school'.tr} ${'card'.tr}',
                                     title: 'assets/image/cashout3.png',
                                     clas: ''),
                               ],

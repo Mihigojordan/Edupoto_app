@@ -30,10 +30,10 @@ class SingleSchoolListWidget extends StatelessWidget {
       //     ? 'Tuition Fee'
       //     :
            schoolLists!.transactionType == AppConstants.classRequirement
-              ? 'Class Requirements': schoolLists!.transactionType == AppConstants.dormitoryEssential
-          ? 'Dormitory Essentials'
+              ? 'class_requirements'.tr: schoolLists!.transactionType == AppConstants.dormitoryEssential
+          ? 'dormitory_essentials'.tr
           : schoolLists!.transactionType == AppConstants.textBook
-              ? 'Text Books'
+              ? 'text_books'.tr
                           : '';
           //                 color = schoolLists!.transactionType == AppConstants.tuitionFee
           // ? Colors.orangeAccent
