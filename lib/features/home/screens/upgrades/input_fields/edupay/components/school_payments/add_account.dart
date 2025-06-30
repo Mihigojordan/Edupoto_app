@@ -110,7 +110,7 @@ class _AddAccountState extends State<AddAccount> {
                                             padding: const EdgeInsets.symmetric(horizontal:18.0,vertical: 30),
                                             child: RichText(
                                                   text: TextSpan(
-                                                    text: 'School_directory'.tr,
+                                                    text: 'school_directory'.tr,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .titleLarge!

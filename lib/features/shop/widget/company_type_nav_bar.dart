@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hosomobile/features/shop/widget/company.dart';
-import 'package:hosomobile/features/shop/widget/company_type.dart';
+import 'package:hosomobile/features/shop/domain/models/company.dart';
+import 'package:hosomobile/features/shop/domain/models/company_type.dart';
 
 class CompanyTypeNavigationBar extends StatelessWidget {
-  final List<CompanyType> company_types;
+  final List<CompanyType> companyTypes;
   final int selectedIndex;
   final Function(int) onTap;
 
   const CompanyTypeNavigationBar({
     super.key,
-    required this.company_types,
+    required this.companyTypes,
     required this.selectedIndex,
     required this.onTap,
   });
@@ -31,9 +31,9 @@ class CompanyTypeNavigationBar extends StatelessWidget {
       ),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: company_types.length,
+        itemCount: companyTypes.length,
         itemBuilder: (context, index) {
-          final company = company_types[index];
+          final company = companyTypes[index];
           return GestureDetector(
             onTap: () => onTap(index),
             child: Container(

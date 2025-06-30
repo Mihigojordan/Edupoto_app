@@ -50,7 +50,7 @@ class CustomHelpWidget extends StatelessWidget {
           children: [
             ListTile(
               leading: const Icon(Icons.email),
-              title: const Text('Email Support'),
+              title:  Text('email_support'.tr),
               onTap: () {
                 launchUrl(Uri.parse('mailto:support@example.com'));
                 Get.back();
@@ -58,7 +58,7 @@ class CustomHelpWidget extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.phone),
-              title: const Text('Call Support'),
+              title:  Text('call_support'.tr),
               onTap: () {
                 launchUrl(Uri.parse('tel:+250793903844'));
                 Get.back();
@@ -66,19 +66,19 @@ class CustomHelpWidget extends StatelessWidget {
             ),
        ListTile(
   leading: const Icon(Icons.chat),
-  title: const Text('Live Chat'),
+  title:  Text('live_chart'.tr),
   onTap: () async {
-const message = 'Hello, I need help with Schoolist';
+var message = 'hello_ineed_help_with_babyeyi'.tr;
 final encodedMessage = Uri.encodeComponent(message);
 final url = Uri.parse('https://wa.me/250793903844?text=$encodedMessage');
     try {
       if (await canLaunchUrl(url)) {
         await launchUrl(url);
       } else {
-        Get.snackbar('Error', 'WhatsApp not installed');
+        Get.snackbar('Error', 'whatsapp_not_installed'.tr);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Could not launch WhatsApp');
+      Get.snackbar('Error', 'could_not_lounch_whatsapp'.tr);
     }
     Get.back();
   },

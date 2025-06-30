@@ -22,7 +22,7 @@ import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/co
 import 'package:hosomobile/features/map/screens/left_aligned_row.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/school/screens/school_list_screen.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/screens/school_transaction_confirmation_screen.dart';
 import 'package:hosomobile/features/transaction_money/screens/transaction_confirmation_screen.dart';
@@ -406,15 +406,15 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
                       ],
                     ),
               _buildListTile(
-                  icon: Icons.star, title: 'Choose saved place', onTap: () {}),
+                  icon: Icons.star, title: 'choose_saved_place'.tr, onTap: () {}),
               sizedBox10,
               Text(
-                'Please Provide the phone number that is currently available at the destinaltion location',
+                'please_provide_phone_number_available_at_your_current_location'.tr,
                 style: Theme.of(context).textTheme.titleSmall!.copyWith(
                     color: kErrorBorderColor, fontWeight: FontWeight.normal),
               ),
               sizedBox10,
-              buildFormField('Home Phone Number', phoneNumberEditingController,
+              buildFormField('receiver_phone_number'.tr, phoneNumberEditingController,
                   TextInputType.name, '07XXXXXXXX'),
               sizedBox10,
               CustomDropdown(
@@ -450,9 +450,9 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
                           ),
                         ],
                       ),
-                      child: const Text(
-                        'Next',
-                        style: TextStyle(
+                      child:  Text(
+                        'next'.tr,
+                        style:const TextStyle(
                           fontSize: 16.0,
                           color: Colors.white,
                         ),
@@ -575,9 +575,9 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
     final currentLocationMarker = Marker(
       markerId: const MarkerId('current_location'),
       position: LatLng(position.latitude, position.longitude),
-      infoWindow: const InfoWindow(
-        title: 'Your Location',
-        snippet: 'You are here!',
+      infoWindow:  InfoWindow(
+        title: 'your_location'.tr,
+        snippet: '${'you_are_here'.tr}!',
       ),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
     );

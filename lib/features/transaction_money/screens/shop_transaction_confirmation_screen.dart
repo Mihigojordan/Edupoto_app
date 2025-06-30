@@ -17,7 +17,7 @@ import 'package:hosomobile/features/home/screens/upgrades/home/constants/constan
 import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
 import 'package:hosomobile/features/map/screens/map_screen.dart';
 import 'package:hosomobile/features/setting/controllers/profile_screen_controller.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/transaction_money/controllers/bootom_slider_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/transaction_controller.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
@@ -100,34 +100,34 @@ class _TransactionConfirmationScreenState
 
   homeDeliveryAction() {
     // Check if no students are selected
-    if (selectedStudents.isEmpty) {
-      // Show an alert or snackbar to inform the user
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('No Student Selected!'),
-            content: const Text(
-                'But, you can proceed to place your own order.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+    // if (selectedStudents.isEmpty) {
+    //   // Show an alert or snackbar to inform the user
+    //   showDialog(
+    //     context: context,
+    //     builder: (context) {
+    //       return AlertDialog(
+    //         title: const Text('No Student Selected!'),
+    //         content: const Text(
+    //             'But, you can proceed to place your own order.'),
+    //         actions: [
+    //           TextButton(
+    //             onPressed: () {
+    //               Navigator.pop(context); // Close the dialog
+    //             },
+    //             child: const Text('OK'),
+    //           ),
+    //         ],
+    //       );
+    //     },
+    //   );
 
- setState(() {
+
+
+    //   return; // Exit the function early
+    // }
+    setState(() {
       isHomeDelivery = !isHomeDelivery;
     });
-
-      return; // Exit the function early
-    }
-   
   }
 
   double deliveryCostWithMAterialCost() {
@@ -391,7 +391,7 @@ class _TransactionConfirmationScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'delivery_options',
+                        'delivery_options'.tr,
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
                             color: Colors.black,
                             fontSize: 16,

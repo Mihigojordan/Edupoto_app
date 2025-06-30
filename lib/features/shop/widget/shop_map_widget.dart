@@ -7,7 +7,7 @@ import 'package:hosomobile/features/home/screens/upgrades/home/components/custom
 import 'package:hosomobile/features/home/screens/upgrades/home/components/drop_down.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/image.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/transaction_money/screens/shop_transaction_confirmation_screen.dart';
 
 class ShopMapWidget extends StatefulWidget {

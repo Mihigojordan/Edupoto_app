@@ -200,7 +200,7 @@ class _HomeCard1State extends State<HomeCard1> {
             ? headteacherMessage(context)
             : widget.title == 'school_bursor'.tr
                 ? schoolBurser(context)
-                : widget.title == 'school_requirements'.tr
+                : widget.title == 'school_requiremets'.tr
                     ? schoolBurser(context)
                     : widget.title == 'school_prospectus'.tr
                         ? schoolProspectus(context)

@@ -3,7 +3,7 @@ import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/common/models/contact_model_mtn.dart';
 import 'package:hosomobile/features/auth/domain/models/user_short_data_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/shop/widget/shop_map_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 

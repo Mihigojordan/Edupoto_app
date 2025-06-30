@@ -452,8 +452,8 @@ void initState() {
                                 ),
                               ),
                               sizedBox15,
-                              Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                   Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     BorderButton1(
                                         borderColor: Colors.black,
@@ -461,7 +461,6 @@ void initState() {
                                         textColor: Colors.black,
                                         horizontal: 5,
                                         onPress: () {
-                                            if (_validateAll()) {
                                           //****************************Check if you want to edit student registration or you do not have student */
                                           if (widget.isAddAccount == true ||
                                               widget.studentController
@@ -560,10 +559,11 @@ void initState() {
                                           } else {
                                             setAddAccount();
                                           }
-                                            }
                                         },
-                                        height: 60,
-                                        width: screenWidth >= 520 ? 150 : 150,
+                                        height: 50,
+                                        width: screenWidth >= 520
+                                            ? 320
+                                            : screenWidth / 1.3,
                                         icon: (widget.isAddAccount == true ||
                                                 widget.studentController
                                                     .studentList!.isEmpty)

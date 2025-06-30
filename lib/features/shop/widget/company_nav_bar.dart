@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hosomobile/features/shop/widget/company.dart';
+import 'package:hosomobile/features/shop/domain/models/company.dart';
 
 class CompanyNavigationBar extends StatelessWidget {
   final List<Company> companies;

@@ -142,7 +142,8 @@ class AuthController extends GetxController implements GetxService {
          print('ready for configuration++++++++++++|${response.body}');
         if(!Get.find<SplashController>().configModel!.phoneVerification!) {
            print('verification++++++++++++|${response.body}');
-          requestCameraPermission(fromEditProfile: false);
+          // requestCameraPermission(fromEditProfile: false);
+           Get.toNamed(RouteHelper.getOtherInformationRoute());
         }else if(response.body['otp'] == "active"){
          Get.find<VerificationController>().startTimer();
          Get.toNamed(RouteHelper.getVerifyRoute());
@@ -209,7 +210,8 @@ class AuthController extends GetxController implements GetxService {
       responseModel = ResponseModel(true, response.body["message"]);
       Get.find<VerificationController>().cancelTimer();
       showCustomSnackBarHelper(responseModel.message, isError: false);
-      requestCameraPermission(fromEditProfile: false);
+      // requestCameraPermission(fromEditProfile: false);
+       Get.toNamed(RouteHelper.getOtherInformationRoute());
     }
     else{
       responseModel = ResponseModel(false, response.body['errors'][0]['message']);
@@ -255,10 +257,12 @@ class AuthController extends GetxController implements GetxService {
           name: '${signUpBody.fName} ${signUpBody.lName}'
         ));
 
-        Get.offAllNamed(RouteHelper.getWelcomeRoute(
-          countryCode: signUpBody.dialCountryCode,phoneNumber: signUpBody.phone,
-          password: signUpBody.password,
-        ));
+        // Get.offAllNamed(RouteHelper.getWelcomeRoute(
+        //   countryCode: signUpBody.dialCountryCode,phoneNumber: signUpBody.phone,
+        //   password: signUpBody.password,
+        // ));
+    // ************************ remove the delay after registration******************
+            Get.offAllNamed(RouteHelper.getRestart());
        //Set Parent Id for the child
         authRepo.setUserId(response.body['id'].toString());
 

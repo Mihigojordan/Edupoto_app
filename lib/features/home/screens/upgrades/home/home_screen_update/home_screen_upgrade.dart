@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/common/widgets/custom_app_bar_widget.dart';
 import 'package:hosomobile/common/widgets/custom_back_button_widget.dart';
+import 'package:hosomobile/common/widgets/rounded_button_widget.dart';
 import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
 import 'package:hosomobile/features/auth/domain/models/user_short_data_model.dart';
 import 'package:hosomobile/features/home/controllers/home_controller.dart';
@@ -14,9 +15,11 @@ import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/co
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/add_account.dart';
 import 'package:hosomobile/features/home/screens/upgrades/no_connection/no_connection.dart';
 import 'package:hosomobile/features/home/widgets/floating_action_button_widget.dart';
-import 'package:hosomobile/features/home/widgets/student_widget.dart';
+import 'package:hosomobile/features/student/widgets/student_widget.dart';
+import 'package:hosomobile/features/language/controllers/localization_controller.dart';
 import 'package:hosomobile/features/setting/controllers/profile_screen_controller.dart';
 import 'package:hosomobile/helper/price_converter_helper.dart';
+import 'package:hosomobile/helper/route_helper.dart';
 import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
@@ -79,10 +82,10 @@ class _MzaziScreenState extends State<MzaziScreen> {
 
     return UpgradeAlert(
         child: Scaffold(
-              backgroundColor: const Color(0xFF777777),
-              //  drawer: NavDrawer(),
-        
-              body: Stack(
+      backgroundColor: const Color(0xFF777777),
+      //  drawer: NavDrawer(),
+
+      body: Stack(
         children: [
           Column(
             children: [
@@ -139,9 +142,12 @@ class _MzaziScreenState extends State<MzaziScreen> {
                                         );
                                       }),
                                     ]),
+                        
+                               
                                   ],
                                 )
                               : const SizedBox(),
+                         
                         ],
                       ),
                     ),
@@ -168,7 +174,7 @@ class _MzaziScreenState extends State<MzaziScreen> {
                       //         mainAxisAlignment: MainAxisAlignment.start,
                       //         children: [
                       //           sizedBox,
-              
+
                       //           // Container(
                       //           //   height: 40,
                       //           //   width: 195,
@@ -184,7 +190,7 @@ class _MzaziScreenState extends State<MzaziScreen> {
                       // SizedBox(
                       //   height: 5,
                       // ),
-              
+
                       // ImageSlider(
                       //   list: [
                       //     'assets/icons1/1.png',
@@ -247,7 +253,8 @@ class _MzaziScreenState extends State<MzaziScreen> {
                                         )),
                                     height: screenHeight * 0.05,
                                     width: screenWidth * 0.30,
-                                    icon: '${'schools'.tr}\n${'directory'.tr}',
+                                    icon:
+                                        '${'school_directory_button_school'.tr}\n${'school_directory_button_directory'.tr}',
                                     title: 'assets/image/Schools Directory.png',
                                     clas: ''),
                                 BorderButton1(
@@ -258,7 +265,8 @@ class _MzaziScreenState extends State<MzaziScreen> {
                                     onPress: () => Get.to(const NoConnection()),
                                     height: screenHeight * 0.05,
                                     width: screenWidth * 0.30,
-                                    icon: '${'recharge'.tr}\n${'school'.tr} ${'card'.tr}',
+                                    icon:
+                                        '${'recharge_school_card_button_recharge'.tr}\n${'recharge_school_card_button_school_card'.tr}',
                                     title: 'assets/image/cashout3.png',
                                     clas: ''),
                               ],
@@ -284,8 +292,8 @@ class _MzaziScreenState extends State<MzaziScreen> {
             child: const StudentWidget(),
           ),
         ],
-              ),
-              floatingActionButton: widget.isNavigation == 1
+      ),
+      floatingActionButton: widget.isNavigation == 1
           ? null
           : !kIsWeb
               ? FloatingActionButtonWidget(
@@ -369,15 +377,15 @@ class _MzaziScreenState extends State<MzaziScreen> {
                     ),
                   ),
                 ),
-              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-              //       actions: <Widget>[
-              //   IconButton(
-              //     icon: const Icon(Icons.add_circle),
-              //     tooltip: 'Add new entry',
-              //     onPressed: () { /* ... */ },
-              //   ),
-              // ],
-            ));
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      //       actions: <Widget>[
+      //   IconButton(
+      //     icon: const Icon(Icons.add_circle),
+      //     tooltip: 'Add new entry',
+      //     onPressed: () { /* ... */ },
+      //   ),
+      // ],
+    ));
   }
 
   _onWillPop() async {

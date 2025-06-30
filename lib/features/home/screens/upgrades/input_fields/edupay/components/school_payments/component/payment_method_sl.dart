@@ -1,11 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/custom_buttons.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/drop_down.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/image.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
+import 'package:hosomobile/util/app_constants.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:upgrader/upgrader.dart';
@@ -245,10 +247,9 @@ class _HomeCard1State extends State<HomeCard1> {
   bool? isTeacherLoggedIn = false;
   bool? isParentLoggedIn = false;
   bool? isUserLoggedIn = false;
-  String studentCardValue = 'Choose from a list of partiner school';
-  String classValue = 'Choose your Bank';
+  String classValue = 'choose_your_bank'.tr;
   bool isSelected = false;
-  String selectedFrequency = 'Daily';
+  String selectedFrequency = 'daily'.tr;
   DateTime startDate = DateTime.now();
   List<DateTime> paymentDates = [];
 
@@ -275,9 +276,9 @@ class _HomeCard1State extends State<HomeCard1> {
   }
 
   final Map<String, Duration> frequencies = {
-    'Daily': const Duration(days: 1),
-    'Weekly': const Duration(days: 7),
-    'Monthly': const Duration(days: 30),
+    'daily'.tr: const Duration(days: 1),
+    'weekly'.tr: const Duration(days: 7),
+    'monthly'.tr: const Duration(days: 30),
   };
 
   void generatePaymentDates() {
@@ -327,11 +328,11 @@ class _HomeCard1State extends State<HomeCard1> {
                     child: RichText(
                       text: TextSpan(
                         text:
-                            'Dear ${widget.parent} You are requesting credit facility',
+                            '${widget.parent} ${'you_are_requesting_credit_facility_of'.tr}',
                         style: Theme.of(context).textTheme.titleMedium,
                         children: <TextSpan>[
                                 TextSpan(
-                            text: ' of ${widget.amount} FRW ',
+                            text: ' ${'of'.tr} ${widget.amount} ${AppConstants.currency} ',
                             style: Theme.of(context).textTheme.titleMedium!.copyWith(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold, // Regular weight for the rest of the text
@@ -339,7 +340,7 @@ class _HomeCard1State extends State<HomeCard1> {
                           ),
                      
                           TextSpan(
-                              text: '  for  ${widget.product},',
+                              text: '  ${'for'.tr}  ${widget.product},',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!
@@ -348,7 +349,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                     fontWeight: FontWeight.normal,
                                   )),
                                   TextSpan(
-                              text: '  Contain  ${widget.material.length} Materials,',
+                              text: '  ${'contains'.tr}  ${widget.material.length} ${'product'.tr},',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleSmall!
@@ -359,7 +360,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                     
                           TextSpan(
                             text:
-                                ' for student: Code:${widget.studentCode} Name:${widget.studentName}, (Class:${widget.className} School:${widget.schoolName})',
+                                ' ${'for_student'.tr}: ${'code'.tr}:${widget.studentCode} ${'name'.tr}:${widget.studentName}, (${'class'.tr}:${widget.className} ${'school'.tr}:${widget.schoolName})',
                             style:
                                 Theme.of(context).textTheme.titleMedium!.copyWith(
                                       color: Colors.black,
@@ -404,18 +405,18 @@ class _HomeCard1State extends State<HomeCard1> {
                   isExpanded: true),
               sizedBox10,
               buildFormField(
-                'Enter Account Number',
+                'enter_account_number'.tr,
                 cardEditingController,
                 TextInputType.text,
               ),
               sizedBox10,
               buildFormField(
-                'Enter National ID Number',
+                'enter_national_id_number'.tr,
                 cardEditingController,
                 TextInputType.text,
               ),
               sizedBox10,
-              Text('Select Installment Plan',
+              Text('select_installment_plan'.tr,
                   style: Theme.of(context).textTheme.titleLarge),
               sizedBox10,
               Row(
@@ -435,7 +436,7 @@ class _HomeCard1State extends State<HomeCard1> {
                         child: Text(value),
                       );
                     }).toList(),
-                    hint: const Text('select'),
+                    hint:  Text('select'.tr),
                   ),
                   const SizedBox(
                     width: 5,
@@ -447,8 +448,8 @@ class _HomeCard1State extends State<HomeCard1> {
                           generatePaymentDates();
                         });
                       },
-                      child: const Text(
-                        'Generate Payment Schedule',
+                      child: Text(
+                        'generate_payment_schedule'.tr,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -460,7 +461,7 @@ class _HomeCard1State extends State<HomeCard1> {
                 color1: kamber300Color,
                 color2: kyellowColor,
                 onPress: () => showSuccessDialog(context),
-                title: 'REQUEST',
+                title: 'request'.tr,
                 iconData: Icons.arrow_forward_outlined,
               ),
               if (widget.amount.isNotEmpty)
@@ -473,10 +474,10 @@ class _HomeCard1State extends State<HomeCard1> {
                           calculateInstallmentAmount(double.parse(widget.amount));
                       return ListTile(
                         title: Text(
-                          'Installment ${index + 1}: ${installmentAmount.toStringAsFixed(2)} RWF',
+                          '${'installment'.tr} ${index + 1}: ${installmentAmount.toStringAsFixed(2)} RWF',
                         ),
                         subtitle: Text(
-                          'Due Date: ${paymentDates[index].toLocal()}',
+                          '${'due_date'.tr}: ${paymentDates[index].toLocal()}',
                         ),
                       );
                     },
@@ -534,18 +535,18 @@ class _HomeCard1State extends State<HomeCard1> {
         return AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          title: const Text("Request Successful!"),
-          content: const Column(
+          title:  Text("${'request_successfully'.tr}!"),
+          content:  Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Icon(
+            const  Icon(
                 Icons.check_circle,
                 color: Colors.green,
                 size: 60,
               ),
-              SizedBox(height: 16),
+            const  SizedBox(height: 16),
               Text(
-                "Your request was processed successfully.",
+                "your_request_proceeded_successfully".tr,
                 textAlign: TextAlign.center,
               ),
             ],
@@ -555,9 +556,9 @@ class _HomeCard1State extends State<HomeCard1> {
               onPressed: () {
                 Navigator.of(context).pop(); // Closes the dialog
               },
-              child: const Text(
-                "OK",
-                style: TextStyle(color: Colors.black),
+              child:  Text(
+                "ok".tr,
+                style:const TextStyle(color: Colors.black),
               ),
             ),
           ],

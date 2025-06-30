@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/common/models/contact_model_mtn.dart';
+import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
 import 'package:hosomobile/features/auth/domain/models/user_short_data_model.dart';
 import 'package:hosomobile/features/home/controllers/all_school_controller.dart';
 import 'package:hosomobile/features/home/controllers/edubox_material_controller.dart';
@@ -21,6 +22,7 @@ import 'package:hosomobile/features/home/widgets/web_site_shimmer_widget.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/screens/transaction_confirmation_screen.dart';
 import 'package:hosomobile/helper/transaction_type.dart';
+import 'package:hosomobile/util/app_constants.dart';
 
 class DependentSchoolDropdowns extends StatefulWidget {
   final StudentController studentController;
@@ -30,6 +32,11 @@ class DependentSchoolDropdowns extends StatefulWidget {
   final EduboxMaterialController eduboxController;
   final String parentId;
   bool isAddAccount;
+  bool isNotRegStudent;
+  final int?   eduboxId;
+  final int? index;
+  final String? titleImage;
+
   DependentSchoolDropdowns(
       {required this.parentId,
       required this.eduboxController,
@@ -38,6 +45,10 @@ class DependentSchoolDropdowns extends StatefulWidget {
       required this.studentController,
       required this.isAddAccount,
       required this.studentRegistrationController,
+      required this.isNotRegStudent,
+      this.eduboxId,
+      this.index,
+      this.titleImage,
       super.key});
 
   @override
@@ -119,7 +130,7 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                           child: Column(
                             children: [
                               SizedBox(
-                                height: screenHeight / 1.8,
+                                height:widget.isNotRegStudent?screenHeight / 2: screenHeight / 1.8,
                                 child: SingleChildScrollView(
                                   child: Column(
                                     children: [
@@ -183,19 +194,22 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 8.0),
-                                            child: Text(
-                                              'select_district_school_and_class'
-                                                  .tr,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleSmall!
-                                                  .copyWith(
-                                                      color: Colors.black,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
+                                            child: SizedBox(
+                                              width: screenWidth/1.7,
+                                              child: Text(
+                                                'select_district_school_and_class'
+                                                    .tr,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleSmall!
+                                                    .copyWith(
+                                                        color: Colors.black,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                
+                                                overflow: TextOverflow.clip,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -458,7 +472,7 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                           // ),
 
                                           sizedBox,
-                                          Padding(
+                                       widget.isNotRegStudent==true?const SizedBox.shrink():   Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 8.0),
                                             child: Text(
@@ -485,82 +499,131 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
+                                    
+                                       widget.isNotRegStudent==true?          DefaultButtonWidth(
+                                      width:123,
+                                      color1: kamber300Color,
+                                      color2: kyellowColor,
+                                      onPress: () {
+                                        //****************************Check if you want to edit student registration or you do not have student */
+                                        if (widget.isAddAccount == true ||
+                                            widget.studentController
+                                                .studentList!.isEmpty) {
+                                          //************************** Check if the student has been selected */
+                                          if (selectedStudent == null) {
+                                        
+                                              if (widget.index == 0) {
+                                                Get.to(
+                                                  SchoolListScreen(
+                                                    studentCode:
+                                                        studentCodeEditingController
+                                                            .text,
+                                                    shipper: 'shipper',
+                                                    homePhone: 'homePhone',
+                                                    destination: 'destination',
+                                                    studentName:
+                                                        studentNameEditingController
+                                                            .text,
+                                                    className:
+                                                        selectedSubCategory!
+                                                            .className!,
+                                                    schoolName:
+                                                        selectedCategory!
+                                                            .schoolName!,
+                                                    schoolId:
+                                                        selectedCategory!.id!,
+                                                    studentId: int.parse(
+                                                        studentCodeEditingController
+                                                            .text),
+                                                    classId:
+                                                        selectedSubCategory!
+                                                            .id!,
+                                                  ),
+                                                );
+                                              } else {
+                                                // Safe user data access
+                                                final userData =
+                                                    Get.find<AuthController>()
+                                                        .getUserData();
+                                                Get.to(
+                                                  TerekaAsome(
+                                                      productId: widget
+                                                          .eduboxId,
+                                                      studentId: int.parse(
+                                                          studentCodeEditingController
+                                                              .text),
+                                                      schoolId:
+                                                          selectedCategory!.id!,
+                                                      classId:
+                                                          selectedSubCategory!
+                                                              .id,
+                                                      contactModelMtn:
+                                                          ContactModelMtn(
+                                                        phoneNumber:
+                                                            '${userData?.countryCode}${userData?.phone}' ??
+                                                                '',
+                                                        name:
+                                                            '${userData?.name}',
+                                                      ),
+                                                      transactionType:
+                                                          TransactionType
+                                                              .sendMoney,
+                                                      contactModel:
+                                                          ContactModel(
+                                                        phoneNumber:
+                                                            '${userData?.countryCode}${userData?.phone}' ??
+                                                                '',
+                                                        name:
+                                                            '${userData?.name}',
+                                                        avatarImage:
+                                                            '${Get.find<SplashController>().configModel!.baseUrls!.customerImageUrl}/${'image' ?? ''}',
+                                                      ),
+                                                      studentIndex: 0,
+                                                      productValue:
+                                                          productValueList[
+                                                                  widget.index!]
+                                                              [
+                                                              'action'], // Dynamic value
+                                                      productIndex:
+                                                          widget.index,
+                                                      iconImages:
+                                                          "${AppConstants.baseUrl}/storage/app/public/edupoto_product/${widget.titleImage}", // Adjust icon logic
+                                                      edubox_service:
+                                                          productValueList[
+                                                                  widget.index!]
+                                                              ['action'],
+                                                      parent: userData?.name),
+                                                );
+                                              }
+                                          
+                                          }
+                                        } else {
+                                          setAddAccount();
+                                        }
+                                      },
+                                      title: 'next'.tr,
+                                     
+                                    ):
                                     BorderButton1(
                                         borderColor: Colors.black,
                                         vertical: 5,
                                         textColor: Colors.black,
                                         horizontal: 5,
                                         onPress: () {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            if (_validateAll()) {
-                                              //****************************Check if you want to edit student registration or you do not have student */
-                                              if (widget.isAddAccount == true ||
-                                                  widget.studentController
-                                                      .studentList!.isEmpty) {
-                                                //************************** Check if the student has been selected */
-                                                if (selectedStudent == null) {
-                                                  widget
-                                                      .studentRegistrationController
-                                                      .addStudent(
-                                                          name:
-                                                              studentNameEditingController
-                                                                  .text,
-                                                          code:
-                                                              studentCodeEditingController
-                                                                  .text,
-                                                          schoolCode:
-                                                              selectedCategory!
-                                                                  .id
-                                                                  .toString(),
-                                                          parentId:
-                                                              widget.parentId,
-                                                          classId:
-                                                              selectedSubCategory!
-                                                                  .id!)
-                                                      .then((onValue) {
-                                                    setState(() {
-                                                      widget.studentController
-                                                          .getStudentList(true,
-                                                              id: widget
-                                                                  .parentId);
-                                                    });
-                                                  });
-                                                  setAddAccount();
-                                                  //************************************************SHOW SUCCESSFULLY DIALOG FOR ADDED STUDENT IF THERE IS SELECTED STUDENT*/
-                                                  showInfoDialog(context,
-                                                      student_name:
-                                                          studentNameEditingController
-                                                              .text,
-                                                      student_code:
-                                                          studentCodeEditingController
-                                                              .text,
-                                                      studentRegController: widget
-                                                          .studentRegistrationController,
-                                                      title: 'student_info'.tr,
-                                                      description:
-                                                          '${'student_added_successfully'.tr}\n${'you_can_continue_by_adding_uniform_details'.tr}',
-                                                      studentController: widget
-                                                          .studentController,
-                                                      studentId: widget
-                                                          .studentController
-                                                          .studentList![widget
-                                                              .selectedIndex]
-                                                          .id!,
-                                                      selectedIndex:
-                                                          widget.selectedIndex,
-                                                      parentId:
-                                                          widget.parentId);
-                                                }
+                                          //****************************Check if you want to edit student registration or you do not have student */
+                                          if (widget.isAddAccount == true ||
+                                              widget.studentController
+                                                  .studentList!.isEmpty) {
+                                            //************************** Check if the student has been selected */
+                                            if (selectedStudent == null) {
+                                          
                                                 widget
                                                     .studentRegistrationController
                                                     .addStudent(
-                                                        name: selectedStudent!
-                                                                .name ??
+                                                        name:
                                                             studentNameEditingController
                                                                 .text,
-                                                        code: selectedStudent!
-                                                                .code ??
+                                                        code:
                                                             studentCodeEditingController
                                                                 .text,
                                                         schoolCode:
@@ -578,15 +641,15 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                             id: widget
                                                                 .parentId);
                                                   });
+                                                  setAddAccount();
                                                 });
-
-                                                setAddAccount();
-                                                //************************************************SHOW SUCCESSFULLY DIALOG FOR ADDED STUDENT IF THERE IS SELECTED STUDENT*/
                                                 showInfoDialog(context,
                                                     student_name:
-                                                        selectedStudent!.name!,
+                                                        studentNameEditingController
+                                                            .text,
                                                     student_code:
-                                                        selectedStudent!.code!,
+                                                        studentCodeEditingController
+                                                            .text,
                                                     studentRegController: widget
                                                         .studentRegistrationController,
                                                     title: 'student_info'.tr,
@@ -594,22 +657,68 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                         '${'student_added_successfully'.tr}\n${'you_can_continue_by_adding_uniform_details'.tr}',
                                                     studentController: widget
                                                         .studentController,
-                                                    studentId:
-                                                        selectedStudent!.id!,
+                                                    studentId: widget
+                                                        .studentController
+                                                        .studentList![widget
+                                                            .selectedIndex]
+                                                        .id!,
                                                     selectedIndex:
                                                         widget.selectedIndex,
                                                     parentId: widget.parentId);
-                                              } else {
-                                                setAddAccount();
                                               }
-                                            }
-                                            ;
+                                              widget
+                                                  .studentRegistrationController
+                                                  .addStudent(
+                                                      name: selectedStudent!
+                                                              .name ??
+                                                          studentNameEditingController
+                                                              .text,
+                                                      code: selectedStudent!
+                                                              .code ??
+                                                          studentCodeEditingController
+                                                              .text,
+                                                      schoolCode:
+                                                          selectedCategory!.id
+                                                              .toString(),
+                                                      parentId: widget.parentId,
+                                                      classId:
+                                                          selectedSubCategory!
+                                                              .id!)
+                                                  .then((onValue) {
+                                                setState(() {
+                                                  widget.studentController
+                                                      .getStudentList(true,
+                                                          id: widget.parentId);
+                                                });
+                                                setAddAccount();
+                                                // ignore: use_build_context_synchronously
+                                              });
+                                              showInfoDialog(context,
+                                                  student_name:
+                                                      selectedStudent!.name!,
+                                                  student_code:
+                                                      selectedStudent!.code!,
+                                                  studentRegController: widget
+                                                      .studentRegistrationController,
+                                                  title: 'student_info'.tr,
+                                                  description:
+                                                      '${'student_added_successfully'.tr}\n${'you_can_continue_by_adding_uniform_details'.tr}',
+                                                  studentController:
+                                                      widget.studentController,
+                                                  studentId:
+                                                      selectedStudent!.id!,
+                                                  selectedIndex:
+                                                      widget.selectedIndex,
+                                                  parentId: widget.parentId);
+                                           
+                                          } else {
+                                            setAddAccount();
                                           }
                                         },
                                         height: 50,
                                         width: screenWidth >= 520
-                                            ? 148
-                                            : screenWidth / 2.8,
+                                            ? 320
+                                            : screenWidth / 1.3,
                                         icon: (widget.isAddAccount == true ||
                                                 widget.studentController
                                                     .studentList!.isEmpty)

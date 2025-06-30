@@ -690,7 +690,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                             );
                                       // }
                                     },
-                                    title: 'pay_cash'.tr,
+                                    title: 'pay_now'.tr,
                                   
                                   ),
                                   DefaultButtonWidth(
@@ -850,7 +850,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                             color: kgrey800Color,
                                           ),
                                           Text(
-                                            'beneficiary_profile'.tr,
+                                            '${'beneficiary_profile_beneficiary'.tr}\n${'beneficiary_profile_profile'.tr}',
                                             style: ktextGrey,
                                           )
                                         ],
@@ -868,7 +868,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                             color: kgrey800Color,
                                           ),
                                           Text(
-                                            'profile_details'.tr,
+                                            '${'profile_details_product'.tr}\n${'profile_details_details'.tr}',
                                             style: ktextGrey,
                                           )
                                         ],

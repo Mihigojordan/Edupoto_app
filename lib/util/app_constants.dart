@@ -15,7 +15,7 @@ class AppConstants {
       '/api/v1/customer/auth/check-phone';
 
   //******************************* introduction screen ******************************
-  static const String appShareLink = 'https://skoollist.web.app';
+  static const String appShareLink = 'https://babyeyi.web.app';
 
   static const String customerPhoneVerifyUri =
       '/api/v1/customer/auth/verify-phone';

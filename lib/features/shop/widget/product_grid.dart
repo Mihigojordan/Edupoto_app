@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/features/shop/screen/prduct_detail_screen.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/util/app_constants.dart';
 
 class ProductGrid extends StatefulWidget {
@@ -57,11 +57,11 @@ class _ProductGridState extends State<ProductGrid> {
               children: [
                 Image.asset(
                   product.image,
-                  height: screenWidth / 5.5,
-                  width: screenWidth / 5.5,
+                  height: screenWidth / 8,
+                  width: screenWidth / 8,
                   fit: BoxFit.cover,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
             
                       Text(
                     product.name,
@@ -94,7 +94,7 @@ class _ProductGridState extends State<ProductGrid> {
                         ),
                       ],
                     ])),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 ElevatedButton(
                   onPressed: () => _addToCart(product, 1),
                   child: Text('add_to_cart'.tr),

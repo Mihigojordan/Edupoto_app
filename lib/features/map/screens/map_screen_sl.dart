@@ -23,7 +23,7 @@ import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/co
 import 'package:hosomobile/features/map/screens/left_aligned_row.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/school/screens/school_list_screen.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/screens/school_transaction_confirmation_screen.dart';
 import 'package:hosomobile/features/transaction_money/screens/transaction_confirmation_screen.dart';

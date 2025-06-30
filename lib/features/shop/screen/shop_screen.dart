@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hosomobile/features/shop/domain/product_lists.dart';
+import 'package:hosomobile/features/shop/domain/data/categories.dart';
+import 'package:hosomobile/features/shop/domain/data/product_lists.dart';
+import 'package:hosomobile/features/shop/domain/models/company_category.dart';
 import 'package:hosomobile/features/shop/widget/cart_view.dart';
-import 'package:hosomobile/features/shop/widget/company.dart';
+import 'package:hosomobile/features/shop/domain/models/company.dart';
 import 'package:hosomobile/features/shop/widget/company_nav_bar.dart';
-import 'package:hosomobile/features/shop/widget/company_type.dart';
+import 'package:hosomobile/features/shop/domain/models/company_type.dart';
+import 'package:hosomobile/features/shop/widget/company_side_bar.dart';
 import 'package:hosomobile/features/shop/widget/company_type_nav_bar.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/shop/widget/product_grid.dart';
 import 'package:hosomobile/features/shop/widget/product_list.dart';
 
@@ -19,42 +22,45 @@ class ShoppingScreen extends StatefulWidget {
 }
 
 class _ShoppingScreenState extends State<ShoppingScreen> {
-  int _selectedTypeIndex = 0; // Index of the selected company type
-  int _selectedCompanyIndex = 0; // Index of the selected company
+  int _selectedTypeIndex = 0;
+  int _selectedCompanyIndex = 0;
+  int _selectedCategoryIndex = 0;
   bool _isGridView = true;
   String _searchQuery = '';
   late final Map<Product, int> _cart;
   late final TextEditingController _idController;
   late final TextEditingController _passwordController;
 
-  // List of company types with their companies
   final List<CompanyType> companyTypes = [
     CompanyType(
-      name: '     Librairie Caritas           ',
+      name: 'Librairie Caritas',
       companies: [
         Company(
           name: 'stationery'.tr,
           logo: 'assets/image/stationery.png',
-          products: mAndGProducts
-              .map((product) => Product(
-                    name: product["name"],
-                    price: product["price"],
-                    image: product["image"],
-                  ))
-              .toList(),
+          categories: stationery.map((category) => CompanyCategory(
+            name: category['name'],
+            logo: category['logo'],
+            products: (category['products'] as List).map((product) => Product(
+              name: product['name'],
+              image: product['image'],
+              price: product['price'],
+            )).toList(),
+          )).toList(),
         ),
         Company(
           name: 'books'.tr,
           logo: 'assets/image/book.png',
-          products: natarajProducts
-              .map((product) => Product(
-                    name: product["name"],
-                    price: product["price"],
-                    image: product["image"],
-                  ))
-              .toList(),
+          categories: stationery.map((category) => CompanyCategory(
+            name: category['name'],
+            logo: category['logo'],
+            products: (category['products'] as List).map((product) => Product(
+              name: product['name'],
+              image: product['image'],
+              price: product['price'],
+            )).toList(),
+          )).toList(),
         ),
-
       ],
     ),
     CompanyType(
@@ -63,46 +69,54 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         Company(
           name: 'stationery'.tr,
           logo: 'assets/image/stationery.png',
-          products: mAndGProducts
-              .map((product) => Product(
-                    name: product["name"],
-                    price: product["price"],
-                    image: product["image"],
-                  ))
-              .toList(),
+          categories: stationery.map((category) => CompanyCategory(
+            name: category['name'],
+            logo: category['logo'],
+            products: (category['products'] as List).map((product) => Product(
+              name: product['name'],
+              image: product['image'],
+              price: product['price'],
+            )).toList(),
+          )).toList(),
         ),
         Company(
           name: 'class_kit'.tr,
           logo: 'assets/image/Button01.png',
-          products: rwandaPensProducts
-              .map((product) => Product(
-                    name: product["name"],
-                    price: product["price"],
-                    image: product["image"],
-                  ))
-              .toList(),
+          categories: stationery.map((category) => CompanyCategory(
+            name: category['name'],
+            logo: category['logo'],
+            products: (category['products'] as List).map((product) => Product(
+              name: product['name'],
+              image: product['image'],
+              price: product['price'],
+            )).toList(),
+          )).toList(),
         ),
         Company(
           name: 'school_shoes'.tr,
           logo: 'assets/image/shoebox.png',
-          products: natarajProducts
-              .map((product) => Product(
-                    name: product["name"],
-                    price: product["price"],
-                    image: product["image"],
-                  ))
-              .toList(),
+          categories: stationery.map((category) => CompanyCategory(
+            name: category['name'],
+            logo: category['logo'],
+            products: (category['products'] as List).map((product) => Product(
+              name: product['name'],
+              image: product['image'],
+              price: product['price'],
+            )).toList(),
+          )).toList(),
         ),
         Company(
-          name: 'dormitory_sssentials'.tr,
+          name: 'dormitory_essentials'.tr,
           logo: 'assets/image/dormitory.png',
-          products: bicProducts
-              .map((product) => Product(
-                    name: product["name"],
-                    price: product["price"],
-                    image: product["image"],
-                  ))
-              .toList(),
+          categories: stationery.map((category) => CompanyCategory(
+            name: category['name'],
+            logo: category['logo'],
+            products: (category['products'] as List).map((product) => Product(
+              name: product['name'],
+              image: product['image'],
+              price: product['price'],
+            )).toList(),
+          )).toList(),
         ),
       ],
     ),
@@ -159,11 +173,17 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   void _showCart() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => CartView(
-        onAddQuantity: _addQuantity,
-        cart: _cart,
-        onReduceQuantity: _reduceQuantity,
-        onRemoveProduct: _removeProduct,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: CartView(
+          onAddQuantity: _addQuantity,
+          cart: _cart,
+          onReduceQuantity: _reduceQuantity,
+          onRemoveProduct: _removeProduct,
+        ),
       ),
     );
   }
@@ -179,13 +199,13 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   @override
   Widget build(BuildContext context) {
     final currentType = companyTypes[_selectedTypeIndex];
-    final currentCompanies = currentType.companies;
-    final filteredProducts =
-        _filterProducts(currentCompanies[_selectedCompanyIndex].products);
+    final currentCompany = currentType.companies[_selectedCompanyIndex];
+    final currentCategory = currentCompany.categories[_selectedCategoryIndex];
+    final filteredProducts = _filterProducts(currentCategory.products);
 
     return Scaffold(
       appBar: AppBar(
-        title:  Text('shopping_screen'.tr),
+        title: Text('shopping_screen'.tr),
         actions: [
           IconButton(
             icon: Icon(_isGridView ? Icons.list : Icons.grid_view),
@@ -211,7 +231,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       minHeight: 16,
                     ),
                     child: Text(
-                      '${_cart.length}',
+                      '${_cart.values.fold(0, (sum, quantity) => sum + quantity)}',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
@@ -235,49 +255,71 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
+                filled: true,
+                fillColor: Colors.grey[100],
               ),
               onChanged: (value) => setState(() => _searchQuery = value),
             ),
           ),
           // Company Type Navigation
           CompanyTypeNavigationBar(
-            company_types: companyTypes,
+            companyTypes: companyTypes,
             selectedIndex: _selectedTypeIndex,
             onTap: (index) {
               setState(() {
                 _selectedTypeIndex = index;
-                _selectedCompanyIndex =
-                    0; // Reset to first company when type changes
+                _selectedCompanyIndex = 0;
+                _selectedCategoryIndex = 0;
               });
             },
           ),
-          // Company Navigation (shows companies for selected type)
+          // Company Navigation
           CompanyNavigationBar(
-            companies: currentCompanies,
+            companies: currentType.companies,
             selectedIndex: _selectedCompanyIndex,
-            onTap: (index) => setState(() => _selectedCompanyIndex = index),
+            onTap: (index) => setState(() {
+              _selectedCompanyIndex = index;
+              _selectedCategoryIndex = 0;
+            }),
           ),
-          // Products
           Expanded(
-            child: _isGridView
-                ? ProductGrid(
-                    products: filteredProducts,
-                    onAddToCart: _addToCart,
-                    cart: _cart, // Pass the cart here
-                  )
-                : ProductList(
-                    products: filteredProducts,
-                    onAddToCart: _addToCart,
-                    cart: _cart
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Sidebar with categories
+                CompanySideBar(
+                  categories: currentCompany.categories,
+                  selectedIndex: _selectedCategoryIndex,
+                  onTap: (index) => setState(() => _selectedCategoryIndex = index),
+                ),
+                // Products
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _isGridView
+                        ? ProductGrid(
+                            products: filteredProducts,
+                            onAddToCart: _addToCart,
+                            cart: _cart,
+                          )
+                        : ProductList(
+                            products: filteredProducts,
+                            onAddToCart: _addToCart,
+                            cart: _cart,
+                          ),
                   ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.amber,
         onPressed: _showCart,
         child: Stack(
           children: [
-            const Icon(Icons.shopping_cart),
+            const Icon(Icons.shopping_cart, color: Colors.white),
             if (_cart.isNotEmpty)
               Positioned(
                 right: 0,
@@ -293,7 +335,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                     minHeight: 16,
                   ),
                   child: Text(
-                    '${_cart.length}',
+                    '${_cart.values.fold(0, (sum, quantity) => sum + quantity)}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 10,
@@ -305,7 +347,6 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           ],
         ),
       ),
-      //  floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

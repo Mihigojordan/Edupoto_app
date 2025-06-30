@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:hosomobile/common/controllers/share_controller.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';

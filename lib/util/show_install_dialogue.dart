@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 
 void showInstallPrompt(BuildContext context) {
@@ -7,32 +8,32 @@ void showInstallPrompt(BuildContext context) {
     context: context,
     builder: (context) {
       return AlertDialog(
-  title: const Text(
-    'Install App',
-    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+  title:  Text(
+    'install_app'.tr,
+    style:const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
   ),
   content: SingleChildScrollView(
     child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Add this app to your home screen for easy access:',
-          style: TextStyle(fontSize: 16),
+         Text(
+          '${'kubona_apulikasiyo'.tr}:',
+          style:const TextStyle(fontSize: 16),
         ),
         const SizedBox(height: 20),
         
         // Android Instructions
         RichText(
-          text: const TextSpan(
+          text:  TextSpan(
             style: TextStyle(color: Colors.black, fontSize: 14),
             children: [
               TextSpan(
-                text: 'For Android:\n',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                text: '${'for_android'.tr}:\n',
+                style:const TextStyle(fontWeight: FontWeight.bold),
               ),
-              TextSpan(text: '1. Open browser menu (⋮ or ⋯)\n'),
-              TextSpan(text: '2. Tap "Add to Home screen"\n'),
+              TextSpan(text: '1. ${'open_browser'.tr} (⋮ or ⋯)\n'),
+              TextSpan(text: '2. ${'tap'.tr} "Add to Home screen"\n'),
             ],
           ),
         ),
@@ -42,14 +43,14 @@ void showInstallPrompt(BuildContext context) {
         
         // iOS Instructions
         RichText(
-          text: const TextSpan(
-            style: TextStyle(color: Colors.black, fontSize: 14),
+          text:  TextSpan(
+            style:const TextStyle(color: Colors.black, fontSize: 14),
             children: [
               TextSpan(
                 text: 'For iOS:\n',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              TextSpan(text: '1. Tap the share icon (□ with ↑)\n'),
+              TextSpan(text: '1. ${'tap'.tr} the share icon (□ with ↑)\n'),
               TextSpan(text: '2. Select "Add to Home Screen"\n'),
               TextSpan(text: '3. Tap "Add" in top-right corner'),
             ],

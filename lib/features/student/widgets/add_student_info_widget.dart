@@ -50,7 +50,7 @@ class _AddStudentInfoWidgetState extends State<AddStudentInfoWidget> {
   bool isSelected = false;
   UserShortDataModel? userData;
   String? parentId;
-  // bool isEditStudentInfo=false;
+  bool isEditStudentInfo=false;
 
   TextEditingController EditingController = TextEditingController();
   TextEditingController heightSizeEditingController = TextEditingController();
@@ -121,11 +121,11 @@ List<Map<dynamic, String>> topSize = [
     });
   }
 
-// editStudentProfileAction(){
-//   setState(() {
-//     isEditStudentInfo =! isEditStudentInfo;
-//   });
-// }
+editStudentProfileAction(){
+  setState(() {
+    isEditStudentInfo =! isEditStudentInfo;
+  });
+}
 
   @override
   void initState() {
@@ -158,67 +158,66 @@ List<Map<dynamic, String>> topSize = [
           child: ListView(
               // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                InkWell(
-                  onTap: () => showEditStudentDialog(
-                      context: context, parentId: parentId!),
-                  onHover: (isHovering) {
-                    // Optional: Add hover effect state management
-                  },
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                      border: Border.all(
-                        color: Colors.grey.shade200,
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: screenWidth / 1.6,
-                          child: Text(
-                            'click_to_edit_student_profile'.tr,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  color: Colors.blueGrey.shade800,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.2,
-                                ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.shade50,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.edit_rounded,
-                            size: 18,
-                            color: Colors.blue.shade700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                sizedBox10,
+     isEditStudentInfo==false?   InkWell(
+  onTap: () =>editStudentProfileAction(),
+  onHover: (isHovering) {
+    // Optional: Add hover effect state management
+  },
+  borderRadius: BorderRadius.circular(8),
+  child: Container(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(8),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.05),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
+        ),
+      ],
+      border: Border.all(
+        color: Colors.grey.shade200,
+        width: 1,
+      ),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Click to Edit Student Profile',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Colors.blueGrey.shade800,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.2,
+              ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: Colors.blue.shade50,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.edit_rounded,
+            size: 18,
+            color: Colors.blue.shade700,
+          ),
+        ),
+      ],
+    ),
+  ),
+):DependentStudentDropdowns(
+                    isAddAccount: true,
+                    isStudentEdit: true,
+                    studentController: widget.studentController,
+                    studentRegistrationController: widget.studentRegController,
+                    selectedIndex: widget.selectedIndex,
+                    parentId: parentId!,
+
+                  ) ,
+sizedBox10,
+isEditStudentInfo==true?const SizedBox():  
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -512,46 +511,44 @@ List<Map<dynamic, String>> topSize = [
                 ),
               ]),
         ),
-        DefaultButton2(
-          color1: kamber300Color,
-          color2: kyellowColor,
-          onPress: () {
-            Get.off(const MzaziScreen(
-              isShop: false,
-            ));
-            print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee$parentId');
-            Future.delayed(
-                const Duration(milliseconds: 200),
-                () => widget.studentRegController.updateStudent(
-                    name: widget.studentController
-                        .studentList![widget.selectedIndex].name!,
-                    code: widget.studentController
-                        .studentList![widget.selectedIndex].code!,
-                    schoolCode: widget.studentController
-                        .studentList![widget.selectedIndex].schoolId!
-                        .toString(),
-                    parentId: parentId!,
-                    classId: widget.studentController
-                        .studentList![widget.selectedIndex].classId!,
-                    id: widget.studentId,
-                    gender: genderValue,
-                    age: studentAgeEditingController.text,
-                    hipSize: hipSizeEditingController.text,
-                    waistSize: waistSizeEditingController.text,
-                    heightSize: heightSizeEditingController.text,
-                    topWear: topWearValue,
-                    bottomWear: bottomWearValue,
-                    sportsWear: sportsWearValue,
-                    feetWear: feetWearValue,
-                    topSize: chestSizeEditingController.text,
-                    shoeSize: shoeSizeValue,
-                    sportSize: sportSizeValue,
-                    shoulderSize: shoulderSizeEditingController.text,
-                    handSize: handSizeEditingController.text));
-          },
-          title: 'NEXT',
-          iconData: Icons.arrow_forward_outlined,
-        ),
+           isEditStudentInfo==true?const SizedBox() :   DefaultButton2(
+                                     color1: kamber300Color,
+                                     color2: kyellowColor,
+                                     onPress: () {
+                    Get.off( const MzaziScreen(isShop: false,));
+                    print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee$parentId');
+                    Future.delayed(
+                        const Duration(milliseconds: 200),
+                        () => widget.studentRegController.updateStudent(
+                            name: widget.studentController
+                                .studentList![widget.selectedIndex].name!,
+                            code: widget.studentController
+                                .studentList![widget.selectedIndex].code!,
+                            schoolCode: widget.studentController
+                                .studentList![widget.selectedIndex].schoolId!
+                                .toString(),
+                            parentId: parentId!,
+                            classId: widget.studentController
+                                .studentList![widget.selectedIndex].classId!,
+                            id: widget.studentId,
+                            gender: genderValue,
+                            age: studentAgeEditingController.text,
+                            hipSize: hipSizeEditingController.text,
+                            waistSize: waistSizeEditingController.text,
+                            heightSize: heightSizeEditingController.text,
+                            topWear: topWearValue,
+                            bottomWear: bottomWearValue,
+                            sportsWear: sportsWearValue,
+                            feetWear: feetWearValue,
+                            topSize: chestSizeEditingController.text,
+                            shoeSize: shoeSizeValue,
+                            sportSize: sportSizeValue,
+                            shoulderSize: shoulderSizeEditingController.text,
+                            handSize: handSizeEditingController.text));
+                                     },
+                                     title: 'NEXT',
+                                     iconData: Icons.arrow_forward_outlined,
+                                   ),
       ]),
     );
   }
@@ -599,91 +596,91 @@ List<Map<dynamic, String>> topSize = [
     );
   }
 
- void showEditStudentDialog(
-    {required BuildContext context, required String parentId}) {
-    final  screenWidth=MediaQuery.of(context).size.width;
-    final  screenHeight=MediaQuery.of(context).size.height;
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        contentPadding: const EdgeInsets.all(20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: screenWidth*0.6,
-              child: Text(
-                'edit_student_profile'.tr,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey.shade800,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () => Navigator.pop(context),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'find_and_update_your_student_information'.tr,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.blueGrey.shade600,
-                  ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-               width: screenWidth * 0.9,
-               height: screenHeight/1.7,
-              child: SingleChildScrollView(
-                child: DependentStudentDropdowns(
-                  isAddAccount: true,
-                  isStudentEdit: true,
-                  studentController: widget.studentController,
-                  studentRegistrationController: widget.studentRegController,
-                  selectedIndex: widget.selectedIndex,
-                  parentId: parentId,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
-        // actions: [
-        //   TextButton(
-        //     onPressed: () => Navigator.pop(context),
-        //     child: const Text('Cancel'),
-        //   ),
-        //   ElevatedButton(
-        //     style: ElevatedButton.styleFrom(
-        //       backgroundColor: Colors.blueGrey.shade800,
-        //     ),
-        //     onPressed: () {
-        //       // Handle save logic here
-        //       Navigator.pop(context);
-        //     },
-        //     child: const Text(
-        //       'Save Changes',
-        //       style: TextStyle(color: Colors.white),
-        //     ),
-        //   ),
-        // ],
-      );
-    },
-  );
-}
+//  void showEditStudentDialog(
+//     {required BuildContext context, required String parentId}) {
+//     final  screenWidth=MediaQuery.of(context).size.width;
+//     final  screenHeight=MediaQuery.of(context).size.height;
+//   showDialog(
+//     context: context,
+//     builder: (context) {
+//       return AlertDialog(
+//         contentPadding: const EdgeInsets.all(20),
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(15),
+//         ),
+//         title: Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//             SizedBox(
+//               width: screenWidth*0.6,
+//               child: Text(
+//                 'edit_student_profile'.tr,
+//                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
+//                       fontWeight: FontWeight.bold,
+//                       color: Colors.blueGrey.shade800,
+//                     ),
+//                     maxLines: 2,
+//                     overflow: TextOverflow.ellipsis,
+//               ),
+//             ),
+//             IconButton(
+//               icon: const Icon(Icons.close),
+//               onPressed: () => Navigator.pop(context),
+//               padding: EdgeInsets.zero,
+//               constraints: const BoxConstraints(),
+//             ),
+//           ],
+//         ),
+//         content: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             Text(
+//               'find_and_update_your_student_information'.tr,
+//               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+//                     color: Colors.blueGrey.shade600,
+//                   ),
+//             ),
+//             const SizedBox(height: 20),
+//             SizedBox(
+//                width: screenWidth * 0.9,
+//                height: screenHeight/1.7,
+//               child: SingleChildScrollView(
+//                 child: DependentStudentDropdowns(
+//                   isAddAccount: true,
+//                   isStudentEdit: true,
+//                   studentController: widget.studentController,
+//                   studentRegistrationController: widget.studentRegController,
+//                   selectedIndex: widget.selectedIndex,
+//                   parentId: parentId,
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 20),
+//           ],
+//         ),
+//         // actions: [
+//         //   TextButton(
+//         //     onPressed: () => Navigator.pop(context),
+//         //     child: const Text('Cancel'),
+//         //   ),
+//         //   ElevatedButton(
+//         //     style: ElevatedButton.styleFrom(
+//         //       backgroundColor: Colors.blueGrey.shade800,
+//         //     ),
+//         //     onPressed: () {
+//         //       // Handle save logic here
+//         //       Navigator.pop(context);
+//         //     },
+//         //     child: const Text(
+//         //       'Save Changes',
+//         //       style: TextStyle(color: Colors.white),
+//         //     ),
+//         //   ),
+//         // ],
+//       );
+//     },
+//   );
+// }
 
   _launchURL(url) async {
     final uri = Uri.parse(url);

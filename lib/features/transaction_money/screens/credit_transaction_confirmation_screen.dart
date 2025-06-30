@@ -19,7 +19,7 @@ import 'package:hosomobile/features/home/domain/models/edubox_material_model.dar
 import 'package:hosomobile/features/home/domain/models/student_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/drop_down.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
-import 'package:hosomobile/features/home/widgets/student_widget.dart';
+import 'package:hosomobile/features/student/widgets/student_widget.dart';
 import 'package:hosomobile/features/transaction_money/controllers/bootom_slider_controller.dart';
 import 'package:hosomobile/features/setting/controllers/profile_screen_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';

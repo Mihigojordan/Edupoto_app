@@ -1,7 +1,7 @@
 // List View Widget
 import 'package:flutter/material.dart';
 import 'package:hosomobile/features/shop/screen/prduct_detail_screen.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/util/app_constants.dart';
 
 

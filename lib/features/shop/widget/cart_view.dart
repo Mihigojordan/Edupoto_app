@@ -5,7 +5,7 @@ import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/common/models/contact_model_mtn.dart';
 import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
 import 'package:hosomobile/features/student/screens/student_logistic_screen.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/screens/shop_transaction_confirmation_screen.dart';
 import 'package:hosomobile/helper/transaction_type.dart';

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/transaction_money/widgets/share_statement_widget_sp.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';

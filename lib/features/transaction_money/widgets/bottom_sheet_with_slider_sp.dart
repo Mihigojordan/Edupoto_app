@@ -7,7 +7,7 @@ import 'package:hosomobile/features/home/domain/models/all_school_model.dart';
 import 'package:hosomobile/features/home/domain/models/student_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/transaction_money/controllers/bootom_slider_controller.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';

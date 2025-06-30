@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/features/home/controllers/student_controller.dart';
 import 'package:hosomobile/features/home/controllers/student_registration_controller.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/student_add_info.dart';
 
 showInfoDialog(
@@ -14,6 +15,7 @@ showInfoDialog(
     required StudentController studentController,
     required int studentId,
     required String parentId,
+    Widget? addStudentWidget,
     int selectedIndex = 0, // Ensure selectedIndex is passed or set default
   }) {
     showDialog(
@@ -31,9 +33,13 @@ showInfoDialog(
                 description,
                 textAlign: TextAlign.center,
               ),
+              sizedBox10,
+              addStudentWidget??const SizedBox.shrink(),
             ],
+           
+            
           ),
-          actions: <Widget>[
+          actions:addStudentWidget==null? <Widget>[
             // Cancel Button
             TextButton(
               onPressed: () {
@@ -81,7 +87,7 @@ showInfoDialog(
                 style: TextStyle(color: Colors.black),
               ),
             ),
-          ],
+          ]:[],
         );
       },
     );

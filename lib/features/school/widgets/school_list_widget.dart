@@ -715,7 +715,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               price: schoolList.isNotEmpty ? totalPrice : 0,
             )),
         
-                title: 'request_credit'.tr,
+                title: 'request_for_credit'.tr,
             
                 color1: kamber300Color,
                 color2: kyellowColor,

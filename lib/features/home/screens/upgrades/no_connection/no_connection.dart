@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/image.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/util/images.dart';
@@ -45,15 +46,15 @@ class HomeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      SizedBox(
+    return  Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+   const   SizedBox(
         height: 87,
         width: 95,
         child: IconImages(Images.logo),
       ),
       sizedBox10,
       Text(
-        'This service is not available for you right now !',
+        'this_service_is_not_available'.tr,
         textAlign: TextAlign.center,
         style: TextStyle(
             color: Colors.black,
@@ -62,7 +63,7 @@ class HomeCard extends StatelessWidget {
       ),
       sizedBox5,
          Text(
-        'It will be available later',
+        'this_service_will_be_available_soon'.tr,
         textAlign: TextAlign.center,
         style: TextStyle(
             color: Colors.black,

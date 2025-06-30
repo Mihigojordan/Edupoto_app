@@ -1,4 +1,4 @@
-import 'package:hosomobile/features/shop/widget/company.dart';
+import 'package:hosomobile/features/shop/domain/models/company.dart';
 
 class CompanyType {
   final String name;

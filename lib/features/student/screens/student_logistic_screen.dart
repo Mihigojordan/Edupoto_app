@@ -15,7 +15,7 @@ import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/co
 import 'package:hosomobile/features/student/widgets/student_logistic_widget.dart';
 import 'package:hosomobile/features/map/screens/map_screen.dart';
 import 'package:hosomobile/features/shop/screen/shop_map_screen.dart';
-import 'package:hosomobile/features/shop/widget/product.dart';
+import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/helper/transaction_type.dart';
 import 'package:hosomobile/util/app_constants.dart';
