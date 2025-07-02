@@ -402,6 +402,7 @@ class _TransactionBalanceInputScreenState extends State<TransactionBalanceInputS
 
 
         Get.to(() => TransactionConfirmationScreen(
+          
           inputBalance: amount,
           transactionType: TransactionType.withdrawRequest,
           contactModel: null,

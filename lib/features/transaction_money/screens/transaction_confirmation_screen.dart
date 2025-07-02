@@ -3,9 +3,12 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/common/widgets/custom_back_button_widget.dart';
+import 'package:hosomobile/features/home/controllers/student_controller.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/custom_buttons.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/components/dependent_school_dropdown.dart';
 import 'package:hosomobile/features/map/screens/map_screen.dart';
 import 'package:hosomobile/features/map/screens/map_screen_sl.dart';
+import 'package:hosomobile/features/school_directory/widgets/school_directory_dropdown.dart';
 import 'package:hosomobile/helper/currency_text_input_formatter_helper.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
@@ -35,14 +38,8 @@ import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
 import 'package:hosomobile/util/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:hosomobile/common/widgets/custom_pin_code_field_widget.dart';
-import 'package:hosomobile/helper/custom_snackbar_helper.dart';
-import 'package:hosomobile/common/widgets/demo_otp_hint_widget.dart';
 import 'package:hosomobile/features/transaction_money/widgets/preview_amount_widget.dart';
 
-import '../widgets/bottom_sheet_with_slider.dart';
 import '../widgets/for_person_widget.dart';
 
 class TransactionConfirmationScreen extends StatefulWidget {
@@ -60,16 +57,32 @@ class TransactionConfirmationScreen extends StatefulWidget {
   final List<EduboxMaterialModel>? dataList;
   final Student? student;
   final int? productIndex;
-  final List<StudentModel>? studentInfo;
   final String? edubox_service;
   final String? serviceValue;
   final int? serviceIndex;
-  final int? studentIndex;
+  final String? studentName;
+  final String? studentCode;
+  final String? studentClass;
+  final String? studentSchool;
+  final int? studentId;
+  final int? classId;
+  final int? schoolId;
+  final StudentController? studentController;
+  int? studentIndex;
 
-  const TransactionConfirmationScreen(
+  TransactionConfirmationScreen(
       {super.key,
       required this.inputBalance,
       required this.transactionType,
+      this.studentIndex,
+      this.studentController,
+      this.studentName,
+      this.studentCode,
+      this.studentClass,
+      this.studentSchool,
+      this.classId,
+      this.schoolId,
+      this.studentId,
       this.purpose,
       this.student,
       this.availableBalance,
@@ -81,10 +94,8 @@ class TransactionConfirmationScreen extends StatefulWidget {
       this.withdrawMethod,
       this.dataList,
       this.productIndex,
-      this.studentInfo,
       this.serviceIndex,
       this.serviceValue,
-      this.studentIndex,
       this.edubox_service,
       this.price});
 
@@ -105,7 +116,8 @@ class _TransactionConfirmationScreenState
 
   Random random = Random();
 
-bool isHomeDelivery =false;
+  bool isHomeDelivery = false;
+  bool isSchoolDelivery = false;
 
   double subTotalPrice = 0.0;
   double calculatedTotal = 0.0;
@@ -127,7 +139,11 @@ bool isHomeDelivery =false;
     });
   }
 
-
+  schoolDeliveryAction() {
+    setState(() {
+      isSchoolDelivery = !isSchoolDelivery;
+    });
+  }
 
   final String data =
       'Amafaranga y’ishuri ,Minerval/School fees ni 65.500 Frw/ku gihembwe.\n'
@@ -149,20 +165,25 @@ bool isHomeDelivery =false;
     Get.back();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-      final screenHeight = MediaQuery.of(context).size.height;
+    final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-   final bottomSliderController = Get.find<BottomSliderController>();
-  final totalAmount = AppConstants.calculateTotal(double.parse('${widget.price}')).toStringAsFixed(2);
-    final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('${widget.inputBalance}')); 
-    final vat =AppConstants.calculateVAT(double.parse('${widget.inputBalance}')) ;
-    final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse('${widget.availableBalance}')).toStringAsFixed(2);
-      int randomNumber = random.nextInt(90000000) + 10000000;;
-   
-    final student = widget.studentInfo![widget.studentIndex!];
+    final bottomSliderController = Get.find<BottomSliderController>();
+    final totalAmount =
+        AppConstants.calculateTotal(double.parse('${widget.price}'))
+            .toStringAsFixed(2);
+    final double convenienceFee = AppConstants.calculateConvenienceFee(
+        double.parse('${widget.inputBalance}'));
+    final vat =
+        AppConstants.calculateVAT(double.parse('${widget.inputBalance}'));
+    final availableBalance = AppConstants.availableBalance(
+            amount: double.parse('${widget.inputBalance}'),
+            balance: double.parse('${widget.availableBalance}'))
+        .toStringAsFixed(2);
+    int randomNumber = random.nextInt(90000000) + 10000000;
+    ;
+
     //   bottomSliderController.setIsPinCompleted(isCompleted: false, isNotify: false);
 
     return Scaffold(
@@ -185,18 +206,12 @@ bool isHomeDelivery =false;
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Invoice No: $randomNumber',
+                    '${'invoice_no'.tr}: $randomNumber',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  sizedBox15,
-                  Column(children: [
-                    ForStudentWidget(
-                        studentInfo:
-                            'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}'),
-                  ]),
+
                   sizedBox10,
-                  Text(
-                      'Product: ${widget.serviceValue}. Class: ${widget.studentInfo![widget.studentIndex!].studentClass}'),
+                  Text('${'product'.tr}: ${widget.serviceValue}'),
                   sizedBox05h,
 
                   // ********************************** Dropdown that has button **************************
@@ -211,89 +226,158 @@ bool isHomeDelivery =false;
                           '${widget.dataList![widget.productIndex!].name}-${widget.dataList![widget.productIndex!].price}${AppConstants.currency}',
                       isExpanded: true),
                   sizedBox15,
-     Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Text(
-      'Delivery Options',
-      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            color: Colors.black,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ) ?? TextStyle(
-            color: Colors.black,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-      overflow: TextOverflow.ellipsis,
-      maxLines: 2,
-    ),
-    sizedBox15,
-    DefaultButton2(
-      color1: kamber300Color,
-      color2: kyellowColor,
-      onPress: () => _captureInformation(
-        vat: vat,
-        convenienceFee: convenienceFee,
-        context,
-        randomNumber: randomNumber,
-        totalAmount: totalAmount,
-        className: student.studentClass ?? 'Unknown Class',
-        schoolName: student.school ?? 'Unknown School',
-        orderId: '1234',
-        productName: widget.edubox_service ?? 'Unknown Service',
-      ),
-      title: 'SCHOOL',
-      iconData: Icons.arrow_forward_outlined,
-    ),
-    sizedBox15,
-    isHomeDelivery == false
-        ? DefaultButton2(
-            color1: kamber300Color,
-            color2: kyellowColor,
-            onPress: () => homeDeliveryAction(),
-            title: 'HOME',
-            iconData: Icons.arrow_forward_outlined,
-          )
-        : DeliveryMapScreen(
-            isShop: 0,
-            deliveryCost: AppConstants.deliveryCost ,
-            schoolId: student.schoolId ?? 0,
-            classId: student.classId ?? 0,
-            className: student.studentClass ?? 'Unknown Class',
-            schoolName: student.school ?? 'Unknown School',
-            studentCode: student.code ?? '',
-            studentId: student.id ?? 0,
-            studentName: student.name ?? 'Unknown Student',
-            screenId: 0,
-            calculatedTotal: calculatedTotal ?? 0,
-            contactModel: widget.contactModel ?? ContactModel(
-              phoneNumber: '',
-              name: '',
-              avatarImage: '',
-            ),
-            eduboxService: widget.edubox_service ?? '',
-            dataList: widget.dataList ?? [],
-            shipper: 'widget.shipper',
-            destination: 'widget.destination' ,
-            homePhone: 'widget.homePhone',
-            productId: widget.productId ?? 0,
-            pinCodeFieldController: _pinCodeFieldController.text,
-            transactionType: widget.transactionType!,
-            calculatedTotalWithServices:widget.price!,
-            productIndex: widget.productIndex ?? 0,
-            purpose: widget.purpose ?? '',
-            calculateServiceCharge: convenienceFee,
-            calculateVAT: vat,
-            productName: widget.edubox_service ?? '',
-            randomNumber: randomNumber,
-            serviceIndex: widget.serviceIndex ?? 0,
-            totalAmount: double.tryParse(totalAmount ?? '0') ?? 0,
-            vatPercentage: AppConstants.vatPercentage,
-          ),
-  ],
-),
-sizedBox10,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Delivery Options',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ) ??
+                            const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                      sizedBox15,
+                      isSchoolDelivery == false
+                          ? DefaultButton2(
+                              color1: kamber300Color,
+                              color2: kyellowColor,
+                              onPress: () => schoolDeliveryAction(),
+
+                              //  _captureInformation(
+                              //   vat: vat,
+                              //   convenienceFee: convenienceFee,
+                              //   context,
+                              //   randomNumber: randomNumber,
+                              //   totalAmount: totalAmount,
+                              //   className:
+                              //       widget.studentClass ?? 'Unknown Class',
+                              //   schoolName:
+                              //       widget.studentSchool ?? 'Unknown School',
+                              //   orderId: '1234',
+                              //   productName:
+                              //       widget.edubox_service ?? 'Unknown Service',
+                              // ),
+                              title: 'SCHOOL',
+                              iconData: Icons.arrow_forward_outlined,
+                            )
+                          : (widget.studentController!.studentList == null ||
+                                  widget
+                                      .studentController!.studentList!.isEmpty)
+                              ? DependentSchoolDropdowns(
+                                  isShop: false,
+                                  studentController: widget.studentController!,
+                                  isAddAccount: false,
+                                  isNotRegStudent: true)
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        '${'select_your_student_who_is_going_to_receive_the_product_at_school'.tr}: ${widget.serviceValue}'),
+                                    sizedBox05h,
+                                    DropDownAccount(
+                                      onChanged: (selectedCode) {
+                                        setState(() {
+                                          // Find the index of the selected student in the list using the selected code
+                                          widget.studentIndex = widget
+                                              .studentController!.studentList!
+                                              .indexWhere((student) =>
+                                                  student.code == selectedCode);
+
+                                          // You may want to add additional logic here based on the selected code
+                                          print(
+                                              'Selected student index: ${widget.studentIndex}');
+                                        });
+                                      },
+                                      itemLists: widget
+                                          .studentController!.studentList!,
+                                      title:
+                                          '${'code'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].code!}\n${'name'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].name} ${'class'.tr}:${widget.studentController!.studentList![widget.studentIndex!].studentClass}',
+                                      isExpanded: true,
+                                    ),
+                                    sizedBox05h,
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        DefaultButtonWidth(
+                                            onPress: () => _captureInformation(
+                                                context,
+                                                schoolName:
+                                                    widget.studentSchool!,
+                                                randomNumber: randomNumber,
+                                                className: widget.studentClass!,
+                                                totalAmount: totalAmount,
+                                                productName:
+                                                    widget.serviceValue!,
+                                                orderId: '21323443421',
+                                                vat: vat,
+                                                convenienceFee: convenienceFee),
+                                            title: 'next'.tr,
+                                            color1: kamber300Color,
+                                            color2: kyellowColor,
+                                            width: 123)
+                                      ],
+                                    )
+                                  ],
+                                ),
+                      sizedBox15,
+                      isHomeDelivery == false
+                          ? DefaultButton2(
+                              color1: kamber300Color,
+                              color2: kyellowColor,
+                              onPress: () => homeDeliveryAction(),
+                              title: 'HOME',
+                              iconData: Icons.arrow_forward_outlined,
+                            )
+                          : DeliveryMapScreen(
+                              isShop: 0,
+                              deliveryCost: AppConstants.deliveryCost,
+                              schoolId: widget.schoolId!,
+                              classId: widget.classId!,
+                              className: widget.studentClass!,
+                              schoolName: widget.studentSchool!,
+                              studentCode: widget.studentCode!,
+                              studentId: widget.studentId ?? 0,
+                              studentName: widget.studentName!,
+                              screenId: 0,
+                              calculatedTotal: calculatedTotal ?? 0,
+                              contactModel: widget.contactModel ??
+                                  ContactModel(
+                                    phoneNumber: '',
+                                    name: '',
+                                    avatarImage: '',
+                                  ),
+                              eduboxService: widget.edubox_service ?? '',
+                              dataList: widget.dataList ?? [],
+                              shipper: 'widget.shipper',
+                              destination: 'widget.destination',
+                              homePhone: 'widget.homePhone',
+                              productId: widget.productId ?? 0,
+                              pinCodeFieldController:
+                                  _pinCodeFieldController.text,
+                              transactionType: widget.transactionType!,
+                              calculatedTotalWithServices: widget.price!,
+                              productIndex: widget.productIndex ?? 0,
+                              purpose: widget.purpose ?? '',
+                              calculateServiceCharge: convenienceFee,
+                              calculateVAT: vat,
+                              productName: widget.edubox_service ?? '',
+                              randomNumber: randomNumber,
+                              serviceIndex: widget.serviceIndex ?? 0,
+                              totalAmount:
+                                  double.tryParse(totalAmount ?? '0') ?? 0,
+                              vatPercentage: AppConstants.vatPercentage,
+                            ),
+                    ],
+                  ),
+                  sizedBox10,
                   Container(
                     height: Dimensions.dividerSizeMedium,
                     color: Theme.of(context).dividerColor,
@@ -321,8 +405,7 @@ sizedBox10,
                   style: rubikSemiBold.copyWith(
                       fontSize: Dimensions.fontSizeLarge,
                       color: ColorResources.getGreyBaseGray1())),
-              Text(
-                  '$availableBalance ${AppConstants.currency}',
+              Text('$availableBalance ${AppConstants.currency}',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.bold,
                       )),
@@ -336,7 +419,7 @@ sizedBox10,
               if (widget.transactionType == TransactionType.withdrawRequest)
                 PreviewAmountWidget(
                     amountText: PriceConverterHelper.balanceWithCharge(
-                     double.parse( '${widget.availableBalance}'),
+                      double.parse('${widget.availableBalance}'),
                       Get.find<SplashController>()
                           .configModel!
                           .withdrawChargePercent,
@@ -387,7 +470,6 @@ sizedBox10,
                     ]),
                   ),
                 ),
-
             ],
           ),
         ),
@@ -455,7 +537,7 @@ sizedBox10,
     );
   }
 
-    void _captureInformation(context,
+  void _captureInformation(context,
       {required int randomNumber,
       required String totalAmount,
       required String schoolName,
@@ -463,8 +545,7 @@ sizedBox10,
       required String productName,
       required String orderId,
       required double vat,
-      required double convenienceFee
-      }) {
+      required double convenienceFee}) {
     showDialog(
       context: context,
       builder: (context) {
@@ -489,85 +570,86 @@ sizedBox10,
               child: const Text('Cancel'),
             ),
             const SizedBox(width: 10),
-TextButton(
-  onPressed: () {
-    final configModel = Get.find<SplashController>().configModel;
-    Get.find<TransactionMoneyController>()
-        .pinVerify(
-      pin: _pinCodeFieldController.text,
-    )
-        .then((isCorrect) {
-      if (isCorrect) {
-        if (widget.transactionType == TransactionType.withdrawRequest) {
-          _placeWithdrawRequest();
-        } else {
-          // Safely access student info
-          final student = widget.studentInfo != null && 
-                         widget.studentIndex != null &&
-                         widget.studentInfo!.length > widget.studentIndex!
-                       ? widget.studentInfo![widget.studentIndex!]
-                       : null;
+            TextButton(
+              onPressed: () {
+                final configModel = Get.find<SplashController>().configModel;
+                Get.find<TransactionMoneyController>()
+                    .pinVerify(
+                  pin: _pinCodeFieldController.text,
+                )
+                    .then((isCorrect) {
+                  if (isCorrect) {
+                    if (widget.transactionType ==
+                        TransactionType.withdrawRequest) {
+                      _placeWithdrawRequest();
+                    } else {
+                      // Safe numerical conversions
+                      final inputBalance = widget.inputBalance ?? 0.0;
+                      final availableBalance = widget.availableBalance != null
+                          ? double.tryParse(widget.availableBalance!) ?? 0.0
+                          : 0.0;
 
-          // Safe numerical conversions
-          final inputBalance = widget.inputBalance ?? 0.0;
-          final availableBalance = widget.availableBalance != null 
-                                 ? double.tryParse(widget.availableBalance!) ?? 0.0
-                                 : 0.0;
-
-          showModalBottomSheet(
-            isScrollControlled: true,
-            context: Get.context!,
-            isDismissible: false,
-            enableDrag: false,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(Dimensions.radiusSizeLarge),
-              ),
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: Get.context!,
+                        isDismissible: false,
+                        enableDrag: false,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(Dimensions.radiusSizeLarge),
+                          ),
+                        ),
+                        builder: (context) {
+                          return BottomSheetWithSliderP(
+                            schoolName: widget.studentSchool!,
+                            className: widget.studentClass!,
+                            shipper: '',
+                            studentCode: widget.studentCode!,
+                            studentName: widget.studentName!,
+                            homePhone: '',
+                            destination: '',
+                            randomNumber: 00000000,
+                            studentId: widget.studentId ?? 0,
+                            amount: inputBalance.toString(),
+                            availableBalance:
+                                availableBalance.toStringAsFixed(2),
+                            contactModel: widget.contactModel ??
+                                ContactModel(
+                                  phoneNumber: '',
+                                  name: '',
+                                  avatarImage: '',
+                                ),
+                            contactModelMtn: widget.contactModelMtn ??
+                                ContactModelMtn(
+                                  phoneNumber: '',
+                                  name: '',
+                                ),
+                            pinCode: _pinCodeFieldController.text,
+                            transactionType: widget.transactionType ??
+                                TransactionType.sendMoney,
+                            purpose: widget.purpose ?? '',
+                            inputBalance: inputBalance,
+                            dataList: widget.dataList ?? [],
+                            productIndex: widget.productIndex ?? 0,
+                            edubox_service: widget.edubox_service ?? '',
+                            amountToPay:
+                                'Amount to be Paid: ${widget.price} ${AppConstants.currency}',
+                            nowPaid:
+                                'Now Paid: ${inputBalance.toStringAsFixed(2)} ${AppConstants.currency}',
+                            vat:
+                                'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
+                            serviceCharge: convenienceFee.toStringAsFixed(2),
+                            totalNowPaid:
+                                'Total Amount paid now: $totalAmount ${AppConstants.currency}',
+                          );
+                        },
+                      );
+                    }
+                  }
+                });
+              },
+              child: const Text('OK'),
             ),
-            builder: (context) {
-              return BottomSheetWithSliderP(
-                
-                schoolName: student?.school ?? 'Unknown School',
-                className: student?.studentClass ?? 'Unknown Class',
-                shipper: '',
-                studentCode: student?.code ?? '',
-                studentName: student?.name ?? 'Unknown Student',
-                homePhone: '',
-                destination: '',
-                randomNumber: 00000000,
-                studentId: student?.id ?? 0,
-                amount: inputBalance.toString(),
-                availableBalance: availableBalance.toStringAsFixed(2),
-                contactModel: widget.contactModel ?? ContactModel(
-                  phoneNumber: '',
-                  name: '',
-                  avatarImage: '',
-                ),
-                contactModelMtn: widget.contactModelMtn ?? ContactModelMtn(
-                  phoneNumber: '',
-                  name: '',
-                ),
-                pinCode: _pinCodeFieldController.text,
-                transactionType: widget.transactionType ?? TransactionType.sendMoney,
-                purpose: widget.purpose ?? '',
-                inputBalance: inputBalance,
-                dataList: widget.dataList ?? [],
-                productIndex: widget.productIndex ?? 0,
-                edubox_service: widget.edubox_service ?? '',
-                amountToPay: 'Amount to be Paid: ${widget.price} ${AppConstants.currency}',
-                nowPaid: 'Now Paid: ${inputBalance.toStringAsFixed(2)} ${AppConstants.currency}',
-                vat: 'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
-                serviceCharge: convenienceFee.toStringAsFixed(2),
-                totalNowPaid: 'Total Amount paid now: $totalAmount ${AppConstants.currency}',
-              );
-            },
-          );
-        }
-      }
-    });
-  },
-  child: const Text('OK'),
-),
           ],
         );
       },

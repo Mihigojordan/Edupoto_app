@@ -470,6 +470,8 @@ class _StudentScreenState extends State<StudentScreen> {
                                                             );
                                                           } else {
                                                             Get.to(() => SchoolListScreen(
+                                                                studentController: studentController,
+                                                                studentIndex: selectedIndex,
                                                                 homePhone: '',
                                                                 shipper: '',
                                                                 destination: '',

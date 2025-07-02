@@ -26,26 +26,25 @@ import 'package:hosomobile/util/app_constants.dart';
 
 class DependentSchoolDropdowns extends StatefulWidget {
   final StudentController studentController;
-  final StudentRegistrationController studentRegistrationController;
-  final int selectedIndex;
-  final UserShortDataModel userData;
-  final EduboxMaterialController eduboxController;
-  final String parentId;
+  final StudentRegistrationController? studentRegistrationController;
+  final int? selectedIndex;
+  final String? parentId;
   bool isAddAccount;
   bool isNotRegStudent;
   final int?   eduboxId;
   final int? index;
   final String? titleImage;
+  final bool isShop;
 
   DependentSchoolDropdowns(
-      {required this.parentId,
-      required this.eduboxController,
-      required this.userData,
-      required this.selectedIndex,
+      {
+      required this.isShop,
       required this.studentController,
       required this.isAddAccount,
-      required this.studentRegistrationController,
       required this.isNotRegStudent,
+      this.studentRegistrationController,
+      this.selectedIndex,
+      this.parentId,
       this.eduboxId,
       this.index,
       this.titleImage,
@@ -505,98 +504,17 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                       color1: kamber300Color,
                                       color2: kyellowColor,
                                       onPress: () {
+                                      
                                         //****************************Check if you want to edit student registration or you do not have student */
                                         if (widget.isAddAccount == true ||
                                             widget.studentController
                                                 .studentList!.isEmpty) {
                                           //************************** Check if the student has been selected */
-                                          if (selectedStudent == null) {
-                                        
-                                              if (widget.index == 0) {
-                                                Get.to(
-                                                  SchoolListScreen(
-                                                    studentCode:
-                                                        studentCodeEditingController
-                                                            .text,
-                                                    shipper: 'shipper',
-                                                    homePhone: 'homePhone',
-                                                    destination: 'destination',
-                                                    studentName:
-                                                        studentNameEditingController
-                                                            .text,
-                                                    className:
-                                                        selectedSubCategory!
-                                                            .className!,
-                                                    schoolName:
-                                                        selectedCategory!
-                                                            .schoolName!,
-                                                    schoolId:
-                                                        selectedCategory!.id!,
-                                                    studentId: int.parse(
-                                                        studentCodeEditingController
-                                                            .text),
-                                                    classId:
-                                                        selectedSubCategory!
-                                                            .id!,
-                                                  ),
-                                                );
-                                              } else {
-                                                // Safe user data access
-                                                final userData =
-                                                    Get.find<AuthController>()
-                                                        .getUserData();
-                                                Get.to(
-                                                  TerekaAsome(
-                                                      productId: widget
-                                                          .eduboxId,
-                                                      studentId: int.parse(
-                                                          studentCodeEditingController
-                                                              .text),
-                                                      schoolId:
-                                                          selectedCategory!.id!,
-                                                      classId:
-                                                          selectedSubCategory!
-                                                              .id,
-                                                      contactModelMtn:
-                                                          ContactModelMtn(
-                                                        phoneNumber:
-                                                            '${userData?.countryCode}${userData?.phone}' ??
-                                                                '',
-                                                        name:
-                                                            '${userData?.name}',
-                                                      ),
-                                                      transactionType:
-                                                          TransactionType
-                                                              .sendMoney,
-                                                      contactModel:
-                                                          ContactModel(
-                                                        phoneNumber:
-                                                            '${userData?.countryCode}${userData?.phone}' ??
-                                                                '',
-                                                        name:
-                                                            '${userData?.name}',
-                                                        avatarImage:
-                                                            '${Get.find<SplashController>().configModel!.baseUrls!.customerImageUrl}/${'image' ?? ''}',
-                                                      ),
-                                                      studentIndex: 0,
-                                                      productValue:
-                                                          productValueList[
-                                                                  widget.index!]
-                                                              [
-                                                              'action'], // Dynamic value
-                                                      productIndex:
-                                                          widget.index,
-                                                      iconImages:
-                                                          "${AppConstants.baseUrl}/storage/app/public/edupoto_product/${widget.titleImage}", // Adjust icon logic
-                                                      edubox_service:
-                                                          productValueList[
-                                                                  widget.index!]
-                                                              ['action'],
-                                                      parent: userData?.name),
-                                                );
-                                              }
-                                          
-                                          }
+                                          // if(widget.isShop==true){
+
+                                          // }else{
+        
+                                          // }
                                         } else {
                                           setAddAccount();
                                         }
@@ -618,7 +536,7 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                             if (selectedStudent == null) {
                                           
                                                 widget
-                                                    .studentRegistrationController
+                                                    .studentRegistrationController!
                                                     .addStudent(
                                                         name:
                                                             studentNameEditingController
@@ -630,7 +548,7 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                             selectedCategory!.id
                                                                 .toString(),
                                                         parentId:
-                                                            widget.parentId,
+                                                            widget.parentId!,
                                                         classId:
                                                             selectedSubCategory!
                                                                 .id!)
@@ -639,7 +557,7 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                     widget.studentController
                                                         .getStudentList(true,
                                                             id: widget
-                                                                .parentId);
+                                                                .parentId!);
                                                   });
                                                   setAddAccount();
                                                 });
@@ -651,7 +569,7 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                         studentCodeEditingController
                                                             .text,
                                                     studentRegController: widget
-                                                        .studentRegistrationController,
+                                                        .studentRegistrationController!,
                                                     title: 'student_info'.tr,
                                                     description:
                                                         '${'student_added_successfully'.tr}\n${'you_can_continue_by_adding_uniform_details'.tr}',
@@ -660,14 +578,14 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                     studentId: widget
                                                         .studentController
                                                         .studentList![widget
-                                                            .selectedIndex]
+                                                            .selectedIndex!]
                                                         .id!,
                                                     selectedIndex:
-                                                        widget.selectedIndex,
-                                                    parentId: widget.parentId);
+                                                        widget.selectedIndex!,
+                                                    parentId: widget.parentId!);
                                               }
                                               widget
-                                                  .studentRegistrationController
+                                                  .studentRegistrationController!
                                                   .addStudent(
                                                       name: selectedStudent!
                                                               .name ??
@@ -680,7 +598,7 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                       schoolCode:
                                                           selectedCategory!.id
                                                               .toString(),
-                                                      parentId: widget.parentId,
+                                                      parentId: widget.parentId!,
                                                       classId:
                                                           selectedSubCategory!
                                                               .id!)
@@ -688,7 +606,7 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                 setState(() {
                                                   widget.studentController
                                                       .getStudentList(true,
-                                                          id: widget.parentId);
+                                                          id: widget.parentId!);
                                                 });
                                                 setAddAccount();
                                                 // ignore: use_build_context_synchronously
@@ -699,7 +617,7 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                   student_code:
                                                       selectedStudent!.code!,
                                                   studentRegController: widget
-                                                      .studentRegistrationController,
+                                                      .studentRegistrationController!,
                                                   title: 'student_info'.tr,
                                                   description:
                                                       '${'student_added_successfully'.tr}\n${'you_can_continue_by_adding_uniform_details'.tr}',
@@ -708,8 +626,8 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                   studentId:
                                                       selectedStudent!.id!,
                                                   selectedIndex:
-                                                      widget.selectedIndex,
-                                                  parentId: widget.parentId);
+                                                      widget.selectedIndex!,
+                                                  parentId: widget.parentId!);
                                            
                                           } else {
                                             setAddAccount();

@@ -146,7 +146,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
             Column(
               children: [
                 Container(
-                  height: screenHeight >= 763 ? 300 : 150,
+                  height: screenHeight >= 763 ? 290 : 150,
                   width: screenWidth,
                   color: kyellowColor,
                   child: Stack(
@@ -220,7 +220,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                         ),
                       ),
                                   Positioned(
-                                    top: 50,
+                                    top: 40,
                                     right: 20,
                                     child: RoundedButtonWidget(
                                      buttonText: languageText,

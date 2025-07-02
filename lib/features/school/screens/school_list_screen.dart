@@ -3,6 +3,7 @@ import 'package:hosomobile/common/widgets/custom_back_button_widget.dart';
 import 'package:hosomobile/features/history/controllers/transaction_history_controller.dart';
 import 'package:hosomobile/features/history/domain/models/transaction_model.dart';
 import 'package:hosomobile/features/history/widgets/transaction_type_button_widget.dart';
+import 'package:hosomobile/features/home/controllers/student_controller.dart';
 import 'package:hosomobile/features/home/domain/models/all_school_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/school/controllers/school_list_controller.dart';
@@ -27,8 +28,10 @@ class SchoolListScreen extends StatelessWidget {
   final String homePhone;
   final String destination;
   final String shipper;
+  final StudentController studentController;
+  int studentIndex;
 
-  SchoolListScreen({super.key,required this.studentCode,required this.shipper, required this.homePhone,required this.destination, required this.studentName,required this.className,required this.schoolName,required this.schoolId,required this.studentId,required this.classId});
+  SchoolListScreen({super.key, required this.studentController,required this.studentIndex, required this.studentCode,required this.shipper, required this.homePhone,required this.destination, required this.studentName,required this.className,required this.schoolName,required this.schoolId,required this.studentId,required this.classId});
 
   @override
   Widget build(BuildContext context) {
@@ -300,6 +303,8 @@ Widget requirementList(BuildContext context,{required int studentId,required int
             child: Padding(
               padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
               child: SchoolListWidget(
+                studentController: studentController,
+                studentIndex: studentIndex,
                 shipper:shipper,
                 homePhone:homePhone,
                 destination:destination,

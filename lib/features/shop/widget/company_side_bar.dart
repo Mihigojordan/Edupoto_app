@@ -16,7 +16,7 @@ class CompanySideBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 50,
+      width: 60,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [

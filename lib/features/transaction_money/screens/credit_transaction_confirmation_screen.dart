@@ -297,7 +297,7 @@ homeDeliveryAction() {
                 ],
               ),
               sizedBox10,
-              Text('${'pending'.tr}/${'remaining_amunt_to_be_paid'.tr}',
+              Text('${'pending'.tr}/${'remaining_amount_to_be_paid'.tr}',
                   style: rubikSemiBold.copyWith(
                       fontSize: Dimensions.fontSizeLarge,
                       color: ColorResources.getGreyBaseGray1())),

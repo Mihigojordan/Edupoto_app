@@ -52,8 +52,17 @@ class TerekaAsome extends StatefulWidget {
   final String? iconImages;
   final String? edubox_service;
   final int? productIndex;
+  final String? studentName;
+  final String? studentCode; 
+  final String? studentClass;
+  final String? studentSchool;
+
   TerekaAsome(
       {super.key,
+      this.studentName,
+      this.studentCode,
+      this.studentClass,
+      this.studentSchool,
       this.transactionType,
       this.studentId,
       this.productId,
@@ -234,6 +243,13 @@ class _TerekaAsomeState extends State<TerekaAsome> {
                                 right:
                                     screenWidth >= 520 ? screenWidth / 6.5 : 20,
                                 child: HomeCard1(
+                                  studentClass: widget.studentClass??'',
+                                  studentCode: widget.studentCode??'',
+                                  studentName: widget.studentName??'',
+                                  schoolId: widget.schoolId??0,
+                                  classId: widget.classId??0,
+                                  studentSchool: widget.studentSchool??'',
+                                  studentId: widget.studentId??0,
                                   productId: widget.productId,
                                   contactModel: widget.contactModel,
                                   countryCode: widget.countryCode,
@@ -270,6 +286,14 @@ class HomeCard1 extends StatefulWidget {
   int studentIndex;
   final bool isAddAccount; // Removed the nullable type since it's required
   final String? edubox_service;
+  final String studentCode;
+  final String studentName;
+  final String studentClass;
+  final String studentSchool;
+  final int studentId;
+  final int classId;
+  final int schoolId;
+
   HomeCard1(
       {super.key,
       this.transactionType,
@@ -281,9 +305,18 @@ class HomeCard1 extends StatefulWidget {
       required this.isAddAccount, // This is required, so no need for nullable type
       required this.productList,
       required this.studentIndex,
+      required this.studentCode,
+      required this.studentName,
+      required this.studentClass,
+      required this.studentSchool,
+      required this.classId,
+      required this.schoolId,
+      required this.studentId,
       this.productValue,
       this.edubox_service,
-      this.productIndex});
+      this.productIndex,
+   
+      });
 
   @override
   State<HomeCard1> createState() => _HomeCard1State();
@@ -353,9 +386,10 @@ class _HomeCard1State extends State<HomeCard1> {
           GetBuilder<StudentController>(builder: (studentController) {
         return studentController.isLoading
             ? const WebSiteShimmer()
-            : studentController.studentList!.isEmpty
-                ? const SizedBox()
-                : Column(
+            // studentController.studentList!.isEmpty
+            //     ? const SizedBox()
+                : 
+                Column(
                     children: [
                       Container(
                         decoration: const BoxDecoration(
@@ -393,41 +427,61 @@ class _HomeCard1State extends State<HomeCard1> {
                                 ForPersonWidget(
                                     contactModel: widget.contactModel),
                               sizedBox,
-                              Text(
+                       
+                              (studentController.studentList == null ||
+                                      studentController.studentList!.isEmpty)
+                                  ? const   SizedBox.shrink()
+                                  : Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                            Text(
                                 '${'student_code'.tr}:',
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.black.withOpacity(0.5),
                                     fontWeight: FontWeight.w400),
-                              ),
-                              DropDownAccount(
-                                onChanged: (selectedCode) {
-                                  setState(() {
-                                    // Find the index of the selected student in the list using the selected code
-                                    widget.studentIndex = studentController
-                                        .studentList!
-                                        .indexWhere((student) =>
-                                            student.code == selectedCode);
-
-                                    // You may want to add additional logic here based on the selected code
-                                    print(
-                                        'Selected student index: ${widget.studentIndex}');
-                                  });
-                                },
-                                itemLists: studentController.studentList!,
-                                title:
-                                    '${'code'.tr}: ${studentController.studentList![widget.studentIndex].code!}\n${'name'.tr}: ${studentController.studentList![widget.studentIndex].name}',
-                                isExpanded: true,
-                              ),
+                              ), 
+                                      DropDownAccount(
+                                          onChanged: (selectedCode) {
+                                            setState(() {
+                                              // Find the index of the selected student in the list using the selected code
+                                              widget.studentIndex =
+                                                  studentController.studentList!
+                                                      .indexWhere((student) =>
+                                                          student.code ==
+                                                          selectedCode);
+                                      
+                                              // You may want to add additional logic here based on the selected code
+                                              print(
+                                                  'Selected student index: ${widget.studentIndex}');
+                                            });
+                                          },
+                                          itemLists: studentController.studentList!,
+                                          title:
+                                              '${'code'.tr}: ${studentController.studentList![widget.studentIndex].code!}\n${'name'.tr}: ${studentController.studentList![widget.studentIndex].name} ${'class'.tr}:${studentController.studentList![widget.studentIndex].studentClass}',
+                                          isExpanded: true,
+                                        ),
+                                    ],
+                                  ),
                               sizedBox15,
-                              Text(
-                                '${'product'.tr}: ${widget.edubox_service} (${studentController.studentList?[widget.studentIndex]?.studentClass ?? ''}):',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black.withOpacity(0.5),
-                                  fontWeight: FontWeight.w400,
+                               (studentController.studentList == null ||
+                                  studentController.studentList!.isEmpty)?
+                                        Text(
+                                  '${'product'.tr}: ${widget.edubox_service}:',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black.withOpacity(0.5),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ):
+                                Text(
+                                  '${'product'.tr}: ${widget.edubox_service} (${studentController.studentList?[widget.studentIndex]?.studentClass ?? ''}):',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black.withOpacity(0.5),
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
-                              ),
 
                               // Materials List
                               if (widget.productList.isNotEmpty &&
@@ -568,9 +622,9 @@ class _HomeCard1State extends State<HomeCard1> {
                               //   _inputAmountFocusNode,
                               // ),
 
-                            
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   DefaultButtonWidth(
                                     width: 123,
@@ -580,31 +634,33 @@ class _HomeCard1State extends State<HomeCard1> {
                                       // Ensure material exists
                                       if (material == null) {
                                         showCustomSnackBarHelper(
-                                            'material_information_not_available'.tr,
+                                            'material_information_not_available'
+                                                .tr,
                                             isError: true);
                                         return;
                                       }
-                                  
+
                                       // Get material balance with proper null checks
                                       double materialBalance;
                                       try {
                                         materialBalance = (material
-                                                        .paymentHistory?.balance !=
+                                                        .paymentHistory
+                                                        ?.balance !=
                                                     null &&
                                                 double.tryParse(material
                                                             .paymentHistory!
                                                             .balance ??
                                                         '0.00')! >
                                                     0.00)
-                                            ? double.parse(
-                                                material.paymentHistory!.balance!)
+                                            ? double.parse(material
+                                                .paymentHistory!.balance!)
                                             : double.parse(
                                                 material.price?.toString() ??
                                                     '0.00');
                                       } catch (e) {
                                         materialBalance = 0.00;
                                       }
-                                  
+
                                       // Check input amount
                                       if (_inputAmountController.text.isEmpty) {
                                         showCustomSnackBarHelper(
@@ -612,9 +668,10 @@ class _HomeCard1State extends State<HomeCard1> {
                                             isError: true);
                                         return;
                                       }
-                                  
+
                                       // Process amount
-                                      String balance = _inputAmountController.text;
+                                      String balance =
+                                          _inputAmountController.text;
                                       balance = balance
                                           .replaceAll(
                                               splashController.configModel
@@ -623,7 +680,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                               '')
                                           .replaceAll(',', '')
                                           .replaceAll(' ', '');
-                                  
+
                                       double amount;
                                       try {
                                         amount = double.parse(balance);
@@ -633,14 +690,14 @@ class _HomeCard1State extends State<HomeCard1> {
                                             isError: true);
                                         return;
                                       }
-                                  
+
                                       if (amount <= 0) {
                                         showCustomSnackBarHelper(
                                             'transaction_amount_must_be'.tr,
                                             isError: true);
                                         return;
                                       }
-                                  
+
                                       // Check product list bounds
                                       if (widget.productList.isEmpty ||
                                           selectedIndex >=
@@ -652,16 +709,17 @@ class _HomeCard1State extends State<HomeCard1> {
                                               widget.productList[selectedIndex]
                                                   .eduboxMaterials!.length) {
                                         showCustomSnackBarHelper(
-                                            'product_information_not_available'.tr,
+                                            'product_information_not_available'
+                                                .tr,
                                             isError: true);
                                         return;
                                       }
-                                  
+
                                       // Get current material safely
                                       final currentMaterial = widget
                                           .productList[selectedIndex]
                                           .eduboxMaterials![materialIndex];
-                                  
+
                                       // if (amount < 100 ||
                                       //     amount > materialBalance ||
                                       //     materialBalance <= 0.00) {
@@ -675,39 +733,39 @@ class _HomeCard1State extends State<HomeCard1> {
                                       //           0.00,
                                       //       inputAmaount: amount);
                                       // } else {
-                                        _confirmationRoute(
-                                            amount: material.price!,
-                                            price: double.tryParse(currentMaterial
-                                                        .price
-                                                        ?.toString() ??
-                                                    '0.00') ??
-                                                0.00,
-                                            balance: double.tryParse(currentMaterial
-                                                        .price
-                                                        ?.toString() ??
-                                                    '0.00') ??
-                                                0.00,
-                                            );
+                                      _confirmationRoute(
+                                        amount: material.price!,
+                                        price: double.tryParse(currentMaterial
+                                                    .price
+                                                    ?.toString() ??
+                                                '0.00') ??
+                                            0.00,
+                                        balance: double.tryParse(currentMaterial
+                                                    .price
+                                                    ?.toString() ??
+                                                '0.00') ??
+                                            0.00,
+                                      );
                                       // }
                                     },
                                     title: 'pay_now'.tr,
-                                  
                                   ),
                                   DefaultButtonWidth(
-  width: 123,
-  color1: kamber300Color,
-  color2: kyellowColor,
-  onPress: () => showDepositDialog(
-    context: context,
-    title: 'how_much_would_you_like_to_deposit'.tr,
-    onDeposit: (amount) {
-      _handleDeposit(amount:amount,material: material);
-      
-    },
-  ),
-  title: 'deposit'.tr,
-),
-
+                                    width: 123,
+                                    color1: kamber300Color,
+                                    color2: kyellowColor,
+                                    onPress: () => showDepositDialog(
+                                      context: context,
+                                      title:
+                                          'how_much_would_you_like_to_deposit'
+                                              .tr,
+                                      onDeposit: (amount) {
+                                        _handleDeposit(
+                                            amount: amount, material: material);
+                                      },
+                                    ),
+                                    title: 'deposit'.tr,
+                                  ),
                                 ],
                               ),
 
@@ -810,24 +868,28 @@ class _HomeCard1State extends State<HomeCard1> {
                                   //           0.00,
                                   //       inputAmaount: amount);
                                   // } else {
-                                    _creditConfirmationRoute(
-                                        amount: double.tryParse(currentMaterial
-                                                    .price
-                                                    ?.toString() ??
-                                                '0.00') ??
-                                            0.00,
-                                        price: double.tryParse(currentMaterial
-                                                    .price
-                                                    ?.toString() ??
-                                                '0.00') ??
-                                            0.00,
-                                        balance: materialBalance);
+                                  _creditConfirmationRoute(
+                                      amount: double.tryParse(currentMaterial
+                                                  .price
+                                                  ?.toString() ??
+                                              '0.00') ??
+                                          0.00,
+                                      price: double.tryParse(currentMaterial
+                                                  .price
+                                                  ?.toString() ??
+                                              '0.00') ??
+                                          0.00,
+                                      balance: materialBalance);
                                   // }
                                 },
                                 title: 'request_for_credit'.tr,
                                 iconData: Icons.arrow_forward_outlined,
                               ),
                               sizedBox10,
+                                   (studentController.studentList == null ||
+                                      studentController.studentList!.isEmpty)
+                                  ? const   SizedBox.shrink()
+                                  :
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 8.0),
@@ -843,9 +905,9 @@ class _HomeCard1State extends State<HomeCard1> {
                                           index: widget.studentIndex,
                                           title:
                                               '${'code'.tr}: ${studentController.studentList![widget.studentIndex].code!}\n${'name'.tr}: ${studentController.studentList![widget.studentIndex].name}'),
-                                      child:  Column(
+                                      child: Column(
                                         children: [
-                                         const Icon(
+                                          const Icon(
                                             Icons.person,
                                             color: kgrey800Color,
                                           ),
@@ -861,14 +923,14 @@ class _HomeCard1State extends State<HomeCard1> {
                                           context: context,
                                           index: selectedIndex,
                                           indexM: materialIndex),
-                                      child:  Column(
+                                      child: Column(
                                         children: [
-                                         const Icon(
+                                          const Icon(
                                             Icons.info,
                                             color: kgrey800Color,
                                           ),
                                           Text(
-                                            '${'profile_details_product'.tr}\n${'profile_details_details'.tr}',
+                                            '${'product_details_product'.tr}\n${'product_details_details'.tr}',
                                             style: ktextGrey,
                                           )
                                         ],
@@ -876,9 +938,9 @@ class _HomeCard1State extends State<HomeCard1> {
                                     ),
                                     InkWell(
                                       onTap: () => Get.to(HistoryScreen()),
-                                      child:  Column(
+                                      child: Column(
                                         children: [
-                                       const   Icon(
+                                          const Icon(
                                             Icons.monetization_on,
                                             color: kgrey800Color,
                                           ),
@@ -907,78 +969,82 @@ class _HomeCard1State extends State<HomeCard1> {
   }
 
   // Separate method for deposit handling
-void _handleDeposit({required double amount, EduboxMaterialModel? material}) {
-  // Validate material exists
-  if (material == null) {
-    showCustomSnackBarHelper('Material information not available', isError: true);
-    return;
-  }
+  void _handleDeposit({required double amount, EduboxMaterialModel? material}) {
+    // Validate material exists
+    if (material == null) {
+      showCustomSnackBarHelper('Material information not available',
+          isError: true);
+      return;
+    }
 
-  // Calculate material balance safely
-  final materialBalance = _calculateMaterialBalance(material!);
+    // Calculate material balance safely
+    final materialBalance = _calculateMaterialBalance(material!);
 
-  // Validate amount
-  if (amount <= 0) {
-    showCustomSnackBarHelper('transaction_amount_must_be'.tr, isError: true);
-    return;
-  }
+    // Validate amount
+    if (amount <= 0) {
+      showCustomSnackBarHelper('transaction_amount_must_be'.tr, isError: true);
+      return;
+    }
 
-  // Validate product information
-  if (!_validateProductInfo()) {
-    showCustomSnackBarHelper('product_information_not_available'.tr, isError: true);
-    return;
-  }
+    // Validate product information
+    if (!_validateProductInfo()) {
+      showCustomSnackBarHelper('product_information_not_available'.tr,
+          isError: true);
+      return;
+    }
 
-  final currentMaterial = _getCurrentMaterial();
-  if (currentMaterial == null) {
-    showCustomSnackBarHelper('Selected material not found', isError: true);
-    return;
-  }
+    final currentMaterial = _getCurrentMaterial();
+    if (currentMaterial == null) {
+      showCustomSnackBarHelper('Selected material not found', isError: true);
+      return;
+    }
 
-  // Validate amount against balance
-  if (amount < 100 || amount > materialBalance || materialBalance <= 0.00) {
-    dialog.showWarningDialog(
-      context: context,
-      balance: materialBalance,
-      amount: _parseMaterialPrice(currentMaterial),
-      inputAmaount: amount,
-    );
-  } else {
-    _confirmationRoute(
-      amount:amount,
-      price: _parseMaterialPrice(currentMaterial),
-      balance: materialBalance,
-    );
+    // Validate amount against balance
+    if (amount < 100 || amount > materialBalance || materialBalance <= 0.00) {
+      dialog.showWarningDialog(
+        context: context,
+        balance: materialBalance,
+        amount: _parseMaterialPrice(currentMaterial),
+        inputAmaount: amount,
+      );
+    } else {
+      _confirmationRoute(
+        amount: amount,
+        price: _parseMaterialPrice(currentMaterial),
+        balance: materialBalance,
+      );
+    }
   }
-}
 
 // Helper methods
-double _calculateMaterialBalance(EduboxMaterialModel material) {
-  try {
-    return (material.paymentHistory?.balance != null && 
-            double.tryParse(material.paymentHistory!.balance ?? '0.00')! > 0.00)
-        ? double.parse(material.paymentHistory!.balance!)
-        : double.parse(material.price?.toString() ?? '0.00');
-  } catch (e) {
-    return 0.00;
+  double _calculateMaterialBalance(EduboxMaterialModel material) {
+    try {
+      return (material.paymentHistory?.balance != null &&
+              double.tryParse(material.paymentHistory!.balance ?? '0.00')! >
+                  0.00)
+          ? double.parse(material.paymentHistory!.balance!)
+          : double.parse(material.price?.toString() ?? '0.00');
+    } catch (e) {
+      return 0.00;
+    }
   }
-}
 
-bool _validateProductInfo() {
-  return widget.productList.isNotEmpty &&
-      selectedIndex < widget.productList.length &&
-      widget.productList[selectedIndex].eduboxMaterials != null &&
-      materialIndex < widget.productList[selectedIndex].eduboxMaterials!.length;
-}
+  bool _validateProductInfo() {
+    return widget.productList.isNotEmpty &&
+        selectedIndex < widget.productList.length &&
+        widget.productList[selectedIndex].eduboxMaterials != null &&
+        materialIndex <
+            widget.productList[selectedIndex].eduboxMaterials!.length;
+  }
 
-EduboxMaterialModel? _getCurrentMaterial() {
-  if (!_validateProductInfo()) return null;
-  return widget.productList[selectedIndex].eduboxMaterials![materialIndex];
-}
+  EduboxMaterialModel? _getCurrentMaterial() {
+    if (!_validateProductInfo()) return null;
+    return widget.productList[selectedIndex].eduboxMaterials![materialIndex];
+  }
 
-double _parseMaterialPrice(EduboxMaterialModel material) {
-  return double.tryParse(material.price?.toString() ?? '0.00') ?? 0.00;
-}
+  double _parseMaterialPrice(EduboxMaterialModel material) {
+    return double.tryParse(material.price?.toString() ?? '0.00') ?? 0.00;
+  }
 
   sendMoney() {
     _contact = ContactModel(
@@ -1115,91 +1181,10 @@ double _parseMaterialPrice(EduboxMaterialModel material) {
     final studentController = Get.find<StudentController>();
     if (widget.transactionType == TransactionType.addMoney) {
       Get.find<AddMoneyController>().addMoney(amount);
-    } else if (widget.transactionType == TransactionType.withdrawRequest) {
-      String? message;
-      WithdrawalMethod? withdrawMethod = transactionMoneyController
-          .withdrawModel!.withdrawalMethods
-          .firstWhereOrNull(
-              (method) => _selectedMethodId == method.id.toString());
-
-      List<MethodField> list = [];
-      String? validationKey;
-
-      if (withdrawMethod != null) {
-        for (var method in withdrawMethod.methodFields) {
-          if (method.inputType == 'email') {
-            validationKey = method.inputName;
-          }
-          if (method.inputType == 'date') {
-            validationKey = method.inputName;
-          }
-        }
-      } else {
-        message = 'please_select_a_method'.tr;
-      }
-
-      _textControllers.forEach((key, textController) {
-        list.add(MethodField(
-          inputName: key,
-          inputType: null,
-          inputValue: textController.text,
-          placeHolder: null,
-        ));
-
-        if ((validationKey == key) &&
-            EmailCheckerHelper.isNotValid(textController.text)) {
-          message = 'please_provide_valid_email'.tr;
-        } else if ((validationKey == key) &&
-            textController.text.contains('-')) {
-          message = 'please_provide_valid_date'.tr;
-        }
-
-        if (textController.text.isEmpty && message == null) {
-          message = 'please fill ${key!.replaceAll('_', ' ')} field';
-        }
-      });
-
-      _gridTextController.forEach((key, textController) {
-        list.add(MethodField(
-          inputName: key,
-          inputType: null,
-          inputValue: textController.text,
-          placeHolder: null,
-        ));
-
-        if ((validationKey == key) && textController.text.contains('-')) {
-          message = 'please_provide_valid_date'.tr;
-        }
-      });
-
-      if (message != null) {
-        //  showCustomSnackBarHelper(message);
-        message = null;
-      } else {
-        Get.to(() => TransactionConfirmationScreen(
-              inputBalance: amount,
-              availableBalance: balance.toStringAsFixed(2),
-              productId: widget.productId!,
-              transactionType: TransactionType.withdrawRequest,
-              contactModel: null,
-              withdrawMethod: WithdrawalMethod(
-                  methodFields: list,
-                  methodName: withdrawMethod!.methodName,
-                  id: withdrawMethod.id),
-              callBack: setFocus,
-              dataList: widget.productList[selectedIndex].eduboxMaterials,
-              productIndex: materialIndex,
-              contactModelMtn: widget.contactModelMtn,
-              studentInfo: studentController.studentList,
-              edubox_service: widget.productValue,
-            
-              serviceIndex: widget.productIndex,
-             
-              price: price,
-            ));
-      }
     } else {
       Get.to(() => TransactionConfirmationScreen(
+            studentIndex:widget.studentIndex,
+            studentController: studentController,
             inputBalance: amount,
             availableBalance: balance.toStringAsFixed(2),
             productId: widget.productId!,
@@ -1217,11 +1202,16 @@ double _parseMaterialPrice(EduboxMaterialModel material) {
             callBack: setFocus,
             dataList: widget.productList[selectedIndex].eduboxMaterials,
             productIndex: materialIndex,
-            studentInfo: studentController.studentList,
+            studentName:widget.studentName,
+            studentCode:widget.studentCode,
+            studentClass:widget.studentClass,
+            studentSchool:widget.studentSchool,
+            classId: widget.classId,
+            schoolId:widget.schoolId ,
+            studentId:widget.studentId ,
             edubox_service: widget.productValue,
             serviceIndex: widget.productIndex,
             serviceValue: widget.productValue,
-            studentIndex: widget.studentIndex,
             price: price,
           ));
     }
@@ -1323,8 +1313,7 @@ double _parseMaterialPrice(EduboxMaterialModel material) {
             serviceIndex: widget.productIndex,
             studentIndex: widget.studentIndex,
             price: price,
-            parent: widget.parent!
-            ));
+            parent: widget.parent!));
       }
     } else {
       Get.to(() => CreditTransactionConfirmationScreen(
@@ -1336,7 +1325,7 @@ double _parseMaterialPrice(EduboxMaterialModel material) {
             //     studentController.studentList![widget.studentIndex].code!,
             // studentName:
             //     studentController.studentList![widget.studentIndex].name!,
-            inputBalance:amount ,
+            inputBalance: amount,
             availableBalance: balance.toStringAsFixed(2),
             productId: widget.productId!,
             transactionType: TransactionType.sendMoney,
@@ -1396,7 +1385,7 @@ double _parseMaterialPrice(EduboxMaterialModel material) {
                                   : "${"uniform".tr} ${'details'.tr}:\n${widget.productList[index].eduboxMaterials![indexM].description ?? 'no_info_available'.tr}",
                       textAlign: TextAlign.center,
                     )
-                  :  Text(
+                  : Text(
                       'no_info_available'.tr,
                       textAlign: TextAlign.center,
                     ),
@@ -1407,9 +1396,9 @@ double _parseMaterialPrice(EduboxMaterialModel material) {
               onPressed: () {
                 Navigator.of(context).pop(); // Closes the dialog
               },
-              child:  Text(
+              child: Text(
                 "ok".tr,
-                style:const TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
               ),
             ),
           ],

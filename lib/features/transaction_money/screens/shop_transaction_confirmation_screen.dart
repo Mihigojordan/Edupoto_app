@@ -12,8 +12,10 @@ import 'package:hosomobile/features/home/controllers/student_controller.dart';
 import 'package:hosomobile/features/home/domain/models/all_school_model.dart';
 import 'package:hosomobile/features/home/domain/models/student_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/custom_buttons.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/components/dependent_school_dropdown.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/image.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/constants/show_info_dialog.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
 import 'package:hosomobile/features/map/screens/map_screen.dart';
 import 'package:hosomobile/features/setting/controllers/profile_screen_controller.dart';
@@ -82,6 +84,7 @@ class _TransactionConfirmationScreenState
   double deliveryCost = 3000.0;
 
   bool isHomeDelivery = false;
+  bool isSchoolDelivery = false;
   Districts? selectedDistrict;
   AllSchoolModel? selectedCategory; // Selected value for the first dropdown
   ClassDetails? selectedSubCategory; // Selected value for the second dropdown
@@ -121,12 +124,16 @@ class _TransactionConfirmationScreenState
     //     },
     //   );
 
-
-
     //   return; // Exit the function early
     // }
     setState(() {
       isHomeDelivery = !isHomeDelivery;
+    });
+  }
+
+  schoolDeliveryAction() {
+    setState(() {
+      isSchoolDelivery = !isSchoolDelivery;
     });
   }
 
@@ -141,7 +148,7 @@ class _TransactionConfirmationScreenState
       });
       // Optionally show a snackbar for more visibility
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
+        SnackBar(
           content: Text('please_select_delivery_option'.tr),
           backgroundColor: Colors.red,
         ),
@@ -174,13 +181,19 @@ class _TransactionConfirmationScreenState
 
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-   final bottomSliderController = Get.find<BottomSliderController>();
-  final totalAmount = AppConstants.calculateTotal(double.parse('${widget.totalAmount}')).toStringAsFixed(2);
-    final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('${widget.totalAmount}')); 
-    final vat =AppConstants.calculateVAT(double.parse('${widget.totalAmount}')) ;
-    final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.totalAmount}'), balance: double.parse('${widget.totalAmount}')).toStringAsFixed(2);
-      int randomNumber = random.nextInt(90000000) + 10000000;
-
+    final bottomSliderController = Get.find<BottomSliderController>();
+    final totalAmount =
+        AppConstants.calculateTotal(double.parse('${widget.totalAmount}'))
+            .toStringAsFixed(2);
+    final double convenienceFee = AppConstants.calculateConvenienceFee(
+        double.parse('${widget.totalAmount}'));
+    final vat =
+        AppConstants.calculateVAT(double.parse('${widget.totalAmount}'));
+    final availableBalance = AppConstants.availableBalance(
+            amount: double.parse('${widget.totalAmount}'),
+            balance: double.parse('${widget.totalAmount}'))
+        .toStringAsFixed(2);
+    int randomNumber = random.nextInt(90000000) + 10000000;
 
     return Scaffold(
       body: GetBuilder<StudentController>(builder: (studentController) {
@@ -190,27 +203,27 @@ class _TransactionConfirmationScreenState
             .map((index) => studentController.studentList![index])
             .toList();
 
-        if (studentController.studentList == null ||
-            studentController.studentList!.isEmpty) {
-          return Center(
-            child: Column(
-              children: [
-                Text(
-                  '${'no_student_available'.tr}!, ${'please_add_student_to_continue'}',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                sizedBox10,
-                TextButton(
-                  onPressed: () => const MzaziScreen(isShop: true),
-                  child: Text(
-                    'add'.tr,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                )
-              ],
-            ),
-          );
-        } else {
+        // if (studentController.studentList == null ||
+        //     studentController.studentList!.isEmpty) {
+        //   return Center(
+        //     child: Column(
+        //       children: [
+        //         Text(
+        //           '${'no_student_available'.tr}!, ${'please_add_student_to_continue'}',
+        //           style: Theme.of(context).textTheme.titleLarge,
+        //         ),
+        //         sizedBox10,
+        //         TextButton(
+        //           onPressed: () => const MzaziScreen(isShop: true),
+        //           child: Text(
+        //             'add'.tr,
+        //             style: Theme.of(context).textTheme.titleMedium,
+        //           ),
+        //         )
+        //       ],
+        //     ),
+        //   );
+        // } else {
           return SingleChildScrollView(
               child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -227,36 +240,6 @@ class _TransactionConfirmationScreenState
                     '${'invoice_no'.tr}: $randomNumber',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  sizedBox15,
-                  SizedBox(
-                    height: screenHeight / 6,
-                    child: Scrollbar(
-                      thumbVisibility: true,
-                      child: ListView.builder(
-                        itemCount: studentController.studentList!.length,
-                        itemBuilder: (context, studentIndex) {
-                          return ForStudentWidget(
-                            studentInfo:
-                                '${'code'.tr}: ${studentController.studentList![studentIndex].code}\n${'name'.tr}: ${studentController.studentList![studentIndex].name}\n${'school'.tr}:${studentController.studentList![studentIndex].school}. ${'class'.tr}: ${studentController.studentList![studentIndex].studentClass}',
-                            onChecked: (isChecked) {
-                              // Update the selectedStudents list
-                              setState(() {
-                                if (isChecked) {
-                                  selectedStudents
-                                      .add(studentIndex); // Add to list
-                                } else {
-                                  selectedStudents
-                                      .remove(studentIndex); // Remove from list
-                                }
-                              });
-                            },
-                            initialChecked:
-                                selectedStudents.contains(studentIndex),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
                   sizedBox05h,
                   Container(
                     padding: const EdgeInsets.all(10),
@@ -269,121 +252,147 @@ class _TransactionConfirmationScreenState
                     child: Scrollbar(
                       thumbVisibility: true,
                       child: SizedBox(
-  height: MediaQuery.of(context).size.height / 3, // Increased height to accommodate new layout
-  child: ListView.builder(
-    itemCount: widget.cart.length,
-    itemBuilder: (context, productIndex) {
-      final product = widget.cart.keys.elementAt(productIndex);
-      final quantity = widget.cart[product]!;
-      final totalPrice = product.price * quantity;
-      
-      return Card(
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top section - Product info
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Product image
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.asset(
-                      product.image,
-                      height: 40,
-                      width: 40,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  // Product details
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          product.name,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        height: MediaQuery.of(context).size.height /
+                            3, // Increased height to accommodate new layout
+                        child: ListView.builder(
+                          itemCount: widget.cart.length,
+                          itemBuilder: (context, productIndex) {
+                            final product =
+                                widget.cart.keys.elementAt(productIndex);
+                            final quantity = widget.cart[product]!;
+                            final totalPrice = product.price * quantity;
+
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 8),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Top section - Product info
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Product image
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Image.asset(
+                                            product.image,
+                                            height: 40,
+                                            width: 40,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        // Product details
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                product.name,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                '${AppConstants.currency} ${product.price.toStringAsFixed(2)}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium,
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                '${'quantity'.tr}: $quantity',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium,
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                '${'total'.tr}: ${AppConstants.currency} ${totalPrice.toStringAsFixed(2)}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    // Bottom section - Action buttons aligned to right
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          // Reduce Quantity Button
+                                          IconButton(
+                                            icon: const Icon(Icons.remove),
+                                            onPressed: () {
+                                              setState(() {
+                                                widget
+                                                    .onReduceQuantity(product);
+                                                widget.totalAmount -=
+                                                    product.price;
+                                              });
+                                            },
+                                          ),
+                                          // Quantity display
+                                          Text(
+                                            quantity.toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge,
+                                          ),
+                                          // Increase Quantity Button
+                                          IconButton(
+                                            icon: const Icon(Icons.add),
+                                            onPressed: () {
+                                              setState(() {
+                                                widget.onIncreaseQuantity(
+                                                    product);
+                                                widget.totalAmount +=
+                                                    product.price;
+                                              });
+                                            },
+                                          ),
+                                          // Remove Product Button
+                                          IconButton(
+                                            icon: const Icon(Icons.delete,
+                                                color: Colors.red),
+                                            onPressed: () {
+                                              setState(() {
+                                                widget.onRemoveProduct(product);
+                                                widget.totalAmount -=
+                                                    totalPrice;
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${AppConstants.currency} ${product.price.toStringAsFixed(2)}',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${'quantity'.tr}: $quantity',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${'total'.tr}: ${AppConstants.currency} ${totalPrice.toStringAsFixed(2)}',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              // Bottom section - Action buttons aligned to right
-              Align(
-                alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Reduce Quantity Button
-                    IconButton(
-                      icon: const Icon(Icons.remove),
-                      onPressed: () {
-                        setState(() {
-                          widget.onReduceQuantity(product);
-                          widget.totalAmount -= product.price;
-                        });
-                      },
-                    ),
-                    // Quantity display
-                    Text(
-                      quantity.toString(),
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    // Increase Quantity Button
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        setState(() {
-                          widget.onIncreaseQuantity(product);
-                          widget.totalAmount += product.price;
-                        });
-                      },
-                    ),
-                    // Remove Product Button
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        setState(() {
-                          widget.onRemoveProduct(product);
-                          widget.totalAmount -= totalPrice;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  ),
-),
+                      ),
                     ),
                   ),
                   sizedBox10,
@@ -400,213 +409,90 @@ class _TransactionConfirmationScreenState
                         maxLines: 2,
                       ),
                       sizedBox15,
-                      DefaultButton2(
-                        color1: kamber300Color,
-                        color2: kyellowColor,
-                        onPress: () {
-                          print('this is selected student:::::::::: $selectedStudents | $studentIndex');
-                          // Check if no students are selected
-                          if (selectedStudents.isEmpty) {
-                            // Show an alert or snackbar to inform the user
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title:  Text('no_student_selected'.tr),
-                                  content:  Text( 'please_select_at_least_one_student_to_proceed'.tr),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(
-                                            context); // Close the dialog
-                                      },
-                                      child: Text('ok'.tr),
+                      isSchoolDelivery == false
+                          ? DefaultButton2(
+                              color1: kamber300Color,
+                              color2: kyellowColor,
+                              onPress: () =>schoolDeliveryAction(),
+                              title: 'school_cap'.tr,
+                              iconData: Icons.arrow_forward_outlined,
+                            )
+                          :
+                           (studentController.studentList == null )
+                              ?
+                              // ************************DISPLAY FIELD FOR ENTERING STUDENT FOR ACCOMPLISH PAYMENT****************
+                              DependentSchoolDropdowns(
+                                  isShop: true,
+                                  isNotRegStudent: true,
+                                  parentId: randomNumber.toString(),
+                                  studentController: studentController,
+                                  isAddAccount: false,
+                                )
+                              : 
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                   Text(
+                                        'select_your_student_who_is_going_to_receive_the_product_at_school'.tr),
+                                    sizedBox05h,
+                                  SizedBox(
+                                      height: screenHeight / 6,
+                                      child: Scrollbar(
+                                        thumbVisibility: true,
+                                        child: ListView.builder(
+                                          itemCount:
+                                              studentController.studentList!.length,
+                                          itemBuilder: (context, studentIndex) {
+                                            return ForStudentWidget(
+                                              studentInfo:
+                                                  '${'code'.tr}: ${studentController.studentList![studentIndex].code}\n${'name'.tr}: ${studentController.studentList![studentIndex].name}\n${'school'.tr}:${studentController.studentList![studentIndex].school}. ${'class'.tr}: ${studentController.studentList![studentIndex].studentClass}',
+                                              onChecked: (isChecked) {
+                                                // Update the selectedStudents list
+                                                setState(() {
+                                                  if (isChecked) {
+                                                    selectedStudents.add(
+                                                        studentIndex); // Add to list
+                                                  } else {
+                                                    selectedStudents.remove(
+                                                        studentIndex); // Remove from list
+                                                  }
+                                                });
+                                              },
+                                              initialChecked: selectedStudents
+                                                  .contains(studentIndex),
+                                            );
+                                          },
+                                        ),
+                                      ),
                                     ),
-                                  ],
-                                );
-                              },
-                            );
-                            return; // Exit the function early
-                          }
+                                                sizedBox05h,
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        DefaultButtonWidth(
+                                            onPress: () => _captureInformation(
+                                              studentIndex:studentIndex,
+                                              studentController: studentController,
+                                              productIndex: productIndex,
+                                             
+                                                context,
+                                                schoolName:studentController.studentList![studentIndex].school!,
+                                                randomNumber: randomNumber,
+                                                className: studentController.studentList![studentIndex].studentClass!,
+                                                totalAmount: totalAmount,
+                                           
+                                                orderId: '21323443421',
+                                                vat: vat,
+                                                convenienceFee: convenienceFee),
+                                            title: 'next'.tr,
+                                            color1: kamber300Color,
+                                            color2: kyellowColor,
+                                            width: 123)
+                                      ],
+                                    )
+                                ],
+                              ),
 
-                          // Proceed with the transaction if students are selected
-                          final configModel =
-                              Get.find<SplashController>().configModel;
-                          List<StudentModel> checkedStudents = selectedStudents
-                              .map((index) =>
-                                  studentController.studentList![index])
-                              .toList();
-                          print(
-                              'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx$checkedStudents');
-
-                          Get.find<TransactionMoneyController>()
-                              .pinVerify(
-                            pin: _pinCodeFieldController.text,
-                          )
-                              .then((isCorrect) {
-                            if (isCorrect) {
-                              if (configModel!.twoFactor! &&
-                                  Get.find<ProfileController>()
-                                      .userInfo!
-                                      .twoFactor!) {
-                                Get.find<AuthController>()
-                                    .checkOtp()
-                                    .then((value) => value.isOk
-                                        ? Get.defaultDialog(
-                                            barrierDismissible: false,
-                                            title: 'otp_verification'.tr,
-                                            content: Column(
-                                              children: [
-                                                CustomPinCodeFieldWidget(
-                                                  onCompleted: (pin) =>
-                                                      Get.find<AuthController>()
-                                                          .verifyOtp(pin)
-                                                          .then((value) {
-                                                    if (value.isOk) {
-                                                      showModalBottomSheet(
-                                                        isScrollControlled:
-                                                            true,
-                                                        context: Get.context!,
-                                                        isDismissible: false,
-                                                        enableDrag: false,
-                                                        shape:
-                                                            const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.vertical(
-                                                                  top: Radius.circular(
-                                                                      Dimensions
-                                                                          .radiusSizeLarge)),
-                                                        ),
-                                                        builder: (context) =>
-                                                            BottomSheetWithSliderSp(
-                                                          materialCost: widget
-                                                              .totalAmount
-                                                              .toStringAsFixed(
-                                                                  2),
-                                                          deliveryCost:
-                                                              deliveryCost,
-                                                          shipper:
-                                                              widget.shipper,
-                                                          homePhone:
-                                                              widget.homePhone,
-                                                          destination: widget
-                                                              .destination,
-                                                          studentId:
-                                                              checkedStudents[0]
-                                                                  .id!,
-                                                          randomNumber:
-                                                              randomNumber,
-                                                          selectedProducts:
-                                                              widget.cart,
-                                                          quantity:
-                                                              widget.quantity,
-                                                          productIndex:
-                                                              productIndex,
-                                                          amount: '0',
-                                                          availableBalance:
-                                                              '0.00',
-                                                          contactModel: widget
-                                                              .contactModel,
-                                                          contactModelMtn: widget
-                                                              .contactModelMtn,
-                                                          pinCode: Get.find<
-                                                                  BottomSliderController>()
-                                                              .pin,
-                                                          transactionType: widget
-                                                              .transactionType,
-                                                          purpose: widget
-                                                              .transactionType,
-                                                          inputBalance: 0.0,
-                                                          product:
-                                                              widget.product,
-                                                          amountToPay:
-                                                              '${'amount_to_be_paid'.tr}: ${widget.totalAmount} ${AppConstants.currency}',
-                                                          nowPaid:
-                                                              '${'now_paid'.tr}: ${widget.totalAmount.toStringAsFixed(2)} ${AppConstants.currency}',
-                                                          vat:
-                                                              '${'vat'.tr}: $vat ${AppConstants.currency}',
-                                                          serviceCharge:convenienceFee.toStringAsFixed(2),
-                                                          totalNowPaid:
-                                                              '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
-                                                        ),
-                                                      );
-                                                    }
-                                                  }),
-                                                ),
-                                                const DemoOtpHintWidget(),
-                                                GetBuilder<AuthController>(
-                                                  builder: (verifyController) =>
-                                                      verifyController
-                                                              .isVerifying
-                                                          ? CircularProgressIndicator(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .titleLarge!
-                                                                  .color,
-                                                            )
-                                                          : const SizedBox
-                                                              .shrink(),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        : null);
-                              } else {
-                                showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    context: Get.context!,
-                                    isDismissible: true,
-                                    enableDrag: true,
-                                    shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(
-                                          Dimensions.radiusSizeLarge),
-                                    )),
-                                    builder: (context) {
-                                      return BottomSheetWithSliderSp(
-                                        deliveryCost: deliveryCost,
-                                        shipper: widget.shipper,
-                                        homePhone: widget.homePhone,
-                                        destination: widget.destination,
-                                        studentId: checkedStudents[0].id!,
-                                        randomNumber: randomNumber,
-                                        selectedProducts: widget.cart,
-                                        quantity: widget.quantity,
-                                        studentIndex: studentIndex,
-                                        availableBalance: '0.00',
-                                        amount: totalAmount.toString(),
-                                        materialCost: widget.totalAmount
-                                            .toStringAsFixed(2),
-                                        productId: 1,
-                                        contactModel: widget.contactModel,
-                                        pinCode: _pinCodeFieldController.text,
-                                        transactionType: widget.transactionType,
-                                        purpose: widget.transactionType,
-                                        studentInfo: checkedStudents,
-                                        inputBalance: widget.totalAmount,
-                                        product: widget.product,
-                                        productIndex: productIndex,
-                                        edubox_service: 'shop'.tr,
-                                        amountToPay:
-                                            '${'delivery_cost'.tr}: ${deliveryCost.toStringAsFixed(2)}',
-                                        nowPaid:
-                                            '${'material_cost'.tr}: ${widget.totalAmount.toStringAsFixed(2)}',
-                                        vat:
-                                            '${'vat'.tr}: $vat ${AppConstants.currency}',
-                                        serviceCharge:convenienceFee.toStringAsFixed(2),
-                                        totalNowPaid:
-                                            '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
-                                        serviceValue: widget.product.name,
-                                      );
-                                    });
-                              }
-                            }
-                          });
-                        },
-                        title: 'school_cap'.tr,
-                        iconData: Icons.arrow_forward_outlined,
-                      ),
                       sizedBox15,
                       isHomeDelivery == false
                           ? DefaultButton2(
@@ -618,28 +504,28 @@ class _TransactionConfirmationScreenState
                               title: 'home_cap'.tr,
                               iconData: Icons.arrow_forward_outlined,
                             )
-                          : DeliveryMapScreen(
+                          :(studentController.studentList == null ||
+                                  studentController.studentList!.isEmpty)
+                              ?
+
+                          DeliveryMapScreen(
                               deliveryCost: deliveryCost,
                               isShop: 1,
                               product: widget.product,
                               cart: widget.cart,
                               checkedStudents: checkedStudents,
-                              checkedStudentsId:selectedStudents.isEmpty?0: checkedStudents[0].id,
+                              checkedStudentsId: selectedStudents.isEmpty
+                                  ? 0
+                                  : checkedStudents[0].id,
                               quantity: widget.quantity,
                               studentIndex: studentIndex,
                               schoolId: 0,
-                              classId: studentController
-                                  .studentList![studentIndex].classId!,
-                              className: studentController
-                                  .studentList![studentIndex].studentClass!,
-                              schoolName: studentController
-                                  .studentList![studentIndex].school??'unknown_school'.tr,
-                              studentCode: studentController
-                                  .studentList![studentIndex].code!,
-                              studentId: studentController
-                                  .studentList![studentIndex].id!,
-                              studentName: studentController
-                                  .studentList![studentIndex].name!,
+                              classId: 0,
+                              className: 'unkown_class'.tr,
+                              schoolName:  'unknown_school'.tr,
+                              studentCode: randomNumber.toString(),
+                              studentId:0,
+                              studentName: 'unkown_name'.tr,
                               screenId: 0,
                               calculatedTotal: widget.totalAmount,
                               contactModel: widget.contactModel!,
@@ -652,7 +538,57 @@ class _TransactionConfirmationScreenState
                               pinCodeFieldController:
                                   _pinCodeFieldController.text,
                               transactionType: widget.transactionType ?? '',
-                              calculatedTotalWithServices:double.parse(totalAmount),
+                              calculatedTotalWithServices:
+                                  double.parse(totalAmount),
+                              productIndex: 0,
+                              purpose: '',
+                              calculateServiceCharge: convenienceFee,
+                              calculateVAT: vat,
+                              productName: widget.product.name,
+                              randomNumber: randomNumber,
+                              serviceIndex: 0,
+                              totalAmount: double.parse(totalAmount),
+                              vatPercentage: AppConstants.vatPercentage):
+                          
+                           DeliveryMapScreen(
+                              deliveryCost: deliveryCost,
+                              isShop: 1,
+                              product: widget.product,
+                              cart: widget.cart,
+                              checkedStudents: checkedStudents,
+                              checkedStudentsId: selectedStudents.isEmpty
+                                  ? 0
+                                  : checkedStudents[0].id,
+                              quantity: widget.quantity,
+                              studentIndex: studentIndex,
+                              schoolId: 0,
+                              classId: studentController
+                                  .studentList![studentIndex].classId??0,
+                              className: studentController
+                                  .studentList![studentIndex].studentClass??'unkown_class'.tr,
+                              schoolName: studentController
+                                      .studentList![studentIndex].school ??
+                                  'unknown_school'.tr,
+                              studentCode: studentController
+                                  .studentList![studentIndex].code??randomNumber.toString(),
+                              studentId: studentController
+                                  .studentList![studentIndex].id??0,
+                              studentName: studentController
+                                  .studentList![studentIndex].name??'unkown_name'.tr,
+                              screenId: 0,
+                              calculatedTotal: widget.totalAmount,
+                              contactModel: widget.contactModel!,
+                              eduboxService: widget.product.name,
+                              dataList: [],
+                              shipper: widget.shipper,
+                              destination: widget.destination,
+                              homePhone: widget.homePhone,
+                              productId: 0,
+                              pinCodeFieldController:
+                                  _pinCodeFieldController.text,
+                              transactionType: widget.transactionType ?? '',
+                              calculatedTotalWithServices:
+                                  double.parse(totalAmount),
                               productIndex: 0,
                               purpose: '',
                               calculateServiceCharge: convenienceFee,
@@ -672,10 +608,10 @@ class _TransactionConfirmationScreenState
                       ),
                       // Display Total Price
 
-                      Text('${'material_cost'.tr}: ${widget.totalAmount} ${AppConstants.currency}'),
-                      // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
                       Text(
-                          '${'vat'.tr}: $vat ${AppConstants.currency}'),
+                          '${'material_cost'.tr}: ${widget.totalAmount} ${AppConstants.currency}'),
+                      // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
+                      Text('${'vat'.tr}: $vat ${AppConstants.currency}'),
 
                       Text(
                           '${'convenince_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
@@ -725,12 +661,277 @@ class _TransactionConfirmationScreenState
               ),
             ]),
           ));
-        }
+        // }
       }),
     );
   }
 
- 
+    void _captureInformation(context,
+      {required int randomNumber,
+      required String totalAmount,
+      required String schoolName,
+      required String className,
+      required String orderId,
+      required double vat,
+      required double convenienceFee,
+      required int studentIndex,
+      required StudentController studentController,
+      required int productIndex,
+      }) {
+    showDialog(
+      context: context,
+      builder: (context) {
+
+        return AlertDialog(
+          title:  Text('confirm'.tr),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${'your_school_materials_will_be_delivered_at'.tr};'),
+              Text('${'school_name'.tr}: $schoolName'),
+              Text('${'class'.tr}: $className'),
+             
+              Text('${'order_id'.tr}: $randomNumber'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child:  Text('cancel'.tr),
+            ),
+            const SizedBox(width: 10),
+            TextButton(
+              onPressed: () {
+                               print(
+                                    'this is selected student:::::::::: $selectedStudents | $studentIndex');
+                                // Check if no students are selected
+                                // if (selectedStudents.isEmpty) {
+                                //   // Show an alert or snackbar to inform the user
+                                //   showDialog(
+                                //     context: context,
+                                //     builder: (context) {
+                                //       return AlertDialog(
+                                //         title: Text('no_student_selected'.tr),
+                                //         content: Text(
+                                //             'please_select_at_least_one_student_to_proceed'
+                                //                 .tr),
+                                //         actions: [
+                                //           TextButton(
+                                //             onPressed: () {
+                                //               Navigator.pop(
+                                //                   context); // Close the dialog
+                                //             },
+                                //             child: Text('ok'.tr),
+                                //           ),
+                                //         ],
+                                //       );
+                                //     },
+                                //   );
+                                //   return; // Exit the function early
+                                // }
+ if   (studentController.studentList == null ||  studentController.studentList!.isEmpty){
+                                  schoolDeliveryAction();
+
+                                  }
+                                  else{
+                                // Proceed with the transaction if students are selected
+                                final configModel =
+                                    Get.find<SplashController>().configModel;
+                                List<StudentModel> checkedStudents =
+                                    selectedStudents
+                                        .map((index) => studentController
+                                            .studentList![index])
+                                        .toList();
+                      print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx$checkedStudents');
+
+                                Get.find<TransactionMoneyController>()
+                                    .pinVerify(
+                                  pin: _pinCodeFieldController.text,
+                                )
+                                    .then((isCorrect) {
+                                  if (isCorrect) {
+                                    if (configModel!.twoFactor! &&
+                                        Get.find<ProfileController>().userInfo!.twoFactor!) {
+                                      Get.find<AuthController>()
+                                          .checkOtp()
+                                          .then((value) => value.isOk
+                                              ? Get.defaultDialog(
+                                                  barrierDismissible: false,
+                                                  title: 'otp_verification'.tr,
+                                                  content: Column(
+                                                    children: [
+                                                      CustomPinCodeFieldWidget(
+                                                        onCompleted: (pin) =>
+                                                            Get.find<
+                                                                    AuthController>()
+                                                                .verifyOtp(pin)
+                                                                .then((value) {
+                                                          if (value.isOk) {
+                                                            showModalBottomSheet(
+                                                              isScrollControlled:
+                                                                  true,
+                                                              context:
+                                                                  Get.context!,
+                                                              isDismissible:
+                                                                  false,
+                                                              enableDrag: false,
+                                                              shape:
+                                                                  const RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.vertical(
+                                                                    top: Radius.circular(
+                                                                        Dimensions
+                                                                            .radiusSizeLarge)),
+                                                              ),
+                                                              builder: (context) =>
+                                                                  BottomSheetWithSliderSp(
+                                                                materialCost: widget
+                                                                    .totalAmount
+                                                                    .toStringAsFixed(
+                                                                        2),
+                                                                deliveryCost:
+                                                                    deliveryCost,
+                                                                shipper: widget
+                                                                    .shipper,
+                                                                homePhone: widget
+                                                                    .homePhone,
+                                                                destination: widget
+                                                                    .destination,
+                                                                studentId:
+                                                                    checkedStudents[
+                                                                            0]
+                                                                        .id!,
+                                                                randomNumber:
+                                                                    randomNumber,
+                                                                selectedProducts:
+                                                                    widget.cart,
+                                                                quantity: widget
+                                                                    .quantity,
+                                                                productIndex:
+                                                                    productIndex,
+                                                                amount: '0',
+                                                                availableBalance:
+                                                                    '0.00',
+                                                                contactModel: widget
+                                                                    .contactModel,
+                                                                contactModelMtn:
+                                                                    widget
+                                                                        .contactModelMtn,
+                                                                pinCode: Get.find<
+                                                                        BottomSliderController>()
+                                                                    .pin,
+                                                                transactionType:
+                                                                    widget
+                                                                        .transactionType,
+                                                                purpose: widget
+                                                                    .transactionType,
+                                                                inputBalance:
+                                                                    0.0,
+                                                                product: widget
+                                                                    .product,
+                                                                amountToPay:
+                                                                    '${'amount_to_be_paid'.tr}: ${widget.totalAmount} ${AppConstants.currency}',
+                                                                nowPaid:
+                                                                    '${'now_paid'.tr}: ${widget.totalAmount.toStringAsFixed(2)} ${AppConstants.currency}',
+                                                                vat:
+                                                                    '${'vat'.tr}: $vat ${AppConstants.currency}',
+                                                                serviceCharge:
+                                                                    convenienceFee
+                                                                        .toStringAsFixed(
+                                                                            2),
+                                                                totalNowPaid:'${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
+                                                              ),
+                                                            );
+                                                          }
+                                                        }),
+                                                      ),
+                                                      const DemoOtpHintWidget(),
+                                                      GetBuilder<
+                                                          AuthController>(
+                                                        builder: (verifyController) =>
+                                                            verifyController
+                                                                    .isVerifying
+                                                                ? CircularProgressIndicator(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .titleLarge!
+                                                                        .color,
+                                                                  )
+                                                                : const SizedBox
+                                                                    .shrink(),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                              : null);
+                                    } else {
+                                      showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          context: Get.context!,
+                                          isDismissible: true,
+                                          enableDrag: true,
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                            top: Radius.circular(
+                                                Dimensions.radiusSizeLarge),
+                                          )),
+                                          builder: (context) {
+                                            return BottomSheetWithSliderSp(
+                                              deliveryCost: deliveryCost,
+                                              shipper: widget.shipper,
+                                              homePhone: widget.homePhone,
+                                              destination: widget.destination,
+                                              studentId: checkedStudents[0].id!,
+                                              randomNumber: randomNumber,
+                                              selectedProducts: widget.cart,
+                                              quantity: widget.quantity,
+                                              studentIndex: studentIndex,
+                                              availableBalance: '0.00',
+                                              amount: totalAmount.toString(),
+                                              materialCost: widget.totalAmount
+                                                  .toStringAsFixed(2),
+                                              productId: 1,
+                                              contactModel: widget.contactModel,
+                                              pinCode:
+                                                  _pinCodeFieldController.text,
+                                              transactionType:
+                                                  widget.transactionType,
+                                              purpose: widget.transactionType,
+                                              studentInfo: checkedStudents,
+                                              inputBalance: widget.totalAmount,
+                                              product: widget.product,
+                                              productIndex: productIndex,
+                                              edubox_service: 'shop'.tr,
+                                              amountToPay:
+                                                  '${'delivery_cost'.tr}: ${deliveryCost.toStringAsFixed(2)}',
+                                              nowPaid:
+                                                  '${'material_cost'.tr}: ${widget.totalAmount.toStringAsFixed(2)}',
+                                              vat:
+                                                  '${'vat'.tr}: $vat ${AppConstants.currency}',
+                                              serviceCharge: convenienceFee
+                                                  .toStringAsFixed(2),
+                                              totalNowPaid:
+                                                  '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
+                                              serviceValue: widget.product.name,
+                                            );
+                                          });
+                                    }
+                                  }
+                                });
+                                  }
+              },
+              child:  Text('ok'.tr),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
 
   TextFormField buildFormField(
       String labelText,
@@ -792,4 +993,4 @@ class _TransactionConfirmationScreenState
       onTap: onTap,
     );
   }
-}
+

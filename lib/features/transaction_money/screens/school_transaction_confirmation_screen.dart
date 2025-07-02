@@ -6,10 +6,12 @@ import 'package:hosomobile/common/models/contact_model_mtn.dart';
 import 'package:hosomobile/common/widgets/custom_back_button_widget.dart';
 import 'package:hosomobile/data/api/mtn_momo_api_client.dart';
 import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
+import 'package:hosomobile/features/home/controllers/student_controller.dart';
 import 'package:hosomobile/features/home/domain/models/all_school_model.dart';
 import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
 import 'package:hosomobile/features/home/domain/models/student_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/custom_buttons.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/components/dependent_school_dropdown.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/drop_down.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/image.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
@@ -76,8 +78,10 @@ class SchoolTransactionConfirmationScreen extends StatefulWidget {
   final String destination;
   final String shipper;
   final double availableBalance;
+  final StudentController studentController;
+  int studentIndex;
 
-  const SchoolTransactionConfirmationScreen(
+  SchoolTransactionConfirmationScreen(
       {super.key,
    required this.availableBalance,
       required this.inputBalance,
@@ -86,6 +90,8 @@ class SchoolTransactionConfirmationScreen extends StatefulWidget {
       required this.destination,
       required this.shipper,
       required this.classId,
+      required this.studentController,
+      required this.studentIndex,
       this.purpose,
       this.screenId,
       this.isChecked,
@@ -130,6 +136,7 @@ class _TransactionConfirmationScreenState
   int checkedProducts = 0;
 
   bool isHomeDelivery = false;
+  bool isSchoolDelivery = false;
   Districts? selectedDistrict;
   AllSchoolModel? selectedCategory; // Selected value for the first dropdown
   ClassDetails? selectedSubCategory; // Selected value for the second dropdown
@@ -150,6 +157,12 @@ class _TransactionConfirmationScreenState
   homeDeliveryAction() {
     setState(() {
       isHomeDelivery = !isHomeDelivery;
+    });
+  }
+
+    schoolDeliveryAction() {
+    setState(() {
+      isSchoolDelivery = !isSchoolDelivery;
     });
   }
 
@@ -202,32 +215,32 @@ class _TransactionConfirmationScreenState
     final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse('${widget.availableBalance}')).toStringAsFixed(2);
       int randomNumber = random.nextInt(90000000) + 10000000;
 
-    void validateForm() {
-      if (deliveryOptionsValue == 'choose_delivery_company'.tr) {
-        setState(() {
-          _deliveryOptionError = 'please_select_delivery_option'.tr;
-        });
-        // Optionally show a snackbar for more visibility
-        ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
-            content: Text('please_select_delivery_option'.tr),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-      Get.to(() => SchoolListScreen(
-          homePhone: phoneNumberEditingController.text,
-          destination: mapDestinationEditingController.text,
-          shipper: deliveryOptionsValue,
-          schoolName: widget.schoolName,
-          className: widget.className,
-          studentName: widget.studentName,
-          studentCode: widget.studentCode,
-          schoolId: widget.schoolId,
-          classId: widget.classId,
-          studentId: widget.studentId));
-    }
+    // void validateForm() {
+    //   if (deliveryOptionsValue == 'choose_delivery_company'.tr) {
+    //     setState(() {
+    //       _deliveryOptionError = 'please_select_delivery_option'.tr;
+    //     });
+    //     // Optionally show a snackbar for more visibility
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //      SnackBar(
+    //         content: Text('please_select_delivery_option'.tr),
+    //         backgroundColor: Colors.red,
+    //       ),
+    //     );
+    //     return;
+    //   }
+    //   Get.to(() => SchoolListScreen(
+    //       homePhone: phoneNumberEditingController.text,
+    //       destination: mapDestinationEditingController.text,
+    //       shipper: deliveryOptionsValue,
+    //       schoolName: widget.schoolName,
+    //       className: widget.className,
+    //       studentName: widget.studentName,
+    //       studentCode: widget.studentCode,
+    //       schoolId: widget.schoolId,
+    //       classId: widget.classId,
+    //       studentId: widget.studentId));
+    // }
 
     //   bottomSliderController.setIsPinCompleted(isCompleted: false, isNotify: false);
 
@@ -331,25 +344,88 @@ class _TransactionConfirmationScreenState
                         maxLines: 2,
                       ),
                       sizedBox15,
-                      DefaultButton2(
-                        color1: kamber300Color,
-                        color2: kyellowColor,
-                        onPress: () => _captureInformation(context,
-                            randomNumber: randomNumber,
-                            totalAmount: totalAmount,
-                            className: widget.className,
-                            schoolName: widget.schoolName,
-                            orderId: '1234',
-                            productName: widget.productName!,
-                            convenienceFee: convenienceFee,
-                            vat: vat,
-                            availableBalance:double.parse(availableBalance)
-                            ),
-                        // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
+                   isSchoolDelivery == false
+                          ? DefaultButton2(
+                              color1: kamber300Color,
+                              color2: kyellowColor,
+                              onPress: () => schoolDeliveryAction(),
 
-                        title: 'school_cap'.tr,
-                        iconData: Icons.arrow_forward_outlined,
-                      ),
+                              //  _captureInformation(
+                              //   vat: vat,
+                              //   convenienceFee: convenienceFee,
+                              //   context,
+                              //   randomNumber: randomNumber,
+                              //   totalAmount: totalAmount,
+                              //   className:
+                              //       widget.studentClass ?? 'Unknown Class',
+                              //   schoolName:
+                              //       widget.studentSchool ?? 'Unknown School',
+                              //   orderId: '1234',
+                              //   productName:
+                              //       widget.edubox_service ?? 'Unknown Service',
+                              // ),
+                              title: 'SCHOOL',
+                              iconData: Icons.arrow_forward_outlined,
+                            )
+                          : (widget.studentController.studentList == null ||
+                                  widget
+                                      .studentController!.studentList!.isEmpty)
+                              ? DependentSchoolDropdowns(
+                                  isShop: false,
+                                  studentController: widget.studentController!,
+                                  isAddAccount: false,
+                                  isNotRegStudent: true)
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        'select_your_student_who_is_going_to_receive_the_product_at_school'.tr),
+                                    sizedBox05h,
+                                    DropDownAccount(
+                                      onChanged: (selectedCode) {
+                                        setState(() {
+                                          // Find the index of the selected student in the list using the selected code
+                                          widget.studentIndex = widget
+                                              .studentController!.studentList!
+                                              .indexWhere((student) =>
+                                                  student.code == selectedCode);
+
+                                          // You may want to add additional logic here based on the selected code
+                                          print(
+                                              'Selected student index: ${widget.studentIndex}');
+                                        });
+                                      },
+                                      itemLists: widget
+                                          .studentController!.studentList!,
+                                      title:
+                                          '${'code'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].code!}\n${'name'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].name} ${'class'.tr}:${widget.studentController!.studentList![widget.studentIndex!].studentClass}',
+                                      isExpanded: true,
+                                    ),
+                                    sizedBox05h,
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        DefaultButtonWidth(
+                                            onPress: () => _captureInformation(
+                                              availableBalance: widget.availableBalance,
+                                                context,
+                                                schoolName:
+                                                    widget.schoolName,
+                                                randomNumber: randomNumber,
+                                                className: widget.className,
+                                                totalAmount: totalAmount,
+                                                productName: widget.productName!,
+                                                orderId: '21323443421',
+                                                vat: vat,
+                                                convenienceFee: convenienceFee),
+                                            title: 'next'.tr,
+                                            color1: kamber300Color,
+                                            color2: kyellowColor,
+                                            width: 123)
+                                      ],
+                                    )
+                                  ],
+                                ),
                       sizedBox15,
                       isHomeDelivery == false
                           ? DefaultButton2(

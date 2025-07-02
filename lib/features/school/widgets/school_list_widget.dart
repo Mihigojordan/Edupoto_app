@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/common/models/contact_model_mtn.dart';
 import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
+import 'package:hosomobile/features/home/controllers/student_controller.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/tereka_asome/widget/widget_dialog.dart';
 import 'package:hosomobile/features/school/controllers/school_list_controller.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
@@ -33,8 +34,10 @@ class SchoolListWidget extends StatefulWidget {
   final String homePhone;
   final String destination;
   final String shipper;
+  final StudentController studentController;
+  int studentIndex;
 
-  const SchoolListWidget({
+   SchoolListWidget({
     super.key,
     this.scrollController,
     this.productName,
@@ -49,7 +52,9 @@ class SchoolListWidget extends StatefulWidget {
     required this.studentCode,
     required this.studentName,
     required this.className,
-    required this.schoolName
+    required this.schoolName,
+    required this.studentController,
+    required this.studentIndex
   });
 
   @override
@@ -340,6 +345,8 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               DefaultButtonWidth(
                 onPress: () => Get.to(
             () => SchoolTransactionConfirmationScreen(
+              studentController: widget.studentController,
+              studentIndex: widget.studentIndex,
               availableBalance: totalPrice,
               shipper:widget.shipper,
               homePhone:widget.homePhone,
@@ -398,6 +405,8 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
    
         Get.to(
             () => SchoolTransactionConfirmationScreen(
+              studentController: widget.studentController,
+              studentIndex: widget.studentIndex,
               availableBalance: materialBalance,
               shipper:widget.shipper,
               homePhone:widget.homePhone,
@@ -435,7 +444,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
   ),
                 
       
-                title: 'deposit'.tr.tr,
+                title: 'deposit'.tr,
                
                 color1: kamber300Color,
                 color2: kyellowColor,
@@ -448,6 +457,8 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
             iconData: Icons.credit_card,
                 onPress: ()=>  Get.to(
             () => SchoolTransactionConfirmationScreen(
+              studentController: widget.studentController,
+              studentIndex: widget.studentIndex,
               availableBalance: totalPrice,
               screenId:1,
               homePhone:widget.homePhone,
@@ -572,6 +583,8 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               DefaultButtonWidth(
                 onPress: () => Get.to(
             () => SchoolTransactionConfirmationScreen(
+              studentController: widget.studentController,
+              studentIndex: widget.studentIndex,
               availableBalance: totalPrice,
               studentId: widget.studentId!,
               shipper: widget.shipper,
@@ -633,6 +646,8 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
    
         Get.to(
             () => SchoolTransactionConfirmationScreen(
+              studentController: widget.studentController,
+              studentIndex: widget.studentIndex,
               availableBalance: materialBalance,
               studentId: widget.studentId!,
               shipper: widget.shipper,
@@ -682,6 +697,8 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
                     iconData: Icons.credit_card,
                 onPress: ()=>  Get.to(
             () => SchoolTransactionConfirmationScreen(
+              studentController: widget.studentController,
+              studentIndex: widget.studentIndex,
               availableBalance: totalPrice,
               homePhone: widget.homePhone,
               destination: widget.destination,
