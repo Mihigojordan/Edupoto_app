@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hosomobile/features/school/widgets/school_list_shimmer_widget.dart';
+import 'package:hosomobile/features/shop/controller/shop_controller.dart';
 import 'package:hosomobile/features/shop/domain/data/categories.dart';
 import 'package:hosomobile/features/shop/domain/data/product_lists.dart';
 import 'package:hosomobile/features/shop/domain/models/company_category.dart';
@@ -12,6 +14,7 @@ import 'package:hosomobile/features/shop/widget/company_type_nav_bar.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/shop/widget/product_grid.dart';
 import 'package:hosomobile/features/shop/widget/product_list.dart';
+import 'package:hosomobile/features/shop/widget/shop_shimmer_widget.dart';
 
 class ShoppingScreen extends StatefulWidget {
   final bool? isOffer;
@@ -127,6 +130,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     super.initState();
     _cart = {};
     _idController = TextEditingController();
+      Get.find<ShopController>().getShopList(false);
     _passwordController = TextEditingController();
     if (widget.isOffer == true) {
       WidgetsBinding.instance.addPostFrameCallback((_) {});
@@ -244,7 +248,13 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           ),
         ],
       ),
-      body: Column(
+      body: GetBuilder<ShopController>(
+        builder: (shopController) {
+
+
+    return shopController.isLoading?const Center(child: ShopShimmerWidget()):
+    
+     Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -298,7 +308,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: _isGridView
                         ? ProductGrid(
-                            products: filteredProducts,
+                                      // filteredProducts
+                            products: shopController.shopList!,
                             onAddToCart: _addToCart,
                             cart: _cart,
                           )
@@ -313,7 +324,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             ),
           ),
         ],
-      ),
+      );}),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.amber,
         onPressed: _showCart,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
@@ -20,6 +22,7 @@ import 'package:hosomobile/features/home/screens/upgrades/home/constants/show_in
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/component/payment_method.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/tereka_asome/tereka_asome.dart';
 import 'package:hosomobile/features/map/screens/left_aligned_row.dart';
+import 'package:hosomobile/features/map/widgets/text_field_formatter.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/school/screens/school_list_screen.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
@@ -171,6 +174,13 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
   LatLng? _sourceLatLng;
   LatLng? _destinationLatLng;
 
+Marker? _draggableMarker;
+bool _isDragging = false;
+String _currentAddress = '';
+bool _isLoadingAddress = false;
+LatLng? _previousMarkerPosition;
+
+
   @override
   void initState() {
     super.initState();
@@ -303,211 +313,353 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    return Column(
-      children: [
-        SizedBox(
-          height: MediaQuery.of(context).size.height / 1.8,
-          child: Stack(
-            children: [
-              // Google Map
-              GoogleMap(
-                onMapCreated: (controller) {
-                  setState(() {
-                    _mapController = controller;
-                  });
-                },
-                initialCameraPosition: CameraPosition(
-                  target: _initialPosition,
-                  zoom: 12,
-                ),
-                markers: _markers,
-                polylines: _polylines,
-              ),
 
-              // Floating Source and Destination Input Fields
-              Positioned(
-                top: 20, // Adjust the position as needed
-                left: 16,
-                right: 16,
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10,
-                        offset: Offset(0, 4),
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: _destinationController,
-                        decoration: InputDecoration(
-                          labelText: 'where_to'.tr,
-                          hintText: '${'eg'.tr} KN 360 St 6',
-                          hintStyle: const TextStyle(color: Colors.grey),
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.search),
-                            onPressed: () => _setDestinationFromInput(),
-                          ),
-                        ),
-                        onChanged: (value) {
-                          // Optional: Clear destination coordinates when user edits
-                          if (value != 'current_location'.tr) {
-                            setState(() => _destinationLatLng = null);
-                          }
-                        },
-                        onTap: () {
-                          // Clear the field when tapped for new input
-                          if (_destinationController.text ==
-                              'current_location'.tr) {
-                            _destinationController.clear();
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        // Floating Distance and Duration Information
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 10,
-                offset: Offset(0, 4),
-              )
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _destinationController.text == ''
-                  ? const SizedBox.shrink()
-                  : Column(
-                      children: [
-                        _buildListTile(
-                            icon: Icons.location_on,
-                            title: _destinationController.text,
-                            onTap: () {}),
-                        sizedBox15,
-                      ],
-                    ),
-              _buildListTile(
-                  icon: Icons.star, title: 'choose_saved_place'.tr, onTap: () {}),
-              sizedBox10,
-              Text(
-                'please_provide_phone_number_available_at_your_current_location'.tr,
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: kErrorBorderColor, fontWeight: FontWeight.normal),
-              ),
-              sizedBox10,
-              buildFormField('receiver_phone_number'.tr, phoneNumberEditingController,
-                  TextInputType.name, '07XXXXXXXX'),
-              sizedBox10,
-              CustomDropdown(
-                  onChanged: (onChanged) {
-                    setState(() {
-                      deliveryOptionsValue = onChanged!;
-                    });
-                  },
-                  prefixIcon: 'assets/icons1/delivery.jpg',
-                  itemLists: topSize,
-                  title: deliveryOptionsValue,
-                  width: screenWidth,
-                  menuWidth: screenWidth/1.2,
-                  menuHeight: screenHeight/3.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                    onTap: () => _captureInformation(),
-                    child: Container(
-                      // width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.all(10.0),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.amber,
-                        borderRadius: BorderRadius.circular(15.0),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black26,
-                            offset: Offset(0, 2),
-                            blurRadius: 4.0,
-                          ),
-                        ],
-                      ),
-                      child:  Text(
-                        'next'.tr,
-                        style:const TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 1.8,
+            child: Stack(
+              children: [
+                // Google Map
+      GoogleMap(
+  onMapCreated: (controller) => _mapController = controller,
+  initialCameraPosition: CameraPosition(
+    target: _initialPosition,
+    zoom: 14,
+  ),
+  markers: _markers,
+  polylines: _polylines,
+  onTap: (latLng) async {
+    final address = await _getAddressFromLatLng(latLng);
+    setState(() {
+      _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
+      _destinationController.text = address;
+      _destinationLatLng = latLng;
+      _draggableMarker = _createDraggableMarker(latLng, address);
+      _markers.add(_draggableMarker!);
+    });
+    _drawRoute();
+  },
+),
 
-  TextFormField buildFormField(
-      String labelText,
-      TextEditingController editingController,
-      TextInputType textInputType,
-      hintText) {
-    return TextFormField(
-      textAlign: TextAlign.start,
-      controller: editingController,
-      keyboardType: textInputType,
-      style: kInputTextStyle,
-      decoration: InputDecoration(
-        isCollapsed: true,
-        contentPadding: const EdgeInsets.symmetric(
-            vertical: 13, horizontal: 15), // Customize as needed
-        isDense: true,
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1, color: kamber300Color),
-          borderRadius: BorderRadius.circular(20.0),
+                // Floating Source and Destination Input Fields
+         Positioned(
+        top: 20,
+        left: 16,
+        right: 16,
+        child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border.all(
+          color: Colors.grey.shade200,
+          width: 1,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1, color: kTextLightColor),
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        labelText: labelText,
-        hintStyle: const TextStyle(color: Colors.grey),
-        hintText: hintText,
-        floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter some text';
-        }
-        return null; // Return null if the input is valid
-      },
+      child: RichText(
+        text: TextSpan(
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey.shade800,
+            height: 1.4,
+          ),
+          children: [
+            TextSpan(
+              text: '📍 ',
+              style: TextStyle(
+                color: Colors.red.shade400,
+              ),
+            ),
+            TextSpan(
+              text: 'drop_the_pin_to_your'.tr,
+             style:const TextStyle(
+               fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextSpan(
+              text: 'exact_delivery_location'.tr,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.blue.shade600,
+              ),
+            ),
+          ],
+        ),
+      ),
+        ),
+      ),
+      //               Positioned(
+      //                 top: 20, // Adjust the position as needed
+      //                 left: 16,
+      //                 right: 16,
+      //                 child: Container(
+      //                   padding: const EdgeInsets.all(16),
+      //                   decoration: BoxDecoration(
+      //                     color: Colors.white,
+      //                     borderRadius: BorderRadius.circular(10),
+      //                     boxShadow: const [
+      //                       BoxShadow(
+      //                         color: Colors.black26,
+      //                         blurRadius: 10,
+      //                         offset: Offset(0, 4),
+      //                       )
+      //                     ],
+      //                   ),
+      //                   child: Column(
+      //                     children: [
+      //           // Wrap  text field with a Stack to show loading
+      // Stack(
+      //   children: [
+      //    TextField(
+      //   controller: _destinationController,
+      //   decoration: InputDecoration(
+      //     labelText: 'where_to'.tr,
+      //     hintText: '${'eg'.tr} KN 360 St 6',
+      //     hintStyle: const TextStyle(color: Colors.grey),
+      //     border: const OutlineInputBorder(),
+      //     suffixIcon: IconButton(
+      //       icon: const Icon(Icons.search),
+      //       onPressed: () => _setDestinationFromInput(),
+      //     ),
+      //   ),
+      //   onChanged: (value) async {
+      //     if (value.isNotEmpty && value.length > 3) {
+      //       // Call your geocoding service for suggestions
+      //       List<Location> locations = await locationFromAddress(value);
+      //       if (locations.isNotEmpty) {
+      //         // Update the marker position
+      //         LatLng newPosition = LatLng(
+      //           locations.first.latitude,
+      //           locations.first.longitude,
+      //         );
+      //         setState(() {
+      //           _draggableMarker = _draggableMarker!.copyWith(
+      //             positionParam: newPosition,
+      //           );
+      //           _mapController.animateCamera(
+      //             CameraUpdate.newLatLng(newPosition),
+      //           );
+      //         });
+      //       }
+      //     }
+      //   },
+      // ),
+      //     if (_isLoadingAddress)
+      //       Positioned.fill(
+      //         child: Container(
+      //           color: Colors.black.withOpacity(0.1),
+      //           child: const Center(
+      //             child: CircularProgressIndicator(),
+      //           ),
+      //         ),
+      //       ),
+      //   ],
+      // ),
+      // Text('Drop the pin to a place you can receive your the product')
+      //                     ],
+      //                   ),
+      //                 ),
+      //               ),
+              ],
+            ),
+          ),
+          // Floating Distance and Duration Information
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                )
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // _destinationController.text == ''
+                //     ? const SizedBox.shrink()
+                //     : Column(
+                //         children: [
+                //           _buildListTile(
+                //               icon: Icons.location_on,
+                //               title: _destinationController.text,
+                //               onTap: () {}),
+                //           sizedBox15,
+                //         ],
+                //       ),
+                // _buildListTile(
+                //     icon: Icons.star, title: 'choose_saved_place'.tr, onTap: () {}),
+                sizedBox10,
+                Text(
+                  'please_provide_phone_number_available_at_your_current_location'.tr,
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: kErrorBorderColor, fontWeight: FontWeight.normal),
+                ),
+                sizedBox10,
+    buildFormField(
+  'phone_number'.tr,
+  phoneNumberEditingController,
+  TextInputType.phone,
+  '07XXXXXXXX',
+  isPhoneNumber: true,
+  validator: (value) {
+    return _validatePhoneNumber(value) ?? 
+      (value?.isEmpty ?? true ? 'please_select_receiver_phone_number'.tr : null);
+  },
+),
+                sizedBox10,
+                // CustomDropdown(
+                //     onChanged: (onChanged) {
+                //       setState(() {
+                //         deliveryOptionsValue = onChanged!;
+                //       });
+                //     },
+                //     prefixIcon: 'assets/icons1/delivery.jpg',
+                //     itemLists: topSize,
+                //     title: deliveryOptionsValue,
+                //     width: screenWidth,
+                //     menuWidth: screenWidth/1.2,
+                //     menuHeight: screenHeight/3.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      onTap: () => _captureInformation(),
+                      child: Container(
+                        // width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 10.0),
+                        decoration: BoxDecoration(
+                          color: Colors.amber,
+                          borderRadius: BorderRadius.circular(15.0),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black26,
+                              offset: Offset(0, 2),
+                              blurRadius: 4.0,
+                            ),
+                          ],
+                        ),
+                        child:  Text(
+                          'next'.tr,
+                          style:const TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
+
+TextFormField buildFormField(
+  String labelText,
+  TextEditingController editingController,
+  TextInputType textInputType,
+  String hintText, {
+  String? Function(String?)? validator,
+  bool isPhoneNumber = false,
+}) {
+  return TextFormField(
+    textAlign: TextAlign.start,
+    controller: editingController,
+    keyboardType: textInputType,
+    style: kInputTextStyle,
+    validator: validator,
+    inputFormatters: isPhoneNumber
+        ? [
+            FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
+            LengthLimitingTextInputFormatter(15), // For international numbers
+            PhoneNumberFormatter(),
+          ]
+        : null,
+    decoration: InputDecoration(
+      isCollapsed: true,
+      contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 15),
+      isDense: true,
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(width: 1, color: kamber300Color),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(width: 1, color: kTextLightColor),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      labelText: labelText,
+      hintStyle: const TextStyle(color: Colors.grey),
+      hintText: hintText,
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+      suffixIcon: isPhoneNumber
+          ? ValueListenableBuilder<TextEditingValue>(
+              valueListenable: editingController,
+              builder: (context, value, _) {
+                if (value.text.isEmpty) return const SizedBox.shrink();
+                final isValid = _validatePhoneNumber(value.text) == null;
+                return Icon(
+                  isValid ? Icons.check_circle : Icons.error,
+                  color: isValid ? Colors.green : Colors.red,
+                  size: 20,
+                );
+              },
+            )
+          : null,
+    ),
+  );
+}
+
+String? _validatePhoneNumber(String? value) {
+  if (value == null || value.isEmpty) return null;
+  
+  final cleaned = value.replaceAll(RegExp(r'[^\d+]'), '');
+
+  // 1. International numbers (+ prefix)
+  if (cleaned.startsWith('+')) {
+    return cleaned.length >= 9 && cleaned.length <= 15 
+        ? null 
+        : 'Enter 9-15 digits after +';
+  }
+
+  // 2. Rwandan numbers (07, 72, 73, 78)
+  if (cleaned.startsWith('07') || cleaned.startsWith('72') || 
+     cleaned.startsWith('73') || cleaned.startsWith('78')) {
+    return cleaned.length == 10 ? null : 'Rwandan number must be 10 digits';
+  }
+
+  // 3. General 10-digit numbers (US/Canada/India etc.)
+  if (cleaned.length == 9 && !cleaned.startsWith('0')) {
+    return null;
+  }
+
+  return 'Enter valid 10-digit, Rwandan (07...) or international (+...) number';
+}
+
+
 
   Widget _buildListTile({
     required IconData icon,
@@ -529,47 +681,201 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
     );
   }
 
-  Future<void> _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      print('Location services are disabled.');
-      return;
-    }
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        print('Location permissions are denied.');
-        return;
-      }
-    }
+// Add these variables to your state class
+final List<String> _capturedAddresses = []; // Stores all captured addresses
+String? _selectedAddress; // Currently selected address for printing
 
-    if (permission == LocationPermission.deniedForever) {
-      print('Location permissions are permanently denied.');
-      return;
-    }
+Future<void> _getCurrentLocation() async {
+  // Check and request location permissions
+  if (!await _checkLocationPermissions()) return;
 
+  try {
     Position position = await Geolocator.getCurrentPosition();
     LatLng currentLatLng = LatLng(position.latitude, position.longitude);
-    print('current latlong ::::::::$currentLatLng');
-
-    // Get human-readable address
     String address = await _getAddressFromLatLng(currentLatLng);
 
     setState(() {
-      _initialPosition = const LatLng(-1.929662943503856, 30.114273068056985);
-      _sourceLatLng = _initialPosition; // Set as source
-      _destinationLatLng = _initialPosition; // Also set as destination
-
-      // Add markers
-      _addCurrentLocationMarker(position);
-
-      // Set controller text
-      _sourceController.text = address;
+      _initialPosition = currentLatLng;
+      _sourceLatLng = const LatLng(-1.929662943503856, 30.114273068056985); // Fixed pickup point
+      _destinationLatLng = currentLatLng;
+      _currentAddress = address;
       _destinationController.text = address;
+      _capturedAddresses.add(address); // Store the initial address
+      
+      // Clear existing markers and add new ones
+      _markers.clear();
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('fixed_source'),
+          position: _sourceLatLng!,
+          infoWindow: const InfoWindow(title: 'Pickup Location'),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        ),
+      );
+      
+      _draggableMarker = _createDraggableMarker(currentLatLng, address);
+      _markers.add(_draggableMarker!);
+      
+      // Draw initial route
+      _drawRoute();
     });
+    
+  } catch (e) {
+    debugPrint('Error getting location: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Could not get location: ${e.toString()}')),
+    );
   }
+}
+
+Future<bool> _checkLocationPermissions() async {
+  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please enable location services')),
+    );
+    return false;
+  }
+
+  LocationPermission permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Location permissions are required')),
+      );
+      return false;
+    }
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Enable location permissions in settings')),
+    );
+    return false;
+  }
+
+  return true;
+}
+
+Marker _createDraggableMarker(LatLng position, String address) {
+  return Marker(
+    markerId: const MarkerId('draggable_marker'),
+    position: position,
+    draggable: true,
+    infoWindow: InfoWindow(
+      title: 'Delivery Location',
+      snippet: address.length > 30 ? '${address.substring(0, 30)}...' : address,
+      onTap: () => _showAddressDialog(address),
+    ),
+    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    onDragEnd: (newPosition) async {
+      final newAddress = await _getAddressFromLatLng(newPosition);
+      setState(() {
+        _destinationLatLng = newPosition;
+        _destinationController.text = newAddress;
+        _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
+        _draggableMarker = _createDraggableMarker(newPosition, newAddress);
+        _markers.add(_draggableMarker!);
+      });
+      _drawRoute();
+    },
+  );
+}
+
+// Add proper address dialog
+void _showAddressDialog(String address) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Captured Address'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(address),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                _printAddress(address);
+                Navigator.pop(context);
+              },
+              child: const Text('Print Address'),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Close'),
+        ),
+      ],
+    ),
+  );
+}
+// Replace your _getAddressFromLatLng with this more robust version
+// Future<String> _getAddressFromLatLng(LatLng position) async {
+//   try {
+//     final placemarks = await placemarkFromCoordinates(
+//       position.latitude,
+//       position.longitude,
+//     ).timeout(const Duration(seconds: 5));
+
+//     if (placemarks.isEmpty) {
+//       return _formatFallbackCoordinates(position);
+//     }
+
+//     final place = placemarks.first;
+//     final addressParts = <String>[];
+    
+//     void addPart(String? value, [String? prefix]) {
+//       if (value != null && value.isNotEmpty) {
+//         addressParts.add(prefix != null ? '$prefix $value' : value);
+//       }
+//     }
+
+//     addPart(place.street);
+//     addPart(place.subLocality);
+//     addPart(place.locality);
+//     addPart(place.administrativeArea, "Province");
+//     addPart(place.country);
+//     addPart(place.postalCode, "Postal Code");
+
+//     return addressParts.isNotEmpty 
+//         ? addressParts.join('\n')
+//         : _formatFallbackCoordinates(position);
+
+//   } on TimeoutException {
+//     debugPrint("Geocoding timed out");
+//     return _formatFallbackCoordinates(position);
+//   } catch (e) {
+//     debugPrint("Geocoding failed: $e");
+//     return _formatFallbackCoordinates(position);
+//   }
+// }
+
+String _formatFallbackCoordinates(LatLng position) {
+  return "Location: ${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}";
+}
+
+void _printAddress(String address) {
+  debugPrint('====== DELIVERY ADDRESS ======');
+  debugPrint(address);
+  debugPrint('Captured: ${DateTime.now()}');
+  debugPrint('=============================');
+  
+  // For actual printing (requires printing package):
+  // Printing.layoutPdf(
+  //   onLayout: (format) => _generatePdf(address),
+  // );
+  
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('Address prepared for printing')),
+  );
+}
 
   void _addCurrentLocationMarker(Position position) {
     final currentLocationMarker = Marker(
@@ -587,44 +893,71 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
     });
   }
 
-  Future<String> _getAddressFromLatLng(LatLng position) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
+Future<String> _getAddressFromLatLng(LatLng position) async {
+  setState(() => _isLoadingAddress = true);
+  try {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
 
-      if (placemarks.isNotEmpty) {
-        Placemark place = placemarks.first;
-
-        // Safely add only non-null and non-empty parts
-        List<String> addressParts = [];
-
-        if (place.street != null && place.street!.isNotEmpty)
-          addressParts.add(place.street!);
-        if (place.subLocality != null && place.subLocality!.isNotEmpty)
-          addressParts.add(place.subLocality!);
-        if (place.locality != null && place.locality!.isNotEmpty)
-          addressParts.add(place.locality!);
-        if (place.subAdministrativeArea != null &&
-            place.subAdministrativeArea!.isNotEmpty)
-          addressParts.add(place.subAdministrativeArea!);
-        if (place.administrativeArea != null &&
-            place.administrativeArea!.isNotEmpty)
-          addressParts.add(place.administrativeArea!);
-        if (place.country != null && place.country!.isNotEmpty)
-          addressParts.add(place.country!);
-
-        String address = addressParts.join(', ');
-        return address.isNotEmpty ? address : 'current_location'.tr;
+    if (placemarks.isNotEmpty) {
+      Placemark place = placemarks.first;
+      
+      // Hierarchical address suggestion - tries to find the most specific name first
+      String address = _getBestLocationName(place);
+      
+      // If we still don't have a good name, show coordinates
+      if (address.isEmpty) {
+        return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
       }
-
-      return 'current_location'.tr;
-    } catch (e) {
-      print('Reverse geocoding error: $e');
-      return 'current_location'.tr;
+      
+      // Add district/city if available to provide context
+      if (place.locality != null && place.locality!.isNotEmpty && 
+          !address.contains(place.locality!)) {
+        address += ', ${place.locality}';
+      }
+      
+      return address;
     }
+    return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+  } catch (e) {
+    print('Reverse geocoding error: $e');
+    return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+  } finally {
+    setState(() => _isLoadingAddress = false);
   }
+}
+
+// Helper method to get the best possible location name
+String _getBestLocationName(Placemark place) {
+  // Try to get the most specific name first
+  if (place.name != null && place.name!.isNotEmpty && place.name != 'Unnamed Road') {
+    return place.name!;
+  }
+  
+  if (place.street != null && place.street!.isNotEmpty) {
+    return place.street!;
+  }
+  
+  if (place.subLocality != null && place.subLocality!.isNotEmpty) {
+    return place.subLocality!;
+  }
+  
+  if (place.locality != null && place.locality!.isNotEmpty) {
+    return place.locality!;
+  }
+  
+  if (place.subAdministrativeArea != null && place.subAdministrativeArea!.isNotEmpty) {
+    return place.subAdministrativeArea!;
+  }
+  
+  if (place.administrativeArea != null && place.administrativeArea!.isNotEmpty) {
+    return place.administrativeArea!;
+  }
+  
+  return '';
+}
 
   void _setSourceFromInput() async {
     final source = _sourceController.text;
@@ -681,7 +1014,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
       final geometry = data['routes'][0]['geometry']['coordinates'];
       final distance = (data['routes'][0]['distance'] / 1000)
           .toStringAsFixed(2); // Distance in km
-      final duration = (data['routes'][0]['duration'] / 60)
+      final duration = (data['routes'][0]['duration'] / 60)+5
           .toStringAsFixed(2); // Duration in minutes
 
       setState(() {
@@ -697,6 +1030,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
             width: 5,
           ),
         );
+        
       });
     } else {
       print('Failed to fetch route from OSRM.');
@@ -750,19 +1084,24 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
         ),
       );
       return;
-    } else if (deliveryOptionsValue == 'choose_delivery_company'.tr) {
-      setState(() {
-        _deliveryOptionError = 'please_select_delivery_option'.tr;
-      });
-      // Optionally show a snackbar for more visibility
-      ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
-          content: Text('please_select_delivery_option'.tr),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    } else if (phoneNumberEditingController.text == '') {
+    } 
+    // else if (deliveryOptionsValue == 'choose_delivery_company'.tr) {
+    //   setState(() {
+    //     _deliveryOptionError = 'please_select_delivery_option'.tr;
+    //   });
+    //   // Optionally show a snackbar for more visibility
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //      SnackBar(
+    //       content: Text('please_select_delivery_option'.tr),
+    //       backgroundColor: Colors.red,
+    //     ),
+    //   );
+    //   return;
+    // } 
+    else if (phoneNumberEditingController.text == '') {
+       if (!_formKey.currentState!.validate()) {
+    return; // Don't proceed if validation fails
+  }
       ScaffoldMessenger.of(context).showSnackBar(
          SnackBar(
           content: Text('please_enter_receiver_phone_number'.tr),

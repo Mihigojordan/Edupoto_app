@@ -24,15 +24,15 @@ class ProductList extends StatelessWidget {
       // Inside the ListView.builder itemBuilder
 return GestureDetector(
   onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>  ProductDetailsScreen(
-                  product: product,
-                  onAddToCart: onAddToCart, // Pass the callback
-                ),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) =>  ProductDetailsScreen(
+    //               product: product,
+    //               onAddToCart: onAddToCart, // Pass the callback
+    //             ),
+    //   ),
+    // );
   },
   child: Card(
     margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),

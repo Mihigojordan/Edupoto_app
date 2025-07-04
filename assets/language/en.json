@@ -583,5 +583,8 @@
   "unknown_class": "Unkown Class",
   "unknown_name": "Unkown Name",
 
-  "select_your_student_who_is_going_to_receive_the_product_at_school":"Select your student who is going to receive the product at school"
+  "select_your_student_who_is_going_to_receive_the_product_at_school":"Select your student to receive the product at school",
+  "drop_the_pin_to_your": "Drop the pin to your",
+  "exact_delivery_location": "Exact Delivery Location"
+
 }

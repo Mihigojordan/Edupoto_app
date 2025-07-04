@@ -614,7 +614,7 @@ class _TransactionConfirmationScreenState
                       Text('${'vat'.tr}: $vat ${AppConstants.currency}'),
 
                       Text(
-                          '${'convenince_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
+                          '${'convenience_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
                       const Divider(),
 
                       Text(
@@ -734,7 +734,7 @@ class _TransactionConfirmationScreenState
                                 // }
  if   (studentController.studentList == null ||  studentController.studentList!.isEmpty){
                                   schoolDeliveryAction();
-
+                                  homeDeliveryAction();
                                   }
                                   else{
                                 // Proceed with the transaction if students are selected

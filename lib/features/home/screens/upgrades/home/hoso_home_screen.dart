@@ -14,6 +14,7 @@ import 'package:hosomobile/features/introduction/screen/appbar_header_widget.dar
 import 'package:hosomobile/features/language/controllers/localization_controller.dart';
 import 'package:hosomobile/features/school/controllers/school_list_controller.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
+import 'package:hosomobile/features/shop/controller/shop_controller.dart';
 import 'package:hosomobile/helper/route_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:hosomobile/data/api/mtn_momo_api_client.dart';
@@ -91,6 +92,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
         .then((_) {
       schoolList = Get.find<SchoolListController>().schoolList;
     });
+    
     // Perform the other fetch operations as needed
     Get.find<ProfileController>().getProfileData(reload: reload);
     Get.find<RequestedMoneyController>()
@@ -100,6 +102,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
     Get.find<TransactionHistoryController>()
         .getTransactionData(1, reload: reload);
     Get.find<AllSchoolController>().getSchoolList(reload);
+
     Get.find<ClassController>().getClasList(reload);
     Get.find<StudentController>()
         .getStudentList(reload, isUpdate: reload, id: id);

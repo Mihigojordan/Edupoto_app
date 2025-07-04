@@ -37,7 +37,7 @@ class DropDown extends StatelessWidget {
 
       },
       popupProps: const PopupProps.menu(
-        showSearchBox: true,
+        showSearchBox: false,
       ),
       items: (filter, infiniteScrollProps) =>itemLists,
       decoratorProps: const DropDownDecoratorProps(
@@ -109,7 +109,7 @@ class DropDownStudentInfo extends StatelessWidget {
           child: DropdownSearch<Map<dynamic, String>>(
             compareFn: (item1, item2) => item1 == item2,
             popupProps: PopupProps.menu(
-              showSearchBox: true,
+              showSearchBox: false,
               constraints: BoxConstraints(
                 maxWidth: menuWidth, // Set width of dropdown menu
                 maxHeight: menuHeight, // Set height of dropdown menu
@@ -373,7 +373,7 @@ class DropDownEdubox extends StatelessWidget {
 
       },
       popupProps: const PopupProps.menu(
-        showSearchBox: true,
+        showSearchBox: false,
       ),
       items: (filter, infiniteScrollProps) =>itemLists,
       decoratorProps: const DropDownDecoratorProps(
@@ -444,7 +444,7 @@ class DropDownEduboxMaterial extends StatelessWidget {
 
       },
       popupProps: const PopupProps.menu(
-        showSearchBox: true,
+        showSearchBox: false,
       ),
   
       items: (filter, infiniteScrollProps) =>itemLists,
@@ -514,7 +514,7 @@ class DropDownPayment extends StatelessWidget {
 
       },
       popupProps: const PopupProps.menu(
-        showSearchBox: true,
+        showSearchBox: false,
       ),
       items: (filter, infiniteScrollProps) =>itemLists,
       decoratorProps: const DropDownDecoratorProps(
@@ -585,7 +585,7 @@ class DropDownSchool extends StatelessWidget {
 
       },
       popupProps: const PopupProps.menu(
-        showSearchBox: true,
+        showSearchBox: false,
       ),
       items: (filter, infiniteScrollProps) =>itemLists,
       decoratorProps: const DropDownDecoratorProps(
@@ -658,7 +658,7 @@ class DropDownAccount extends StatelessWidget {
 
       },
       popupProps: const PopupProps.menu(
-        showSearchBox: true,
+        showSearchBox: false,
       ),
       items: (filter, infiniteScrollProps) =>itemLists
           .map((item) => 'Code: ${item.code}\nName: ${item.name}')
@@ -738,7 +738,7 @@ class DropDownClass extends StatelessWidget {
 
       },
       popupProps: const PopupProps.menu(
-        showSearchBox: true,
+        showSearchBox: false,
       ),
       items: (filter, infiniteScrollProps) =>itemLists
           .map((item) => '${item.name}')

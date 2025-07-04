@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/features/shop/screen/prduct_detail_screen.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/util/app_constants.dart';
 
 class ProductGrid extends StatefulWidget {
-  final List<Product> products;
+  final List<ShopModel> products;
   final Function(Product, int) onAddToCart;
   final Map<Product, int> cart; // Add this parameter
 
@@ -56,7 +57,7 @@ class _ProductGridState extends State<ProductGrid> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  product.image,
+                  product.image??'no image',
                   height: screenWidth / 8,
                   width: screenWidth / 8,
                   fit: BoxFit.cover,
@@ -64,7 +65,7 @@ class _ProductGridState extends State<ProductGrid> {
                 const SizedBox(height: 4),
             
                       Text(
-                    product.name,
+                    product.name??'no name',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -78,11 +79,11 @@ class _ProductGridState extends State<ProductGrid> {
                     text: TextSpan(
                         style: DefaultTextStyle.of(context).style,
                         children: [
-                      TextSpan(
-                        text: '${AppConstants.currency} ${product.price.toStringAsFixed(2)}',
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.green),
-                      ),
+                      // TextSpan(
+                      //   text: '${AppConstants.currency} ${product.price.toStringAsFixed(2)}',
+                      //   style:
+                      //       const TextStyle(fontSize: 14, color: Colors.green),
+                      // ),
                       if (quantity > 0) ...[
                      
                         TextSpan(
@@ -95,10 +96,10 @@ class _ProductGridState extends State<ProductGrid> {
                       ],
                     ])),
                 const SizedBox(height: 4),
-                ElevatedButton(
-                  onPressed: () => _addToCart(product, 1),
-                  child: Text('add_to_cart'.tr),
-                ),
+                // ElevatedButton(
+                //   onPressed: () => _addToCart(product, 1),
+                //   child: Text('add_to_cart'.tr),
+                // ),
               ],
             ),
           ),

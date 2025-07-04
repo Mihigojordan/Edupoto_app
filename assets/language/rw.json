@@ -584,5 +584,7 @@
   "unknown_class": "Unkown Class",
   "unknown_name": "Unkown Name",
 
-   "select_your_student_who_is_going_to_receive_the_product_at_school":"Hitamo umwana wawe uzakira ibyo gutumwa kw'ishuri"
+   "select_your_student_who_is_going_to_receive_the_product_at_school":"Hitamo umwana wawe uzakira ibyo gutumwa kw'ishuri",
+  "drop_the_pin_to_your": "Shyira ikimenyetso cya pin aho uganiriza",
+  "exact_delivery_location": "Aho ibintu bizasanganwa nyakuri"
 }

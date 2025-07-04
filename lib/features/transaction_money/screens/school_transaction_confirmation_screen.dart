@@ -348,7 +348,10 @@ class _TransactionConfirmationScreenState
                           ? DefaultButton2(
                               color1: kamber300Color,
                               color2: kyellowColor,
-                              onPress: () => schoolDeliveryAction(),
+                              onPress: (){
+                             schoolDeliveryAction();
+                             homeDeliveryAction();  
+                              } ,
 
                               //  _captureInformation(
                               //   vat: vat,

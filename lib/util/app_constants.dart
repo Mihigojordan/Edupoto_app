@@ -41,8 +41,7 @@ class AppConstants {
   static const String announcement = '/api/v1/customer/announcement';
   static const String paymentHistory = '/api/v1/customer/payment';
   static const String customerBanner = '/api/v1/customer/get-banner';
-  static const String customerTransactionHistory =
-      '/api/v1/customer/transaction-history';
+  static const String customerTransactionHistory =  '/api/v1/customer/transaction-history';
   static const String schoolList = '/api/v1/customer/school-list';
   static const String customerPurposeUrl = '/api/v1/customer/get-purpose';
   static const String configUri = '/api/v1/config';
@@ -53,8 +52,7 @@ class AppConstants {
   static const String customerCheckOtp = '/api/v1/customer/check-otp';
   static const String customerVerifyOtp = '/api/v1/customer/verify-otp';
   static const String customerChangePin = '/api/v1/customer/change-pin';
-  static const String customerUpdateTwoFactor =
-      '/api/v1/customer/update-two-factor';
+  static const String customerUpdateTwoFactor =  '/api/v1/customer/update-two-factor';
   static const String customerSendMoney = '/api/v1/customer/send-money';
   static const String customerRequestMoney = '/api/v1/customer/request-money';
   static const String customerCashOut = '/api/v1/customer/cash-out';
@@ -90,6 +88,9 @@ class AppConstants {
   static const String sendMoneyMtnMomo = '/api/v1/momopay/pay';
   static const String createTokenMtnMomo = '/api/v1/momopay/token';
   static const String getPaymentInfo = '/api/v1/momopay/payment';
+
+  //Woocommerce
+  static const String shop =  '/api/v1/customer/student-class';
 
   // Shared Key
   static const String theme = 'theme';

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
+import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/util/app_constants.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
-  final Product product;
+  // final Product product;
+  final ShopModel product;
   final Function(Product, int) onAddToCart; // Callback function
 
   const ProductDetailsScreen({
@@ -27,7 +29,7 @@ class ProductDetailsScreen extends StatelessWidget {
             // Product Image
             Center(
               child: Image.asset(
-                product.image,
+                product.image!,
                 height: 200,
                 width: 200,
                 fit: BoxFit.cover,
@@ -36,38 +38,38 @@ class ProductDetailsScreen extends StatelessWidget {
             const SizedBox(height: 16),
             // Product Name
             Text(
-              product.name,
+              product.name!,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             // Product Price
-            Text(
-              '${AppConstants.currency} ${product.price.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 18, color: Colors.green),
-            ),
+            // Text(
+            //   '${AppConstants.currency} ${product.price.toStringAsFixed(2)}',
+            //   style: const TextStyle(fontSize: 18, color: Colors.green),
+            // ),
             const SizedBox(height: 16),
             // Additional Properties
-            Text(
-              '${'color'.tr}: ${product.color}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '${'size'.tr}: ${product.size}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '${'type'.tr}: ${product.type}',
-              style: const TextStyle(fontSize: 16),
-            ),
+            // Text(
+            //   '${'color'.tr}: ${product.color}',
+            //   style: const TextStyle(fontSize: 16),
+            // ),
+            // const SizedBox(height: 8),
+            // Text(
+            //   '${'size'.tr}: ${product.size}',
+            //   style: const TextStyle(fontSize: 16),
+            // ),
+            // const SizedBox(height: 8),
+            // Text(
+            //   '${'type'.tr}: ${product.type}',
+            //   style: const TextStyle(fontSize: 16),
+            // ),
             const SizedBox(height: 16),
             // Add to Cart Button
             Center(
               child: ElevatedButton(
                 onPressed: () {
                   // Call the callback function to add the product to the cart
-                  onAddToCart(product, 1); // Add 1 quantity by default
+                  // onAddToCart(product, 1); // Add 1 quantity by default
                   Navigator.pop(context); // Go back to the previous screen
                   // ScaffoldMessenger.of(context).showSnackBar(
                   //   SnackBar(content: Text('Added ${product.name} to cart')),
