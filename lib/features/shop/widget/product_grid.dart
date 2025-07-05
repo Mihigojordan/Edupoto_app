@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hosomobile/common/widgets/custom_image_widget.dart';
 import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/features/shop/screen/prduct_detail_screen.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/util/app_constants.dart';
+import 'package:hosomobile/util/images.dart';
 
 class ProductGrid extends StatefulWidget {
-  final List<ShopModel> products;
+  final List<Product> products;
   final Function(Product, int) onAddToCart;
   final Map<Product, int> cart; // Add this parameter
 
@@ -56,36 +58,42 @@ class _ProductGridState extends State<ProductGrid> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  product.image??'no image',
-                  height: screenWidth / 8,
-                  width: screenWidth / 8,
-                  fit: BoxFit.cover,
-                ),
+                CustomImageWidget(
+                   height: screenWidth / 8,
+                  width: screenWidth / 7,
+                    image:
+                           product.images?[0].src ?? 'no image',
+                    fit: BoxFit.cover,
+                    placeholder: Images.bannerPlaceHolder),
+                // Image.asset(
+                //   product.images?[0].src ?? 'no image',
+                //   height: screenWidth / 8,
+                //   width: screenWidth / 8,
+                //   fit: BoxFit.cover,
+                // ),
                 const SizedBox(height: 4),
-            
-                      Text(
-                    product.name??'no name',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-             
+
+                Text(
+                  product.name ?? 'no name',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+
                 const SizedBox(height: 4),
                 RichText(
                     text: TextSpan(
                         style: DefaultTextStyle.of(context).style,
                         children: [
-                      // TextSpan(
-                      //   text: '${AppConstants.currency} ${product.price.toStringAsFixed(2)}',
-                      //   style:
-                      //       const TextStyle(fontSize: 14, color: Colors.green),
-                      // ),
+                      TextSpan(
+                        text: '${AppConstants.currency} ${product.regularPrice}',
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.green),
+                      ),
                       if (quantity > 0) ...[
-                     
                         TextSpan(
                           text: ' X $quantity',
                           style: const TextStyle(
@@ -96,10 +104,10 @@ class _ProductGridState extends State<ProductGrid> {
                       ],
                     ])),
                 const SizedBox(height: 4),
-                // ElevatedButton(
-                //   onPressed: () => _addToCart(product, 1),
-                //   child: Text('add_to_cart'.tr),
-                // ),
+                ElevatedButton(
+                  onPressed: () => _addToCart(product, 1),
+                  child: Text('add_to_cart'.tr),
+                ),
               ],
             ),
           ),

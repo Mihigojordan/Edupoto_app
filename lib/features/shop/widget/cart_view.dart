@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/common/models/contact_model_mtn.dart';
+import 'package:hosomobile/common/widgets/custom_image_widget.dart';
 import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
+import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/features/student/screens/student_logistic_screen.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/screens/shop_transaction_confirmation_screen.dart';
 import 'package:hosomobile/helper/transaction_type.dart';
 import 'package:hosomobile/util/app_constants.dart';
+import 'package:hosomobile/util/images.dart';
 
 // Cart View Widget
 class CartView extends StatefulWidget {
@@ -35,7 +38,7 @@ class _CartViewState extends State<CartView> {
   double _calculateTotal() {
     double total = 0.0;
     widget.cart.forEach((product, quantity) {
-      total += product.price * quantity;
+      total += double.parse(product.regularPrice??'0') * quantity;
     });
     return total;
   }
@@ -58,15 +61,16 @@ class _CartViewState extends State<CartView> {
                 final product = widget.cart.keys.elementAt(index);
                 final quantity = widget.cart[product]!;
                 return ListTile(
-                  leading: Image.asset(
-                    product.image,
-                    height: 50,
-                    width: 50,
+                  leading:  CustomImageWidget(
+                   height: 50,
+                  width: 50,
+                    image:
+                           product.images?[0].src ?? 'no image',
                     fit: BoxFit.cover,
-                  ),
-                  title: Text(product.name),
+                    placeholder: Images.bannerPlaceHolder),
+                  title: Text(product.name!),
                   subtitle: Text(
-                      '${AppConstants.currency} ${product.price.toStringAsFixed(2)} x $quantity'),
+                      '${AppConstants.currency} ${product.regularPrice} x $quantity'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

@@ -1,12 +1,16 @@
 // List View Widget
 import 'package:flutter/material.dart';
+import 'package:hosomobile/common/widgets/custom_image_widget.dart';
+import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/features/shop/screen/prduct_detail_screen.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/util/app_constants.dart';
+import 'package:hosomobile/util/images.dart';
 
 
 // List View Widget
 class ProductList extends StatelessWidget {
+  // final List<Product> products;
   final List<Product> products;
   final Function(Product, int) onAddToCart;
   final  Map<Product, int> cart;
@@ -24,32 +28,33 @@ class ProductList extends StatelessWidget {
       // Inside the ListView.builder itemBuilder
 return GestureDetector(
   onTap: () {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) =>  ProductDetailsScreen(
-    //               product: product,
-    //               onAddToCart: onAddToCart, // Pass the callback
-    //             ),
-    //   ),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>  ProductDetailsScreen(
+                  product: product,
+                  onAddToCart: onAddToCart, // Pass the callback
+                ),
+      ),
+    );
   },
   child: Card(
     margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
     child: ListTile(
-      leading: Image.asset(
-        product.image,
-        height: 50,
-        width: 50,
-        fit: BoxFit.cover,
-      ),
-      title: Text(product.name, style: const TextStyle(fontSize: 16)),
+      leading:CustomImageWidget(
+                   height: 50,
+                  width: 50,
+                    image:
+                           product.images?[0].src ?? 'no image',
+                    fit: BoxFit.cover,
+                    placeholder: Images.bannerPlaceHolder),
+      title: Text(product.name??'Unknown', style: const TextStyle(fontSize: 16)),
       subtitle:       RichText(
                     text: TextSpan(
                         style: DefaultTextStyle.of(context).style,
                         children: [
                       TextSpan(
-                        text: '${AppConstants.currency} ${product.price.toStringAsFixed(2)}',
+                        text: '${AppConstants.currency} ${product.regularPrice}',
                         style:
                             const TextStyle(fontSize: 14, color: Colors.green),
                       ),
@@ -69,7 +74,7 @@ return GestureDetector(
         icon: const Icon(Icons.add_shopping_cart),
         onPressed: () {
           // Add 1 quantity by default
-          onAddToCart(product, 1);
+      onAddToCart(product, 1);
         },
       ),
     ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:hosomobile/common/widgets/rounded_button_widget.dart';
+import 'package:hosomobile/features/home/controllers/all_school_controller.dart';
 import 'package:hosomobile/features/home/controllers/announcement_controller.dart';
 import 'package:hosomobile/features/home/controllers/class_controller.dart';
 import 'package:hosomobile/features/home/domain/models/announcement_model.dart';
@@ -21,7 +22,6 @@ import 'package:hosomobile/data/api/mtn_momo_api_client.dart';
 import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
 import 'package:hosomobile/features/auth/domain/models/user_short_data_model.dart';
 import 'package:hosomobile/features/history/controllers/transaction_history_controller.dart';
-import 'package:hosomobile/features/home/controllers/all_school_controller.dart';
 import 'package:hosomobile/features/home/controllers/banner_controller.dart';
 import 'package:hosomobile/features/home/controllers/edubox_material_controller.dart';
 import 'package:hosomobile/features/home/controllers/home_controller.dart';
@@ -92,7 +92,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
         .then((_) {
       schoolList = Get.find<SchoolListController>().schoolList;
     });
-    
+
     // Perform the other fetch operations as needed
     Get.find<ProfileController>().getProfileData(reload: reload);
     Get.find<RequestedMoneyController>()
@@ -101,7 +101,10 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
         .getOwnRequestedMoneyList(reload, isUpdate: reload);
     Get.find<TransactionHistoryController>()
         .getTransactionData(1, reload: reload);
-    Get.find<AllSchoolController>().getSchoolList(reload);
+   Get.find<AllSchoolController>().getSchoolList(reload);
+
+    Get.find<ShopController>().getShopList(reload);
+    Get.find<ShopController>().getCategoryList(reload);
 
     Get.find<ClassController>().getClasList(reload);
     Get.find<StudentController>()
@@ -138,7 +141,9 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-      final String languageText = AppConstants.languages[Get.find<LocalizationController>().selectedIndex].languageName!;
+    final String languageText = AppConstants
+        .languages[Get.find<LocalizationController>().selectedIndex]
+        .languageName!;
     // Now the bannerList will be populated
 
     return UpgradeAlert(
@@ -201,13 +206,8 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                                         );
                                       }),
                                     ]),
-
-
-    
-
                                   ],
                                 ),
-                       
                               ],
                             ),
                             SizedBox(height: screenHeight >= 763 ? 10 : 3),
@@ -218,24 +218,22 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                                   'assets/image/HOSO MOBILE.png'),
                             ),
                             sizedBox05h,
-                                      
                           ],
                         ),
                       ),
-                                  Positioned(
-                                    top: 40,
-                                    right: 20,
-                                    child: RoundedButtonWidget(
-                                     buttonText: languageText,
-                                     onTap:
-                                         AppConstants.languages.length > 1
-                                             ? () {
-                                                 Get.toNamed(RouteHelper
-                                                     .getChoseLanguageRoute());
-                                               }
-                                             : null,
-                                                                     ),
-                                  ),
+                      Positioned(
+                        top: 40,
+                        right: 20,
+                        child: RoundedButtonWidget(
+                          buttonText: languageText,
+                          onTap: AppConstants.languages.length > 1
+                              ? () {
+                                  Get.toNamed(
+                                      RouteHelper.getChoseLanguageRoute());
+                                }
+                              : null,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -309,7 +307,8 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                                       )),
                                   height: screenHeight * 0.05,
                                   width: screenWidth * 0.30,
-                                  icon: '${'school_directory_button_school'.tr}\n${'school_directory_button_directory'.tr}',
+                                  icon:
+                                      '${'school_directory_button_school'.tr}\n${'school_directory_button_directory'.tr}',
                                   title: 'assets/image/Schools Directory.png',
                                   clas: ''),
                               BorderButton1(
@@ -320,7 +319,8 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                                   onPress: () => Get.to(const NoConnection()),
                                   height: screenHeight * 0.05,
                                   width: screenWidth * 0.30,
-                                  icon: '${'recharge_school_card_button_recharge'.tr}\n${'recharge_school_card_button_school_card'.tr}',
+                                  icon:
+                                      '${'recharge_school_card_button_recharge'.tr}\n${'recharge_school_card_button_school_card'.tr}',
                                   title: 'assets/image/cashout3.png',
                                   clas: ''),
                             ],
@@ -451,7 +451,7 @@ class _HomeCard1State extends State<HomeCard1> {
                           screenHeight >= 763
                               ? sizedBox
                               : const SizedBox(height: 10),
-                       const   AppBarHeaderWidget()
+                          const AppBarHeaderWidget()
                         ],
                       ),
                       SizedBox(height: screenHeight >= 763 ? 30 : 10),
@@ -465,7 +465,9 @@ class _HomeCard1State extends State<HomeCard1> {
                               horizontal: screenHeight >= 763 ? 10.0 : 5,
                               onPress: () {
                                 mtnMomoApiClient.createMomoToken();
-                                Get.to(const MzaziScreen(isShop: false,));
+                                Get.to(const MzaziScreen(
+                                  isShop: false,
+                                ));
                               },
                               // Navigator.push(context,MaterialPageRoute(builder: (context)=>MzaziScreen())),
                               height: 30,

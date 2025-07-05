@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/common/models/contact_model_mtn.dart';
 import 'package:hosomobile/common/widgets/custom_back_button_widget.dart';
+import 'package:hosomobile/common/widgets/custom_image_widget.dart';
 import 'package:hosomobile/common/widgets/custom_pin_code_field_widget.dart';
 import 'package:hosomobile/common/widgets/demo_otp_hint_widget.dart';
 import 'package:hosomobile/data/api/mtn_momo_api_client.dart';
@@ -20,6 +21,7 @@ import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_updat
 import 'package:hosomobile/features/map/screens/map_screen.dart';
 import 'package:hosomobile/features/setting/controllers/profile_screen_controller.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
+import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/features/transaction_money/controllers/bootom_slider_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/transaction_controller.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
@@ -31,6 +33,7 @@ import 'package:hosomobile/helper/transaction_type.dart';
 import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
+import 'package:hosomobile/util/images.dart';
 import 'package:hosomobile/util/styles.dart';
 
 class ShopTransactionConfirmationScreen extends StatefulWidget {
@@ -260,7 +263,7 @@ class _TransactionConfirmationScreenState
                             final product =
                                 widget.cart.keys.elementAt(productIndex);
                             final quantity = widget.cart[product]!;
-                            final totalPrice = product.price * quantity;
+                            final totalPrice = double.parse(product.regularPrice??'0') * quantity;
 
                             return Card(
                               margin: const EdgeInsets.symmetric(
@@ -279,12 +282,13 @@ class _TransactionConfirmationScreenState
                                         ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(8),
-                                          child: Image.asset(
-                                            product.image,
-                                            height: 40,
-                                            width: 40,
-                                            fit: BoxFit.cover,
-                                          ),
+                                          child: CustomImageWidget(
+                   height: 40,
+                  width: 40,
+                    image:
+                           product.images?[0].src ?? 'no image',
+                    fit: BoxFit.cover,
+                    placeholder: Images.bannerPlaceHolder),
                                         ),
                                         const SizedBox(width: 12),
                                         // Product details
@@ -294,7 +298,7 @@ class _TransactionConfirmationScreenState
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                product.name,
+                                                product.name!,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .titleMedium
@@ -305,7 +309,7 @@ class _TransactionConfirmationScreenState
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
-                                                '${AppConstants.currency} ${product.price.toStringAsFixed(2)}',
+                                                '${AppConstants.currency} ${product.regularPrice}',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyMedium,
@@ -348,7 +352,7 @@ class _TransactionConfirmationScreenState
                                                 widget
                                                     .onReduceQuantity(product);
                                                 widget.totalAmount -=
-                                                    product.price;
+                                                    double.parse(product.regularPrice??'0');
                                               });
                                             },
                                           ),
@@ -367,7 +371,7 @@ class _TransactionConfirmationScreenState
                                                 widget.onIncreaseQuantity(
                                                     product);
                                                 widget.totalAmount +=
-                                                    product.price;
+                                                    double.parse(product.regularPrice??'0');
                                               });
                                             },
                                           ),
@@ -529,7 +533,7 @@ class _TransactionConfirmationScreenState
                               screenId: 0,
                               calculatedTotal: widget.totalAmount,
                               contactModel: widget.contactModel!,
-                              eduboxService: widget.product.name,
+                              eduboxService: widget.product.name!,
                               dataList: [],
                               shipper: widget.shipper,
                               destination: widget.destination,
@@ -544,7 +548,7 @@ class _TransactionConfirmationScreenState
                               purpose: '',
                               calculateServiceCharge: convenienceFee,
                               calculateVAT: vat,
-                              productName: widget.product.name,
+                              productName: widget.product.name!,
                               randomNumber: randomNumber,
                               serviceIndex: 0,
                               totalAmount: double.parse(totalAmount),
@@ -578,7 +582,7 @@ class _TransactionConfirmationScreenState
                               screenId: 0,
                               calculatedTotal: widget.totalAmount,
                               contactModel: widget.contactModel!,
-                              eduboxService: widget.product.name,
+                              eduboxService: widget.product.name!,
                               dataList: [],
                               shipper: widget.shipper,
                               destination: widget.destination,
@@ -593,7 +597,7 @@ class _TransactionConfirmationScreenState
                               purpose: '',
                               calculateServiceCharge: convenienceFee,
                               calculateVAT: vat,
-                              productName: widget.product.name,
+                              productName: widget.product.name!,
                               randomNumber: randomNumber,
                               serviceIndex: 0,
                               totalAmount: double.parse(totalAmount),

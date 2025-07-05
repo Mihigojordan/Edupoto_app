@@ -1,4 +1,4 @@
-class Product {
+class Products {
   final String name;
   final double price;
   final String image;
@@ -6,7 +6,7 @@ class Product {
   final String size;  // New property
   final String type;  // New property
 
-  Product({
+  Products({
     required this.name,
     required this.price,
     required this.image,
@@ -19,7 +19,7 @@ class Product {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Product &&
+      other is Products &&
           runtimeType == other.runtimeType &&
           name == other.name &&
           price == other.price &&

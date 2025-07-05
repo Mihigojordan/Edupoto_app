@@ -1,13 +1,18 @@
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:hosomobile/data/api/api_client.dart';
+import 'package:hosomobile/data/api/woocommerce_api_client.dart';
 import 'package:hosomobile/util/app_constants.dart';
 
 class ShopRepo{
-  final ApiClient apiClient;
+  final WoocommerceApiClient apiClient;
 
   ShopRepo({required this.apiClient});
 
-  Future<Response> getShopListApi() async {
+  Future<Response> getProductListApi() async {
     return await apiClient.getData(AppConstants.shop);
+  }
+
+  Future<Response> getCategoryListApi() async {
+    return await apiClient.getCategoryData(AppConstants.shop);
   }
 }

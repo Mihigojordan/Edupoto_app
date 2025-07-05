@@ -585,6 +585,9 @@
 
   "select_your_student_who_is_going_to_receive_the_product_at_school":"Select your student to receive the product at school",
   "drop_the_pin_to_your": "Drop the pin to your",
-  "exact_delivery_location": "Exact Delivery Location"
+  "exact_delivery_location": "Exact Delivery Location",
 
+  "no_category": "No Category",
+  "no_products_found": "No product found",
+  "product_details": "Product Details"
 }

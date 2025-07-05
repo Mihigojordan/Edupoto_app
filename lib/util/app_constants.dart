@@ -8,11 +8,11 @@ class AppConstants {
   // 'http://192.168.1.83/edupoto_rw_admin';
 
   static const String baseUrl = 'https://edupoto.com';
+  static const String wooBaseUrl = 'https://hosomobile.rw';
   //  'http://127.0.0.1/edupoto_rw_admin'; //  'http://192.168.1.76/edupoto_rw_admin''https://www.hosomobile.rw' ;                                         //'http://192.168.1.69/edupoto_rw_admin'; //'http://192.168.1.66/edupoto_rw_admin';
   static const bool demo = false;
   static const double appVersion = 4.3;
-  static const String customerPhoneCheckUri =
-      '/api/v1/customer/auth/check-phone';
+  static const String customerPhoneCheckUri = '/api/v1/customer/auth/check-phone';
 
   //******************************* introduction screen ******************************
   static const String appShareLink = 'https://babyeyi.web.app';
@@ -91,6 +91,8 @@ class AppConstants {
 
   //Woocommerce
   static const String shop =  '/api/v1/customer/student-class';
+   static const String getProduct = '/wp-json/wc/v3/products';
+   static const String getCategory = '/wp-json/wc/v3/products/categories';
 
   // Shared Key
   static const String theme = 'theme';

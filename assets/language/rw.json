@@ -586,5 +586,9 @@
 
    "select_your_student_who_is_going_to_receive_the_product_at_school":"Hitamo umwana wawe uzakira ibyo gutumwa kw'ishuri",
   "drop_the_pin_to_your": "Shyira ikimenyetso cya pin aho uganiriza",
-  "exact_delivery_location": "Aho ibintu bizasanganwa nyakuri"
+  "exact_delivery_location": "Aho ibintu bizasanganwa nyakuri",
+
+   "no_category": "Nta gatsindo",
+  "no_products_found": "Nta bicuruzwa byabonetse",
+  "product_details": "Ibisobanuro by'igicuruzwa"
 }

@@ -8,6 +8,7 @@ import 'package:hosomobile/features/home/domain/models/student_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
+import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/features/transaction_money/controllers/bootom_slider_controller.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
@@ -274,7 +275,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                         final product = entry.key;
                                         final quantity = entry.value;
                                         return Text(
-                                          '${product.name} (${product.price} ${AppConstants.currency}) x $quantity, ',
+                                          '${product.name} (${product.regularPrice} ${AppConstants.currency}) x $quantity, ',
                                         );
                                       }).toList(),
                                     ),
@@ -341,7 +342,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                         .map((entry) {
                                       final product = entry.key;
                                       final quantity = entry.value;
-                                      return '${product.name} (${product.price} ${AppConstants.currency}) x $quantity, ';
+                                      return '${product.name} (${product.regularPrice} ${AppConstants.currency}) x $quantity, ';
                                     }).toList(),
 
                                     productName: widget.edubox_service ??

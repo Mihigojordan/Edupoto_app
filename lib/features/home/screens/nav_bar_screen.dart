@@ -6,6 +6,7 @@ import 'package:hosomobile/common/widgets/custom_dialog_widget.dart';
 import 'package:hosomobile/data/api/mtn_momo_api_client.dart';
 import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
 import 'package:hosomobile/features/home/controllers/menu_controller.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/studentpoto_screen/studentpoto_screen.dart';
 import 'package:hosomobile/features/home/widgets/bottom_item_widget.dart';
 import 'package:hosomobile/features/home/widgets/floating_action_button_widget.dart';
@@ -13,6 +14,7 @@ import 'package:hosomobile/features/shop/screen/shop_screen.dart';
 import 'package:hosomobile/features/splash/screens/splash_screen.dart';
 import 'package:hosomobile/helper/dialog_helper.dart';
 import 'package:hosomobile/util/color_resources.dart';
+import 'package:hosomobile/util/dimensions.dart';
 import 'package:hosomobile/util/images.dart';
 
 class NavBarScreen extends StatefulWidget {
@@ -109,26 +111,38 @@ class _NavBarScreenState extends State<NavBarScreen> {
                 onTap:  () {Get.to(const ShoppingScreen());
               mtnMomoApiClient.createMomoToken();
               },
-                child: Container(
-                  height: 80,
-                  width: 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFFFA000).withOpacity(0.1),
-                        spreadRadius: 3,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3),
-                      )
+                child: SizedBox(
+                  height: 90,
+                  child: Column(
+                    children: [
+                        Text('Librairie Caritas', style: TextStyle(
+                                color: ColorResources.blackColor,
+                                fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w400,
+                              )),
+                        const   SizedBox(height: 2,),
+                      Container(
+                        height: 70,
+                        width: 70,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFFFFA000).withOpacity(0.1),
+                              spreadRadius: 3,
+                              blurRadius: 7,
+                              offset: const Offset(0, 3),
+                            )
+                          ],
+                          color: const Color(0xFFFFA000), // Amber 700 as base color
+                        ),
+                        child: Image.asset(
+                          'assets/image/shop.png',
+                          // height: screenHeight * 0.025,
+                          // width: screenHeight * 0.025,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ],
-                    color: const Color(0xFFFFA000), // Amber 700 as base color
-                  ),
-                  child: Image.asset(
-                    'assets/image/shop.png',
-                    // height: screenHeight * 0.025,
-                    // width: screenHeight * 0.025,
-                    fit: BoxFit.cover,
                   ),
                 ),
               ),

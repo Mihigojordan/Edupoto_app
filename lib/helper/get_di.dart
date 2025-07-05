@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hosomobile/common/controllers/share_controller_sl.dart';
+import 'package:hosomobile/data/api/woocommerce_api_client.dart';
 import 'package:hosomobile/features/forget_pin/domain/reposotories/forget_pin_repo.dart';
 import 'package:hosomobile/features/home/controllers/all_school_controller.dart';
 import 'package:hosomobile/features/home/controllers/announcement_controller.dart';
@@ -121,6 +122,9 @@ print("Device Identifier: $deviceIdentifier");
     uniqueId: Get.find(),
     deiceInfo: Get.find(),
   ));
+
+  
+  Get.lazyPut(() => WoocommerceApiClient());
 
   // Repository
    Get.lazyPut(() => SplashRepo(sharedPreferences: Get.find(), apiClient: Get.find()));

@@ -5,6 +5,7 @@ import 'package:hosomobile/features/shop/controller/shop_controller.dart';
 import 'package:hosomobile/features/shop/domain/data/categories.dart';
 import 'package:hosomobile/features/shop/domain/data/product_lists.dart';
 import 'package:hosomobile/features/shop/domain/models/company_category.dart';
+import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/features/shop/widget/cart_view.dart';
 import 'package:hosomobile/features/shop/domain/models/company.dart';
 import 'package:hosomobile/features/shop/widget/company_nav_bar.dart';
@@ -44,7 +45,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           categories: stationery.map((category) => CompanyCategory(
             name: category['name'],
             logo: category['logo'],
-            products: (category['products'] as List).map((product) => Product(
+            products: (category['products'] as List).map((product) => Products(
               name: product['name'],
               image: product['image'],
               price: product['price'],
@@ -57,7 +58,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           categories: stationery.map((category) => CompanyCategory(
             name: category['name'],
             logo: category['logo'],
-            products: (category['products'] as List).map((product) => Product(
+            products: (category['products'] as List).map((product) => Products(
               name: product['name'],
               image: product['image'],
               price: product['price'],
@@ -75,7 +76,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           categories: stationery.map((category) => CompanyCategory(
             name: category['name'],
             logo: category['logo'],
-            products: (category['products'] as List).map((product) => Product(
+            products: (category['products'] as List).map((product) => Products(
               name: product['name'],
               image: product['image'],
               price: product['price'],
@@ -88,7 +89,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           categories: stationery.map((category) => CompanyCategory(
             name: category['name'],
             logo: category['logo'],
-            products: (category['products'] as List).map((product) => Product(
+            products: (category['products'] as List).map((product) => Products(
               name: product['name'],
               image: product['image'],
               price: product['price'],
@@ -101,7 +102,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           categories: stationery.map((category) => CompanyCategory(
             name: category['name'],
             logo: category['logo'],
-            products: (category['products'] as List).map((product) => Product(
+            products: (category['products'] as List).map((product) => Products(
               name: product['name'],
               image: product['image'],
               price: product['price'],
@@ -114,7 +115,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           categories: stationery.map((category) => CompanyCategory(
             name: category['name'],
             logo: category['logo'],
-            products: (category['products'] as List).map((product) => Product(
+            products: (category['products'] as List).map((product) => Products(
               name: product['name'],
               image: product['image'],
               price: product['price'],
@@ -130,11 +131,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     super.initState();
     _cart = {};
     _idController = TextEditingController();
-      Get.find<ShopController>().getShopList(false);
+     
     _passwordController = TextEditingController();
     if (widget.isOffer == true) {
       WidgetsBinding.instance.addPostFrameCallback((_) {});
     }
+
   }
 
   @override
@@ -192,20 +194,31 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     );
   }
 
-  List<Product> _filterProducts(List<Product> products) {
-    if (_searchQuery.isEmpty) return products;
-    return products
-        .where((product) =>
-            product.name.toLowerCase().contains(_searchQuery.toLowerCase()))
-        .toList();
-  }
+  // List<Product> _filterProducts(List<Product> products) {
+  //   if (_searchQuery.isEmpty) return products;
+  //   return products
+  //       .where((product) =>
+  //           product.name.toLowerCase().contains(_searchQuery.toLowerCase()))
+  //       .toList();
+  // }
+
+List<Product> _filterProductsByCategory(List<Product> products, int categoryId) {
+  if (products.isEmpty) return [];
+  
+  return products.where((product) {
+    // Check if product has categories and if any category matches the selected one
+    return product.categories != null && 
+           product.categories!.isNotEmpty &&
+           product.categories!.any((category) => category.id == categoryId);
+  }).toList();
+}
 
   @override
   Widget build(BuildContext context) {
     final currentType = companyTypes[_selectedTypeIndex];
     final currentCompany = currentType.companies[_selectedCompanyIndex];
     final currentCategory = currentCompany.categories[_selectedCategoryIndex];
-    final filteredProducts = _filterProducts(currentCategory.products);
+   
 
     return Scaffold(
       appBar: AppBar(
@@ -250,11 +263,17 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       ),
       body: GetBuilder<ShopController>(
         builder: (shopController) {
-
+          
+      shopController.addListener(() {
+    if (mounted && shopController.categoryList != null) {
+      setState(() {
+        _selectedCategoryIndex = 0; // Reset to first category
+      });
+    }
+  });
 
     return shopController.isLoading?const Center(child: ShopShimmerWidget()):
-    
-     Column(
+    Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -292,37 +311,31 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               _selectedCategoryIndex = 0;
             }),
           ),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Sidebar with categories
-                CompanySideBar(
-                  categories: currentCompany.categories,
-                  selectedIndex: _selectedCategoryIndex,
-                  onTap: (index) => setState(() => _selectedCategoryIndex = index),
-                ),
-                // Products
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _isGridView
-                        ? ProductGrid(
-                                      // filteredProducts
-                            products: shopController.shopList!,
-                            onAddToCart: _addToCart,
-                            cart: _cart,
-                          )
-                        : ProductList(
-                            products: filteredProducts,
-                            onAddToCart: _addToCart,
-                            cart: _cart,
-                          ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+ Expanded(
+  child: Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Sidebar with categories - only show if categories exist
+      if (shopController.categoryList != null && shopController.categoryList!.isNotEmpty)
+        CompanySideBar(
+          categoryList: shopController.categoryList!,
+          selectedIndex: _selectedCategoryIndex,
+          onTap: (index) {
+            if (index >= 0 && index < shopController.categoryList!.length) {
+              setState(() => _selectedCategoryIndex = index);
+            }
+          },
+        ),
+      // Products
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _buildProductView(shopController),
+        ),
+      ),
+    ],
+  ),
+),
         ],
       );}),
       floatingActionButton: FloatingActionButton(
@@ -360,4 +373,40 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       ),
     );
   }
+
+Widget _buildProductView(ShopController shopController) {
+  // Check if categories and products exist
+  if (shopController.categoryList == null || 
+      shopController.categoryList!.isEmpty ||
+      shopController.shopList == null) {
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  // Ensure selected index is valid
+  if (_selectedCategoryIndex >= shopController.categoryList!.length) {
+    _selectedCategoryIndex = 0; // Reset to first category if invalid
+  }
+
+  final filteredProducts = _filterProductsByCategory(
+    shopController.shopList!,
+    shopController.categoryList![_selectedCategoryIndex].id,
+  );
+
+  if (filteredProducts.isEmpty) {
+    return Center(child: Text('no_products_found'.tr));
+  }
+
+  return _isGridView
+      ? ProductGrid(
+          products: filteredProducts,
+          onAddToCart: _addToCart,
+          cart: _cart,
+        )
+      : ProductList(
+          products: filteredProducts,
+          onAddToCart: _addToCart,
+          cart: _cart,
+        );
+}
+
 }
