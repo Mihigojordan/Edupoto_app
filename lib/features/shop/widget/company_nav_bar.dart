@@ -52,14 +52,14 @@ class CompanyNavigationBar extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CustomImageWidget(
-                    image: company.image?.src ?? 'no image',
-                    height: 20,
-                    width: 20,
-                    fit: BoxFit.cover,
-                    placeholder: Images.bannerPlaceHolder,
-                  ),
-                  const SizedBox(height: 4),
+                  // CustomImageWidget(
+                  //   image: company.image?.src ?? 'no image',
+                  //   height: 20,
+                  //   width: 20,
+                  //   fit: BoxFit.cover,
+                  //   placeholder: Images.bannerPlaceHolder,
+                  // ),
+                  // const SizedBox(height: 4),
                   Text(
                     company.name,
                     style: TextStyle(

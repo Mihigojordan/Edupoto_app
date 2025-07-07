@@ -103,6 +103,4 @@ class ShopController extends GetxController implements GetxService{
     }
   }
 
-  
-
 }

@@ -101,7 +101,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
         .getOwnRequestedMoneyList(reload, isUpdate: reload);
     Get.find<TransactionHistoryController>()
         .getTransactionData(1, reload: reload);
-   Get.find<AllSchoolController>().getSchoolList(reload);
+  Get.find<AllSchoolController>().getSchoolList(reload);
 
     Get.find<ShopController>().getShopList(reload);
     Get.find<ShopController>().getCategoryList(reload);

@@ -45,25 +45,22 @@ WoocommerceApiClient(){
 queryString = {
   "consumer_key": consumerKey,
   "consumer_secret": consumerSecret,
-  "_fields[]":['id','name','price','regular_price','sale_price','short_description','images','categories'],
-  "per_page":'100',
-  "page":'1'
+  "_fields[]":['id','name','price','regular_price','sale_price','short_description','images','categories','brands'],
+
 };
 
 queryCategoryString = {
   "consumer_key": consumerKey,
   "consumer_secret": consumerSecret,
   "_fields[][]":['id','name','parent','desplay','menu_order','count','description','image'],
-  "per_page":'100',
-  "page":'1'
+ 
 };
 
 queryCategoryString = {
   "consumer_key": consumerKey,
   "consumer_secret": consumerSecret,
   "_fields[][]":['id','name','parent','desplay','menu_order','count','description','image'],
-  "per_page":'100',
-  "page":'1'
+
 };
 
 }

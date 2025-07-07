@@ -120,9 +120,11 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
     return GetBuilder<SplashController>(builder: (splashController) {
       return splashController.configModel!.systemFeature!.linkedWebSiteStatus!
           ? GetBuilder<AllSchoolController>(builder: (allSchoolController) {
-              return allSchoolController.isLoading
-                  ? const WebSiteShimmer()
-                  : allSchoolController.schoolList.isEmpty
+              return 
+              // allSchoolController.isLoading
+              //     ? const WebSiteShimmer()
+              //     : 
+                  allSchoolController.schoolList.isEmpty
                       ? const SizedBox()
                       : Form(
                           key: _formKey,

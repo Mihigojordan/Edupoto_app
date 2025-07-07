@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:get/get.dart';
+import 'package:hosomobile/common/widgets/custom_dropdown.dart';
 import 'package:hosomobile/features/home/controllers/all_school_controller.dart';
 import 'package:hosomobile/features/home/domain/models/all_school_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/custom_buttons.dart';
@@ -10,6 +11,7 @@ import 'package:hosomobile/features/school/screens/school_list_screen.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/single_school.dart';
 import 'package:hosomobile/features/home/widgets/web_site_shimmer_widget.dart';
 import 'package:hosomobile/features/school_directory/screen/school_directory_screen.dart';
+import 'package:hosomobile/features/school_directory/widgets/custom_dropdown_with_search.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 
 class SchoolDirectoryDropdowns extends StatefulWidget {
@@ -58,7 +60,7 @@ TextEditingController schoolNameEditingController=TextEditingController();
                                 DropdownSearch<Districts>(
                                   compareFn: (Districts? item1, Districts? item2) {
                                     if (item1 == null || item2 == null) {
-                                      allSchoolController.hasMore != false;
+                                      // allSchoolController.hasMore != false;
                                       return false;
                                     }
         
@@ -67,20 +69,20 @@ TextEditingController schoolNameEditingController=TextEditingController();
                                   popupProps: const PopupProps.menu(
                                     showSearchBox: true,
                                   ),
-                                  decoratorProps:  DropDownDecoratorProps(
+                                  decoratorProps: const DropDownDecoratorProps(
                                     decoration: InputDecoration(
-                                      border:const OutlineInputBorder(
+                                      border: OutlineInputBorder(
                                         borderSide: BorderSide(color: Colors.grey),
                                         borderRadius:
                                             BorderRadius.all(Radius.circular(25.0)),
                                       ),
-                                      focusedBorder:const OutlineInputBorder(
+                                      focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(color: Colors.amber),
                                         borderRadius:
                                             BorderRadius.all(Radius.circular(25.0)),
                                       ),
                                       labelStyle: TextStyle(color: Colors.grey),
-                                      hintText: "select_district".tr,
+                                      hintText: "Select Districts",
                                       hintStyle: TextStyle(color: Colors.grey),
                                     ),
                                   ),
@@ -103,10 +105,10 @@ TextEditingController schoolNameEditingController=TextEditingController();
                                 ),
                                 sizedBox5,
                                 selectedDistrict == null
-                                    ?  Padding(
+                                    ? const Padding(
                                         padding: EdgeInsets.only(left: 8.0),
                                         child: Text(
-                                          'please_select_district'.tr,
+                                          'Please Select District',
                                           style: TextStyle(color: Colors.red),
                                         ),
                                       )
@@ -117,7 +119,7 @@ TextEditingController schoolNameEditingController=TextEditingController();
                                   compareFn: (AllSchoolModel? item1,
                                       AllSchoolModel? item2) {
                                     if (item1 == null || item2 == null) {
-                                      allSchoolController.hasMore != false;
+                                      // allSchoolController.hasMore != false;
                                       return false;
                                     }
         
@@ -126,20 +128,20 @@ TextEditingController schoolNameEditingController=TextEditingController();
                                   popupProps: const PopupProps.menu(
                                     showSearchBox: true,
                                   ),
-                                  decoratorProps:  DropDownDecoratorProps(
+                                  decoratorProps: const DropDownDecoratorProps(
                                     decoration: InputDecoration(
-                                      border:const OutlineInputBorder(
+                                      border: OutlineInputBorder(
                                         borderSide: BorderSide(color: Colors.grey),
                                         borderRadius:
                                             BorderRadius.all(Radius.circular(25.0)),
                                       ),
-                                      focusedBorder:const OutlineInputBorder(
+                                      focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(color: Colors.amber),
                                         borderRadius:
                                             BorderRadius.all(Radius.circular(25.0)),
                                       ),
-                                      labelStyle:const TextStyle(color: Colors.grey),
-                                      hintText: "select_from_our_partner_schools".tr,
+                                      labelStyle: TextStyle(color: Colors.grey),
+                                      hintText: "Select from our Parner Schools",
                                       hintStyle: TextStyle(color: Colors.grey),
                                     ),
                                   ),
@@ -162,11 +164,11 @@ TextEditingController schoolNameEditingController=TextEditingController();
                                 ),
                                 sizedBox5,
                                 selectedCategory == null
-                                    ?  Padding(
-                                        padding:const EdgeInsets.only(left: 8.0),
+                                    ? const Padding(
+                                        padding: EdgeInsets.only(left: 8.0),
                                         child: Text(
-                                          'please_select_school'.tr,
-                                          style:const TextStyle(color: Colors.red),
+                                          'Please Select School',
+                                          style: TextStyle(color: Colors.red),
                                         ),
                                       )
                                     : const SizedBox(),
@@ -177,7 +179,7 @@ TextEditingController schoolNameEditingController=TextEditingController();
                            Padding(
                                         padding:const EdgeInsets.symmetric(vertical: 8.0),
                                         child: Text(
-                                          'about_school_directory'.tr,
+                                          ' Schools Directory is a comprehensive digital platform that profiles all schools in Rwanda, providing detailed information about each institution.',
                                           style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontWeight: FontWeight.w200), textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -192,10 +194,10 @@ TextEditingController schoolNameEditingController=TextEditingController();
                                   color2: kyellowColor,
                                   onPress: () => (selectedCategory == null)
                                       ? () {}
-                                      : Get.to( SchoolDirectoryScreen(schoolName:selectedCategory!.schoolName??'no_school'.tr ,schoolDistrict:selectedDistrict!.name??'no_district'.tr ,)
+                                      : Get.to( SchoolDirectoryScreen(schoolName: selectedCategory!.schoolName!,schoolDistrict:selectedDistrict!.name! ,)
                                           // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
                                           ),
-                                  title: 'next'.tr,
+                                  title: 'NEXT',
                                   iconData: Icons.arrow_forward_outlined,
                                 ),
                                
@@ -249,4 +251,76 @@ TextFormField buildFormField(String labelText,
     );
   }
 
+}
+
+class SchoolListWidget extends StatelessWidget {
+  const SchoolListWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.find<AllSchoolController>();
+
+    return Obx(() {
+      if (controller.isInitialLoad && controller.isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      return RefreshIndicator(
+        onRefresh: controller.refreshData,
+        child: ListView.builder(
+          controller: controller.scrollController,
+          itemCount: controller.schoolList.length + (controller.hasMore ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index >= controller.schoolList.length) {
+              return const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+            
+            final district = controller.schoolList[index];
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      district.name ?? 'Unnamed District',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ...district.schools.map((school) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            school.schoolName ?? 'Unnamed School',
+                            style: const TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                          if (school.classes.isNotEmpty) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              'Classes: ${school.classes.length}',
+                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                          ],
+                          const Divider(height: 16),
+                        ],
+                      ),
+                    )),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    });
+  }
 }

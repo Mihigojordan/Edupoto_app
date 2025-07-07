@@ -240,12 +240,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             },
           ),
           // Company Navigation
-     CompanyNavigationBar(
+ CompanyNavigationBar(
   companies: [BrandModel(name: 'all'.tr, id: 0)] + (shopController.brandList ?? []),
   selectedIndex: _selectedCompanyIndex,
   onTap: (index) => setState(() {
     _selectedCompanyIndex = index;
-    // Don't reset category index here unless you want to
+    _selectedCategoryIndex = 0; // Reset category when brand changes
   }),
 ),
  Expanded(
@@ -253,16 +253,16 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       // Sidebar with categories - only show if categories exist
-      if (shopController.categoryList != null && shopController.categoryList!.isNotEmpty)
-    CompanySideBar(
-  categoryList: [WooCategory(name: 'all'.tr, id: 0)] + (shopController.categoryList ?? []),
-  selectedIndex: _selectedCategoryIndex,
-  onTap: (index) {
-    if (index >= 0 && index < (shopController.categoryList?.length ?? 0) + 1) {
-      setState(() => _selectedCategoryIndex = index);
-    }
-  },
-),
+     if (shopController.categoryList != null && shopController.categoryList!.isNotEmpty)
+        CompanySideBar(
+          categoryList: _getFilteredCategories(shopController),
+          selectedIndex: _selectedCategoryIndex,
+          onTap: (index) {
+            if (index >= 0 && index < _getFilteredCategories(shopController).length) {
+              setState(() => _selectedCategoryIndex = index);
+            }
+          },
+        ),
       // Products
       Expanded(
         child: Padding(
@@ -368,59 +368,90 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   // }
 
 List<Product> _filterProductsByCategory(List<Product> products, int categoryId) {
-  if (products.isEmpty) return [];
+  if (products.isEmpty || categoryId == 0) return products; // 0 means "All Categories"
   
   return products.where((product) {
-    // Check if product has categories and if any category matches the selected one
     return product.categories != null && 
            product.categories!.isNotEmpty &&
            product.categories!.any((category) => category.id == categoryId);
   }).toList();
 }
 
+List<WooCategory> _getFilteredCategories(ShopController shopController) {
+  if (shopController.shopList == null || 
+      shopController.brandList == null || 
+      shopController.categoryList == null) {
+    return [];
+  }
+
+  // If "All Brands" is selected, show all categories
+  if (_selectedCompanyIndex == 0) {
+    return [WooCategory(name: 'all'.tr, id: 0)] + shopController.categoryList!;
+  }
+
+  final selectedBrandId = shopController.brandList![_selectedCompanyIndex - 1].id;
+  
+  // Get all products for the selected brand
+  final brandProducts = shopController.shopList!.where((product) {
+    return product.brands != null && 
+           product.brands!.isNotEmpty &&
+           product.brands!.any((brand) => brand.id == selectedBrandId);
+  }).toList();
+
+  // Get category IDs from these products
+  final categoryIds = brandProducts.expand((product) {
+    return product.categories?.map((category) => category.id) ?? <int>[];
+  }).toSet();
+
+  // Filter categories to only those that appear in the brand's products
+  final filteredCategories = shopController.categoryList!.where((category) {
+    return categoryIds.contains(category.id);
+  }).toList();
+
+  return [WooCategory(name: 'all'.tr, id: 0)] + filteredCategories;
+}
+
 List<Product> _filterProductsByBrand(List<Product> products, int brandId) {
-  if (products.isEmpty) return [];
+  if (products.isEmpty || brandId == 0) return products; // 0 means "All Brands"
   
   return products.where((product) {
-    // Check if product has brands and if any brand matches the selected one
+    print('8888888888888888888888888 ${product.brands}');
     return product.brands != null && 
            product.brands!.isNotEmpty &&
            product.brands!.any((brand) => brand.id == brandId);
+
   }).toList();
 }
 
 Widget _buildProductView(ShopController shopController) {
-  // Check if brands, categories and products exist
   if (shopController.brandList == null || 
-      shopController.categoryList == null || 
       shopController.shopList == null) {
     return const Center(child: CircularProgressIndicator());
-  }
-
-  // Ensure selected indices are valid
-  if (_selectedCompanyIndex >= shopController.brandList!.length) {
-    _selectedCompanyIndex = 0;
-  }
-  if (_selectedCategoryIndex >= shopController.categoryList!.length) {
-    _selectedCategoryIndex = 0;
   }
 
   List<Product> filteredProducts = shopController.shopList!;
 
   // Apply brand filter if a brand is selected
-  if (_selectedCompanyIndex > 0) { // Assuming index 0 is "All Brands"
-    filteredProducts = _filterProductsByBrand(
-      filteredProducts,
-      shopController.brandList![_selectedCompanyIndex].id,
-    );
+  if (_selectedCompanyIndex > 0) {
+    final selectedBrandId = shopController.brandList![_selectedCompanyIndex - 1].id;
+    filteredProducts = filteredProducts.where((product) {
+      return product.brands != null && 
+             product.brands!.isNotEmpty &&
+             product.brands!.any((brand) => brand.id == selectedBrandId);
+    }).toList();
   }
 
   // Apply category filter if a category is selected
-  if (_selectedCategoryIndex > 0) { // Assuming index 0 is "All Categories"
-    filteredProducts = _filterProductsByCategory(
-      filteredProducts,
-      shopController.categoryList![_selectedCategoryIndex].id,
-    );
+  if (_selectedCategoryIndex > 0) {
+    final filteredCategories = _getFilteredCategories(shopController);
+    if (_selectedCategoryIndex < filteredCategories.length) {
+      final selectedCategoryId = filteredCategories[_selectedCategoryIndex].id;
+      filteredProducts = filteredProducts.where((product) {
+        return product.categories != null && 
+               product.categories!.isNotEmpty &&
+               product.categories!.any((category) => category.id == selectedCategoryId);
+      }).toList();
+    }
   }
 
   if (filteredProducts.isEmpty) {
@@ -439,5 +470,51 @@ Widget _buildProductView(ShopController shopController) {
           cart: _cart,
         );
 }
+
+// Widget _buildProductView(ShopController shopController) {
+//   // Check if data exists
+//   if (shopController.brandList == null || 
+//       shopController.categoryList == null || 
+//       shopController.shopList == null) {
+//     return const Center(child: CircularProgressIndicator());
+//   }
+
+//   List<Product> filteredProducts = shopController.shopList!;
+
+//   // Apply brand filter if a specific brand is selected (index > 0)
+//   if (_selectedCompanyIndex > 0) {
+//     final brandId = shopController.brandList![_selectedCompanyIndex - 1].id;
+//     filteredProducts = _filterProductsByBrand(filteredProducts, brandId);
+//     print('0000000000000000000000000 $brandId');
+//   }
+
+//   // Apply category filter if a specific category is selected (index > 0)
+//   if (_selectedCategoryIndex > 0) {
+//     final categoryId = shopController.categoryList![_selectedCategoryIndex - 1].id;
+//     filteredProducts = _filterProductsByCategory(filteredProducts, categoryId);
+//   }
+
+//   // Apply search filter
+//   if (_searchQuery.isNotEmpty) {
+//     filteredProducts = filteredProducts.where((product) =>
+//       product.name!.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+//   }
+
+//   if (filteredProducts.isEmpty) {
+//     return Center(child: Text('no_products_found'.tr));
+//   }
+
+//   return _isGridView
+//       ? ProductGrid(
+//           products: filteredProducts,
+//           onAddToCart: _addToCart,
+//           cart: _cart,
+//         )
+//       : ProductList(
+//           products: filteredProducts,
+//           onAddToCart: _addToCart,
+//           cart: _cart,
+//         );
+// }
 
 }

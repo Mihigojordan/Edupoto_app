@@ -182,9 +182,11 @@ class _SearchableListState extends State<DependentDistrictDropdowns> {
                       ],
                     );
                   } else {
-                    return allSchoolController.isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : const SizedBox();
+                    return 
+                    // allSchoolController.isLoading
+                    //     ? const Center(child: CircularProgressIndicator())
+                    //     : 
+                        const SizedBox();
                   }
                 },
               ),

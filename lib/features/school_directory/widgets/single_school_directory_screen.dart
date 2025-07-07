@@ -198,9 +198,9 @@ class _HomeCard1State extends State<HomeCard1> {
         padding: const EdgeInsets.all(8.0),
         child: widget.title == 'headteacher_messages'.tr
             ? headteacherMessage(context)
-            : widget.title == 'school_bursor'.tr
+            : widget.title == 'school_burser'.tr
                 ? schoolBurser(context)
-                : widget.title == 'school_requiremets'.tr
+                : widget.title == 'school_requirements'.tr
                     ? schoolBurser(context)
                     : widget.title == 'school_prospectus'.tr
                         ? schoolProspectus(context)

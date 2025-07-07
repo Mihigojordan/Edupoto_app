@@ -182,9 +182,11 @@ void initState() {
     return GetBuilder<SplashController>(builder: (splashController) {
       return splashController.configModel!.systemFeature!.linkedWebSiteStatus!
           ? GetBuilder<AllSchoolController>(builder: (allSchoolController) {
-              return allSchoolController.isLoading
-                  ? const WebSiteShimmer()
-                  : (allSchoolController.schoolList.isEmpty)
+              return 
+              // allSchoolController.isLoading
+              //     ? const WebSiteShimmer()
+              //     :
+                   (allSchoolController.schoolList.isEmpty)
                       ? const SizedBox()
                       : Padding(
                           padding: EdgeInsets.only(
