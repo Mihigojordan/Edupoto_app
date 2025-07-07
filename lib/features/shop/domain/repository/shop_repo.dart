@@ -9,10 +9,14 @@ class ShopRepo{
   ShopRepo({required this.apiClient});
 
   Future<Response> getProductListApi() async {
-    return await apiClient.getData(AppConstants.shop);
+    return await apiClient.getData();
   }
 
   Future<Response> getCategoryListApi() async {
-    return await apiClient.getCategoryData(AppConstants.shop);
+    return await apiClient.getProductGroupData(AppConstants.getCategory);
+  }
+
+ Future<Response> getBrandListApi() async {
+    return await apiClient.getProductGroupData(AppConstants.getBrand);
   }
 }

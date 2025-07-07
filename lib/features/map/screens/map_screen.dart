@@ -22,6 +22,7 @@ import 'package:hosomobile/features/home/screens/upgrades/home/constants/show_in
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/component/payment_method.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/tereka_asome/tereka_asome.dart';
 import 'package:hosomobile/features/map/screens/left_aligned_row.dart';
+import 'package:hosomobile/features/map/widgets/text_field_description.dart';
 import 'package:hosomobile/features/map/widgets/text_field_formatter.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/school/screens/school_list_screen.dart';
@@ -138,6 +139,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
   late TextEditingController cityTextController;
   late TextEditingController stateTextController;
   late TextEditingController zipTextController;
+  final _descriptionController = TextEditingController();
 
   Districts? selectedDistrict;
   AllSchoolModel? selectedCategory;
@@ -306,6 +308,7 @@ LatLng? _previousMarkerPosition;
     cityTextController.dispose();
     stateTextController.dispose();
     zipTextController.dispose();
+    _descriptionController.dispose();
 
     super.dispose();
   }
@@ -523,6 +526,16 @@ LatLng? _previousMarkerPosition;
   },
 ),
                 sizedBox10,
+                     ShortDescriptionInput(
+                controller: _descriptionController,
+                labelText: 'product_delivery_description'.tr,
+                hintText: 'describe_in_200_characters_or_less'.tr,
+                maxLength: 200,
+                onChanged: (value) {
+                  // Handle real-time changes if needed
+                },
+              ),
+              sizedBox10,
                 // CustomDropdown(
                 //     onChanged: (onChanged) {
                 //       setState(() {
@@ -698,7 +711,7 @@ Future<void> _getCurrentLocation() async {
 
     setState(() {
       _initialPosition = currentLatLng;
-      _sourceLatLng = const LatLng(-1.929662943503856, 30.114273068056985); // Fixed pickup point
+      _sourceLatLng = const LatLng(-1.9482248511453184, 30.05919848211911); // Fixed pickup point
       _destinationLatLng = currentLatLng;
       _currentAddress = address;
       _destinationController.text = address;
@@ -1015,7 +1028,7 @@ String _getBestLocationName(Placemark place) {
       final geometry = data['routes'][0]['geometry']['coordinates'];
       final distance = (data['routes'][0]['distance'] / 1000)
           .toStringAsFixed(2); // Distance in km
-      final duration = (data['routes'][0]['duration'] / 60)+5
+      final duration = ((data['routes'][0]['duration'] / 60)+5)
           .toStringAsFixed(2); // Duration in minutes
 
       setState(() {

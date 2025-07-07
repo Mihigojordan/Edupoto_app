@@ -350,7 +350,7 @@ class _TransactionConfirmationScreenState
                               color2: kyellowColor,
                               onPress: (){
                              schoolDeliveryAction();
-                             homeDeliveryAction();  
+                         
                               } ,
 
                               //  _captureInformation(
@@ -367,7 +367,7 @@ class _TransactionConfirmationScreenState
                               //   productName:
                               //       widget.edubox_service ?? 'Unknown Service',
                               // ),
-                              title: 'SCHOOL',
+                              title: 'school_cap'.tr,
                               iconData: Icons.arrow_forward_outlined,
                             )
                           : (widget.studentController.studentList == null ||
@@ -430,6 +430,8 @@ class _TransactionConfirmationScreenState
                                   ],
                                 ),
                       sizedBox15,
+
+                       isSchoolDelivery==true?const SizedBox.shrink():
                       isHomeDelivery == false
                           ? DefaultButton2(
                               color1: kamber300Color,

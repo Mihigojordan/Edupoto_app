@@ -2,6 +2,7 @@
 import 'package:hosomobile/data/api/api_checker.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/features/shop/domain/models/category_model.dart';
+import 'package:hosomobile/features/shop/domain/models/brand_model.dart';
 import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/features/shop/domain/repository/shop_repo.dart';
 
@@ -11,10 +12,12 @@ class ShopController extends GetxController implements GetxService{
   bool _isLoading = false;
   List<Product>? _shopList;
   List<WooCategory>? _categoryList;
+  List<BrandModel>? _brandList;
 
   bool get isLoading => _isLoading;
   List<Product>? get shopList => _shopList;
   List<WooCategory>? get categoryList => _categoryList;
+  List<BrandModel>? get brandList => _brandList;
 
   Future getShopList(bool reload , {bool isUpdate = true}) async {
     if(_shopList == null || reload) {
@@ -71,4 +74,35 @@ class ShopController extends GetxController implements GetxService{
 
     }
   }
+
+ Future getBrandList(bool reload , {bool isUpdate = true}) async {
+    if(_brandList == null || reload) {
+      _brandList = null;
+      _isLoading = true;
+
+      if(isUpdate){
+        update();
+      }
+    }
+    if(_brandList == null ) {
+      _brandList = [];
+      Response response = await shopRepo.getBrandListApi();
+      print('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr${response.body}');
+      if(response.body != null && response.body != {} && response.statusCode == 200){
+        _brandList = [];
+        response.body.forEach((website) {_brandList!.add(BrandModel.fromJson(website));});
+      }else{
+        _brandList = [];
+        ApiChecker.checkApi(response);
+
+      }
+
+      _isLoading = false;
+      update();
+
+    }
+  }
+
+  
+
 }

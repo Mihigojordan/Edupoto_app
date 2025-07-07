@@ -29,7 +29,7 @@ class CompanySideBar extends StatelessWidget {
     final safeSelectedIndex = selectedIndex.clamp(0, categoryList.length - 1);
 
     return Container(
-     width: 60,
+     width: 80,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -74,7 +74,7 @@ class CompanySideBar extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: CustomImageWidget(
-                    image: category.image ?? 'no image',
+                    image: category.image?.src ?? 'no image',
                     fit: BoxFit.cover,
                     placeholder: Images.bannerPlaceHolder),
                     ),
@@ -90,8 +90,8 @@ class CompanySideBar extends StatelessWidget {
                         fontWeight: selectedIndex == index ? FontWeight.bold : FontWeight.normal,
                         color: selectedIndex == index ? Colors.amber : Colors.grey[700],
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                     
+                      overflow: TextOverflow.clip,
                     ),
                   ),
                 ],

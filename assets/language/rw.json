@@ -583,12 +583,19 @@
   "dear_parent_you_can_now_add_your_student": "Urashobora kongerera umwana wawe kugirango akoreshe byihuse kandi buri gihe.",
   "unknown_class": "Unkown Class",
   "unknown_name": "Unkown Name",
-
-   "select_your_student_who_is_going_to_receive_the_product_at_school":"Hitamo umwana wawe uzakira ibyo gutumwa kw'ishuri",
+  "select_your_student_who_is_going_to_receive_the_product_at_school": "Hitamo umwana wawe uzakira ibyo gutumwa kw'ishuri",
   "drop_the_pin_to_your": "Shyira ikimenyetso cya pin aho uganiriza",
   "exact_delivery_location": "Aho ibintu bizasanganwa nyakuri",
-
-   "no_category": "Nta gatsindo",
+  "no_category": "Nta gatsindo",
   "no_products_found": "Nta bicuruzwa byabonetse",
-  "product_details": "Ibisobanuro by'igicuruzwa"
+  "product_details": "Ibisobanuro by'igicuruzwa",
+
+  "leviticus_shop": "Iduka rya Leviticus" ,
+ "product_delivery_description": "Ibisobanuro by'uko ibicuruzwa bizasanga",
+"describe_in_200_characters_or_less": "Sobanura mu majambo make (ntarengwa 200)",
+"short_description": "Ibisobanuro bigufi",
+"enter_a_brief_description": "Andika ibisobanuro bigufi",
+"please_enter_a_description": "Nyamuneka andika ibisobanuro",
+"description_too_long": "Ibisobanuro binini cyane",
+"characters": "Inyuguti"
 }

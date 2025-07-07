@@ -15,7 +15,7 @@ final String consumerSecret= 'cs_a30eba5947a51bd86d24770bd91390c893130ff2';
 final String noInternetMessage = 'Connection to API server failed due to internet connection';
  String appBaseUrlWoo = AppConstants.wooBaseUrl;
   String uriProduct = AppConstants.getProduct;
-  String uriCategory=AppConstants.getCategory;
+ 
 
    final _mainHeaders = {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -58,33 +58,13 @@ queryCategoryString = {
   "page":'1'
 };
 
-
-  // Temporary method to save the token using SharedPreferences
-  Future<void> saveToken(String token) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('apiToken', token);  // Save the token with the key 'apiToken'
-    print('Token saved: $token');
-  }
-
-    Future<void> saveReferenceId(String id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('referenceId',id);  // Save the token with the key 'apiToken'
-    print('Token saved: $id');
-  }
-
-      Future<void> saveStatus(String status) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('status',status);  // Save the token with the key 'apiToken'
-    print('Token saved: $status');
-  }
-
-       Future<void> savePaymentStatus(String status) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('payStatus',status);  // Save the token with the key 'apiToken'
-    print('Token saved: $status');
-  }
-
-
+queryCategoryString = {
+  "consumer_key": consumerKey,
+  "consumer_secret": consumerSecret,
+  "_fields[][]":['id','name','parent','desplay','menu_order','count','description','image'],
+  "per_page":'100',
+  "page":'1'
+};
 
 }
 
@@ -114,7 +94,7 @@ queryCategoryString = {
      return response0;
    }
 
- Future<Response> getData(String uri, { Map<String, String>? headers,Map<String, String>? getQueryString}) async {
+ Future<Response> getData( { Map<String, String>? headers,Map<String, String>? getQueryString}) async {
   try {
 
         if (!kIsWeb) {
@@ -141,7 +121,7 @@ queryCategoryString = {
   }
 }
 
- Future<Response> getCategoryData(String uri, { Map<String, String>? headers}) async {
+ Future<Response> getProductGroupData(String uri,{ Map<String, String>? headers}) async {
   try {
 
         if (!kIsWeb) {
@@ -150,7 +130,7 @@ queryCategoryString = {
         return const Response(statusCode: -1, statusText: 'You are using VPN');
       }
     }
-    final url = Uri.parse(appBaseUrlWoo+uriCategory).replace(
+    final url = Uri.parse(appBaseUrlWoo+uri).replace(
       queryParameters:queryCategoryString
     );
 

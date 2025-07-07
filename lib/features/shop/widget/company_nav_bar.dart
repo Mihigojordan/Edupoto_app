@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hosomobile/common/widgets/custom_image_widget.dart';
+import 'package:hosomobile/features/shop/domain/models/brand_model.dart';
 import 'package:hosomobile/features/shop/domain/models/company.dart';
+import 'package:hosomobile/util/images.dart';
 
 class CompanyNavigationBar extends StatelessWidget {
-  final List<Company> companies;
+  final List<BrandModel> companies;
   final int selectedIndex;
   final Function(int) onTap;
 
@@ -49,10 +52,12 @@ class CompanyNavigationBar extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    company.logo,
-                    width: 20,
+                  CustomImageWidget(
+                    image: company.image?.src ?? 'no image',
                     height: 20,
+                    width: 20,
+                    fit: BoxFit.cover,
+                    placeholder: Images.bannerPlaceHolder,
                   ),
                   const SizedBox(height: 4),
                   Text(

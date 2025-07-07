@@ -1,15 +1,15 @@
-class WooCategory {
+class BrandModel {
   final int id;
   final String name;
   final String? slug;
   final int? parent;
   final String? description;
   final String? display;
-  final WooCategoryImage? image; // Nullable image
+  final ProductGrouImage? image; // Nullable image
   final int? menuOrder;
   final int? count;
 
-  WooCategory({
+  BrandModel({
     required this.id,
     required this.name,
      this.slug,
@@ -17,12 +17,12 @@ class WooCategory {
      this.description,
      this.display,
     this.image,
-     this.menuOrder,
+   this.menuOrder,
      this.count,
   });
 
-  factory WooCategory.fromJson(Map<String, dynamic> json) {
-    return WooCategory(
+  factory BrandModel.fromJson(Map<String, dynamic> json) {
+    return BrandModel(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       slug: json['slug'] ?? '',
@@ -30,7 +30,7 @@ class WooCategory {
       description: json['description'] ?? '',
       display: json['display'] ?? 'default',
       image: json['image'] != null && json['image'] is Map<String, dynamic>
-          ? WooCategoryImage.fromJson(json['image'])
+          ? ProductGrouImage.fromJson(json['image'])
           : null,
       menuOrder: json['menu_order'] ?? 0,
       count: json['count'] ?? 0,
@@ -53,14 +53,14 @@ class WooCategory {
 }
 
 // Model for category image (nullable in responses)
-class WooCategoryImage {
+class ProductGrouImage {
   final String? src;
   final String? alt;
 
-  WooCategoryImage({this.src, this.alt});
+  ProductGrouImage({this.src, this.alt});
 
-  factory WooCategoryImage.fromJson(Map<String, dynamic> json) {
-    return WooCategoryImage(
+  factory ProductGrouImage.fromJson(Map<String, dynamic> json) {
+    return ProductGrouImage(
       src: json['src']?.toString(), // Ensure string conversion
       alt: json['alt']?.toString(), // Ensure string conversion
     );

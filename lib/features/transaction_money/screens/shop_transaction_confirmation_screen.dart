@@ -498,6 +498,8 @@ class _TransactionConfirmationScreenState
                               ),
 
                       sizedBox15,
+
+                       isSchoolDelivery==true?const SizedBox.shrink():
                       isHomeDelivery == false
                           ? DefaultButton2(
                               color1: kamber300Color,
@@ -738,7 +740,7 @@ class _TransactionConfirmationScreenState
                                 // }
  if   (studentController.studentList == null ||  studentController.studentList!.isEmpty){
                                   schoolDeliveryAction();
-                                  homeDeliveryAction();
+                               
                                   }
                                   else{
                                 // Proceed with the transaction if students are selected

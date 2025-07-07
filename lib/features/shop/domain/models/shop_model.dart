@@ -1,3 +1,4 @@
+import 'package:hosomobile/features/shop/domain/models/brand_model.dart';
 import 'package:hosomobile/features/shop/domain/models/category_model.dart';
 
 class Product {
@@ -8,8 +9,9 @@ class Product {
   String? salePrice;
   String? shortDescription;
   List<WooCategory>? categories;
+  List<BrandModel>? brands;
 
-  Product({this.name, this.images, this.price, this.regularPrice, this.salePrice, this.shortDescription, this.categories});
+  Product({this.name, this.images, this.price, this.regularPrice, this.salePrice, this.shortDescription, this.categories, this.brands});
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
@@ -24,6 +26,9 @@ class Product {
       categories: (json['categories'] as List<dynamic>?) // WooCommerce uses 'images' (plural)
           ?.map((category) => WooCategory.fromJson(category))
           .toList(),
+      brands: (json['brands'] as List<dynamic>?) // WooCommerce uses 'images' (plural)
+          ?.map((brand) => BrandModel.fromJson(brand))
+          .toList(),
     );
   }
 
@@ -35,7 +40,8 @@ class Product {
       'regular_price': regularPrice, // Map back to 'sku' for API compliance
       'sale_price': salePrice,
       'short_description': shortDescription,
-      'categories':categories?.map((category)=>category.toJson()).toList()
+      'categories':categories?.map((category)=>category.toJson()).toList(),
+      'brands':brands?.map((brand)=>brand.toJson()).toList()
     };
   }
 }

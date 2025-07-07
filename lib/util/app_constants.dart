@@ -93,6 +93,7 @@ class AppConstants {
   static const String shop =  '/api/v1/customer/student-class';
    static const String getProduct = '/wp-json/wc/v3/products';
    static const String getCategory = '/wp-json/wc/v3/products/categories';
+    static const String getBrand = '/wp-json/wc/v3/products/brands';
 
   // Shared Key
   static const String theme = 'theme';

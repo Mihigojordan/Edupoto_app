@@ -325,13 +325,13 @@ GetPage(
             dataList: const [],
             )),
 
-              GetPage(
-        name: sendMoneyConfirmation,
-        page: () => CreditTransactionConfirmationScreenSL(
-            inputBalance: double.tryParse(Get.parameters['input-balance']!),
-            transactionType: Get.parameters['transaction-type'],
-            dataList: const [],
-            )),
+        //       GetPage(
+        // name: sendMoneyConfirmation,
+        // page: () => CreditTransactionConfirmationScreenSL(
+        //     inputBalance: double.tryParse(Get.parameters['input-balance']!),
+        //     transactionType: Get.parameters['transaction-type'],
+        //     dataList: const [],
+        //     )),
 
 
     GetPage(name: choseLoginOrRegScreen, page: () => const OnBoardingScreen()),

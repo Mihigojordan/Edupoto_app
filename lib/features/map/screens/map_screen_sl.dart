@@ -22,6 +22,7 @@ import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/co
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/component/payment_method_sl.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/tereka_asome/tereka_asome.dart';
 import 'package:hosomobile/features/map/screens/left_aligned_row.dart';
+import 'package:hosomobile/features/map/widgets/text_field_description.dart';
 import 'package:hosomobile/features/map/widgets/text_field_formatter.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/school/screens/school_list_screen.dart';
@@ -139,6 +140,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
   late TextEditingController cityTextController;
   late TextEditingController stateTextController;
   late TextEditingController zipTextController;
+  final _descriptionController =TextEditingController();
 
   Districts? selectedDistrict;
   AllSchoolModel? selectedCategory;
@@ -307,6 +309,7 @@ LatLng? _previousMarkerPosition;
     cityTextController.dispose();
     stateTextController.dispose();
     zipTextController.dispose();
+      _descriptionController.dispose();
 
     super.dispose();
   }
@@ -523,7 +526,17 @@ LatLng? _previousMarkerPosition;
       (value?.isEmpty ?? true ? 'please_select_receiver_phone_number'.tr : null);
   },
 ),
-                sizedBox10,
+                    sizedBox10,
+                     ShortDescriptionInput(
+                controller: _descriptionController,
+                labelText: 'product_delivery_description'.tr,
+                hintText: 'describe_in_200_characters_or_less'.tr,
+                maxLength: 200,
+                onChanged: (value) {
+                  // Handle real-time changes if needed
+                },
+              ),
+              sizedBox10,
                 // CustomDropdown(
                 //     onChanged: (onChanged) {
                 //       setState(() {
@@ -1016,7 +1029,7 @@ String _getBestLocationName(Placemark place) {
       final geometry = data['routes'][0]['geometry']['coordinates'];
       final distance = (data['routes'][0]['distance'] / 1000)
           .toStringAsFixed(2); // Distance in km
-      final duration = (data['routes'][0]['duration'] / 60)+5
+      final duration = ((data['routes'][0]['duration'] / 60)+5)
           .toStringAsFixed(2); // Duration in minutes
 
       setState(() {

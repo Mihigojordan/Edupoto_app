@@ -230,7 +230,7 @@ class _TransactionConfirmationScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Delivery Options',
+                        'delivery_options'.tr,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                   color: Colors.black,
                                   fontSize: 16,
@@ -245,13 +245,14 @@ class _TransactionConfirmationScreenState
                         maxLines: 2,
                       ),
                       sizedBox15,
+                     
                       isSchoolDelivery == false
                           ? DefaultButton2(
                               color1: kamber300Color,
                               color2: kyellowColor,
                               onPress: () {
                                 schoolDeliveryAction();
-                                homeDeliveryAction();
+                              
                               } ,
 
                               //  _captureInformation(
@@ -331,6 +332,8 @@ class _TransactionConfirmationScreenState
                                   ],
                                 ),
                       sizedBox15,
+
+                       isSchoolDelivery==true?const SizedBox.shrink():
                       isHomeDelivery == false
                           ? DefaultButton2(
                               color1: kamber300Color,
@@ -387,16 +390,16 @@ class _TransactionConfirmationScreenState
                   ),
                   sizedBox10,
                   Text(
-                      'Amount to be Paid: ${widget.price} ${AppConstants.currency}'),
+                      '${'amount_to_be_paid'.tr}: ${widget.price} ${AppConstants.currency}'),
                   Text(
-                      'Now Paying: ${widget.inputBalance!.toStringAsFixed(2)} ${AppConstants.currency}'),
+                      '${'now_paying'.tr}: ${widget.inputBalance!.toStringAsFixed(2)} ${AppConstants.currency}'),
                   Text(
-                      'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
+                      '${'vat'.tr} (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
                   Text(
-                      'Convenience Fee: $convenienceFee ${AppConstants.currency}'),
+                      '${'convenience_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
                   const Divider(),
                   Text(
-                    'Total Amount paid now: $totalAmount ${AppConstants.currency}',
+                    '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -404,7 +407,7 @@ class _TransactionConfirmationScreenState
                 ],
               ),
               sizedBox10,
-              Text('Pending/Remaing Amount to be paid',
+              Text('${'pending'.tr}/${'remaining_amount_to_be_paid'.tr}',
                   style: rubikSemiBold.copyWith(
                       fontSize: Dimensions.fontSizeLarge,
                       color: ColorResources.getGreyBaseGray1())),
@@ -558,11 +561,11 @@ class _TransactionConfirmationScreenState
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Your School materials will be delivered at;'),
-              Text('School Name: $schoolName'),
-              Text('Class: $className'),
-              Text('Customer Product: $productName'),
-              Text('Order ID: $orderId'),
+              Text('${'your_school_materials_will_be_delivered_at'.tr};'),
+              Text('${'school_name'.tr}: $schoolName'),
+              Text('${'class'.tr}: $className'),
+              Text('${'customer_product'.tr}: $productName'),
+              Text('${'order_id'.tr}: $orderId'),
             ],
           ),
           actions: [
@@ -570,7 +573,7 @@ class _TransactionConfirmationScreenState
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel'),
+              child:  Text('cancel'.tr),
             ),
             const SizedBox(width: 10),
             TextButton(
@@ -636,14 +639,14 @@ class _TransactionConfirmationScreenState
                             productIndex: widget.productIndex ?? 0,
                             edubox_service: widget.edubox_service ?? '',
                             amountToPay:
-                                'Amount to be Paid: ${widget.price} ${AppConstants.currency}',
+                                '${'amount_to_be_paid'.tr}: ${widget.price} ${AppConstants.currency}',
                             nowPaid:
-                                'Now Paid: ${inputBalance.toStringAsFixed(2)} ${AppConstants.currency}',
+                                '${'now_paid'.tr}: ${inputBalance.toStringAsFixed(2)} ${AppConstants.currency}',
                             vat:
-                                'VAT (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
+                                '${'vat'.tr} (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
                             serviceCharge: convenienceFee.toStringAsFixed(2),
                             totalNowPaid:
-                                'Total Amount paid now: $totalAmount ${AppConstants.currency}',
+                                '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
                           );
                         },
                       );
@@ -651,7 +654,7 @@ class _TransactionConfirmationScreenState
                   }
                 });
               },
-              child: const Text('OK'),
+              child: Text('ok'.tr),
             ),
           ],
         );
@@ -704,7 +707,7 @@ TextFormField buildFormField(
     ),
     validator: (value) {
       if (value == null || value.isEmpty) {
-        return 'Please enter some text';
+        return 'please_enter_some_text'.tr;
       }
       return null;
     },

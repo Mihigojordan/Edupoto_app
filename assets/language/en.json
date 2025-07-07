@@ -400,7 +400,7 @@
   "beneficiary_profile_profile": "Profile",
   "ok": "OK",
   "profile_details": "Profile Details",
-   "profile_details_profile": "Profile",
+  "profile_details_profile": "Profile",
   "profile_details_details": "Details",
   "partner_service": "Partner Service",
   "classkit": "Classkit",
@@ -582,12 +582,20 @@
   "dear_parent_you_can_now_add_your_student": "You can add your student for faster and more regular use.",
   "unknown_class": "Unkown Class",
   "unknown_name": "Unkown Name",
-
-  "select_your_student_who_is_going_to_receive_the_product_at_school":"Select your student to receive the product at school",
+  "select_your_student_who_is_going_to_receive_the_product_at_school": "Select your student to receive the product at school",
   "drop_the_pin_to_your": "Drop the pin to your",
   "exact_delivery_location": "Exact Delivery Location",
-
   "no_category": "No Category",
   "no_products_found": "No product found",
-  "product_details": "Product Details"
+  "product_details": "Product Details",
+
+  "leviticus_shop": "Leviticus Shop",
+  "product_delivery_description": "Product delivery description",
+  "describe_in_200_characters_or_less":"Describe in 200 characters or less",
+  "short_description": "Short Description",
+  "enter_a_brief_description":"Enter a brief description",
+  "please_enter_a_description": "Please Enter a description",
+  "description_too_long": "Description too long",
+  "characters": "Characters"
+
 }
