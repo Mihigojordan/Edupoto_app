@@ -84,6 +84,7 @@ class TerekaAsome extends StatefulWidget {
 class _TerekaAsomeState extends State<TerekaAsome> {
   //validate our form now
   final _formKey = GlobalKey<FormState>();
+  TextEditingController inputBalanceController=TextEditingController();
 
   late String videoTitle;
   // Url List
@@ -347,6 +348,7 @@ class _HomeCard1State extends State<HomeCard1> {
   TextEditingController numberEditingController = TextEditingController();
   TextEditingController amountEditingController = TextEditingController();
   TextEditingController productEditingController = TextEditingController();
+  TextEditingController inputBalanceController=TextEditingController();
   WidgetDialog dialog = WidgetDialog();
   ContactModel? _contact;
 
@@ -380,6 +382,7 @@ class _HomeCard1State extends State<HomeCard1> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     late EduboxMaterialModel material;
+
 
     return GetBuilder<SplashController>(builder: (splashController) {
       return //splashController.configModel!.systemFeature!.linkedWebSiteStatus! ?
@@ -755,6 +758,7 @@ class _HomeCard1State extends State<HomeCard1> {
                                     color1: kamber300Color,
                                     color2: kyellowColor,
                                     onPress: () => showDepositDialog(
+                                      inputBalanceController: inputBalanceController,
                                       context: context,
                                       title:
                                           'how_much_would_you_like_to_deposit'
@@ -1185,7 +1189,7 @@ class _HomeCard1State extends State<HomeCard1> {
       Get.to(() => TransactionConfirmationScreen(
             studentIndex:widget.studentIndex,
             studentController: studentController,
-            inputBalance: amount,
+            inputBalance:inputBalanceController.text==''? amount:double.parse(inputBalanceController.text),
             availableBalance: balance.toStringAsFixed(2),
             productId: widget.productId!,
             transactionType: TransactionType.sendMoney,

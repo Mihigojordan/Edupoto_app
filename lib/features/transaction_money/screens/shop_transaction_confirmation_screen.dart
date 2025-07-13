@@ -227,776 +227,710 @@ class _TransactionConfirmationScreenState
         //     ),
         //   );
         // } else {
-          return SingleChildScrollView(
-              child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const CustomBackButton(),
-              if (widget.transactionType != TransactionType.withdrawRequest)
-                ForPersonWidget(contactModel: widget.contactModel),
-              const SizedBox(height: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${'invoice_no'.tr}: $randomNumber',
-                    style: Theme.of(context).textTheme.titleLarge,
+        return SingleChildScrollView(
+            child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const CustomBackButton(),
+            if (widget.transactionType != TransactionType.withdrawRequest)
+              ForPersonWidget(contactModel: widget.contactModel),
+            const SizedBox(height: 15),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${'invoice_no'.tr}: $randomNumber',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                sizedBox05h,
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.1),
+                    border: Border.all(width: 1, color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  sizedBox05h,
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.1),
-                      border: Border.all(width: 1, color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Scrollbar(
-                      thumbVisibility: true,
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height /
-                            3, // Increased height to accommodate new layout
-                        child: ListView.builder(
-                          itemCount: widget.cart.length,
-                          itemBuilder: (context, productIndex) {
-                            final product =
-                                widget.cart.keys.elementAt(productIndex);
-                            final quantity = widget.cart[product]!;
-                            final totalPrice = double.parse(product.regularPrice??'0') * quantity;
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height /
+                          3, // Increased height to accommodate new layout
+                      child: ListView.builder(
+                        itemCount: widget.cart.length,
+                        itemBuilder: (context, productIndex) {
+                          final product =
+                              widget.cart.keys.elementAt(productIndex);
+                          final quantity = widget.cart[product]!;
+                          final totalPrice =
+                              double.parse(product.regularPrice ?? '0') *
+                                  quantity;
 
-                            return Card(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 8),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Top section - Product info
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        // Product image
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: CustomImageWidget(
-                   height: 40,
-                  width: 40,
-                    image:
-                           product.images?[0].src ?? 'no image',
-                    fit: BoxFit.cover,
-                    placeholder: Images.bannerPlaceHolder),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        // Product details
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                product.name!,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleMedium
-                                                    ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                '${AppConstants.currency} ${product.regularPrice}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium,
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                '${'quantity'.tr}: $quantity',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium,
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                '${'total'.tr}: ${AppConstants.currency} ${totalPrice.toStringAsFixed(2)}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium
-                                                    ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 12),
-                                    // Bottom section - Action buttons aligned to right
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          // Reduce Quantity Button
-                                          IconButton(
-                                            icon: const Icon(Icons.remove),
-                                            onPressed: () {
-                                              setState(() {
-                                                widget
-                                                    .onReduceQuantity(product);
-                                                widget.totalAmount -=
-                                                    double.parse(product.regularPrice??'0');
-                                              });
-                                            },
-                                          ),
-                                          // Quantity display
-                                          Text(
-                                            quantity.toString(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge,
-                                          ),
-                                          // Increase Quantity Button
-                                          IconButton(
-                                            icon: const Icon(Icons.add),
-                                            onPressed: () {
-                                              setState(() {
-                                                widget.onIncreaseQuantity(
-                                                    product);
-                                                widget.totalAmount +=
-                                                    double.parse(product.regularPrice??'0');
-                                              });
-                                            },
-                                          ),
-                                          // Remove Product Button
-                                          IconButton(
-                                            icon: const Icon(Icons.delete,
-                                                color: Colors.red),
-                                            onPressed: () {
-                                              setState(() {
-                                                widget.onRemoveProduct(product);
-                                                widget.totalAmount -=
-                                                    totalPrice;
-                                              });
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  sizedBox10,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'delivery_options'.tr,
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                      ),
-                      sizedBox15,
-                      isSchoolDelivery == false
-                          ? DefaultButton2(
-                              color1: kamber300Color,
-                              color2: kyellowColor,
-                              onPress: () =>schoolDeliveryAction(),
-                              title: 'school_cap'.tr,
-                              iconData: Icons.arrow_forward_outlined,
-                            )
-                          :
-                           (studentController.studentList == null )
-                              ?
-                              // ************************DISPLAY FIELD FOR ENTERING STUDENT FOR ACCOMPLISH PAYMENT****************
-                              DependentSchoolDropdowns(
-                                  isShop: true,
-                                  isNotRegStudent: true,
-                                  parentId: randomNumber.toString(),
-                                  studentController: studentController,
-                                  isAddAccount: false,
-                                )
-                              : 
-                              Column(
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 8),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                   Text(
-                                        'select_your_student_who_is_going_to_receive_the_product_at_school'.tr),
-                                    sizedBox05h,
-                                  SizedBox(
-                                      height: screenHeight / 6,
-                                      child: Scrollbar(
-                                        thumbVisibility: true,
-                                        child: ListView.builder(
-                                          itemCount:
-                                              studentController.studentList!.length,
-                                          itemBuilder: (context, studentIndex) {
-                                            return ForStudentWidget(
-                                              studentInfo:
-                                                  '${'code'.tr}: ${studentController.studentList![studentIndex].code}\n${'name'.tr}: ${studentController.studentList![studentIndex].name}\n${'school'.tr}:${studentController.studentList![studentIndex].school}. ${'class'.tr}: ${studentController.studentList![studentIndex].studentClass}',
-                                              onChecked: (isChecked) {
-                                                // Update the selectedStudents list
-                                                setState(() {
-                                                  if (isChecked) {
-                                                    selectedStudents.add(
-                                                        studentIndex); // Add to list
-                                                  } else {
-                                                    selectedStudents.remove(
-                                                        studentIndex); // Remove from list
-                                                  }
-                                                });
-                                              },
-                                              initialChecked: selectedStudents
-                                                  .contains(studentIndex),
-                                            );
-                                          },
+                                  // Top section - Product info
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Product image
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: CustomImageWidget(
+                                            height: 40,
+                                            width: 40,
+                                            image: product.images?[0].src ??
+                                                'no image',
+                                            fit: BoxFit.cover,
+                                            placeholder:
+                                                Images.bannerPlaceHolder),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      // Product details
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              product.name!,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              '${AppConstants.currency} ${product.regularPrice}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              '${'quantity'.tr}: $quantity',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              '${'total'.tr}: ${AppConstants.currency} ${totalPrice.toStringAsFixed(2)}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                                sizedBox05h,
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  // Bottom section - Action buttons aligned to right
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        DefaultButtonWidth(
-                                            onPress: () => _captureInformation(
-                                              studentIndex:studentIndex,
-                                              studentController: studentController,
-                                              productIndex: productIndex,
-                                             
+                                        // Reduce Quantity Button
+                                        IconButton(
+                                          icon: const Icon(Icons.remove),
+                                          onPressed: () {
+                                            setState(() {
+                                              widget.onReduceQuantity(product);
+                                              widget.totalAmount -=
+                                                  double.parse(
+                                                      product.regularPrice ??
+                                                          '0');
+                                            });
+                                          },
+                                        ),
+                                        // Quantity display
+                                        Text(
+                                          quantity.toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge,
+                                        ),
+                                        // Increase Quantity Button
+                                        IconButton(
+                                          icon: const Icon(Icons.add),
+                                          onPressed: () {
+                                            setState(() {
+                                              widget
+                                                  .onIncreaseQuantity(product);
+                                              widget.totalAmount +=
+                                                  double.parse(
+                                                      product.regularPrice ??
+                                                          '0');
+                                            });
+                                          },
+                                        ),
+                                        // Remove Product Button
+                                        IconButton(
+                                          icon: const Icon(Icons.delete,
+                                              color: Colors.red),
+                                          onPressed: () {
+                                            setState(() {
+                                              widget.onRemoveProduct(product);
+                                              widget.totalAmount -= totalPrice;
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                sizedBox10,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'delivery_options'.tr,
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                    sizedBox15,
+                    isSchoolDelivery == false
+                        ? DefaultButton2(
+                            color1: kamber300Color,
+                            color2: kyellowColor,
+                            onPress: () => schoolDeliveryAction(),
+                            title: 'school_cap'.tr,
+                            iconData: Icons.arrow_forward_outlined,
+                          )
+                        : (studentController.studentList == null)
+                            ?
+                            // ************************DISPLAY FIELD FOR ENTERING STUDENT FOR ACCOMPLISH PAYMENT****************
+                            DependentSchoolDropdowns(
+                                isShop: true,
+                                isNotRegStudent: true,
+                                parentId: randomNumber.toString(),
+                                studentController: studentController,
+                                isAddAccount: false,
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      'select_your_student_who_is_going_to_receive_the_product_at_school'
+                                          .tr),
+                                  sizedBox05h,
+                                  SizedBox(
+                                    height: screenHeight / 6,
+                                    child: Scrollbar(
+                                      thumbVisibility: true,
+                                      child: ListView.builder(
+                                        itemCount: studentController
+                                            .studentList!.length,
+                                        itemBuilder: (context, studentIndex) {
+                                          return ForStudentWidget(
+                                            studentInfo:
+                                                '${'code'.tr}: ${studentController.studentList![studentIndex].code}\n${'name'.tr}: ${studentController.studentList![studentIndex].name}\n${'school'.tr}:${studentController.studentList![studentIndex].school}. ${'class'.tr}: ${studentController.studentList![studentIndex].studentClass}',
+                                            onChecked: (isChecked) {
+                                              // Update the selectedStudents list
+                                              setState(() {
+                                                if (isChecked) {
+                                                  selectedStudents.add(
+                                                      studentIndex); // Add to list
+                                                } else {
+                                                  selectedStudents.remove(
+                                                      studentIndex); // Remove from list
+                                                }
+                                              });
+                                            },
+                                            initialChecked: selectedStudents
+                                                .contains(studentIndex),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  sizedBox05h,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      DefaultButtonWidth(
+                                          onPress: (){
+                                                       if (selectedStudents.isEmpty) {
+      // Show error if no students selected
+           ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+            content: Text('please_select_at_least_one_student_to_proceed'.tr),
+            backgroundColor: Colors.red,
+          ),
+        );
+    } else{
+
+_captureInformation(
                                                 context,
-                                                schoolName:studentController.studentList![studentIndex].school!,
+                                                studentIndex: selectedStudents
+                                                    .first, // Use first selected student
+                                                studentController:
+                                                    studentController,
+                                                productIndex: productIndex,
+                                                schoolName: studentController
+                                                    .studentList![
+                                                        selectedStudents.first]
+                                                    .school!,
                                                 randomNumber: randomNumber,
-                                                className: studentController.studentList![studentIndex].studentClass!,
+                                                className: studentController
+                                                    .studentList![
+                                                        selectedStudents.first]
+                                                    .studentClass!,
                                                 totalAmount: totalAmount,
-                                           
                                                 orderId: '21323443421',
                                                 vat: vat,
-                                                convenienceFee: convenienceFee),
-                                            title: 'next'.tr,
-                                            color1: kamber300Color,
-                                            color2: kyellowColor,
-                                            width: 123)
-                                      ],
-                                    )
+                                                convenienceFee: convenienceFee,
+                                              );
+    }
+                                          } ,
+                                          title: 'next'.tr,
+                                          color1: kamber300Color,
+                                          color2: kyellowColor,
+                                          width: 123)
+                                    ],
+                                  )
                                 ],
                               ),
 
-                      sizedBox15,
+                    sizedBox15,
 
-                       isSchoolDelivery==true?const SizedBox.shrink():
-                      isHomeDelivery == false
-                          ? DefaultButton2(
-                              color1: kamber300Color,
-                              color2: kyellowColor,
-                              onPress: () => homeDeliveryAction(),
-                              // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
+                    isSchoolDelivery == true
+                        ? const SizedBox.shrink()
+                        : isHomeDelivery == false
+                            ? DefaultButton2(
+                                color1: kamber300Color,
+                                color2: kyellowColor,
+                                onPress: () => homeDeliveryAction(),
+                                // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
 
-                              title: 'home_cap'.tr,
-                              iconData: Icons.arrow_forward_outlined,
-                            )
-                          :(studentController.studentList == null ||
-                                  studentController.studentList!.isEmpty)
-                              ?
+                                title: 'home_cap'.tr,
+                                iconData: Icons.arrow_forward_outlined,
+                              )
+                            : (studentController.studentList == null ||
+                                    studentController.studentList!.isEmpty)
+                                ? DeliveryMapScreen(
+                                    deliveryCost: deliveryCost,
+                                    isShop: 1,
+                                    product: widget.product,
+                                    cart: widget.cart,
+                                    checkedStudents: checkedStudents,
+                                    checkedStudentsId: selectedStudents.isEmpty
+                                        ? 0
+                                        : checkedStudents[0].id,
+                                    quantity: widget.quantity,
+                                    studentIndex: studentIndex,
+                                    schoolId: 0,
+                                    classId: 0,
+                                    className: 'unkown_class'.tr,
+                                    schoolName: 'unknown_school'.tr,
+                                    studentCode: randomNumber.toString(),
+                                    studentId: 0,
+                                    studentName: 'unkown_name'.tr,
+                                    screenId: 0,
+                                    calculatedTotal: widget.totalAmount,
+                                    contactModel: widget.contactModel!,
+                                    eduboxService: widget.product.name!,
+                                    dataList: [],
+                                    shipper: widget.shipper,
+                                    destination: widget.destination,
+                                    homePhone: widget.homePhone,
+                                    productId: 0,
+                                    pinCodeFieldController:
+                                        _pinCodeFieldController.text,
+                                    transactionType:
+                                        widget.transactionType ?? '',
+                                    calculatedTotalWithServices:
+                                        double.parse(totalAmount),
+                                    productIndex: 0,
+                                    purpose: '',
+                                    calculateServiceCharge: convenienceFee,
+                                    calculateVAT: vat,
+                                    productName: widget.product.name!,
+                                    randomNumber: randomNumber,
+                                    serviceIndex: 0,
+                                    totalAmount: double.parse(totalAmount),
+                                    vatPercentage: AppConstants.vatPercentage)
+                                : DeliveryMapScreen(
+                                    deliveryCost: deliveryCost,
+                                    isShop: 1,
+                                    product: widget.product,
+                                    cart: widget.cart,
+                                    checkedStudents: checkedStudents,
+                                    checkedStudentsId: selectedStudents.isEmpty
+                                        ? 0
+                                        : checkedStudents[0].id,
+                                    quantity: widget.quantity,
+                                    studentIndex: studentIndex,
+                                    schoolId: 0,
+                                    classId: studentController
+                                            .studentList![studentIndex]
+                                            .classId ??
+                                        0,
+                                    className: studentController
+                                            .studentList![studentIndex]
+                                            .studentClass ??
+                                        'unkown_class'.tr,
+                                    schoolName: studentController
+                                            .studentList![studentIndex]
+                                            .school ??
+                                        'unknown_school'.tr,
+                                    studentCode: studentController
+                                            .studentList![studentIndex].code ??
+                                        randomNumber.toString(),
+                                    studentId:
+                                        studentController.studentList![studentIndex].id ?? 0,
+                                    studentName: studentController.studentList![studentIndex].name ?? 'unkown_name'.tr,
+                                    screenId: 0,
+                                    calculatedTotal: widget.totalAmount,
+                                    contactModel: widget.contactModel!,
+                                    eduboxService: widget.product.name!,
+                                    dataList: [],
+                                    shipper: widget.shipper,
+                                    destination: widget.destination,
+                                    homePhone: widget.homePhone,
+                                    productId: 0,
+                                    pinCodeFieldController: _pinCodeFieldController.text,
+                                    transactionType: widget.transactionType ?? '',
+                                    calculatedTotalWithServices: double.parse(totalAmount),
+                                    productIndex: 0,
+                                    purpose: '',
+                                    calculateServiceCharge: convenienceFee,
+                                    calculateVAT: vat,
+                                    productName: widget.product.name!,
+                                    randomNumber: randomNumber,
+                                    serviceIndex: 0,
+                                    totalAmount: double.parse(totalAmount),
+                                    vatPercentage: AppConstants.vatPercentage),
 
-                          DeliveryMapScreen(
-                              deliveryCost: deliveryCost,
-                              isShop: 1,
-                              product: widget.product,
-                              cart: widget.cart,
-                              checkedStudents: checkedStudents,
-                              checkedStudentsId: selectedStudents.isEmpty
-                                  ? 0
-                                  : checkedStudents[0].id,
-                              quantity: widget.quantity,
-                              studentIndex: studentIndex,
-                              schoolId: 0,
-                              classId: 0,
-                              className: 'unkown_class'.tr,
-                              schoolName:  'unknown_school'.tr,
-                              studentCode: randomNumber.toString(),
-                              studentId:0,
-                              studentName: 'unkown_name'.tr,
-                              screenId: 0,
-                              calculatedTotal: widget.totalAmount,
-                              contactModel: widget.contactModel!,
-                              eduboxService: widget.product.name!,
-                              dataList: [],
-                              shipper: widget.shipper,
-                              destination: widget.destination,
-                              homePhone: widget.homePhone,
-                              productId: 0,
-                              pinCodeFieldController:
-                                  _pinCodeFieldController.text,
-                              transactionType: widget.transactionType ?? '',
-                              calculatedTotalWithServices:
-                                  double.parse(totalAmount),
-                              productIndex: 0,
-                              purpose: '',
-                              calculateServiceCharge: convenienceFee,
-                              calculateVAT: vat,
-                              productName: widget.product.name!,
-                              randomNumber: randomNumber,
-                              serviceIndex: 0,
-                              totalAmount: double.parse(totalAmount),
-                              vatPercentage: AppConstants.vatPercentage):
-                          
-                           DeliveryMapScreen(
-                              deliveryCost: deliveryCost,
-                              isShop: 1,
-                              product: widget.product,
-                              cart: widget.cart,
-                              checkedStudents: checkedStudents,
-                              checkedStudentsId: selectedStudents.isEmpty
-                                  ? 0
-                                  : checkedStudents[0].id,
-                              quantity: widget.quantity,
-                              studentIndex: studentIndex,
-                              schoolId: 0,
-                              classId: studentController
-                                  .studentList![studentIndex].classId??0,
-                              className: studentController
-                                  .studentList![studentIndex].studentClass??'unkown_class'.tr,
-                              schoolName: studentController
-                                      .studentList![studentIndex].school ??
-                                  'unknown_school'.tr,
-                              studentCode: studentController
-                                  .studentList![studentIndex].code??randomNumber.toString(),
-                              studentId: studentController
-                                  .studentList![studentIndex].id??0,
-                              studentName: studentController
-                                  .studentList![studentIndex].name??'unkown_name'.tr,
-                              screenId: 0,
-                              calculatedTotal: widget.totalAmount,
-                              contactModel: widget.contactModel!,
-                              eduboxService: widget.product.name!,
-                              dataList: [],
-                              shipper: widget.shipper,
-                              destination: widget.destination,
-                              homePhone: widget.homePhone,
-                              productId: 0,
-                              pinCodeFieldController:
-                                  _pinCodeFieldController.text,
-                              transactionType: widget.transactionType ?? '',
-                              calculatedTotalWithServices:
-                                  double.parse(totalAmount),
-                              productIndex: 0,
-                              purpose: '',
-                              calculateServiceCharge: convenienceFee,
-                              calculateVAT: vat,
-                              productName: widget.product.name!,
-                              randomNumber: randomNumber,
-                              serviceIndex: 0,
-                              totalAmount: double.parse(totalAmount),
-                              vatPercentage: AppConstants.vatPercentage),
-
-                      Text(
-                        '${'delivery_cost'.tr}: ${deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.normal,
-                                ),
-                      ),
-                      // Display Total Price
-
-                      Text(
-                          '${'material_cost'.tr}: ${widget.totalAmount} ${AppConstants.currency}'),
-                      // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
-                      Text('${'vat'.tr}: $vat ${AppConstants.currency}'),
-
-                      Text(
-                          '${'convenience_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
-                      const Divider(),
-
-                      Text(
-                        '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
-                      if (widget.transactionType !=
-                          TransactionType.withdrawRequest)
-                        Container(
-                          height: Dimensions.dividerSizeMedium,
-                          color: Theme.of(context).dividerColor,
-                        ),
-                      if (widget.transactionType ==
-                          TransactionType.withdrawRequest)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Dimensions.paddingSizeDefault,
-                            vertical: Dimensions.paddingSizeSmall,
+                    Text(
+                      '${'delivery_cost'.tr}: ${deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            fontWeight: FontWeight.normal,
                           ),
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).cardColor,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(10))),
-                            child: const Column(children: [
-                              // _MethodFieldWidget(
-                              //   type: 'withdraw_method'.tr,
-                              //   value: widget.withdrawMethod!.methodName!,
-                              // ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                            ]),
+                    ),
+                    // Display Total Price
+
+                    Text(
+                        '${'material_cost'.tr}: ${widget.totalAmount} ${AppConstants.currency}'),
+                    // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
+                    Text('${'vat'.tr}: $vat ${AppConstants.currency}'),
+
+                    Text(
+                        '${'convenience_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
+                    const Divider(),
+
+                    Text(
+                      '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            fontWeight: FontWeight.bold,
                           ),
+                    ),
+                    if (widget.transactionType !=
+                        TransactionType.withdrawRequest)
+                      Container(
+                        height: Dimensions.dividerSizeMedium,
+                        color: Theme.of(context).dividerColor,
+                      ),
+                    if (widget.transactionType ==
+                        TransactionType.withdrawRequest)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Dimensions.paddingSizeDefault,
+                          vertical: Dimensions.paddingSizeSmall,
                         ),
-                      sizedBox
-                    ],
-                  ),
-                ],
-              ),
-            ]),
-          ));
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).cardColor,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10))),
+                          child: const Column(children: [
+                            // _MethodFieldWidget(
+                            //   type: 'withdraw_method'.tr,
+                            //   value: widget.withdrawMethod!.methodName!,
+                            // ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                          ]),
+                        ),
+                      ),
+                    sizedBox
+                  ],
+                ),
+              ],
+            ),
+          ]),
+        ));
         // }
       }),
     );
   }
 
-    void _captureInformation(context,
-      {required int randomNumber,
-      required String totalAmount,
-      required String schoolName,
-      required String className,
-      required String orderId,
-      required double vat,
-      required double convenienceFee,
-      required int studentIndex,
-      required StudentController studentController,
-      required int productIndex,
-      }) {
-    showDialog(
-      context: context,
-      builder: (context) {
+  void _captureInformation(
+  BuildContext context, {
+  required int randomNumber,
+  required String totalAmount,
+  required String schoolName,
+  required String className,
+  required String orderId,
+  required double vat,
+  required double convenienceFee,
+  required int studentIndex,
+  required StudentController studentController,
+  required int productIndex,
+}) {
+  // Get the selected student
+  final selectedStudent = studentController.studentList![studentIndex];
 
-        return AlertDialog(
-          title:  Text('confirm'.tr),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('${'your_school_materials_will_be_delivered_at'.tr};'),
-              Text('${'school_name'.tr}: $schoolName'),
-              Text('${'class'.tr}: $className'),
-             
-              Text('${'order_id'.tr}: $randomNumber'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child:  Text('cancel'.tr),
-            ),
-            const SizedBox(width: 10),
-            TextButton(
-              onPressed: () {
-                               print(
-                                    'this is selected student:::::::::: $selectedStudents | $studentIndex');
-                                // Check if no students are selected
-                                // if (selectedStudents.isEmpty) {
-                                //   // Show an alert or snackbar to inform the user
-                                //   showDialog(
-                                //     context: context,
-                                //     builder: (context) {
-                                //       return AlertDialog(
-                                //         title: Text('no_student_selected'.tr),
-                                //         content: Text(
-                                //             'please_select_at_least_one_student_to_proceed'
-                                //                 .tr),
-                                //         actions: [
-                                //           TextButton(
-                                //             onPressed: () {
-                                //               Navigator.pop(
-                                //                   context); // Close the dialog
-                                //             },
-                                //             child: Text('ok'.tr),
-                                //           ),
-                                //         ],
-                                //       );
-                                //     },
-                                //   );
-                                //   return; // Exit the function early
-                                // }
- if   (studentController.studentList == null ||  studentController.studentList!.isEmpty){
-                                  schoolDeliveryAction();
-                               
-                                  }
-                                  else{
-                                // Proceed with the transaction if students are selected
-                                final configModel =
-                                    Get.find<SplashController>().configModel;
-                                List<StudentModel> checkedStudents =
-                                    selectedStudents
-                                        .map((index) => studentController
-                                            .studentList![index])
-                                        .toList();
-                      print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx$checkedStudents');
-
-                                Get.find<TransactionMoneyController>()
-                                    .pinVerify(
-                                  pin: _pinCodeFieldController.text,
-                                )
-                                    .then((isCorrect) {
-                                  if (isCorrect) {
-                                    if (configModel!.twoFactor! &&
-                                        Get.find<ProfileController>().userInfo!.twoFactor!) {
-                                      Get.find<AuthController>()
-                                          .checkOtp()
-                                          .then((value) => value.isOk
-                                              ? Get.defaultDialog(
-                                                  barrierDismissible: false,
-                                                  title: 'otp_verification'.tr,
-                                                  content: Column(
-                                                    children: [
-                                                      CustomPinCodeFieldWidget(
-                                                        onCompleted: (pin) =>
-                                                            Get.find<
-                                                                    AuthController>()
-                                                                .verifyOtp(pin)
-                                                                .then((value) {
-                                                          if (value.isOk) {
-                                                            showModalBottomSheet(
-                                                              isScrollControlled:
-                                                                  true,
-                                                              context:
-                                                                  Get.context!,
-                                                              isDismissible:
-                                                                  false,
-                                                              enableDrag: false,
-                                                              shape:
-                                                                  const RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.vertical(
-                                                                    top: Radius.circular(
-                                                                        Dimensions
-                                                                            .radiusSizeLarge)),
-                                                              ),
-                                                              builder: (context) =>
-                                                                  BottomSheetWithSliderSp(
-                                                                materialCost: widget
-                                                                    .totalAmount
-                                                                    .toStringAsFixed(
-                                                                        2),
-                                                                deliveryCost:
-                                                                    deliveryCost,
-                                                                shipper: widget
-                                                                    .shipper,
-                                                                homePhone: widget
-                                                                    .homePhone,
-                                                                destination: widget
-                                                                    .destination,
-                                                                studentId:
-                                                                    checkedStudents[
-                                                                            0]
-                                                                        .id!,
-                                                                randomNumber:
-                                                                    randomNumber,
-                                                                selectedProducts:
-                                                                    widget.cart,
-                                                                quantity: widget
-                                                                    .quantity,
-                                                                productIndex:
-                                                                    productIndex,
-                                                                amount: '0',
-                                                                availableBalance:
-                                                                    '0.00',
-                                                                contactModel: widget
-                                                                    .contactModel,
-                                                                contactModelMtn:
-                                                                    widget
-                                                                        .contactModelMtn,
-                                                                pinCode: Get.find<
-                                                                        BottomSliderController>()
-                                                                    .pin,
-                                                                transactionType:
-                                                                    widget
-                                                                        .transactionType,
-                                                                purpose: widget
-                                                                    .transactionType,
-                                                                inputBalance:
-                                                                    0.0,
-                                                                product: widget
-                                                                    .product,
-                                                                amountToPay:
-                                                                    '${'amount_to_be_paid'.tr}: ${widget.totalAmount} ${AppConstants.currency}',
-                                                                nowPaid:
-                                                                    '${'now_paid'.tr}: ${widget.totalAmount.toStringAsFixed(2)} ${AppConstants.currency}',
-                                                                vat:
-                                                                    '${'vat'.tr}: $vat ${AppConstants.currency}',
-                                                                serviceCharge:
-                                                                    convenienceFee
-                                                                        .toStringAsFixed(
-                                                                            2),
-                                                                totalNowPaid:'${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
-                                                              ),
-                                                            );
-                                                          }
-                                                        }),
-                                                      ),
-                                                      const DemoOtpHintWidget(),
-                                                      GetBuilder<
-                                                          AuthController>(
-                                                        builder: (verifyController) =>
-                                                            verifyController
-                                                                    .isVerifying
-                                                                ? CircularProgressIndicator(
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .textTheme
-                                                                        .titleLarge!
-                                                                        .color,
-                                                                  )
-                                                                : const SizedBox
-                                                                    .shrink(),
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              : null);
-                                    } else {
-                                      showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          context: Get.context!,
-                                          isDismissible: true,
-                                          enableDrag: true,
-                                          shape: const RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.vertical(
-                                            top: Radius.circular(
-                                                Dimensions.radiusSizeLarge),
-                                          )),
-                                          builder: (context) {
-                                            return BottomSheetWithSliderSp(
-                                              deliveryCost: deliveryCost,
-                                              shipper: widget.shipper,
-                                              homePhone: widget.homePhone,
-                                              destination: widget.destination,
-                                              studentId: checkedStudents[0].id!,
-                                              randomNumber: randomNumber,
-                                              selectedProducts: widget.cart,
-                                              quantity: widget.quantity,
-                                              studentIndex: studentIndex,
-                                              availableBalance: '0.00',
-                                              amount: totalAmount.toString(),
-                                              materialCost: widget.totalAmount
-                                                  .toStringAsFixed(2),
-                                              productId: 1,
-                                              contactModel: widget.contactModel,
-                                              pinCode:
-                                                  _pinCodeFieldController.text,
-                                              transactionType:
-                                                  widget.transactionType,
-                                              purpose: widget.transactionType,
-                                              studentInfo: checkedStudents,
-                                              inputBalance: widget.totalAmount,
-                                              product: widget.product,
-                                              productIndex: productIndex,
-                                              edubox_service: 'shop'.tr,
-                                              amountToPay:
-                                                  '${'delivery_cost'.tr}: ${deliveryCost.toStringAsFixed(2)}',
-                                              nowPaid:
-                                                  '${'material_cost'.tr}: ${widget.totalAmount.toStringAsFixed(2)}',
-                                              vat:
-                                                  '${'vat'.tr}: $vat ${AppConstants.currency}',
-                                              serviceCharge: convenienceFee
-                                                  .toStringAsFixed(2),
-                                              totalNowPaid:
-                                                  '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
-                                              serviceValue: widget.product.name,
-                                            );
-                                          });
-                                    }
-                                  }
-                                });
-                                  }
-              },
-              child:  Text('ok'.tr),
-            ),
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('confirm'.tr),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${'your_school_materials_will_be_delivered_at'.tr};'),
+            Text('${'school_name'.tr}: ${selectedStudent.school}'),
+            Text('${'class'.tr}: ${selectedStudent.studentClass}'),
+            Text('${'student_name'.tr}: ${selectedStudent.name}'),
+            Text('${'order_id'.tr}: $randomNumber'),
           ],
-        );
-      },
-    );
-  }
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('cancel'.tr),
+          ),
+          TextButton(
+            onPressed: () {
+              // Proceed with transaction
+              final configModel = Get.find<SplashController>().configModel;
+  
+              Get.find<TransactionMoneyController>()
+                  .pinVerify(pin: _pinCodeFieldController.text)
+                  .then((isCorrect) {
+                if (isCorrect) {
+                  if (configModel!.twoFactor! &&
+                      Get.find<ProfileController>().userInfo!.twoFactor!) {
+                    // Handle OTP verification flow
+                    Get.find<AuthController>()
+                        .checkOtp()
+                        .then((value) => value.isOk
+                            ? _showOtpVerificationDialog(
+                                context,
+                                selectedStudent: selectedStudent,
+                                randomNumber: randomNumber,
+                                productIndex: productIndex,
+                                vat: vat,
+                                totalAmount: totalAmount,
+                                convenienceFee: convenienceFee
+                              )
+                            : null);
+                  } else {
+                    _showTransactionBottomSheet(
+                      context,
+                      selectedStudent: selectedStudent,
+                      randomNumber: randomNumber,
+                      productIndex: productIndex,
+                      vat: vat,
+                      convenienceFee: convenienceFee,
+                      totalAmount: totalAmount
+                    );
+                  }
+                }
+              });
+          
+            },
+            child: Text('ok'.tr),
+          ),
+        ],
+      );
+    },
+  );
 }
 
-  TextFormField buildFormField(
-      String labelText,
-      TextEditingController editingController,
-      TextInputType textInputType,
-      hintText) {
-    return TextFormField(
-      textAlign: TextAlign.start,
-      controller: editingController,
-      keyboardType: textInputType,
-      style: kInputTextStyle,
-      decoration: InputDecoration(
-        isCollapsed: true,
-        contentPadding: const EdgeInsets.symmetric(
-            vertical: 13, horizontal: 15), // Customize as needed
-        isDense: true,
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1, color: kamber300Color),
-          borderRadius: BorderRadius.circular(20.0),
+// Helper method for OTP verification dialog
+void _showOtpVerificationDialog(
+  BuildContext context, {
+  required StudentModel selectedStudent,
+  required int randomNumber,
+  required int productIndex,
+  required double vat,
+  required double convenienceFee,
+  required String totalAmount
+}) {
+  Get.defaultDialog(
+    barrierDismissible: false,
+    title: 'otp_verification'.tr,
+    content: Column(
+      children: [
+        CustomPinCodeFieldWidget(
+          onCompleted: (pin) => Get.find<AuthController>()
+              .verifyOtp(pin)
+              .then((value) {
+            if (value.isOk) {
+              _showTransactionBottomSheet(
+                Get.context!,
+                selectedStudent: selectedStudent,
+                randomNumber: randomNumber,
+                productIndex: productIndex,
+                vat: vat,
+                convenienceFee: convenienceFee,
+                totalAmount: totalAmount
+              );
+            }
+          }),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1, color: kTextLightColor),
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        labelText: labelText,
-        hintStyle: const TextStyle(color: Colors.grey),
-        hintText: hintText,
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter some text';
-        }
-        return null; // Return null if the input is valid
-      },
-    );
-  }
+        const DemoOtpHintWidget(),
+        GetBuilder<AuthController>(
+          builder: (verifyController) => verifyController.isVerifying
+              ? CircularProgressIndicator(
+                  color: Theme.of(context).textTheme.titleLarge!.color,
+                )
+              : const SizedBox.shrink(),
+        )
+      ],
+    ),
+  );
+}
 
-  Widget _buildListTile({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: const Color(0xFF000000)),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
+// Helper method for transaction bottom sheet
+void _showTransactionBottomSheet(
+  BuildContext context, {
+  required StudentModel selectedStudent,
+  required int randomNumber,
+  required int productIndex,
+  required double vat,
+  required double convenienceFee,
+  required String totalAmount,
+}) {
+  showModalBottomSheet(
+    isScrollControlled: true,
+    context: context,
+    isDismissible: false,
+    enableDrag: false,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(Dimensions.radiusSizeLarge),
       ),
-      trailing:
-          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-      onTap: onTap,
-    );
-  }
+    ),
+    builder: (context) => BottomSheetWithSliderSp(
+      materialCost: widget.totalAmount.toStringAsFixed(2),
+      deliveryCost: deliveryCost,
+      shipper: widget.shipper,
+      homePhone: widget.homePhone,
+      destination: widget.destination,
+      studentId: selectedStudent.id??0,
+      randomNumber: randomNumber,
+      selectedProducts: widget.cart,
+      quantity: widget.quantity,
+      productIndex: productIndex,
+      amount: totalAmount,
+      availableBalance: '0.00',
+      contactModel: widget.contactModel,
+      contactModelMtn: widget.contactModelMtn,
+      pinCode: Get.find<BottomSliderController>().pin,
+      transactionType: widget.transactionType,
+      purpose: widget.transactionType,
+      product: widget.product,
+      amountToPay:
+          '${'amount_to_be_paid'.tr}: ${widget.totalAmount} ${AppConstants.currency}',
+      nowPaid:
+          '${'now_paid'.tr}: ${widget.totalAmount.toStringAsFixed(2)} ${AppConstants.currency}',
+      vat: '${'vat'.tr}: $vat ${AppConstants.currency}',
+      serviceCharge: convenienceFee.toStringAsFixed(2),
+      totalNowPaid:
+          '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
+    ),
+  );
+}
+}
 
+TextFormField buildFormField(
+    String labelText,
+    TextEditingController editingController,
+    TextInputType textInputType,
+    hintText) {
+  return TextFormField(
+    textAlign: TextAlign.start,
+    controller: editingController,
+    keyboardType: textInputType,
+    style: kInputTextStyle,
+    decoration: InputDecoration(
+      isCollapsed: true,
+      contentPadding: const EdgeInsets.symmetric(
+          vertical: 13, horizontal: 15), // Customize as needed
+      isDense: true,
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(width: 1, color: kamber300Color),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(width: 1, color: kTextLightColor),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      labelText: labelText,
+      hintStyle: const TextStyle(color: Colors.grey),
+      hintText: hintText,
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return 'Please enter some text';
+      }
+      return null; // Return null if the input is valid
+    },
+  );
+}
+
+Widget _buildListTile({
+  required IconData icon,
+  required String title,
+  required VoidCallback onTap,
+}) {
+  return ListTile(
+    leading: Icon(icon, color: const Color(0xFF000000)),
+    title: Text(
+      title,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+    trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+    onTap: onTap,
+  );
+}

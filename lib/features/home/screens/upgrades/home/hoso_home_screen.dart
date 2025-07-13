@@ -106,6 +106,7 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
     Get.find<ShopController>().getShopList(reload);
     Get.find<ShopController>().getCategoryList(reload);
     Get.find<ShopController>().getBrandList(reload); 
+    Get.find<ShopController>().getAttributeList(reload); 
 
     Get.find<ClassController>().getClasList(reload);
     Get.find<StudentController>()

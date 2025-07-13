@@ -18,6 +18,7 @@ import 'package:hosomobile/features/transaction_money/widgets/for_student_widget
 import 'package:hosomobile/features/transaction_money/widgets/payment_methods/payment_method_selector.dart';
 import 'package:hosomobile/helper/price_converter_helper.dart';
 import 'package:hosomobile/helper/route_helper.dart';
+import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
 import 'package:hosomobile/util/styles.dart';
@@ -236,7 +237,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderP> {
                                   children: [
                                     transactionId != null
                                         ? Text(
-                                            'Receipt No:${widget.randomNumber}',
+                                            '${'receipt_no'.tr}:${widget.randomNumber}',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleLarge,
@@ -247,13 +248,13 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderP> {
                                     Column(children: [
                                       ForStudentWidget(
                                           studentInfo:
-                                              'Code: ${widget.studentCode}\nName: ${widget.studentName}'),
+                                              '${'code'.tr}: ${widget.studentCode}\n${'name'.tr}: ${widget.studentName}'),
                                     ]),
                                     sizedBox15,
                                     Text(
-                                        'Product: ${widget.edubox_service}, Contains: ${'${widget.dataList!.length} (${widget.dataList![widget.productIndex!].price} RWF), '}'), //${widget.studentInfo![widget.studentIndex!].studentClass}
+                                        '${'product'.tr}: ${widget.edubox_service}, ${'contains'.tr}: ${'${widget.dataList!.length} (${widget.dataList![widget.productIndex!].price} ${AppConstants.currency}), '}'), //${widget.studentInfo![widget.studentIndex!].studentClass}
                                     sizedBox10,
-                                    Text('Destination: ${widget.destination}'),
+                                    Text('${'destination'.tr}: ${widget.destination}'),
                                     sizedBox10,
                                     Container(
                                       height: Dimensions.dividerSizeMedium,
@@ -262,13 +263,13 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderP> {
                                     sizedBox10,
 
                                     Text(
-                                        'Amount to be Paid: ${widget.amountToPay!} RWF'),
+                                        '${'amount_to_be_paid'.tr}: ${widget.amountToPay!} ${AppConstants.currency}'),
 
-                                    // Text('Now Paid: ${widget.nowPaid!} RWF'),
+                                    // Text('Now Paid: ${widget.nowPaid!} ${AppConstants.currency}'),
                                     Text(widget.vat!),
 
                                     Text(
-                                        'Convenience fee (${widget.serviceCharge!} RWF'),
+                                        '${'convenience_fee'.tr} (${widget.serviceCharge!} ${AppConstants.currency}'),
                                     const Divider(),
                                     Text(
                                       widget.totalNowPaid!,
@@ -311,6 +312,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderP> {
                                   // ************************ Payment Method*******************/
 
                                   PaymentMethodSelector(
+                                    vat: widget.vat!,
                                     svProductList: widget.dataList??[],
                                     productName:widget.edubox_service??'no product found',
                                     shipper:widget.shipper,
@@ -410,7 +412,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderP> {
                                 trxId: transactionId,
                                 eduboxService: widget.edubox_service,
                                 studentInfo:
-                                    'Code: ${widget.studentCode}\nName: ${widget.studentName}',
+                                    '${'code'.tr}: ${widget.studentCode}\n${'name'.tr}: ${widget.studentName}',
                                 inputBalance: widget.inputBalance,
                                 dataList: widget.dataList,
                                 productIndex: widget.productIndex,

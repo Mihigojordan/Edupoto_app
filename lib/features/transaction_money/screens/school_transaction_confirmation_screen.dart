@@ -215,6 +215,8 @@ class _TransactionConfirmationScreenState
     final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse('${widget.availableBalance}')).toStringAsFixed(2);
       int randomNumber = random.nextInt(90000000) + 10000000;
 
+    final student=  widget.studentController.studentList![widget.studentIndex];
+
     // void validateForm() {
     //   if (deliveryOptionsValue == 'choose_delivery_company'.tr) {
     //     setState(() {
@@ -267,12 +269,7 @@ class _TransactionConfirmationScreenState
                     '${'invoice_no'.tr}:$randomNumber',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  sizedBox15,
-                  Column(children: [
-                    ForStudentWidget(
-                        studentInfo:
-                            '${'code'.tr}: ${widget.studentName}\n${'name'.tr}: ${widget.studentCode}'),
-                  ]),
+              
                   sizedBox10,
                   Text(
                       '${'product'.tr}:${widget.edubox_service}. ${'contains'.tr}:$checkedProducts ${'product'.tr}s\n ${'school'.tr}:${widget.schoolName}. ${'class'.tr}:${widget.className}'),
@@ -399,9 +396,9 @@ class _TransactionConfirmationScreenState
                                         });
                                       },
                                       itemLists: widget
-                                          .studentController!.studentList!,
+                                          .studentController.studentList!,
                                       title:
-                                          '${'code'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].code!}\n${'name'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].name} ${'class'.tr}:${widget.studentController!.studentList![widget.studentIndex!].studentClass}',
+                                          '${'code'.tr}: ${student.code!}\n${'name'.tr}: ${student.name} ${'class'.tr}:${student.studentClass} ${'school'.tr}:${student.school}',
                                       isExpanded: true,
                                     ),
                                     sizedBox05h,
@@ -412,11 +409,11 @@ class _TransactionConfirmationScreenState
                                             onPress: () => _captureInformation(
                                               availableBalance: widget.availableBalance,
                                                 context,
-                                                schoolName:
-                                                    widget.schoolName,
+                                                schoolName:student.school!,
                                                 randomNumber: randomNumber,
-                                                className: widget.className,
+                                                className: student.studentClass!,
                                                 totalAmount: totalAmount,
+                                                studentInfo:'${'student_name'.tr}: ${student.name} ${'code'.tr}: ${student.code}',
                                                 productName: widget.productName!,
                                                 orderId: '21323443421',
                                                 vat: vat,
@@ -500,7 +497,7 @@ class _TransactionConfirmationScreenState
                   // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
                   Text('${'vat'.tr} (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
 
-                  Text( '${'convenient_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
+                  Text( '${'convenience_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
                   const Divider(),
 
                   Text(
@@ -511,16 +508,21 @@ class _TransactionConfirmationScreenState
                   ),
 sizedBox10,
            sizedBox10,
-              Text('${'pending'.tr}/${'remaining_amount_to_be_paid'.tr}',
-                  style: rubikSemiBold.copyWith(
-                      fontSize: Dimensions.fontSizeLarge,
-                      color: ColorResources.getGreyBaseGray1())),
-              Text(
+          widget.inputBalance.toString()==''||widget.inputBalance==-1 ?    Column(
+                children: [
+                  Text('${'pending'.tr}/${'remaining_amount_to_be_paid'.tr}',
+                      style: rubikSemiBold.copyWith(
+                          fontSize: Dimensions.fontSizeLarge,
+                          color: ColorResources.getGreyBaseGray1())),
+                             Text(
                   '$availableBalance ${AppConstants.currency}',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.bold,
                       )),
-              const SizedBox(height: 15),
+              const SizedBox(height: 15),      
+                ],
+              ):const SizedBox.shrink(),
+     
 
                 ],
               ),
@@ -977,7 +979,8 @@ sizedBox
       required String orderId,
       required double vat,
       required double convenienceFee,
-      required double availableBalance
+      required double availableBalance,
+      required String studentInfo
       }) {
     showDialog(
       context: context,
@@ -992,8 +995,10 @@ sizedBox
               Text('${'your_school_materials_will_be_delivered_at'.tr};'),
               Text('${'school_name'.tr}: $schoolName'),
               Text('${'class'.tr}: $className'),
+              Text(studentInfo),
               Text('${'customer_product'.tr}: $productName'),
               Text('${'order_id'.tr}: $randomNumber'),
+              Text('total amount:$totalAmount')
             ],
           ),
           actions: [
@@ -1025,7 +1030,7 @@ sizedBox
                     } else {
                       widget.screenId == 1
                           ? Get.to(PaymentMethodSl(
-                              amountTotal: calculatedTotal.toString(),
+                              amountTotal:(widget.inputBalance.toString()==''||widget.inputBalance ==-1) ? totalAmount.toString():widget.inputBalance.toString(),
                               parent: widget.contactModel!.name,
                               studentName: widget.studentName,
                               studentCode: widget.studentCode,
@@ -1071,7 +1076,7 @@ sizedBox
                                   shipper: widget.shipper,
                                   homePhone: widget.homePhone,
                                   destination: widget.destination,
-                                  amount: calculatedTotal.toString(),
+                                  amount: (widget.inputBalance.toString()==''||widget.inputBalance ==-1) ? totalAmount.toString():widget.inputBalance.toString(),
                                   productId: widget.productId!,
                                   contactModel: widget.contactModel,
                                   pinCode: _pinCodeFieldController.text,
@@ -1086,7 +1091,7 @@ sizedBox
                                   nowPaid: '${'material_cost'.tr}: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}',
                                   vat:
                                       '${'vat'.tr} (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
-                                  serviceCharge:'${'convenient_fee'.tr}: $convenienceFee ${AppConstants.currency}',
+                                  serviceCharge: convenienceFee.toStringAsFixed(2) ,
                                   totalNowPaid:'${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
                                   serviceValue: widget.productName,
                                   serviceIndex: widget.serviceIndex,

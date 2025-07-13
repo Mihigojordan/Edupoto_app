@@ -1,3 +1,4 @@
+import 'package:hosomobile/features/shop/domain/models/attribute_model.dart';
 import 'package:hosomobile/features/shop/domain/models/brand_model.dart';
 import 'package:hosomobile/features/shop/domain/models/category_model.dart';
 
@@ -10,24 +11,42 @@ class Product {
   String? shortDescription;
   List<WooCategory>? categories;
   List<BrandModel>? brands;
+  List<AttributeModel>? attributes;
 
-  Product({this.name, this.images, this.price, this.regularPrice, this.salePrice, this.shortDescription, this.categories, this.brands});
+  Product(
+      {this.name,
+      this.images,
+      this.price,
+      this.regularPrice,
+      this.salePrice,
+      this.shortDescription,
+      this.categories,
+      this.brands,
+      this.attributes});
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       name: json['name'],
-      images: (json['images'] as List<dynamic>?) // WooCommerce uses 'images' (plural)
+      images: (json['images']
+              as List<dynamic>?) // WooCommerce uses 'images' (plural)
           ?.map((image) => WooImage.fromJson(image))
           .toList(),
       price: json['price'],
-      regularPrice: json['regular_price'], // WooCommerce uses 'sku' for product codes
+      regularPrice:
+          json['regular_price'], // WooCommerce uses 'sku' for product codes
       salePrice: json['sale_price'],
-      shortDescription:  json['short_description'],
-      categories: (json['categories'] as List<dynamic>?) // WooCommerce uses 'images' (plural)
+      shortDescription: json['short_description'],
+      categories: (json['categories']
+              as List<dynamic>?) // WooCommerce uses 'images' (plural)
           ?.map((category) => WooCategory.fromJson(category))
           .toList(),
-      brands: (json['brands'] as List<dynamic>?) // WooCommerce uses 'images' (plural)
+      brands: (json['brands']
+              as List<dynamic>?) // WooCommerce uses 'images' (plural)
           ?.map((brand) => BrandModel.fromJson(brand))
+          .toList(),
+      attributes: (json['attributes']
+              as List<dynamic>?) // WooCommerce uses 'images' (plural)
+          ?.map((brand) => AttributeModel.fromJson(brand))
           .toList(),
     );
   }
@@ -40,8 +59,9 @@ class Product {
       'regular_price': regularPrice, // Map back to 'sku' for API compliance
       'sale_price': salePrice,
       'short_description': shortDescription,
-      'categories':categories?.map((category)=>category.toJson()).toList(),
-      'brands':brands?.map((brand)=>brand.toJson()).toList()
+      'categories': categories?.map((category) => category.toJson()).toList(),
+      'brands': brands?.map((brand) => brand.toJson()).toList(),
+      'attributes': attributes?.map((attribute) => attribute.toJson()).toList()
     };
   }
 }

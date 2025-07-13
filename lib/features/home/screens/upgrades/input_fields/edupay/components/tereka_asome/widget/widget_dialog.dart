@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
+import 'package:hosomobile/util/app_constants.dart';
 
 class WidgetDialog {
 
@@ -62,7 +63,7 @@ class WidgetDialog {
           contentPadding: const EdgeInsets.only(left: 25),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          title:const Text('Payment Info'),
+          title: Text('payment_info'.tr),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,19 +71,19 @@ class WidgetDialog {
               const SizedBox(height: 16),
             if(inputAmaount > balance) 
              Text(
-                'You have exceeded the Balance to be paid of $balance RWF',
+                '${'you_have_exceeded_balance_to_be_paid_of'.tr} $balance ${AppConstants.currency}',
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.red,fontSize: 18, fontWeight: FontWeight.w300),
               )
             else if(balance<=0.00)
-            const  Text(
-                'You are payment has completed, Thank you for choosing HOSOMobile',
+              Text(
+                '${'your_payment_has_completed'.tr}, ${'thank_you_for_choosing'.tr} ${AppConstants.appName}',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red,fontSize: 18, fontWeight: FontWeight.w300),
               )
               else if(inputAmaount<100)
-              const   Text(
-                'The minimum amount to pay start from (100 RWF) and above , Thank you for choosing HOSOMobile',
+                 Text(
+                '${'the_minimum_amount_to_pay_start_from'.tr} , ${'thank_you_for_choosing'.tr} ${AppConstants.appName}',
                style: TextStyle(color: Colors.red,fontSize: 18, fontWeight: FontWeight.w300),
               )
             ],
@@ -108,9 +109,10 @@ class WidgetDialog {
   required BuildContext context,
   required String title,
   required Function(double) onDeposit,
+  required TextEditingController inputBalanceController
 }) {
   final _formKey = GlobalKey<FormState>();
-  final _amountController = TextEditingController();
+ 
   final _focusNode = FocusNode();
 
   showDialog(
@@ -123,8 +125,8 @@ class WidgetDialog {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: const Text('Deposit', 
-            style: TextStyle(fontWeight: FontWeight.bold)),
+          title:  Text('deposit'.tr, 
+            style:const TextStyle(fontWeight: FontWeight.bold)),
           content: SingleChildScrollView(  // Prevents overflow
             child: Form(
               key: _formKey,
@@ -136,26 +138,26 @@ class WidgetDialog {
                     style: Theme.of(context).textTheme.bodyMedium),
                   const SizedBox(height: 16),
                   TextFormField(
-                    controller: _amountController,
+                    controller: inputBalanceController,
                     autofocus: true,
                     keyboardType: TextInputType.numberWithOptions(decimal: true),
                     decoration: InputDecoration(
-                      prefixText: 'RWF ',
+                      prefixText: '${AppConstants.currency} ',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      hintText: 'Enter amount',
+                      hintText: 'enter_amount'.tr,
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter an amount';
+                        return 'please_enter_an_amount'.tr;
                       }
                       final amount = double.tryParse(value);
                       if (amount == null) {
-                        return 'Please enter a valid number';
+                        return 'please_enter_a_valid_number'.tr;
                       }
                       if (amount <= 0) {
-                        return 'Amount must be greater than zero';
+                        return 'amount_must_be_greater_than_zero';
                       }
                       return null;
                     },
@@ -173,7 +175,7 @@ class WidgetDialog {
             TextButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  final amount = double.parse(_amountController.text);
+                  final amount = double.parse(inputBalanceController.text);
                   // Navigator.pop(context); // Close dialog first
                 
                     onDeposit(amount); // Execute callback after frame
@@ -191,7 +193,7 @@ class WidgetDialog {
     },
   ).then((_) {
     // Proper disposal management
-    _amountController.dispose();
+    inputBalanceController.dispose();
      _focusNode.dispose();
   });
 }

@@ -46,6 +46,7 @@ class PaymentMethodSelector extends StatefulWidget {
   final List<SchoolLists>? productList;
   final String productName;
   final List<String>? shopList;
+  final String vat;
 
   PaymentMethodSelector({
     super.key,
@@ -75,6 +76,7 @@ class PaymentMethodSelector extends StatefulWidget {
     required this.transactionType,
     required this.onPaymentMethodSelected,
     required this.initialAmount,
+    required this.vat
   });
 
   @override
@@ -273,62 +275,103 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
     );
   }
 
-  Widget _confirmationButton() {
-
-    return Column(
-      children: [
-        const SizedBox(height: 40.0),
-        const Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-          child: Divider(height: Dimensions.dividerSizeSmall),
-        ),
-        sizedBox10,
-        widget.transactionMoneyController.isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).textTheme.titleLarge!.color,
-                ),
-              )
-            : ConfirmationSlider(
-                height: 60.0,
-                backgroundColor: ColorResources.getGreyBaseGray6(),
-                text: 'swipe_to_pay'.tr,
-                textStyle: rubikRegular.copyWith(
-                    fontSize: Dimensions.paddingSizeLarge),
-                shadow: const BoxShadow(),
-                sliderButtonContent: Container(
-                  padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).secondaryHeaderColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Image.asset(Images.slideRightIcon),
-                ),
-                onConfirmation: () async {
-                   _selectedMobileProvider!=null?   showCustomSnackBarHelper(
-        '${'processing_payment'.tr}... ${'please_wait_to_receive_payment_prompt'.tr}.',
-        isError: false,
-      ):showCustomSnackBarHelper(
-        '${'processing_payment'.tr}... ${'please_wait'.tr}.',
-        isError: false,
-      );
-                  // Initiate payment
-                  await widget.mtnMomoApiClient.postMtnMomo(
-                      transactionId: widget.randomNumber.toString(),
-                      amount: double.parse(widget.amount).toInt().toString(),
-                      message:
-                          '${'you_have_paid_for'.tr} ${widget.edubox_service} ${'vat'.tr} , ${double.parse(widget.service_charge).toInt()} ${AppConstants.currency} ${'convenience_fee'.tr}',
-                      phoneNumber:
-                          normalizeRwandaPhoneNumber(_phoneController.text));
-
-                  // Start polling for payment status
-                  _pollPaymentStatus();
-                },
+ Widget _confirmationButton() {
+  return Column(
+    children: [
+      const SizedBox(height: 40.0),
+      const Padding(
+        padding: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+        child: Divider(height: Dimensions.dividerSizeSmall),
+      ),
+      sizedBox10,
+      widget.transactionMoneyController.isLoading
+          ? Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).textTheme.titleLarge!.color,
               ),
-      ],
-    );
-  }
+            )
+          : Column(
+              children: [
+                // Regular button for tap
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Dimensions.paddingSizeLarge),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).secondaryHeaderColor,
+                        padding: const EdgeInsets.symmetric(vertical: 15), 
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                       
+                      ),
+                      ),
+                      onPressed: () async {
+                        await _initiatePayment();
+                      },
+                      child: Text(
+                        'pay_now'.tr,
+                        style: rubikRegular.copyWith(
+                          fontSize: Dimensions.paddingSizeLarge,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                // Swipe confirmation
+                // ConfirmationSlider(
+                //   height: 60.0,
+                //   backgroundColor: ColorResources.getGreyBaseGray6(),
+                //   text: 'swipe_to_pay'.tr,
+                //   textStyle: rubikRegular.copyWith(
+                //       fontSize: Dimensions.paddingSizeLarge),
+                //   shadow: const BoxShadow(),
+                //   sliderButtonContent: Container(
+                //     padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                //     decoration: BoxDecoration(
+                //       color: Theme.of(context).secondaryHeaderColor,
+                //       shape: BoxShape.circle,
+                //     ),
+                //     child: Image.asset(Images.slideRightIcon),
+                //   ),
+                //   onConfirmation: () async {
+                //     await _initiatePayment();
+                //   },
+                // ),
+              ],
+            ),
+    ],
+  );
+}
+
+Future<void> _initiatePayment() async {
+  // Show processing message
+  _selectedMobileProvider != null
+      ? showCustomSnackBarHelper(
+          '${'processing_payment'.tr}... ${'please_wait_to_receive_payment_prompt'.tr}.',
+          isError: false,
+        )
+      : showCustomSnackBarHelper(
+          '${'processing_payment'.tr}... ${'please_wait'.tr}.',
+          isError: false,
+        );
+
+  // Initiate payment
+  await widget.mtnMomoApiClient.postMtnMomo(
+    transactionId: widget.randomNumber.toString(),
+    amount: double.parse(widget.amount).toInt().toString(),
+    message: '${'you_have_paid_for'.tr} ${widget.edubox_service}, ${'vat'.tr} ${'inclusive'.tr}, '
+        '${double.parse(widget.service_charge).toInt()} '
+        '${AppConstants.currency} ${'convenience_fee'.tr}',
+    phoneNumber: normalizeRwandaPhoneNumber(_phoneController.text),
+  );
+
+  // Start polling for payment status
+  _pollPaymentStatus();
+}
 
   void _pollPaymentStatus() async {
     const maxAttempts = 10; // Maximum number of polling attempts
@@ -355,7 +398,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
           case 'FAILED':
             paymentCompleted = true;
             showCustomSnackBarHelper(
-              'Payment failed: Insufficient balance or transaction declined',
+              '${'payment_failed'.tr}: ${'insufficient_balance_or_transaction_decline'.tr}',
               isError: true,
             );
             break;
@@ -391,54 +434,83 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
     }
   }
 
-  void _handleSuccessfulPayment() async {
-       final  userId = Get.find<AuthController>().getUserId();
-      
-    try {
-      if (widget.transactionType == "send_money") {
-        // Process successful payment
-        final transaction = await widget.transactionMoneyController.sendMoney(
-            contactModel: widget.contactModel,
-            amount: double.parse(widget.amount),
-            purpose: widget.purpose,
-            pinCode: widget.pinCode,
-            onSuggest: () => widget.contactController.addToSuggestContact(
-                  widget.contactModel,
-                  type: SuggestType.sendMoney,
-                ));
+void _handleSuccessfulPayment() async {
+  final userId = Get.find<AuthController>().getUserId();
+  
+  try {
+    if (widget.transactionType == "send_money") {
+      // First safely parse all numeric values
+      final amount = _parseDouble(widget.amount);
+      final totalAmount = _parseDouble(widget.amountToPay);
+      final balance = _parseDouble(widget.availableBalance);
+      final charge = _parseDouble(widget.serviceCharge);
 
-        widget.transactionId = transaction.body['transaction_id'];
-
-        await widget.transactionMoneyController.makePayment(
-           payment_method:_selectedMethod==0?'mobile_money'.tr:_selectedMethod==1?'card'.tr:_selectedMethod==2?'bank'.tr:'no_method'.tr,
-          payment_media:_selectedMobileProvider==0?'MTN':_selectedMobileProvider==1?'Airtel':_selectedBankProvider==0?'BK':'no_bank'.tr,
-          payment_phone: _phoneController.text,
-           parent_id: userId!,
-           product_name: widget.edubox_service,
-           sv_product_list:widget.svProductList!,
-           destination:widget.destination,
-           homePhone:widget.homePhone,
-           shipper:widget.shipper,
-           studentId: widget.studentId == 0 ? int.parse(userId ): widget.studentId,
-            amount: double.parse(widget.amount),
-            totalAmount: double.parse(widget.amountToPay),
-            productType: widget.productId, //widget.dataList![widget.productIndex!].id!,
-            productId: widget.productId,
-            balance: double.parse(widget.availableBalance),
-            phoneNumber: widget.contactModel.phoneNumber!,
-            charge: double.parse(widget.serviceCharge),
-            );
-
-        showCustomSnackBarHelper('${'payment_successfully'.tr}!', isError: false);
-      }
-    } catch (e) {
-      print('Error processing successful payment: $e');
-      showCustomSnackBarHelper(
-        'payment_verification_failed'.tr,
-        isError: true,
+      // Process successful payment
+      final transaction = await widget.transactionMoneyController.sendMoney(
+        contactModel: widget.contactModel,
+        amount: amount,
+        purpose: widget.purpose,
+        pinCode: widget.pinCode,
+        onSuggest: () => widget.contactController.addToSuggestContact(
+          widget.contactModel,
+          type: SuggestType.sendMoney,
+        ),
       );
+
+      widget.transactionId = transaction.body['transaction_id'];
+
+      await widget.transactionMoneyController.makePayment(
+        payment_method: _selectedMethod == 0 
+            ? 'mobile_money'.tr 
+            : _selectedMethod == 1 
+                ? 'card'.tr 
+                : _selectedMethod == 2 
+                    ? 'bank'.tr 
+                    : 'no_method'.tr,
+        payment_media: _selectedMobileProvider == 0 
+            ? 'MTN' 
+            : _selectedMobileProvider == 1 
+                ? 'Airtel' 
+                : _selectedBankProvider == 0 
+                    ? 'BK' 
+                    : 'no_bank'.tr,
+        payment_phone: _phoneController.text,
+        parent_id: userId!,
+        product_name: widget.edubox_service,
+        sv_product_list: widget.svProductList!,
+        destination: widget.destination,
+        homePhone: widget.homePhone,
+        shipper: widget.shipper,
+        studentId: widget.studentId == 0 ? int.parse(userId) : widget.studentId,
+        amount: amount,
+        totalAmount: totalAmount,
+        productType: widget.productId,
+        productId: widget.productId,
+        balance: balance,
+        phoneNumber: widget.contactModel.phoneNumber!,
+        charge: charge,
+      );
+
+      showCustomSnackBarHelper('${'payment_successfully'.tr}!', isError: false);
     }
+  } catch (e) {
+    print('Error processing successful payment: $e');
+    showCustomSnackBarHelper(
+      'payment_verification_failed'.tr,
+      isError: true,
+    );
   }
+}
+
+// Helper method to safely parse doubles
+double _parseDouble(String value) {
+  try {
+    return double.parse(value.replaceAll(RegExp(r'[^0-9.]'), ''));
+  } catch (e) {
+    print('Failed to parse double from: $value');
+    return 0.0; // or throw an exception if you prefer
+  }
+}
 
   Widget _buildPaymentMethodSelector() {
     return Row(

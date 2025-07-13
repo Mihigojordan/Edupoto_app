@@ -182,7 +182,7 @@ class _TransactionConfirmationScreenState
             balance: double.parse('${widget.availableBalance}'))
         .toStringAsFixed(2);
     int randomNumber = random.nextInt(90000000) + 10000000;
-    ;
+   final student =widget.studentController!.studentList![widget.studentIndex!];
 
     //   bottomSliderController.setIsPinCompleted(isCompleted: false, isNotify: false);
 
@@ -269,7 +269,7 @@ class _TransactionConfirmationScreenState
                               //   productName:
                               //       widget.edubox_service ?? 'Unknown Service',
                               // ),
-                              title: 'SCHOOL',
+                              title: 'school_cap'.tr,
                               iconData: Icons.arrow_forward_outlined,
                             )
                           : (widget.studentController!.studentList == null ||
@@ -303,7 +303,7 @@ class _TransactionConfirmationScreenState
                                       itemLists: widget
                                           .studentController!.studentList!,
                                       title:
-                                          '${'code'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].code!}\n${'name'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].name} ${'class'.tr}:${widget.studentController!.studentList![widget.studentIndex!].studentClass}',
+                                          '${'code'.tr}: ${student.code!}\n${'name'.tr}: ${student.name} ${'class'.tr}:${student.studentClass} ${'school'.tr}:${student.studentClass}',
                                       isExpanded: true,
                                     ),
                                     sizedBox05h,
@@ -313,14 +313,14 @@ class _TransactionConfirmationScreenState
                                         DefaultButtonWidth(
                                             onPress: () => _captureInformation(
                                                 context,
-                                                schoolName:
-                                                    widget.studentSchool!,
+                                                schoolName:student.school!,
                                                 randomNumber: randomNumber,
-                                                className: widget.studentClass!,
+                                                className: student.studentClass!,
+                                                studentInfo:'${'student_name'.tr}: ${student.name} ${'code'.tr}: ${student.code}',
                                                 totalAmount: totalAmount,
                                                 productName:
                                                     widget.serviceValue!,
-                                                orderId: '21323443421',
+                                                orderId: randomNumber.toString(),
                                                 vat: vat,
                                                 convenienceFee: convenienceFee),
                                             title: 'next'.tr,
@@ -339,7 +339,7 @@ class _TransactionConfirmationScreenState
                               color1: kamber300Color,
                               color2: kyellowColor,
                               onPress: () => homeDeliveryAction(),
-                              title: 'HOME',
+                              title: 'home_cap'.tr,
                               iconData: Icons.arrow_forward_outlined,
                             )
                           : DeliveryMapScreen(
@@ -551,7 +551,9 @@ class _TransactionConfirmationScreenState
       required String productName,
       required String orderId,
       required double vat,
-      required double convenienceFee}) {
+      required double convenienceFee,
+      required String studentInfo
+      }) {
     showDialog(
       context: context,
       builder: (context) {
@@ -564,6 +566,7 @@ class _TransactionConfirmationScreenState
               Text('${'your_school_materials_will_be_delivered_at'.tr};'),
               Text('${'school_name'.tr}: $schoolName'),
               Text('${'class'.tr}: $className'),
+              Text(studentInfo),
               Text('${'customer_product'.tr}: $productName'),
               Text('${'order_id'.tr}: $orderId'),
             ],
@@ -614,9 +617,9 @@ class _TransactionConfirmationScreenState
                             studentName: widget.studentName!,
                             homePhone: '',
                             destination: '',
-                            randomNumber: 00000000,
+                            randomNumber: randomNumber,
                             studentId: widget.studentId ?? 0,
-                            amount: inputBalance.toString(),
+                            amount: totalAmount.toString(),
                             availableBalance:
                                 availableBalance.toStringAsFixed(2),
                             contactModel: widget.contactModel ??

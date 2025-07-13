@@ -338,6 +338,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                   // ************************ Payment Method*******************/
 
                                   PaymentMethodSelector(
+                                    vat: widget.vat!,
                                     shopList: widget.selectedProducts.entries
                                         .map((entry) {
                                       final product = entry.key;

@@ -4,6 +4,7 @@ import 'package:hosomobile/features/school/widgets/school_list_shimmer_widget.da
 import 'package:hosomobile/features/shop/controller/shop_controller.dart';
 import 'package:hosomobile/features/shop/domain/data/categories.dart';
 import 'package:hosomobile/features/shop/domain/data/product_lists.dart';
+import 'package:hosomobile/features/shop/domain/models/attribute_model.dart';
 import 'package:hosomobile/features/shop/domain/models/brand_model.dart';
 import 'package:hosomobile/features/shop/domain/models/category_model.dart';
 import 'package:hosomobile/features/shop/domain/models/company_category.dart';
@@ -44,28 +45,36 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         Company(
           name: 'stationery'.tr,
           logo: 'assets/image/stationery.png',
-          categories: stationery.map((category) => CompanyCategory(
-            name: category['name'],
-            logo: category['logo'],
-            products: (category['products'] as List).map((product) => Products(
-              name: product['name'],
-              image: product['image'],
-              price: product['price'],
-            )).toList(),
-          )).toList(),
+          categories: stationery
+              .map((category) => CompanyCategory(
+                    name: category['name'],
+                    logo: category['logo'],
+                    products: (category['products'] as List)
+                        .map((product) => Products(
+                              name: product['name'],
+                              image: product['image'],
+                              price: product['price'],
+                            ))
+                        .toList(),
+                  ))
+              .toList(),
         ),
         Company(
           name: 'books'.tr,
           logo: 'assets/image/book.png',
-          categories: stationery.map((category) => CompanyCategory(
-            name: category['name'],
-            logo: category['logo'],
-            products: (category['products'] as List).map((product) => Products(
-              name: product['name'],
-              image: product['image'],
-              price: product['price'],
-            )).toList(),
-          )).toList(),
+          categories: stationery
+              .map((category) => CompanyCategory(
+                    name: category['name'],
+                    logo: category['logo'],
+                    products: (category['products'] as List)
+                        .map((product) => Products(
+                              name: product['name'],
+                              image: product['image'],
+                              price: product['price'],
+                            ))
+                        .toList(),
+                  ))
+              .toList(),
         ),
       ],
     ),
@@ -75,54 +84,70 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         Company(
           name: 'stationery'.tr,
           logo: 'assets/image/stationery.png',
-          categories: stationery.map((category) => CompanyCategory(
-            name: category['name'],
-            logo: category['logo'],
-            products: (category['products'] as List).map((product) => Products(
-              name: product['name'],
-              image: product['image'],
-              price: product['price'],
-            )).toList(),
-          )).toList(),
+          categories: stationery
+              .map((category) => CompanyCategory(
+                    name: category['name'],
+                    logo: category['logo'],
+                    products: (category['products'] as List)
+                        .map((product) => Products(
+                              name: product['name'],
+                              image: product['image'],
+                              price: product['price'],
+                            ))
+                        .toList(),
+                  ))
+              .toList(),
         ),
         Company(
           name: 'class_kit'.tr,
           logo: 'assets/image/Button01.png',
-          categories: stationery.map((category) => CompanyCategory(
-            name: category['name'],
-            logo: category['logo'],
-            products: (category['products'] as List).map((product) => Products(
-              name: product['name'],
-              image: product['image'],
-              price: product['price'],
-            )).toList(),
-          )).toList(),
+          categories: stationery
+              .map((category) => CompanyCategory(
+                    name: category['name'],
+                    logo: category['logo'],
+                    products: (category['products'] as List)
+                        .map((product) => Products(
+                              name: product['name'],
+                              image: product['image'],
+                              price: product['price'],
+                            ))
+                        .toList(),
+                  ))
+              .toList(),
         ),
         Company(
           name: 'school_shoes'.tr,
           logo: 'assets/image/shoebox.png',
-          categories: stationery.map((category) => CompanyCategory(
-            name: category['name'],
-            logo: category['logo'],
-            products: (category['products'] as List).map((product) => Products(
-              name: product['name'],
-              image: product['image'],
-              price: product['price'],
-            )).toList(),
-          )).toList(),
+          categories: stationery
+              .map((category) => CompanyCategory(
+                    name: category['name'],
+                    logo: category['logo'],
+                    products: (category['products'] as List)
+                        .map((product) => Products(
+                              name: product['name'],
+                              image: product['image'],
+                              price: product['price'],
+                            ))
+                        .toList(),
+                  ))
+              .toList(),
         ),
         Company(
           name: 'dormitory_essentials'.tr,
           logo: 'assets/image/dormitory.png',
-          categories: stationery.map((category) => CompanyCategory(
-            name: category['name'],
-            logo: category['logo'],
-            products: (category['products'] as List).map((product) => Products(
-              name: product['name'],
-              image: product['image'],
-              price: product['price'],
-            )).toList(),
-          )).toList(),
+          categories: stationery
+              .map((category) => CompanyCategory(
+                    name: category['name'],
+                    logo: category['logo'],
+                    products: (category['products'] as List)
+                        .map((product) => Products(
+                              name: product['name'],
+                              image: product['image'],
+                              price: product['price'],
+                            ))
+                        .toList(),
+                  ))
+              .toList(),
         ),
       ],
     ),
@@ -133,12 +158,26 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     super.initState();
     _cart = {};
     _idController = TextEditingController();
-     
     _passwordController = TextEditingController();
+
+    // Initialize selection when data is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final shopController = Get.find<ShopController>();
+        final filteredTypes = _getFilteredCompanyTypes(shopController);
+        if (filteredTypes.isNotEmpty) {
+          setState(() {
+            _selectedTypeIndex = 0; // Select first attribute by default
+            _selectedCompanyIndex = 0;
+            _selectedCategoryIndex = 0;
+          });
+        }
+      }
+    });
+
     if (widget.isOffer == true) {
       WidgetsBinding.instance.addPostFrameCallback((_) {});
     }
-
   }
 
   @override
@@ -148,14 +187,11 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final currentType = companyTypes[_selectedTypeIndex];
     final currentCompany = currentType.companies[_selectedCompanyIndex];
     final currentCategory = currentCompany.categories[_selectedCategoryIndex];
-   
 
     return Scaffold(
       appBar: AppBar(
@@ -198,83 +234,89 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           ),
         ],
       ),
-      body: GetBuilder<ShopController>(
-        builder: (shopController) {
-          
-      shopController.addListener(() {
-    if (mounted && shopController.categoryList != null) {
-      setState(() {
-        _selectedCategoryIndex = 0; // Reset to first category
-      });
-    }
-  });
+      body: GetBuilder<ShopController>(builder: (shopController) {
+        shopController.addListener(() {
+          if (mounted && shopController.categoryList != null) {
+            setState(() {
+              _selectedCategoryIndex = 0; // Reset to first category
+            });
+          }
+        });
 
-    return shopController.isLoading?const Center(child: ShopShimmerWidget()):
-    Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: '${'search_products'.tr}...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                filled: true,
-                fillColor: Colors.grey[100],
-              ),
-              onChanged: (value) => setState(() => _searchQuery = value),
-            ),
-          ),
-          // Company Type Navigation
-          CompanyTypeNavigationBar(
-            companyTypes: companyTypes,
-            selectedIndex: _selectedTypeIndex,
-            onTap: (index) {
-              setState(() {
-                _selectedTypeIndex = index;
-                _selectedCompanyIndex = 0;
-                _selectedCategoryIndex = 0;
-              });
-            },
-          ),
-          // Company Navigation
- CompanyNavigationBar(
-  companies: [BrandModel(name: 'all'.tr, id: 0)] + (shopController.brandList ?? []),
-  selectedIndex: _selectedCompanyIndex,
-  onTap: (index) => setState(() {
-    _selectedCompanyIndex = index;
-    _selectedCategoryIndex = 0; // Reset category when brand changes
-  }),
-),
- Expanded(
-  child: Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      // Sidebar with categories - only show if categories exist
-     if (shopController.categoryList != null && shopController.categoryList!.isNotEmpty)
-        CompanySideBar(
-          categoryList: _getFilteredCategories(shopController),
-          selectedIndex: _selectedCategoryIndex,
-          onTap: (index) {
-            if (index >= 0 && index < _getFilteredCategories(shopController).length) {
-              setState(() => _selectedCategoryIndex = index);
-            }
-          },
-        ),
-      // Products
-      Expanded(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: _buildProductView(shopController),
-        ),
-      ),
-    ],
-  ),
-),
-        ],
-      );}),
+        return shopController.isLoading
+            ? const Center(child: ShopShimmerWidget())
+            : Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: '${'search_products'.tr}...',
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                      ),
+                      onChanged: (value) =>
+                          setState(() => _searchQuery = value),
+                    ),
+                  ),
+                  // Company Type Navigation
+                  CompanyTypeNavigationBar(
+                    companyTypes: _getFilteredCompanyTypes(shopController),
+                    selectedIndex: _selectedTypeIndex,
+                    onTap: (index) {
+                      setState(() {
+                        _selectedTypeIndex = index;
+                        _selectedCompanyIndex = 0; // Reset brand selection
+                        _selectedCategoryIndex = 0; // Reset category selection
+                      });
+                    },
+                  ),
+                  // Company Navigation
+                  CompanyNavigationBar(
+                    companies: _getFilteredBrands(shopController),
+                    selectedIndex: _selectedCompanyIndex,
+                    onTap: (index) => setState(() {
+                      _selectedCompanyIndex = index;
+                      _selectedCategoryIndex = 0;
+                    }),
+                  ),
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Sidebar with categories - only show if categories exist
+                        if (shopController.categoryList != null &&
+                            shopController.categoryList!.isNotEmpty)
+                          CompanySideBar(
+                            categoryList:
+                                _getFilteredCategories(shopController),
+                            selectedIndex: _selectedCategoryIndex,
+                            onTap: (index) {
+                              if (index >= 0 &&
+                                  index <
+                                      _getFilteredCategories(shopController)
+                                          .length) {
+                                setState(() => _selectedCategoryIndex = index);
+                              }
+                            },
+                          ),
+                        // Products
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: _buildProductView(shopController),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+      }),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.amber,
         onPressed: _showCart,
@@ -311,7 +353,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     );
   }
 
-    void _addToCart(Product product, int quantity) {
+  void _addToCart(Product product, int quantity) {
     setState(() {
       _cart[product] = (_cart[product] ?? 0) + quantity;
     });
@@ -367,114 +409,218 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   //       .toList();
   // }
 
-List<Product> _filterProductsByCategory(List<Product> products, int categoryId) {
-  if (products.isEmpty || categoryId == 0) return products; // 0 means "All Categories"
-  
-  return products.where((product) {
-    return product.categories != null && 
-           product.categories!.isNotEmpty &&
-           product.categories!.any((category) => category.id == categoryId);
-  }).toList();
-}
+  List<Product> _filterProductsByCategory(
+      List<Product> products, int categoryId) {
+    if (products.isEmpty || categoryId == 0)
+      return products; // 0 means "All Categories"
 
-List<WooCategory> _getFilteredCategories(ShopController shopController) {
-  if (shopController.shopList == null || 
-      shopController.brandList == null || 
-      shopController.categoryList == null) {
-    return [];
-  }
-
-  // If "All Brands" is selected, show all categories
-  if (_selectedCompanyIndex == 0) {
-    return [WooCategory(name: 'all'.tr, id: 0)] + shopController.categoryList!;
-  }
-
-  final selectedBrandId = shopController.brandList![_selectedCompanyIndex - 1].id;
-  
-  // Get all products for the selected brand
-  final brandProducts = shopController.shopList!.where((product) {
-    return product.brands != null && 
-           product.brands!.isNotEmpty &&
-           product.brands!.any((brand) => brand.id == selectedBrandId);
-  }).toList();
-
-  // Get category IDs from these products
-  final categoryIds = brandProducts.expand((product) {
-    return product.categories?.map((category) => category.id) ?? <int>[];
-  }).toSet();
-
-  // Filter categories to only those that appear in the brand's products
-  final filteredCategories = shopController.categoryList!.where((category) {
-    return categoryIds.contains(category.id);
-  }).toList();
-
-  return [WooCategory(name: 'all'.tr, id: 0)] + filteredCategories;
-}
-
-List<Product> _filterProductsByBrand(List<Product> products, int brandId) {
-  if (products.isEmpty || brandId == 0) return products; // 0 means "All Brands"
-  
-  return products.where((product) {
-    print('8888888888888888888888888 ${product.brands}');
-    return product.brands != null && 
-           product.brands!.isNotEmpty &&
-           product.brands!.any((brand) => brand.id == brandId);
-
-  }).toList();
-}
-
-Widget _buildProductView(ShopController shopController) {
-  if (shopController.brandList == null || 
-      shopController.shopList == null) {
-    return const Center(child: CircularProgressIndicator());
-  }
-
-  List<Product> filteredProducts = shopController.shopList!;
-
-  // Apply brand filter if a brand is selected
-  if (_selectedCompanyIndex > 0) {
-    final selectedBrandId = shopController.brandList![_selectedCompanyIndex - 1].id;
-    filteredProducts = filteredProducts.where((product) {
-      return product.brands != null && 
-             product.brands!.isNotEmpty &&
-             product.brands!.any((brand) => brand.id == selectedBrandId);
+    return products.where((product) {
+      return product.categories != null &&
+          product.categories!.isNotEmpty &&
+          product.categories!.any((category) => category.id == categoryId);
     }).toList();
   }
 
-  // Apply category filter if a category is selected
-  if (_selectedCategoryIndex > 0) {
-    final filteredCategories = _getFilteredCategories(shopController);
-    if (_selectedCategoryIndex < filteredCategories.length) {
-      final selectedCategoryId = filteredCategories[_selectedCategoryIndex].id;
+  List<WooCategory> _getFilteredCategories(ShopController shopController) {
+    if (shopController.categoryList == null) {
+      return [];
+    }
+
+    // If no specific attribute is selected, show all categories
+    final filteredCompanyTypes = _getFilteredCompanyTypes(shopController);
+    if (_selectedTypeIndex < 0 ||
+        _selectedTypeIndex >= filteredCompanyTypes.length) {
+      return [WooCategory(name: 'all'.tr, id: 0)] +
+          shopController.categoryList!;
+    }
+
+    // Otherwise, show categories related to the selected attribute
+    final selectedAttributeId = filteredCompanyTypes[_selectedTypeIndex].id;
+
+    // Get products for the selected attribute
+    final attributeProducts = shopController.shopList!.where((product) {
+      return product.attributes != null &&
+          product.attributes!.isNotEmpty &&
+          product.attributes!.any((attr) => attr.id == selectedAttributeId);
+    }).toList();
+
+    // Get category IDs from these products
+    final categoryIds = attributeProducts.expand((product) {
+      return product.categories?.map((category) => category.id) ?? <int>[];
+    }).toSet();
+
+    // Return all categories that appear in these products
+    return [WooCategory(name: 'all'.tr, id: 0)] +
+        shopController.categoryList!.where((category) {
+          return categoryIds.contains(category.id);
+        }).toList();
+  }
+
+  List<Product> _filterProductsByBrand(List<Product> products, int brandId) {
+    if (products.isEmpty || brandId == 0)
+      return products; // 0 means "All Brands"
+
+    return products.where((product) {
+      print('8888888888888888888888888 ${product.brands}');
+      return product.brands != null &&
+          product.brands!.isNotEmpty &&
+          product.brands!.any((brand) => brand.id == brandId);
+    }).toList();
+  }
+
+  List<BrandModel> _getFilteredBrands(ShopController shopController) {
+    if (shopController.shopList == null || shopController.brandList == null) {
+      return [];
+    }
+
+    final filteredCompanyTypes = _getFilteredCompanyTypes(shopController);
+    if (filteredCompanyTypes.isEmpty ||
+        _selectedTypeIndex >= filteredCompanyTypes.length) {
+      return [];
+    }
+
+    final selectedAttributeId = filteredCompanyTypes[_selectedTypeIndex].id;
+
+    // Get all products for the selected attribute
+    final attributeProducts = shopController.shopList!.where((product) {
+      return product.attributes != null &&
+          product.attributes!.isNotEmpty &&
+          product.attributes!.any((attr) => attr.id == selectedAttributeId);
+    }).toList();
+
+    // Get brand IDs from these products
+    final brandIds = attributeProducts.expand((product) {
+      return product.brands?.map((brand) => brand.id) ?? <int>[];
+    }).toSet();
+
+    // Filter brands to only those that appear in the attribute's products
+    return [BrandModel(name: 'all'.tr, id: 0)] +
+        shopController.brandList!.where((brand) {
+          return brandIds.contains(brand.id);
+        }).toList();
+  }
+
+  List<AttributeModel> _getFilteredCompanyTypes(ShopController shopController) {
+    if (shopController.shopList == null ||
+        shopController.attributeList == null) {
+      return [];
+    }
+
+    // Get all unique company type IDs from products
+    final companyTypeIds = <int>{};
+    for (final product in shopController.shopList!) {
+      if (product.attributes != null) {
+        for (final attribute in product.attributes!) {
+          companyTypeIds.add(attribute.id);
+        }
+      }
+    }
+
+    // Filter attributes that exist in products
+    final availableAttributes = shopController.attributeList!
+        .where((companyType) => companyTypeIds.contains(companyType.id))
+        .toList();
+
+    // Define the preferred order of attribute names
+    const preferredOrder = [
+      'Stationery',
+      'Text Books',
+      'Dormitory Essentials',
+      'Gadgets'
+    ];
+
+    // Separate attributes into preferred and others
+    final preferredAttributes = <AttributeModel>[];
+    final otherAttributes = <AttributeModel>[];
+
+    for (final attribute in availableAttributes) {
+      if (preferredOrder.contains(attribute.name)) {
+        preferredAttributes.add(attribute);
+      } else {
+        otherAttributes.add(attribute);
+      }
+    }
+
+    // Sort preferred attributes according to our preferred order
+    preferredAttributes.sort((a, b) {
+      return preferredOrder
+          .indexOf(a.name)
+          .compareTo(preferredOrder.indexOf(b.name));
+    });
+
+    // Combine them (preferred first, then others)
+    return [...preferredAttributes, ...otherAttributes];
+  }
+
+  Widget _buildProductView(ShopController shopController) {
+    if (shopController.shopList == null ||
+        shopController.categoryList == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    List<Product> filteredProducts = shopController.shopList!;
+
+    // Apply attribute filter if an attribute is selected
+    final filteredCompanyTypes = _getFilteredCompanyTypes(shopController);
+    if (_selectedTypeIndex >= 0 &&
+        _selectedTypeIndex < filteredCompanyTypes.length) {
+      final selectedAttributeId = filteredCompanyTypes[_selectedTypeIndex].id;
       filteredProducts = filteredProducts.where((product) {
-        return product.categories != null && 
-               product.categories!.isNotEmpty &&
-               product.categories!.any((category) => category.id == selectedCategoryId);
+        return product.attributes != null &&
+            product.attributes!.isNotEmpty &&
+            product.attributes!.any((attr) => attr.id == selectedAttributeId);
       }).toList();
     }
-  }
 
-  if (filteredProducts.isEmpty) {
-    return Center(child: Text('no_products_found'.tr));
-  }
+    // Apply category filter only if a specific category is selected (not "All")
+    if (_selectedCategoryIndex > 0) {
+      final filteredCategories = _getFilteredCategories(shopController);
+      if (_selectedCategoryIndex < filteredCategories.length) {
+        final selectedCategoryId =
+            filteredCategories[_selectedCategoryIndex].id;
+        filteredProducts = filteredProducts.where((product) {
+          return product.categories != null &&
+              product.categories!.isNotEmpty &&
+              product.categories!
+                  .any((category) => category.id == selectedCategoryId);
+        }).toList();
+      }
+    }
 
-  return _isGridView
-      ? ProductGrid(
-          products: filteredProducts,
-          onAddToCart: _addToCart,
-          cart: _cart,
-        )
-      : ProductList(
-          products: filteredProducts,
-          onAddToCart: _addToCart,
-          cart: _cart,
-        );
-}
+    // Apply brand filter if a brand is selected
+    if (_selectedCompanyIndex > 0) {
+      final filteredBrands = _getFilteredBrands(shopController);
+      if (_selectedCompanyIndex < filteredBrands.length) {
+        final selectedBrandId = filteredBrands[_selectedCompanyIndex].id;
+        filteredProducts = filteredProducts.where((product) {
+          return product.brands != null &&
+              product.brands!.isNotEmpty &&
+              product.brands!.any((brand) => brand.id == selectedBrandId);
+        }).toList();
+      }
+    }
+
+    if (filteredProducts.isEmpty) {
+      return Center(child: Text('no_products_found'.tr));
+    }
+
+    return _isGridView
+        ? ProductGrid(
+            products: filteredProducts,
+            onAddToCart: _addToCart,
+            cart: _cart,
+          )
+        : ProductList(
+            products: filteredProducts,
+            onAddToCart: _addToCart,
+            cart: _cart,
+          );
+  }
 
 // Widget _buildProductView(ShopController shopController) {
 //   // Check if data exists
-//   if (shopController.brandList == null || 
-//       shopController.categoryList == null || 
+//   if (shopController.brandList == null ||
+//       shopController.categoryList == null ||
 //       shopController.shopList == null) {
 //     return const Center(child: CircularProgressIndicator());
 //   }
@@ -516,5 +662,4 @@ Widget _buildProductView(ShopController shopController) {
 //           cart: _cart,
 //         );
 // }
-
 }

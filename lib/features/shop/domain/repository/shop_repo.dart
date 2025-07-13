@@ -19,4 +19,8 @@ class ShopRepo{
  Future<Response> getBrandListApi() async {
     return await apiClient.getProductGroupData(AppConstants.getBrand);
   }
+
+   Future<Response> getAttributeListApi() async {
+    return await apiClient.getProductGroupData(AppConstants.getAttribute);
+  }
 }

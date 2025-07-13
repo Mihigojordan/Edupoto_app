@@ -414,7 +414,7 @@
   "home_cap": "HOME",
   "amount_to_be_paid": "Amount to be paid",
   "now_paying": "Now Paying",
-  "vat": "VAT",
+  "vat": "V.A.T",
   "convenience_fee": "Convenience Fee",
   "total_amount_paid_now": "Total Amount Paid Now",
   "remaining_amount_to_be_paid": "Remaining amount to be paid",
@@ -588,14 +588,28 @@
   "no_category": "No Category",
   "no_products_found": "No product found",
   "product_details": "Product Details",
-
   "leviticus_shop": "Leviticus Shop",
-  "product_delivery_description": "Product delivery description",
-  "describe_in_200_characters_or_less":"Describe in 200 characters or less",
+  "product_delivery_description": "Delivery additional information",
+  "describe_in_200_characters_or_less": "Describe in 200 characters or less",
   "short_description": "Short Description",
-  "enter_a_brief_description":"Enter a brief description",
+  "enter_a_brief_description": "Enter a brief description",
   "please_enter_a_description": "Please Enter a description",
   "description_too_long": "Description too long",
-  "characters": "Characters"
+  "characters": "Characters",
+  "no_company_types_available": "Products will be available soon",
+  "no_categories": "Categories will be available soon",
+  "student_name": "Student Name",
+  "insufficient_balance_or_transaction_decline": "Insufficient Balance or Transaction declined",
 
+  "the_minimum_amount_to_pay_start_from":"The minimum amount to pay start from (100 RWF) and above",
+  "thank_you_for_choosing": "Thank you  for choosing",
+  "your_payment_has_completed": "You are payment has completed",
+  "you_have_exceeded_balance_to_be_paid_of": "You have exceeded the balance to be paid of",
+  "payment_info": "Payment info",
+  "please_enter_an_amount": "Please enter an amount",
+  "please_enter_a_valid_number":"Please enter a valid number",
+  "amount_must_be_greater_than_zero":"Amount must be greater than zero",
+
+  "inclusive":"Inclusive",
+  "you_have_paid_for": "You have paid for"
 }

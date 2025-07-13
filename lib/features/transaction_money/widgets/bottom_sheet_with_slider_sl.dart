@@ -318,6 +318,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                   // ************************ Payment Method*******************/
 
                                   PaymentMethodSelector(
+                                    vat: widget.vat!,
                                     productList: widget.dataList??[],
                                     productName:widget.edubox_service??'no product found',
                                     shipper:widget.shipper,

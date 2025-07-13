@@ -67,6 +67,7 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
   Map<int, double> caseTotals = {}; // Map to store totals for each case
 
   WidgetDialog dialog = WidgetDialog();
+  TextEditingController inputBalanceController =TextEditingController();
 
   @override
   void initState() {
@@ -352,7 +353,7 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               homePhone:widget.homePhone,
               destination:widget.destination,
               studentId: widget.studentId!,
-              inputBalance: schoolList.isNotEmpty ? totalPrice : 0,
+              inputBalance: -1,
               productId: schoolListIndex,
               isChecked: isChecked,
               schoolId: widget.schoolId!,
@@ -387,6 +388,7 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
               ),
         DefaultButtonWidth(
                 onPress: () => showDepositDialog(
+                  inputBalanceController: inputBalanceController,
     context: context,
     title: '${'how_much_would_you_like_to_deposit'.tr}? $schoolListModel',
     onDeposit: (amount) {
@@ -412,7 +414,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               homePhone:widget.homePhone,
               destination:widget.destination,
               studentId: widget.studentId!,
-              inputBalance: schoolList.isNotEmpty ? amount : 0,
+              inputBalance:inputBalanceController.text==''?amount: double.parse(inputBalanceController.text),
               productId: schoolListIndex,
               isChecked: isChecked,
               schoolId: widget.schoolId!,
@@ -464,7 +466,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               homePhone:widget.homePhone,
               shipper:widget.shipper,
               destination:widget.destination,
-              inputBalance: schoolList.isNotEmpty ? totalPrice : 0,
+              inputBalance:-1,
               productId: schoolListIndex,
               isChecked: isChecked,
               schoolId: widget.schoolId!,
@@ -520,7 +522,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
                 onPress: () =>Get.to(
             () =>  PaidAtSchoolTransactionConfirmationScreen(
              studentId: widget.studentId!,
-              inputBalance: schoolList.isNotEmpty ? schoolList[0].amount : 0,
+              inputBalance: -1,
               productId: schoolListIndex,
               isChecked: isChecked,
               schoolId: widget.schoolId,
@@ -590,7 +592,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               shipper: widget.shipper,
               homePhone:widget.homePhone,
               destination:widget.destination,
-              inputBalance: schoolList.isNotEmpty ? totalPrice : 0,
+              inputBalance:-1,
               productId: schoolListIndex,
               isChecked: isChecked,
               schoolId: widget.schoolId!,
@@ -628,6 +630,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
         DefaultButtonWidth(
 
                 onPress: () {  showDepositDialog(
+                  inputBalanceController: inputBalanceController,
     context: context,
     title: '${'how_much_would_you_like_to_deposit'.tr}?$schoolListModel',
     onDeposit: (amount) {
@@ -653,7 +656,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
               shipper: widget.shipper,
               homePhone:widget.homePhone,
               destination:widget.destination,
-              inputBalance: schoolList.isNotEmpty ?amount : 0,
+              inputBalance: inputBalanceController.text==''? amount:double.parse(inputBalanceController.text),
               productId: schoolListIndex,
               isChecked: isChecked,
               schoolId: widget.schoolId!,
