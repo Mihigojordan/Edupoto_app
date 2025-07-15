@@ -284,6 +284,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       _selectedCategoryIndex = 0;
                     }),
                   ),
+                  // Text('data ${shopController.orderList}'),
                   Expanded(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,

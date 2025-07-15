@@ -161,7 +161,15 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderPS> {
                                 top: Dimensions.paddingSizeSmall,
                                 right: 8.0,
                                 child: GestureDetector(
-                                    onTap: () => Get.back(),
+                                    onTap: (){
+                                                                     if (!kIsWeb) {
+                                  Get.find<BottomSliderController>()
+                                      .goBackButton();
+                                } else {
+                                    Get.find<BottomSliderController>()
+                                      .goBackButton();
+                                }
+                                    },
                                     child: Container(
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(

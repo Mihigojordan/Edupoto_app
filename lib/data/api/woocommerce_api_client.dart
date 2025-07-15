@@ -17,13 +17,15 @@ final String noInternetMessage = 'Connection to API server failed due to interne
   String uriProduct = AppConstants.getProduct;
  
 
-   final _mainHeaders = {
-      'Content-Type': 'application/json; charset=UTF-8',
-      
-    };
+  final _mainHeaders = {
+  'Content-Type': 'application/json; charset=UTF-8',
+  'Authorization': 'Basic ${base64Encode(utf8.encode('ck_95f230563c385db7997787993ee551e5277e8882:cs_a30eba5947a51bd86d24770bd91390c893130ff2'))}',
+};
 
 Map<String,dynamic>? queryString;
 Map<String,dynamic>? queryCategoryString;
+Map<String,dynamic>? queryOrderString;
+Map<String,dynamic>? queryCustomerString;
 
 
 WoocommerceApiClient(){
@@ -56,6 +58,19 @@ queryCategoryString = {
   "per_page": "100"
 };
 
+queryOrderString = {
+  "consumer_key": consumerKey,
+  "consumer_secret": consumerSecret,
+  "_fields[]":['id','status','currency','prices_include_tax','date_created','date_modified','discount_total','discount_tax','shipping_total','shipping_tax','total','total_tax','cart_tax','customer_id','order_key','billing','shipping','payment_method','payment_method_title','transaction_id','customer_note','date_completed','date_paid','cart_hash','number','line_items',],
+  "per_page": "100"
+};
+
+queryCustomerString={
+    "consumer_key": consumerKey,
+  "consumer_secret": consumerSecret,
+  "_fields[]":['id','status','currency','prices_include_tax','date_created','date_modified','discount_total','discount_tax','shipping_total','shipping_tax','total','total_tax','cart_tax','customer_id','order_key','billing','shipping','payment_method','payment_method_title','transaction_id','customer_note','date_completed','date_paid','cart_hash','number','line_items',],
+  "per_page": "100"
+};
 
 }
 
@@ -136,6 +151,87 @@ queryCategoryString = {
   } catch (e) {
     debugPrint('yyyyyyyyyyyyyyyyyyyyyyyyyyyyError occurred during API call: $e');
     return Response(statusCode: 1, statusText: noInternetMessage);
+  }
+}
+
+ Future<Response> getOrderData(String uri,{ Map<String, String>? headers}) async {
+  try {
+
+        if (!kIsWeb) {
+      // Check for VPN on non-web platforms
+      if (await ApiChecker.isVpnActive()) {
+        return const Response(statusCode: -1, statusText: 'You are using VPN');
+      }
+    }
+    final url = Uri.parse(appBaseUrlWoo+uri).replace(
+      queryParameters:queryOrderString
+    );
+
+    debugPrint('====> API Call: $url');
+
+    http.Response response = await http.get(
+      url,
+      headers: headers ?? _mainHeaders,
+    );
+
+    return handleResponse(response, uriProduct);
+  } catch (e) {
+    debugPrint('yyyyyyyyyyyyyyyyyyyyyyyyyyyyError occurred during API call: $e');
+    return Response(statusCode: 1, statusText: noInternetMessage);
+  }
+}
+
+ Future<Response> getCustomerData(String uri,{ Map<String, String>? headers}) async {
+  try {
+
+        if (!kIsWeb) {
+      // Check for VPN on non-web platforms
+      if (await ApiChecker.isVpnActive()) {
+        return const Response(statusCode: -1, statusText: 'You are using VPN');
+      }
+    }
+    final url = Uri.parse(appBaseUrlWoo+uri).replace(
+      queryParameters:queryCustomerString
+    );
+
+    debugPrint('====> API Call: $url');
+
+    http.Response response = await http.get(
+      url,
+      headers: headers ?? _mainHeaders,
+    );
+
+    return handleResponse(response, uriProduct);
+  } catch (e) {
+    debugPrint('Error occurred during API call: $e');
+    return Response(statusCode: 1, statusText: noInternetMessage);
+  }
+}
+
+ Future<Response> postData(String uri, dynamic body, {Map<String, String>? headers}) async {
+  if (!kIsWeb && await ApiChecker.isVpnActive()) {
+    return const Response(statusCode: -1, statusText: 'You are using VPN');
+  }
+
+  try {
+    debugPrint('🌍 Base URL: $appBaseUrlWoo');
+    debugPrint('📢 API Endpoint: $uri');
+    debugPrint('📩 Request Body: ${jsonEncode(body)}');
+
+    final response0 = await http.post(
+      Uri.parse(appBaseUrlWoo + uri),
+      body: jsonEncode(body),  // Ensure it's properly formatted JSON
+      headers: headers ?? _mainHeaders, // Use default headers
+    );
+
+    Response response = handleResponse(response0, uri);
+    
+    print("🔵 API Response: ${response.statusCode} | ${response.body}");
+
+    return response;
+  } catch (e) {
+    print("🚨 API Call Failed: $e"); // Ensure errors are logged
+    return const Response(statusCode: 1, statusText: 'No Internet Connection');
   }
 }
 

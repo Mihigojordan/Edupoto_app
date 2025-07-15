@@ -18,6 +18,7 @@ import 'package:hosomobile/features/home/screens/upgrades/home/components/image.
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/show_info_dialog.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/studentpoto_screen/components/shikabamba/widget/widget2/student_data.dart';
 import 'package:hosomobile/features/map/screens/map_screen.dart';
 import 'package:hosomobile/features/setting/controllers/profile_screen_controller.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
@@ -423,10 +424,26 @@ class _TransactionConfirmationScreenState
                             title: 'school_cap'.tr,
                             iconData: Icons.arrow_forward_outlined,
                           )
-                        : (studentController.studentList == null)
+                        : (studentController.studentList == null ||
+                                studentController.studentList!.isEmpty)
                             ?
                             // ************************DISPLAY FIELD FOR ENTERING STUDENT FOR ACCOMPLISH PAYMENT****************
                             DependentSchoolDropdowns(
+                              onInputStudent: ({required className, required schoolName, required studentCode, required studentName}) => _captureInformation(
+                                                context,
+                                                studentIndex:0, // Use first selected student
+                                                productIndex: productIndex,
+                                                schoolName: schoolName,
+                                                randomNumber: randomNumber,
+                                                className: className,
+                                                totalAmount: totalAmount,
+                                                orderId: '21323443421',
+                                                vat: vat,
+                                                convenienceFee: convenienceFee,
+                                                studentCode: studentCode,
+                                                studentName: studentName,
+                                                pinCode: _pinCodeFieldController.text
+                                              ),
                                 isShop: true,
                                 isNotRegStudent: true,
                                 parentId: randomNumber.toString(),
@@ -506,6 +523,7 @@ _captureInformation(
                                                 orderId: '21323443421',
                                                 vat: vat,
                                                 convenienceFee: convenienceFee,
+                                       pinCode: _pinCodeFieldController.text
                                               );
     }
                                           } ,
@@ -703,25 +721,40 @@ _captureInformation(
   required double vat,
   required double convenienceFee,
   required int studentIndex,
-  required StudentController studentController,
+  StudentController? studentController,
   required int productIndex,
+  String? studentName,
+  String? studentCode,
+ required String pinCode
+                                      
 }) {
   // Get the selected student
-  final selectedStudent = studentController.studentList![studentIndex];
 
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         title: Text('confirm'.tr),
-        content: Column(
+        content:(studentController==null || studentController.studentList==null||studentController.studentList!.isEmpty)? 
+           Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('${'your_school_materials_will_be_delivered_at'.tr};'),
-            Text('${'school_name'.tr}: ${selectedStudent.school}'),
-            Text('${'class'.tr}: ${selectedStudent.studentClass}'),
-            Text('${'student_name'.tr}: ${selectedStudent.name}'),
+            Text('${'school_name'.tr}: $schoolName'),
+            Text('${'class'.tr}: $className'),
+            Text('${'student_name'.tr}: $studentName ${'student_code'.tr}: $studentCode'),
+            Text('${'order_id'.tr}: $randomNumber'),
+          ],
+        ):
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${'your_school_materials_will_be_delivered_at'.tr};'),
+            Text('${'school_name'.tr}: ${studentController.studentList![studentIndex].school}'),
+            Text('${'class'.tr}: ${studentController.studentList![studentIndex].studentClass}'),
+            Text('${'student_name'.tr}: ${studentController.studentList![studentIndex].name}'),
             Text('${'order_id'.tr}: $randomNumber'),
           ],
         ),
@@ -739,7 +772,8 @@ _captureInformation(
                   .pinVerify(pin: _pinCodeFieldController.text)
                   .then((isCorrect) {
                 if (isCorrect) {
-                  if (configModel!.twoFactor! &&
+                 if (studentController==null || studentController.studentList==null||studentController.studentList!.isEmpty){
+          if (configModel!.twoFactor! &&
                       Get.find<ProfileController>().userInfo!.twoFactor!) {
                     // Handle OTP verification flow
                     Get.find<AuthController>()
@@ -747,25 +781,59 @@ _captureInformation(
                         .then((value) => value.isOk
                             ? _showOtpVerificationDialog(
                                 context,
-                                selectedStudent: selectedStudent,
+                                studentId: 0,
                                 randomNumber: randomNumber,
                                 productIndex: productIndex,
                                 vat: vat,
                                 totalAmount: totalAmount,
-                                convenienceFee: convenienceFee
+                                convenienceFee: convenienceFee,
+                                pinCode: pinCode
                               )
                             : null);
                   } else {
                     _showTransactionBottomSheet(
                       context,
-                      selectedStudent: selectedStudent,
+                      studentId: 0,
                       randomNumber: randomNumber,
                       productIndex: productIndex,
                       vat: vat,
                       convenienceFee: convenienceFee,
-                      totalAmount: totalAmount
+                      totalAmount: totalAmount,
+                      pinCode: pinCode
                     );
                   }
+                 }else{
+                            if (configModel!.twoFactor! &&
+                      Get.find<ProfileController>().userInfo!.twoFactor!) {
+                    // Handle OTP verification flow
+                    Get.find<AuthController>()
+                        .checkOtp()
+                        .then((value) => value.isOk
+                            ? _showOtpVerificationDialog(
+                                context,
+                                studentId: studentController.studentList![studentIndex].id!,
+                                randomNumber: randomNumber,
+                                productIndex: productIndex,
+                                vat: vat,
+                                totalAmount: totalAmount,
+                                convenienceFee: convenienceFee,
+                                pinCode: pinCode
+                              )
+                            : null);
+                  } else {
+                    _showTransactionBottomSheet(
+                      context,
+                      studentId: studentController.studentList![studentIndex].id!,
+                      randomNumber: randomNumber,
+                      productIndex: productIndex,
+                      vat: vat,
+                      convenienceFee: convenienceFee,
+                      totalAmount: totalAmount,
+                      pinCode: pinCode,
+                    );
+                  }
+                 }
+        
                 }
               });
           
@@ -781,12 +849,13 @@ _captureInformation(
 // Helper method for OTP verification dialog
 void _showOtpVerificationDialog(
   BuildContext context, {
-  required StudentModel selectedStudent,
+  required int studentId,
   required int randomNumber,
   required int productIndex,
   required double vat,
   required double convenienceFee,
-  required String totalAmount
+  required String totalAmount,
+  required String pinCode
 }) {
   Get.defaultDialog(
     barrierDismissible: false,
@@ -799,8 +868,9 @@ void _showOtpVerificationDialog(
               .then((value) {
             if (value.isOk) {
               _showTransactionBottomSheet(
+                pinCode: pinCode,
                 Get.context!,
-                selectedStudent: selectedStudent,
+                studentId: studentId,
                 randomNumber: randomNumber,
                 productIndex: productIndex,
                 vat: vat,
@@ -826,12 +896,13 @@ void _showOtpVerificationDialog(
 // Helper method for transaction bottom sheet
 void _showTransactionBottomSheet(
   BuildContext context, {
-  required StudentModel selectedStudent,
+  required int studentId,
   required int randomNumber,
   required int productIndex,
   required double vat,
   required double convenienceFee,
   required String totalAmount,
+  required String pinCode
 }) {
   showModalBottomSheet(
     isScrollControlled: true,
@@ -849,7 +920,7 @@ void _showTransactionBottomSheet(
       shipper: widget.shipper,
       homePhone: widget.homePhone,
       destination: widget.destination,
-      studentId: selectedStudent.id??0,
+      studentId: studentId,
       randomNumber: randomNumber,
       selectedProducts: widget.cart,
       quantity: widget.quantity,
@@ -858,7 +929,7 @@ void _showTransactionBottomSheet(
       availableBalance: '0.00',
       contactModel: widget.contactModel,
       contactModelMtn: widget.contactModelMtn,
-      pinCode: Get.find<BottomSliderController>().pin,
+      pinCode: pinCode,
       transactionType: widget.transactionType,
       purpose: widget.transactionType,
       product: widget.product,
@@ -870,6 +941,7 @@ void _showTransactionBottomSheet(
       serviceCharge: convenienceFee.toStringAsFixed(2),
       totalNowPaid:
           '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
+
     ),
   );
 }

@@ -182,7 +182,7 @@ class _TransactionConfirmationScreenState
             balance: double.parse('${widget.availableBalance}'))
         .toStringAsFixed(2);
     int randomNumber = random.nextInt(90000000) + 10000000;
-   final student =widget.studentController!.studentList![widget.studentIndex!];
+  //  final student =widget.studentController!.studentList![widget.studentIndex!];
 
     //   bottomSliderController.setIsPinCompleted(isCompleted: false, isNotify: false);
 
@@ -276,6 +276,18 @@ class _TransactionConfirmationScreenState
                                   widget
                                       .studentController!.studentList!.isEmpty)
                               ? DependentSchoolDropdowns(
+                                onInputStudent: ({required className, required schoolName, required studentCode, required studentName}) =>_captureInformation(
+                                                context,
+                                                schoolName:schoolName,
+                                                randomNumber: randomNumber,
+                                                className: className,
+                                                studentInfo:'${'student_name'.tr}: $studentName ${'code'.tr}: $studentCode',
+                                                totalAmount: totalAmount,
+                                                productName:
+                                                    widget.serviceValue!,
+                                                orderId: randomNumber.toString(),
+                                                vat: vat,
+                                                convenienceFee: convenienceFee),
                                   isShop: false,
                                   studentController: widget.studentController!,
                                   isAddAccount: false,
@@ -303,7 +315,7 @@ class _TransactionConfirmationScreenState
                                       itemLists: widget
                                           .studentController!.studentList!,
                                       title:
-                                          '${'code'.tr}: ${student.code!}\n${'name'.tr}: ${student.name} ${'class'.tr}:${student.studentClass} ${'school'.tr}:${student.studentClass}',
+                                          '${'code'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].code!}\n${'name'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].name} ${'class'.tr}:${widget.studentController!.studentList![widget.studentIndex!].studentClass} ${'school'.tr}:${widget.studentController!.studentList![widget.studentIndex!].studentClass}',
                                       isExpanded: true,
                                     ),
                                     sizedBox05h,
@@ -313,10 +325,10 @@ class _TransactionConfirmationScreenState
                                         DefaultButtonWidth(
                                             onPress: () => _captureInformation(
                                                 context,
-                                                schoolName:student.school!,
+                                                schoolName:widget.studentController!.studentList![widget.studentIndex!].school!,
                                                 randomNumber: randomNumber,
-                                                className: student.studentClass!,
-                                                studentInfo:'${'student_name'.tr}: ${student.name} ${'code'.tr}: ${student.code}',
+                                                className: widget.studentController!.studentList![widget.studentIndex!].studentClass!,
+                                                studentInfo:'${'student_name'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].name} ${'code'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].code}',
                                                 totalAmount: totalAmount,
                                                 productName:
                                                     widget.serviceValue!,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hosomobile/features/shop/screen/shop_order_screen.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:hosomobile/common/widgets/custom_app_bar_widget.dart';
 import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
@@ -124,9 +125,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   //   child: widget.MenuItem(image: Images.requestListImage2,title: 'requests'.tr),
                   //   onTap: () => Get.to(()=> const RequestedMoneyListScreen(requestType: RequestType.request)),
                   // ),
+                      CustomInkWellWidget(
+                    child: widget.MenuItem(image: Images.withdraw,title: 'my_order'.tr),
+                    onTap: () => Get.to(()=>  ShopOrderScreen()),
+                  ),
+
 
                   CustomInkWellWidget(
-                    child: widget.MenuItem(image: Images.sendMoneyImage,title: 'Tansaction History'.tr),
+                    child: widget.MenuItem(image: Images.sendMoneyImage,title: 'transaction_history'.tr),
                     onTap: () => Get.to(()=>  HistoryScreen()),
                   ),
 

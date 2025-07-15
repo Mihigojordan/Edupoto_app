@@ -99,6 +99,8 @@ class AppConstants {
   static const String getCategory = '/wp-json/wc/v3/products/categories';
   static const String getBrand = '/wp-json/wc/v3/products/brands';
   static const String getAttribute = '/wp-json/wc/v3/products/attributes';
+  static const String getOrder = '/wp-json/wc/v3/orders';
+  static const String getCustomer = '/wp-json/wc/v3/products/customers';
 
   // Shared Key
   static const String theme = 'theme';
@@ -135,6 +137,7 @@ class AppConstants {
   static const String contactPermission = '';
   static const String userData = 'user';
   static const String userId = 'userId';
+  static const String customerId = 'customerId'; 
 
   //topic
   static const String all = 'all';

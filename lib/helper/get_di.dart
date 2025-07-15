@@ -137,7 +137,7 @@ print("Device Identifier: $deviceIdentifier");
   Get.lazyPut(() => StudentRegistrationRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => ClassRepo(apiClient: Get.find()));
   Get.lazyPut(() => SchoolRepo(apiClient: Get.find()));
-    Get.lazyPut(() => ShopRepo(apiClient: Get.find()));
+    Get.lazyPut(() => ShopRepo(apiClient: Get.find(),sharedPreferences: Get.find()));
   Get.lazyPut(() => AllSchoolRepo(apiClient: Get.find()));
   Get.lazyPut(() => SchoolRequirementRepo(apiClient: Get.find()));
   Get.lazyPut(() => EduboxMaterialRepo(apiClient: Get.find()));

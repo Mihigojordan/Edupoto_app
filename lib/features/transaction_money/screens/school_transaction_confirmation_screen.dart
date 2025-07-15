@@ -215,7 +215,7 @@ class _TransactionConfirmationScreenState
     final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse('${widget.availableBalance}')).toStringAsFixed(2);
       int randomNumber = random.nextInt(90000000) + 10000000;
 
-    final student=  widget.studentController.studentList![widget.studentIndex];
+    // final student=  widget.studentController.studentList![widget.studentIndex];
 
     // void validateForm() {
     //   if (deliveryOptionsValue == 'choose_delivery_company'.tr) {
@@ -371,6 +371,20 @@ class _TransactionConfirmationScreenState
                                   widget
                                       .studentController!.studentList!.isEmpty)
                               ? DependentSchoolDropdowns(
+                                onInputStudent: ({required schoolName,required className,required studentName,required studentCode}) {
+                                   _captureInformation(
+                                              availableBalance: widget.availableBalance,
+                                                context,
+                                                schoolName:schoolName,
+                                                randomNumber: randomNumber,
+                                                className: className,
+                                                totalAmount: totalAmount,
+                                                studentInfo:'${'student_name'.tr}: $studentName ${'code'.tr}: $studentCode',
+                                                productName: widget.productName!,
+                                                orderId: '21323443421',
+                                                vat: vat,
+                                                convenienceFee: convenienceFee);
+                                },
                                   isShop: false,
                                   studentController: widget.studentController!,
                                   isAddAccount: false,
@@ -383,10 +397,11 @@ class _TransactionConfirmationScreenState
                                     sizedBox05h,
                                     DropDownAccount(
                                       onChanged: (selectedCode) {
+                                       
                                         setState(() {
                                           // Find the index of the selected student in the list using the selected code
                                           widget.studentIndex = widget
-                                              .studentController!.studentList!
+                                              .studentController.studentList!
                                               .indexWhere((student) =>
                                                   student.code == selectedCode);
 
@@ -398,7 +413,7 @@ class _TransactionConfirmationScreenState
                                       itemLists: widget
                                           .studentController.studentList!,
                                       title:
-                                          '${'code'.tr}: ${student.code!}\n${'name'.tr}: ${student.name} ${'class'.tr}:${student.studentClass} ${'school'.tr}:${student.school}',
+                                          '${'code'.tr}: ${widget.studentController.studentList![widget.studentIndex].code!}\n${'name'.tr}: ${widget.studentController.studentList![widget.studentIndex].name} ${'class'.tr}:${widget.studentController.studentList![widget.studentIndex].studentClass} ${'school'.tr}:${widget.studentController.studentList![widget.studentIndex].school}',
                                       isExpanded: true,
                                     ),
                                     sizedBox05h,
@@ -409,11 +424,11 @@ class _TransactionConfirmationScreenState
                                             onPress: () => _captureInformation(
                                               availableBalance: widget.availableBalance,
                                                 context,
-                                                schoolName:student.school!,
+                                                schoolName:widget.studentController.studentList![widget.studentIndex].school!,
                                                 randomNumber: randomNumber,
-                                                className: student.studentClass!,
+                                                className: widget.studentController.studentList![widget.studentIndex].studentClass!,
                                                 totalAmount: totalAmount,
-                                                studentInfo:'${'student_name'.tr}: ${student.name} ${'code'.tr}: ${student.code}',
+                                                studentInfo:'${'student_name'.tr}: ${widget.studentController.studentList![widget.studentIndex].name} ${'code'.tr}: ${widget.studentController.studentList![widget.studentIndex].code}',
                                                 productName: widget.productName!,
                                                 orderId: '21323443421',
                                                 vat: vat,

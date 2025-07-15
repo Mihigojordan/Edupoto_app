@@ -1111,6 +1111,9 @@ class _StudentWidgetState extends State<StudentWidget> {
             SizedBox(
               width: screenWidth / 1.1,
               child: DependentSchoolDropdowns(
+                onInputStudent: ({required className, required schoolName, required studentCode, required studentName}) {
+                  
+                },
                 isShop: false,
                 isNotRegStudent: false,
                 isAddAccount: isAddAccount,

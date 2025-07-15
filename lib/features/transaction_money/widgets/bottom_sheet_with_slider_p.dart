@@ -169,7 +169,15 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderP> {
                                 top: Dimensions.paddingSizeSmall,
                                 right: 8.0,
                                 child: GestureDetector(
-                                    onTap: () => Get.back(),
+                                    onTap: (){
+                                                                     if (!kIsWeb) {
+                                  Get.find<BottomSliderController>()
+                                      .goBackButton();
+                                } else {
+                                    Get.find<BottomSliderController>()
+                                      .goBackButton();
+                                }
+                                    },
                                     child: Container(
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
@@ -312,6 +320,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderP> {
                                   // ************************ Payment Method*******************/
 
                                   PaymentMethodSelector(
+                                  
                                     vat: widget.vat!,
                                     svProductList: widget.dataList??[],
                                     productName:widget.edubox_service??'no product found',

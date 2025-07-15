@@ -9,6 +9,7 @@ import 'package:hosomobile/features/home/domain/models/edubox_material_model.dar
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
+import 'package:hosomobile/features/shop/controller/shop_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/bootom_slider_controller.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
@@ -136,7 +137,9 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSlider> {
             topRight: Radius.circular(Dimensions.radiusSizeLarge),
           ),
         ),
-        child: GetBuilder<TransactionMoneyController>(
+        child: GetBuilder<ShopController>(
+            builder: (shopController) {
+          return    GetBuilder<TransactionMoneyController>(
             builder: (transactionMoneyController) {
           return SingleChildScrollView(
             child: Padding(
@@ -169,7 +172,15 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSlider> {
                                 top: Dimensions.paddingSizeSmall,
                                 right: 8.0,
                                 child: GestureDetector(
-                                    onTap: () => Get.back(),
+                                    onTap: () {
+                                                                     if (!kIsWeb) {
+                                  Get.find<BottomSliderController>()
+                                      .goBackButton();
+                                } else {
+                                    Get.find<BottomSliderController>()
+                                      .goBackButton();
+                                }
+                                    },
                                     child: Container(
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
@@ -317,6 +328,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSlider> {
                                     randomNumber:widget.randomNumber,
                                     transactionMoneyController:
                                         transactionMoneyController,
+                                    shopController:shopController,   
                                     transactionId: transactionId ??
                                         '', // Provide empty string if null
                                     studentId: widget.studentId,
@@ -479,6 +491,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSlider> {
               ),
             ),
           );
+        });
         }),
       ),
     );

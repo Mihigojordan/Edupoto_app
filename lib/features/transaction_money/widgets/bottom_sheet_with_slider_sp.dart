@@ -7,8 +7,10 @@ import 'package:hosomobile/features/home/domain/models/all_school_model.dart';
 import 'package:hosomobile/features/home/domain/models/student_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
+import 'package:hosomobile/features/shop/controller/shop_controller.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
+import 'package:hosomobile/features/shop/screen/shop_order_screen.dart';
 import 'package:hosomobile/features/transaction_money/controllers/bootom_slider_controller.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
@@ -137,7 +139,10 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
             topRight: Radius.circular(Dimensions.radiusSizeLarge),
           ),
         ),
-        child: GetBuilder<TransactionMoneyController>(
+        child:  GetBuilder<ShopController>(
+            builder: (shopController) {
+        
+      return  GetBuilder<TransactionMoneyController>(
             builder: (transactionMoneyController) {
           return SingleChildScrollView(
             child: Padding(
@@ -170,7 +175,15 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                 top: Dimensions.paddingSizeSmall,
                                 right: 8.0,
                                 child: GestureDetector(
-                                    onTap: () => Get.back(),
+                                    onTap: () {
+                                                                     if (!kIsWeb) {
+                                  Get.find<BottomSliderController>()
+                                      .goBackButton();
+                                } else {
+                                    Get.find<BottomSliderController>()
+                                      .goBackButton();
+                                }
+                                    },
                                     child: Container(
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
@@ -338,6 +351,8 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                   // ************************ Payment Method*******************/
 
                                   PaymentMethodSelector(
+                                    deliveryCost:widget.deliveryCost,
+                                    shopController: shopController,
                                     vat: widget.vat!,
                                     shopList: widget.selectedProducts.entries
                                         .map((entry) {
@@ -463,6 +478,38 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                             style: rubikMedium.copyWith(
                                 fontSize: Dimensions.fontSizeLarge)),
                       ),
+                      sizedBox05h,
+                      Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal:
+                                  Dimensions.paddingSizeExtraExtraLarge),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              borderRadius: BorderRadius.circular(
+                                  Dimensions.radiusSizeSmall),
+                            ),
+                            child: CustomInkWellWidget(
+                              onTap: ()=>Get.to(ShopOrderScreen()) ,
+                              radius: Dimensions.radiusSizeSmall,
+                              highlightColor: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .color!
+                                  .withOpacity(0.1),
+                              child: SizedBox(
+                                height: 50.0,
+                                child: Center(
+                                    child: Text(
+                                  'my_orders'.tr,
+                                  style: rubikMedium.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge),
+                                )),
+                              ),
+                            ),
+                          ),
+                        ),
+                      sizedBox05h
                     ],
                   ): const  SizedBox(),
                   transactionMoneyController.isNextBottomSheet
@@ -518,7 +565,8 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
               ),
             ),
           );
-        }),
+        });
+            })
       ),
     );
   }
