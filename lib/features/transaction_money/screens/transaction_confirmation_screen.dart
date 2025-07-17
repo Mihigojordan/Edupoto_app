@@ -355,6 +355,9 @@ class _TransactionConfirmationScreenState
                               iconData: Icons.arrow_forward_outlined,
                             )
                           : DeliveryMapScreen(
+                            phoneNumberEditingController: phoneNumberEditingController,
+                            descriptionController: TextEditingController(),
+                            destinationController: TextEditingController(),
                               isShop: 0,
                               deliveryCost: AppConstants.deliveryCost,
                               schoolId: widget.schoolId!,
@@ -375,7 +378,6 @@ class _TransactionConfirmationScreenState
                               eduboxService: widget.edubox_service ?? '',
                               dataList: widget.dataList ?? [],
                               shipper: 'widget.shipper',
-                              destination: 'widget.destination',
                               homePhone: 'widget.homePhone',
                               productId: widget.productId ?? 0,
                               pinCodeFieldController:
@@ -624,11 +626,16 @@ class _TransactionConfirmationScreenState
                           return BottomSheetWithSliderP(
                             schoolName: widget.studentSchool!,
                             className: widget.studentClass!,
-                            shipper: '',
+                                 shippingAddress1:'${widget.studentSchool}, ${widget.studentClass}, ${widget.studentName}, ${widget.studentCode}',
+                                    shippingAddress2: '',
+                                    shippingFirstName: '',
+                                    shippingLastName: '',
+                                    shippingCompany: AppConstants.deliveryCompany,
+                                    shippingCity: AppConstants.city,
+                                    shippingCountry: AppConstants.country,
                             studentCode: widget.studentCode!,
                             studentName: widget.studentName!,
                             homePhone: '',
-                            destination: '',
                             randomNumber: randomNumber,
                             studentId: widget.studentId ?? 0,
                             amount: totalAmount.toString(),

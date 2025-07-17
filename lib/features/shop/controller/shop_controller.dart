@@ -2,6 +2,7 @@
 import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/data/api/api_checker.dart';
 import 'package:get/get.dart';
+import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
 import 'package:hosomobile/features/shop/domain/models/attribute_model.dart';
 import 'package:hosomobile/features/shop/domain/models/category_model.dart';
 import 'package:hosomobile/features/shop/domain/models/brand_model.dart';
@@ -177,12 +178,12 @@ class ShopController extends GetxController implements GetxService{
     }
   }
 
-    Future<Response> createOrder({required String currency, required String shippingTotal, required String total, required int customerId,required String paymentMethod, required String paymentMethodTitle,required String createdVia, required String customerNote}) async{
+    Future<Response> createOrder({required List<Map<String,dynamic>>products,required String feeName,required String feeAmount,required String shippingAddress1,required String shippingAddress2,required String shippingFirstName,required String shippingLastName,required String shippingCompany,required String shippingCity,required String shippingCountry, required String homePhone,  required String currency, required String shippingTotal, required String total, required int customerId,required String paymentMethod, required String paymentMethodTitle,required String createdVia, required String customerNote}) async{
 
     _isLoading = true;
     update();
 
-    Response response = await shopRepo.createOrder(currency: currency, shippingTotal: shippingTotal, total: total, customerId: customerId, paymentMethod: paymentMethod, paymentMethodTitle: paymentMethodTitle, createdVia: createdVia, customerNote: customerNote);
+    Response response = await shopRepo.createOrder( products: products,feeName: feeName,feeAmount:feeAmount , shippingAddress1: shippingAddress1,shippingAddress2: shippingAddress2,shippingFirstName: shippingFirstName,shippingLastName:shippingLastName, shippingCompany: shippingCompany,shippingCity: shippingCity,shippingCountry: shippingCountry,homePhone:homePhone,currency: currency, shippingTotal: shippingTotal, total: total, customerId: customerId, paymentMethod: paymentMethod, paymentMethodTitle: paymentMethodTitle, createdVia: createdVia, customerNote: customerNote);
     if(response.statusCode==201){
         _isLoading = false;
 

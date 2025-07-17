@@ -55,15 +55,21 @@ class BottomSheetWithSlider extends StatefulWidget {
   final String schoolName;
   final int randomNumber;
   final String homePhone;
-  final String destination;
-  final String shipper;
+  final String shippingAddress1;
+  final String shippingAddress2;
+  final String shippingCompany;
+  final String shippingCity;
+  final String shippingCountry;
 
   const BottomSheetWithSlider({
     super.key,
     this.amountToPay,
-    required this.shipper,
+    required this.shippingAddress1,
+    required this.shippingAddress2,
+    required this.shippingCompany,
+   required  this.shippingCity,
+   required  this.shippingCountry,
     required this.homePhone,
-    required this.destination,
     required this.studentName,
     required this.studentCode,
     required this.className,
@@ -98,7 +104,7 @@ class BottomSheetWithSlider extends StatefulWidget {
 class _BottomSheetWithSliderState extends State<BottomSheetWithSlider> {
   String? transactionId;
   final MtnMomoApiClient mtnMomoApiClient = MtnMomoApiClient();
- List<Districts>? allSchoolList;
+  List<Districts>? allSchoolList;
 
   @override
   void initState() {
@@ -128,7 +134,8 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSlider> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (_) => Get.back(),     //Get.offAllNamed(RouteHelper.getNavBarRoute()),
+      onPopInvoked: (_) =>
+          Get.back(), //Get.offAllNamed(RouteHelper.getNavBarRoute()),
       child: Container(
         decoration: BoxDecoration(
           color: ColorResources.getBackgroundColor(),
@@ -137,361 +144,374 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSlider> {
             topRight: Radius.circular(Dimensions.radiusSizeLarge),
           ),
         ),
-        child: GetBuilder<ShopController>(
-            builder: (shopController) {
-          return    GetBuilder<TransactionMoneyController>(
-            builder: (transactionMoneyController) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Stack(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: Dimensions.paddingSizeLarge),
-                        decoration: BoxDecoration(
-                          color: ColorResources.getLightGray().withOpacity(0.8),
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(Dimensions.radiusSizeLarge)),
-                        ),
-                        child: Text(
-                          '${'confirm_to'.tr} $type',
-                          style: rubikSemiBold.copyWith(),
-                        ),
-                      ),
-                      !transactionMoneyController.isLoading
-                          ? Visibility(
-                              visible:
-                                  !transactionMoneyController.isNextBottomSheet,
-                              child: Positioned(
-                                top: Dimensions.paddingSizeSmall,
-                                right: 8.0,
-                                child: GestureDetector(
-                                    onTap: () {
-                                                                     if (!kIsWeb) {
-                                  Get.find<BottomSliderController>()
-                                      .goBackButton();
-                                } else {
-                                    Get.find<BottomSliderController>()
-                                      .goBackButton();
-                                }
-                                    },
-                                    child: Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: ColorResources
-                                                .getGreyBaseGray6()),
-                                        child: const Icon(
-                                          Icons.clear,
-                                          size: Dimensions.paddingSizeDefault,
-                                        ))),
-                              ),
-                            )
-                          : const SizedBox(),
-                    ],
-                  ),
-                  //********************* Student is Problem Here */
-                  // transactionMoneyController.isNextBottomSheet
-                  //     ? Column(
-                  //         children: [
-                  //           transactionMoneyController.isNextBottomSheet
-                  //               ? Lottie.asset(
-                  //                   Images.successAnimation,
-                  //                   width: 120.0,
-                  //                   fit: BoxFit.contain,
-                  //                   alignment: Alignment.center,
-                  //                 )
-                  //               : Padding(
-                  //                   padding: const EdgeInsets.all(
-                  //                       Dimensions.paddingSizeSmall),
-                  //                   child: Lottie.asset(
-                  //                     Images.failedAnimation,
-                  //                     width: 80.0,
-                  //                     fit: BoxFit.contain,
-                  //                     alignment: Alignment.center,
-                  //                   ),
-                  //                 ),
-                  //         ],
-                  //       )
-                  //     : Column(children: [
-                  //         ForStudentWidget(studentInfo: 'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}'),
-                  //       ]),
-                  Container(
-                    color: ColorResources.getBackgroundColor(),
-                    child: Column(
+        child: GetBuilder<ShopController>(builder: (shopController) {
+          return GetBuilder<TransactionMoneyController>(
+              builder: (transactionMoneyController) {
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Stack(
                       children: [
-                        transactionMoneyController.isNextBottomSheet
-                            ? Text(
-                                widget.transactionType == 'send_money'
-                                    ? 'send_money_successful'.tr
-                                    : widget.transactionType == 'request_money'
-                                        ? 'request_send_successful'.tr
-                                        : 'cash_out_successful'.tr,
-                                style: rubikMedium.copyWith(
-                                    fontSize: Dimensions.fontSizeLarge,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge!
-                                        .color))
+                        Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: Dimensions.paddingSizeLarge),
+                          decoration: BoxDecoration(
+                            color:
+                                ColorResources.getLightGray().withOpacity(0.8),
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(
+                                    Dimensions.radiusSizeLarge)),
+                          ),
+                          child: Text(
+                            '${'confirm_to'.tr} $type',
+                            style: rubikSemiBold.copyWith(),
+                          ),
+                        ),
+                        !transactionMoneyController.isLoading
+                            ? Visibility(
+                                visible: !transactionMoneyController
+                                    .isNextBottomSheet,
+                                child: Positioned(
+                                  top: Dimensions.paddingSizeSmall,
+                                  right: 8.0,
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        if (!kIsWeb) {
+                                          Get.find<BottomSliderController>()
+                                              .goBackButton();
+                                        } else {
+                                          Get.find<BottomSliderController>()
+                                              .goBackButton();
+                                        }
+                                      },
+                                      child: Container(
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: ColorResources
+                                                  .getGreyBaseGray6()),
+                                          child: const Icon(
+                                            Icons.clear,
+                                            size: Dimensions.paddingSizeDefault,
+                                          ))),
+                                ),
+                              )
                             : const SizedBox(),
-                        transactionMoneyController.isNextBottomSheet
-                            ? Column(children: [
-                                const SizedBox(height: 15),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    transactionId != null
-                                        ? Text(
-                                            '${'receipt_no'.tr}:${widget.randomNumber}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge,
-                                          )
-                                        : const SizedBox(),
-                                    sizedBox10,
-                                    //********************* Student is Problem Here */
-                                    Column(children: [
-                                      ForStudentWidget(
-                                          studentInfo:
-                                              '${'code'}: ${widget.studentCode}\n${'name'}: ${widget.studentName}'),
-                                    ]),
-                                    sizedBox15,
-                                    Text(
-                                        '${'product'.tr}: ${widget.edubox_service}, ${'contains'.tr}: ${'${widget.dataList!.length} (${widget.dataList![widget.productIndex!].price} ${AppConstants.currency}), '}'), //${widget.studentInfo![widget.studentIndex!].studentClass}
-                                    sizedBox10,
-                                    Text('${'destination'.tr}: ${widget.destination}'),
-                                    sizedBox10,
-                                    Container(
-                                      height: Dimensions.dividerSizeMedium,
-                                      color: Theme.of(context).dividerColor,
-                                    ),
-                                    sizedBox10,
-
-                                    Text(
-                                        '${widget.amountToPay!}'),
-
-                                    // Text('Now Paid: ${widget.nowPaid!} ${AppConstants.currency}'),
-                                    Text(widget.vat!),
-
-                                    Text(
-                                        '${'convenience_fee'.tr} ${widget.serviceCharge!} ${AppConstants.currency}'),
-                                    const Divider(),
-                                    Text(
-                                      widget.totalNowPaid!,
-                                      style: Theme.of(context)
+                      ],
+                    ),
+                    //********************* Student is Problem Here */
+                    // transactionMoneyController.isNextBottomSheet
+                    //     ? Column(
+                    //         children: [
+                    //           transactionMoneyController.isNextBottomSheet
+                    //               ? Lottie.asset(
+                    //                   Images.successAnimation,
+                    //                   width: 120.0,
+                    //                   fit: BoxFit.contain,
+                    //                   alignment: Alignment.center,
+                    //                 )
+                    //               : Padding(
+                    //                   padding: const EdgeInsets.all(
+                    //                       Dimensions.paddingSizeSmall),
+                    //                   child: Lottie.asset(
+                    //                     Images.failedAnimation,
+                    //                     width: 80.0,
+                    //                     fit: BoxFit.contain,
+                    //                     alignment: Alignment.center,
+                    //                   ),
+                    //                 ),
+                    //         ],
+                    //       )
+                    //     : Column(children: [
+                    //         ForStudentWidget(studentInfo: 'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}'),
+                    //       ]),
+                    Container(
+                      color: ColorResources.getBackgroundColor(),
+                      child: Column(
+                        children: [
+                          transactionMoneyController.isNextBottomSheet
+                              ? Text(
+                                  widget.transactionType == 'send_money'
+                                      ? 'send_money_successful'.tr
+                                      : widget.transactionType ==
+                                              'request_money'
+                                          ? 'request_send_successful'.tr
+                                          : 'cash_out_successful'.tr,
+                                  style: rubikMedium.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge,
+                                      color: Theme.of(context)
                                           .textTheme
-                                          .titleMedium!
-                                          .copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          .titleLarge!
+                                          .color))
+                              : const SizedBox(),
+                          transactionMoneyController.isNextBottomSheet
+                              ? Column(children: [
+                                  const SizedBox(height: 15),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      transactionId != null
+                                          ? Text(
+                                              '${'receipt_no'.tr}:${widget.randomNumber}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge,
+                                            )
+                                          : const SizedBox(),
+                                      sizedBox10,
+                                      //********************* Student is Problem Here */
+                                      Column(children: [
+                                        ForStudentWidget(
+                                            studentInfo:
+                                                '${'code'}: ${widget.studentCode}\n${'name'}: ${widget.studentName}'),
+                                      ]),
+                                      sizedBox15,
+                                      Text(
+                                          '${'product'.tr}: ${widget.edubox_service}, ${'contains'.tr}: ${'${widget.dataList!.length} (${widget.dataList![widget.productIndex!].price} ${AppConstants.currency}), '}'), //${widget.studentInfo![widget.studentIndex!].studentClass}
+                                      sizedBox10,
+                                      Text(
+                                          '${'destination'.tr}: ${widget.shippingAddress1}'),
+                                      sizedBox10,
+                                      Container(
+                                        height: Dimensions.dividerSizeMedium,
+                                        color: Theme.of(context).dividerColor,
+                                      ),
+                                      sizedBox10,
+
+                                      Text('${widget.amountToPay!}'),
+
+                                      // Text('Now Paid: ${widget.nowPaid!} ${AppConstants.currency}'),
+                                      Text(widget.vat!),
+
+                                      Text(
+                                          '${'convenience_fee'.tr} ${widget.serviceCharge!} ${AppConstants.currency}'),
+                                      const Divider(),
+                                      Text(
+                                        widget.totalNowPaid!,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium!
+                                            .copyWith(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                  sizedBox10,
+                                  // Text('Pending/Remaing Amount to be paid',
+                                  //     style: rubikSemiBold.copyWith(
+                                  //         fontSize: Dimensions.fontSizeLarge,
+                                  //         color:
+                                  //             ColorResources.getGreyBaseGray1())),
+
+                                  const SizedBox(height: 15),
+                                ])
+                              : const SizedBox(),
+                          transactionMoneyController.isNextBottomSheet
+                              ? const SizedBox()
+                              : Column(
+                                  children: [
+                                    Text(
+                                        PriceConverterHelper.balanceWithSymbol(
+                                            balance: widget.amount),
+                                        style: rubikMedium.copyWith(
+                                            fontSize: 34.0)),
+                                    sizedBox10,
+                                    // ************************ Payment Method*******************/
+
+                                    PaymentMethodSelector(
+                                      shippingAddress1: widget.shippingAddress1,
+                                      shippingAddress2: widget.shippingAddress2,
+                                      shippingFirstName: '',
+                                      shippingLastName: '',
+                                      shippingCompany: widget.shippingCompany,
+                                      shippingCity: widget.shippingCity,
+                                      shippingCountry: widget.shippingCountry,
+                                      vat: widget.vat!,
+                                      svProductList: widget.dataList ?? [],
+                                      productName: widget.edubox_service ??
+                                          'no product found',
+                                      homePhone: widget.homePhone,
+                                      service_charge:
+                                          widget.serviceCharge ?? '0',
+                                      edubox_service: widget.edubox_service ??
+                                          'no Edubox Service',
+                                      randomNumber: widget.randomNumber,
+                                      transactionMoneyController:
+                                          transactionMoneyController,
+                                      shopController: shopController,
+                                      transactionId: transactionId ??
+                                          '', // Provide empty string if null
+                                      studentId: widget.studentId,
+                                      amountToPay: widget.amountToPay ??
+                                          '0', // Default to '0' if null
+                                      productId: widget.productId ??
+                                          0, // Default to 0 if null
+                                      availableBalance:
+                                          widget.availableBalance ?? '0',
+                                      serviceCharge:
+                                          widget.serviceCharge ?? '0',
+                                      contactController: contactController,
+                                      amount: widget.amount ?? '0',
+                                      purpose: widget.purpose ??
+                                          'Payment', // Default purpose
+                                      pinCode: widget.pinCode ??
+                                          '', // Empty string if null
+                                      contactModel: widget.contactModel ??
+                                          ContactModel(), // Default empty model
+                                      mtnMomoApiClient: mtnMomoApiClient,
+                                      transactionType: widget.transactionType ??
+                                          'payment', // Default type
+                                      onPaymentMethodSelected:
+                                          (method, details, provider) {
+                                        debugPrint(
+                                            'Selected $method via $provider with details: $details');
+                                      },
+                                      initialAmount: widget.amount ?? '0',
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              Dimensions.paddingSizeDefault),
+                                      child: Divider(
+                                          height: Dimensions.dividerSizeSmall),
                                     ),
                                   ],
                                 ),
-                                sizedBox10,
-                                // Text('Pending/Remaing Amount to be paid',
-                                //     style: rubikSemiBold.copyWith(
-                                //         fontSize: Dimensions.fontSizeLarge,
-                                //         color:
-                                //             ColorResources.getGreyBaseGray1())),
-                          
-                                const SizedBox(height: 15),
-                              ])
-                            : const SizedBox(),
-                       
-                        transactionMoneyController.isNextBottomSheet
-                            ? const SizedBox()
-                            : Column(
-                                children: [
-                                  Text(
-                                      PriceConverterHelper.balanceWithSymbol(
-                                          balance: widget.amount),
-                                      style:
-                                          rubikMedium.copyWith(fontSize: 34.0)),
-                                  sizedBox10,
-                                  // ************************ Payment Method*******************/
-
-                                  PaymentMethodSelector(
-                                    vat: widget.vat!,
-                                    svProductList: widget.dataList??[],
-                                    productName:widget.edubox_service??'no product found',
-                                    shipper:widget.shipper,
-                                    destination:widget.destination,
-                                    homePhone:widget.homePhone,
-                                    service_charge:widget.serviceCharge??'0',
-                                    edubox_service:widget.edubox_service??'no Edubox Service',
-                                    randomNumber:widget.randomNumber,
-                                    transactionMoneyController:
-                                        transactionMoneyController,
-                                    shopController:shopController,   
-                                    transactionId: transactionId ??
-                                        '', // Provide empty string if null
-                                    studentId: widget.studentId,
-                                    amountToPay: widget.amountToPay ??
-                                        '0', // Default to '0' if null
-                                    productId: widget.productId ??
-                                        0, // Default to 0 if null
-                                    availableBalance:
-                                        widget.availableBalance ?? '0',
-                                    serviceCharge: widget.serviceCharge ?? '0',
-                                    contactController: contactController,
-                                    amount: widget.amount ?? '0',
-                                    purpose: widget.purpose ??
-                                        'Payment', // Default purpose
-                                    pinCode: widget.pinCode ??
-                                        '', // Empty string if null
-                                    contactModel: widget.contactModel ??
-                                        ContactModel(), // Default empty model
-                                    mtnMomoApiClient: mtnMomoApiClient,
-                                    transactionType: widget.transactionType ??
-                                        'payment', // Default type
-                                    onPaymentMethodSelected:
-                                        (method, details, provider) {
-                                      debugPrint(
-                                          'Selected $method via $provider with details: $details');
-                                    },
-                                    initialAmount: widget.amount ?? '0',
-                                  ),
-                              const Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: Dimensions.paddingSizeDefault),
-                          child: Divider(height: Dimensions.dividerSizeSmall),
-                        ),    
-                                ],
-                              ),
-                        
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: Dimensions.paddingSizeDefault,
-                            horizontal: Dimensions.paddingSizeDefault,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: Dimensions.paddingSizeDefault,
+                              horizontal: Dimensions.paddingSizeDefault,
+                            ),
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                    height: Dimensions.paddingSizeExtraSmall),
+                                transactionMoneyController.isNextBottomSheet
+                                    ? transactionId != null
+                                        ? Text(
+                                            'TrxID: ${widget.randomNumber}',
+                                            style: rubikLight.copyWith(
+                                                fontSize:
+                                                    Dimensions.fontSizeDefault),
+                                          )
+                                        : const SizedBox()
+                                    : const SizedBox(),
+                              ],
+                            ),
                           ),
-                          child: Column(
-                            children: [
-                              const SizedBox(
-                                  height: Dimensions.paddingSizeExtraSmall),
-                              transactionMoneyController.isNextBottomSheet
-                                  ? transactionId != null
-                                      ? Text(
-                                          'TrxID: ${widget.randomNumber}',
-                                          style: rubikLight.copyWith(
-                                              fontSize:
-                                                  Dimensions.fontSizeDefault),
-                                        )
-                                      : const SizedBox()
-                                  : const SizedBox(),
-                            ],
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-              transactionMoneyController.isNextBottomSheet ?
-                   Column(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      Dimensions.paddingSizeDefault / 1.7),
-                              child:
-                                  Divider(height: Dimensions.dividerSizeSmall),
-                            ),
-                            const SizedBox(
-                                height: Dimensions.paddingSizeDefault),
-                            CustomInkWellWidget(
-                              onTap: () async =>
-                                  await Get.find<ShareController>()
-                                      .statementScreenShootFunction(
-                                        destination: widget.destination,
-                                amount: widget.amount,
-                                transactionType: widget.transactionType,
-                                contactModel: widget.contactModel,
-                                charge: widget.transactionType == 'send_money'
-                                    ? Get.find<SplashController>()
-                                        .configModel!
-                                        .sendMoneyChargeFlat
-                                        .toString()
-                                    : cashOutCharge.toString(),
-                                trxId: transactionId,
-                                eduboxService: widget.edubox_service,
-                                studentInfo:
-                                    '${'code'.tr}: ${widget.studentCode}\n${'name'.tr}: ${widget.studentName}',
-                                inputBalance: widget.inputBalance,
-                                dataList: widget.dataList,
-                                productIndex: widget.productIndex,
-                                amountToPay: widget.amountToPay,
-                                nowPaid: widget.nowPaid,
-                                remainingAmount: widget.availableBalance,
-                                vat: widget.vat,
-                                serviceCharge: widget.serviceCharge,
-                                totalNowPaid: widget.totalNowPaid,
-                                serviceValue: widget.serviceValue,
-                                serviceIndex: widget.serviceIndex,
+                    // transactionMoneyController.isNextBottomSheet ?
+                    //      Column(
+                    //             children: [
+                    //               const Padding(
+                    //                 padding: EdgeInsets.symmetric(
+                    //                     horizontal:
+                    //                         Dimensions.paddingSizeDefault / 1.7),
+                    //                 child:
+                    //                     Divider(height: Dimensions.dividerSizeSmall),
+                    //               ),
+                    //               const SizedBox(
+                    //                   height: Dimensions.paddingSizeDefault),
+                    //               CustomInkWellWidget(
+                    //                 onTap: () async =>
+                    //                     await Get.find<ShareController>()
+                    //                         .statementScreenShootFunction(
+                    //                           destination: widget.destination,
+                    //                   amount: widget.amount,
+                    //                   transactionType: widget.transactionType,
+                    //                   contactModel: widget.contactModel,
+                    //                   charge: widget.transactionType == 'send_money'
+                    //                       ? Get.find<SplashController>()
+                    //                           .configModel!
+                    //                           .sendMoneyChargeFlat
+                    //                           .toString()
+                    //                       : cashOutCharge.toString(),
+                    //                   trxId: transactionId,
+                    //                   eduboxService: widget.edubox_service,
+                    //                   studentInfo:
+                    //                       '${'code'.tr}: ${widget.studentCode}\n${'name'.tr}: ${widget.studentName}',
+                    //                   inputBalance: widget.inputBalance,
+                    //                   dataList: widget.dataList,
+                    //                   productIndex: widget.productIndex,
+                    //                   amountToPay: widget.amountToPay,
+                    //                   nowPaid: widget.nowPaid,
+                    //                   remainingAmount: widget.availableBalance,
+                    //                   vat: widget.vat,
+                    //                   serviceCharge: widget.serviceCharge,
+                    //                   totalNowPaid: widget.totalNowPaid,
+                    //                   serviceValue: widget.serviceValue,
+                    //                   serviceIndex: widget.serviceIndex,
+                    //                 ),
+                    //                 child: Text('share_statement'.tr,
+                    //                     style: rubikMedium.copyWith(
+                    //                         fontSize: Dimensions.fontSizeLarge)),
+                    //               ),
+                    //               const SizedBox(
+                    //                   height: Dimensions.paddingSizeDefault),
+                    //             ],
+                    //           ): const SizedBox(),
+                    transactionMoneyController.isNextBottomSheet
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal:
+                                    Dimensions.paddingSizeExtraExtraLarge),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).secondaryHeaderColor,
+                                borderRadius: BorderRadius.circular(
+                                    Dimensions.radiusSizeSmall),
                               ),
-                              child: Text('share_statement'.tr,
-                                  style: rubikMedium.copyWith(
-                                      fontSize: Dimensions.fontSizeLarge)),
-                            ),
-                            const SizedBox(
-                                height: Dimensions.paddingSizeDefault),
-                          ],
-                        ): const SizedBox(),
-                  transactionMoneyController.isNextBottomSheet
-                      ?
-                       Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal:
-                                  Dimensions.paddingSizeExtraExtraLarge),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              borderRadius: BorderRadius.circular(
-                                  Dimensions.radiusSizeSmall),
-                            ),
-                            child: CustomInkWellWidget(
-                              onTap: () {
-                                if (!kIsWeb) {
-                                  Get.find<BottomSliderController>()
-                                      .goBackButton();
-                                } else {
-                  Get.find<BottomSliderController>()
-                                      .goBackButton();
-                                }
-                              },
-                              radius: Dimensions.radiusSizeSmall,
-                              highlightColor: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .color!
-                                  .withOpacity(0.1),
-                              child: SizedBox(
-                                height: 50.0,
-                                child: Center(
-                                    child: Text(
-                                  'back_to_home'.tr,
-                                  style: rubikMedium.copyWith(
-                                      fontSize: Dimensions.fontSizeLarge),
-                                )),
+                              child: CustomInkWellWidget(
+                                onTap: () {
+                                  if (!kIsWeb) {
+                                    Get.find<BottomSliderController>()
+                                        .goBackToHomeButton();
+                                  } else {
+                                    Get.find<BottomSliderController>()
+                                        .goBackToHomeButton();
+                                  }
+                                },
+                                radius: Dimensions.radiusSizeSmall,
+                                highlightColor: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge!
+                                    .color!
+                                    .withOpacity(0.1),
+                                child: SizedBox(
+                                  height: 50.0,
+                                  child: Center(
+                                      child: Text(
+                                    'back_to_home'.tr,
+                                    style: rubikMedium.copyWith(
+                                        fontSize: Dimensions.fontSizeLarge),
+                                  )),
+                                ),
                               ),
                             ),
-                          ),
-                        )
-                      : transactionMoneyController.isLoading
-                          ? Center(
-                              child: CircularProgressIndicator(
-                              color:
-                                  Theme.of(context).textTheme.titleLarge!.color,
-                            ))
-                          :const SizedBox.shrink()
-                ],
+                          )
+                        : transactionMoneyController.isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge!
+                                    .color,
+                              ))
+                            : const SizedBox.shrink()
+                  ],
+                ),
               ),
-            ),
-          );
-        });
+            );
+          });
         }),
       ),
     );

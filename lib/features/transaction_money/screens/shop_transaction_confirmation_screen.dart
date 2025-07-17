@@ -95,6 +95,7 @@ class _TransactionConfirmationScreenState
   Student? selectedStudent; // Selected value for the third dropdown
   TextEditingController destinationEditingController = TextEditingController();
   TextEditingController phoneNumberEditingController = TextEditingController();
+  TextEditingController descriptionEditingController = TextEditingController();
   String deliveryOptionsValue = 'choose_delivery_company'.tr;
   String? _deliveryOptionError;
 
@@ -442,7 +443,9 @@ class _TransactionConfirmationScreenState
                                                 convenienceFee: convenienceFee,
                                                 studentCode: studentCode,
                                                 studentName: studentName,
-                                                pinCode: _pinCodeFieldController.text
+                                                pinCode: _pinCodeFieldController.text,
+                                                homePhone: phoneNumberEditingController.text,
+                                                customerNote: descriptionEditingController.text
                                               ),
                                 isShop: true,
                                 isNotRegStudent: true,
@@ -519,11 +522,21 @@ _captureInformation(
                                                     .studentList![
                                                         selectedStudents.first]
                                                     .studentClass!,
+                                                    studentCode: studentController
+                                                    .studentList![
+                                                        selectedStudents.first]
+                                                    .code,
+                                                studentName: studentController
+                                                    .studentList![
+                                                        selectedStudents.first]
+                                                    .name,
                                                 totalAmount: totalAmount,
                                                 orderId: '21323443421',
                                                 vat: vat,
                                                 convenienceFee: convenienceFee,
-                                       pinCode: _pinCodeFieldController.text
+                                       pinCode: _pinCodeFieldController.text,
+                                       homePhone: phoneNumberEditingController.text,
+                                       customerNote: destinationEditingController.text
                                               );
     }
                                           } ,
@@ -576,8 +589,7 @@ _captureInformation(
                                     eduboxService: widget.product.name!,
                                     dataList: [],
                                     shipper: widget.shipper,
-                                    destination: widget.destination,
-                                    homePhone: widget.homePhone,
+                                    homePhone: phoneNumberEditingController.text,
                                     productId: 0,
                                     pinCodeFieldController:
                                         _pinCodeFieldController.text,
@@ -593,8 +605,16 @@ _captureInformation(
                                     randomNumber: randomNumber,
                                     serviceIndex: 0,
                                     totalAmount: double.parse(totalAmount),
-                                    vatPercentage: AppConstants.vatPercentage)
+                                    vatPercentage: AppConstants.vatPercentage,
+                                    descriptionController: descriptionEditingController,
+                                    destinationController: destinationEditingController,
+                                    phoneNumberEditingController: phoneNumberEditingController,
+
+                                    )
                                 : DeliveryMapScreen(
+                                  phoneNumberEditingController: TextEditingController(),
+                                  descriptionController: TextEditingController(),
+                                  destinationController: TextEditingController(),
                                     deliveryCost: deliveryCost,
                                     isShop: 1,
                                     product: widget.product,
@@ -630,8 +650,7 @@ _captureInformation(
                                     eduboxService: widget.product.name!,
                                     dataList: [],
                                     shipper: widget.shipper,
-                                    destination: widget.destination,
-                                    homePhone: widget.homePhone,
+                                    homePhone: phoneNumberEditingController.text,
                                     productId: 0,
                                     pinCodeFieldController: _pinCodeFieldController.text,
                                     transactionType: widget.transactionType ?? '',
@@ -711,7 +730,7 @@ _captureInformation(
     );
   }
 
-  void _captureInformation(
+void _captureInformation(
   BuildContext context, {
   required int randomNumber,
   required String totalAmount,
@@ -725,17 +744,16 @@ _captureInformation(
   required int productIndex,
   String? studentName,
   String? studentCode,
- required String pinCode
-                                      
+  required String pinCode,
+  required String homePhone,
+  required String customerNote
 }) {
-  // Get the selected student
-
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         title: Text('confirm'.tr),
-        content:(studentController==null || studentController.studentList==null||studentController.studentList!.isEmpty)? 
+        content: (studentController==null || studentController.studentList==null||studentController.studentList!.isEmpty)? 
            Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -744,7 +762,14 @@ _captureInformation(
             Text('${'school_name'.tr}: $schoolName'),
             Text('${'class'.tr}: $className'),
             Text('${'student_name'.tr}: $studentName ${'student_code'.tr}: $studentCode'),
-            Text('${'order_id'.tr}: $randomNumber'),
+            const SizedBox(
+              height: 3,
+              width: double.infinity,
+              child: Divider(thickness: 1,color: Colors.grey,),
+            ),
+            Text('${'delivery_company'.tr}: ${AppConstants.deliveryCompany}'),
+            Text('${'receiver_phone'.tr}: $homePhone'),  // Displayed here
+            Text('${'customer_note'.tr}: $customerNote'),
           ],
         ):
         Column(
@@ -754,8 +779,15 @@ _captureInformation(
             Text('${'your_school_materials_will_be_delivered_at'.tr};'),
             Text('${'school_name'.tr}: ${studentController.studentList![studentIndex].school}'),
             Text('${'class'.tr}: ${studentController.studentList![studentIndex].studentClass}'),
-            Text('${'student_name'.tr}: ${studentController.studentList![studentIndex].name}'),
-            Text('${'order_id'.tr}: $randomNumber'),
+            Text('${'student_name'.tr}: ${studentController.studentList![studentIndex].name} ${'student_code'.tr}: ${studentController.studentList![studentIndex].code}'),
+            const SizedBox(
+              height: 3,
+              width: double.infinity,
+              child: Divider(thickness: 1,color: Colors.grey,),
+            ),
+            Text('${'delivery_company'.tr}: ${AppConstants.deliveryCompany}'),
+            Text('${'receiver_phone'.tr}: $homePhone'),  // Displayed here
+            Text('${'customer_note'.tr}: $customerNote'),
           ],
         ),
         actions: [
@@ -765,78 +797,94 @@ _captureInformation(
           ),
           TextButton(
             onPressed: () {
-              // Proceed with transaction
               final configModel = Get.find<SplashController>().configModel;
-  
               Get.find<TransactionMoneyController>()
                   .pinVerify(pin: _pinCodeFieldController.text)
                   .then((isCorrect) {
                 if (isCorrect) {
-                 if (studentController==null || studentController.studentList==null||studentController.studentList!.isEmpty){
-          if (configModel!.twoFactor! &&
-                      Get.find<ProfileController>().userInfo!.twoFactor!) {
-                    // Handle OTP verification flow
-                    Get.find<AuthController>()
-                        .checkOtp()
-                        .then((value) => value.isOk
-                            ? _showOtpVerificationDialog(
-                                context,
-                                studentId: 0,
-                                randomNumber: randomNumber,
-                                productIndex: productIndex,
-                                vat: vat,
-                                totalAmount: totalAmount,
-                                convenienceFee: convenienceFee,
-                                pinCode: pinCode
-                              )
-                            : null);
+                  if (studentController==null || studentController.studentList==null||studentController.studentList!.isEmpty){
+                    if (configModel!.twoFactor! && Get.find<ProfileController>().userInfo!.twoFactor!) {
+                      Get.find<AuthController>()
+                          .checkOtp()
+                          .then((value) => value.isOk
+                              ? _showOtpVerificationDialog(
+                                  context,
+                                  studentId: 0,
+                                  randomNumber: randomNumber,
+                                  productIndex: productIndex,
+                                  vat: vat,
+                                  totalAmount: totalAmount,
+                                  convenienceFee: convenienceFee,
+                                  pinCode: pinCode,
+                                  studentIndex: studentIndex,
+                                  checkedStudents: [],
+                                  shipper: AppConstants.deliveryCompany,
+                                  homePhone: homePhone,  // Added this
+                                  customerNote: customerNote,
+                                  destination: '$schoolName, $className, $studentName, $studentCode'
+                                )
+                              : null);
+                    } else {
+                      _showTransactionBottomSheet(
+                        context,
+                        studentId: 0,
+                        randomNumber: randomNumber,
+                        productIndex: productIndex,
+                        vat: vat,
+                        convenienceFee: convenienceFee,
+                        totalAmount: totalAmount,
+                        pinCode: pinCode,
+                        studentIndex: studentIndex,
+                        checkedStudents: [],
+                        shipper: AppConstants.deliveryCompany,
+                        homePhone: homePhone,  // Added this
+                        customerNote: customerNote,
+                        destination: destinationEditingController.text
+                      );
+                    }
                   } else {
-                    _showTransactionBottomSheet(
-                      context,
-                      studentId: 0,
-                      randomNumber: randomNumber,
-                      productIndex: productIndex,
-                      vat: vat,
-                      convenienceFee: convenienceFee,
-                      totalAmount: totalAmount,
-                      pinCode: pinCode
-                    );
+                    if (configModel!.twoFactor! && Get.find<ProfileController>().userInfo!.twoFactor!) {
+                      Get.find<AuthController>()
+                          .checkOtp()
+                          .then((value) => value.isOk
+                              ? _showOtpVerificationDialog(
+                                  context,
+                                  studentId: studentController.studentList![studentIndex].id!,
+                                  randomNumber: randomNumber,
+                                  productIndex: productIndex,
+                                  vat: vat,
+                                  totalAmount: totalAmount,
+                                  convenienceFee: convenienceFee,
+                                  pinCode: pinCode,
+                                  studentIndex: studentIndex,
+                                  checkedStudents: studentController.studentList!,
+                                  shipper: AppConstants.deliveryCompany,
+                                  homePhone: homePhone,  // Added this
+                                  customerNote: customerNote,
+                                  destination: destinationEditingController.text
+                                )
+                              : null);
+                    } else {
+                      _showTransactionBottomSheet(
+                        context,
+                        studentId: studentController.studentList![studentIndex].id!,
+                        randomNumber: randomNumber,
+                        productIndex: productIndex,
+                        vat: vat,
+                        convenienceFee: convenienceFee,
+                        totalAmount: totalAmount,
+                        pinCode: pinCode,
+                        studentIndex: studentIndex,
+                        checkedStudents: studentController.studentList!,
+                        shipper: AppConstants.deliveryCompany,
+                        homePhone: homePhone,  // Added this
+                        customerNote: customerNote,
+                        destination: destinationEditingController.text
+                      );
+                    }
                   }
-                 }else{
-                            if (configModel!.twoFactor! &&
-                      Get.find<ProfileController>().userInfo!.twoFactor!) {
-                    // Handle OTP verification flow
-                    Get.find<AuthController>()
-                        .checkOtp()
-                        .then((value) => value.isOk
-                            ? _showOtpVerificationDialog(
-                                context,
-                                studentId: studentController.studentList![studentIndex].id!,
-                                randomNumber: randomNumber,
-                                productIndex: productIndex,
-                                vat: vat,
-                                totalAmount: totalAmount,
-                                convenienceFee: convenienceFee,
-                                pinCode: pinCode
-                              )
-                            : null);
-                  } else {
-                    _showTransactionBottomSheet(
-                      context,
-                      studentId: studentController.studentList![studentIndex].id!,
-                      randomNumber: randomNumber,
-                      productIndex: productIndex,
-                      vat: vat,
-                      convenienceFee: convenienceFee,
-                      totalAmount: totalAmount,
-                      pinCode: pinCode,
-                    );
-                  }
-                 }
-        
                 }
               });
-          
             },
             child: Text('ok'.tr),
           ),
@@ -845,7 +893,6 @@ _captureInformation(
     },
   );
 }
-
 // Helper method for OTP verification dialog
 void _showOtpVerificationDialog(
   BuildContext context, {
@@ -855,7 +902,13 @@ void _showOtpVerificationDialog(
   required double vat,
   required double convenienceFee,
   required String totalAmount,
-  required String pinCode
+  required String pinCode,
+  required int studentIndex,
+  required List<StudentModel> checkedStudents,
+  required String destination,
+  required String homePhone,
+  required String customerNote,
+  required String shipper
 }) {
   Get.defaultDialog(
     barrierDismissible: false,
@@ -875,7 +928,13 @@ void _showOtpVerificationDialog(
                 productIndex: productIndex,
                 vat: vat,
                 convenienceFee: convenienceFee,
-                totalAmount: totalAmount
+                totalAmount: totalAmount,
+                studentIndex: studentIndex,
+                checkedStudents: checkedStudents,
+                shipper: shipper,
+                 homePhone :homePhone,
+                 customerNote: customerNote,
+                 destination: destination
               );
             }
           }),
@@ -902,7 +961,13 @@ void _showTransactionBottomSheet(
   required double vat,
   required double convenienceFee,
   required String totalAmount,
-  required String pinCode
+  required String pinCode,
+  required int studentIndex,
+  required List<StudentModel> checkedStudents,
+  required String shipper,
+  required String destination,
+  required String customerNote,
+  required String homePhone
 }) {
   showModalBottomSheet(
     isScrollControlled: true,
@@ -915,34 +980,44 @@ void _showTransactionBottomSheet(
       ),
     ),
     builder: (context) => BottomSheetWithSliderSp(
-      materialCost: widget.totalAmount.toStringAsFixed(2),
-      deliveryCost: deliveryCost,
-      shipper: widget.shipper,
-      homePhone: widget.homePhone,
-      destination: widget.destination,
-      studentId: studentId,
-      randomNumber: randomNumber,
-      selectedProducts: widget.cart,
-      quantity: widget.quantity,
-      productIndex: productIndex,
-      amount: totalAmount,
-      availableBalance: '0.00',
-      contactModel: widget.contactModel,
-      contactModelMtn: widget.contactModelMtn,
-      pinCode: pinCode,
-      transactionType: widget.transactionType,
-      purpose: widget.transactionType,
-      product: widget.product,
-      amountToPay:
-          '${'amount_to_be_paid'.tr}: ${widget.totalAmount} ${AppConstants.currency}',
-      nowPaid:
-          '${'now_paid'.tr}: ${widget.totalAmount.toStringAsFixed(2)} ${AppConstants.currency}',
-      vat: '${'vat'.tr}: $vat ${AppConstants.currency}',
-      serviceCharge: convenienceFee.toStringAsFixed(2),
-      totalNowPaid:
-          '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
-
-    ),
+                                  deliveryCost: deliveryCost,
+                                  materialCost: widget.totalAmount.toStringAsFixed(2),
+                                    shippingAddress1:destinationEditingController.text,
+                                    shippingAddress2: '',
+                                    shippingCompany: shipper,
+                                    shippingCity: 'Kigali',
+                                    shippingCountry: 'Rwanda',
+                                  homePhone:homePhone,
+                                  customerNote: customerNote,
+                                  studentId: studentId,
+                                  randomNumber: randomNumber,
+                                  selectedProducts: widget.cart!,
+                                  quantity: widget.quantity!,
+                                  studentIndex: studentIndex,
+                                  availableBalance: '0.00',
+                                  amount: widget.totalAmount.toStringAsFixed(2),
+                                  productId: 1,
+                                  contactModel: widget.contactModel,
+                                  pinCode: pinCode,
+                                  transactionType: widget.transactionType,
+                                  purpose: widget.transactionType,
+                                  studentInfo: checkedStudents,
+                                  inputBalance: widget.totalAmount,
+                                  product: widget.product!,
+                                  productIndex: productIndex,
+                                  edubox_service: 'shop'.tr,
+                                  amountToPay:
+                                      '${'delivery_cost'.tr}: ${deliveryCost.toStringAsFixed(2)}',
+                                  nowPaid:
+                                      '${'material_cost'.tr}: ${widget.totalAmount}',
+                                  vat:
+                                      '${'vat'.tr} (${AppConstants.vatPercentage}%): $vat ${AppConstants.currency}',
+                                  serviceCharge: convenienceFee
+                                      .toStringAsFixed(2),
+                                  totalNowPaid:
+                                      '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
+                                  serviceValue: widget.product!.name,
+                                )
   );
 }
 }

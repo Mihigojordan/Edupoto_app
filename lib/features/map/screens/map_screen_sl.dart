@@ -1167,7 +1167,11 @@ String _getBestLocationName(Placemark place) {
                           //**************** Bottom Sheet with slider */
                           return widget.isShop == 0
                               ? BottomSheetWithSliderSl(
-                                  shipper: widget.shipper,
+                                shippingAddress1:widget.destination,
+                                    shippingAddress2: '',
+                                    shippingCompany: AppConstants.deliveryCompany,
+                                    shippingCity: 'Kigali',
+                                    shippingCountry: 'Rwanda',
                                   homePhone: widget.homePhone,
                                   destination: widget.destination,
                                   availableBalance: '0.00',
@@ -1201,11 +1205,16 @@ String _getBestLocationName(Placemark place) {
                                   schoolName: widget.schoolName,
                                 )
                               : BottomSheetWithSliderSp(
+                                customerNote: '',
                                   deliveryCost: widget.deliveryCost,
                                   materialCost: widget.calculatedTotal.toStringAsFixed(2),
-                                  shipper: widget.shipper,
+                                
                                   homePhone: widget.homePhone,
-                                  destination: widget.destination,
+                                  shippingAddress1:widget.destination,
+                                    shippingAddress2: '',
+                                    shippingCompany: AppConstants.deliveryCompany,
+                                    shippingCity: 'Kigali',
+                                    shippingCountry: 'Rwanda',
                                   studentId: widget.checkedStudentsId??0,
                                   randomNumber: widget.randomNumber,
                                   selectedProducts: widget.cart!,

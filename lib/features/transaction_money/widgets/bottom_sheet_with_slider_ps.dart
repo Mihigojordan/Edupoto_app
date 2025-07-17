@@ -373,66 +373,66 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderPS> {
                       ],
                     ),
                   ),
-                  transactionMoneyController.isNextBottomSheet
-                      ? Column(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      Dimensions.paddingSizeDefault / 1.7),
-                              child:
-                                  Divider(height: Dimensions.dividerSizeSmall),
-                            ),
-                            const SizedBox(
-                                height: Dimensions.paddingSizeDefault),
-                         CustomInkWellWidget(
-  onTap: () async {
-    try {
-      final shareController = Get.find<ShareControllerSl>();
-      await shareController.statementScreenShootFunction(
-        amount: widget.amount,
-        transactionType: widget.transactionType,
-        contactModel: widget.contactModel,
-        charge: widget.transactionType == 'send_money'
-            ? Get.find<SplashController>()
-                .configModel!
-                .sendMoneyChargeFlat
-                .toString()
-            : cashOutCharge.toString(),
-        trxId: transactionId,
-        eduboxService: widget.edubox_service,
-        studentInfo: '${'code'.tr}: ${widget.studentCode}\n${'name'.tr}: ${widget.studentName}',
-        inputBalance: widget.inputBalance,
-        dataList: widget.dataList,
-        productIndex: widget.productIndex,
-        amountToPay: widget.amountToPay,
-        nowPaid: widget.nowPaid,
-        remainingAmount: widget.availableBalance,
-        vat: widget.vat,
-        serviceCharge: widget.serviceCharge,
-        totalNowPaid: widget.totalNowPaid,
-        serviceValue: widget.serviceValue,
-        serviceIndex: widget.serviceIndex,
-      );
-    } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to share: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      debugPrint('Error sharing statement: $e');
-    }
-  },
-  child: Text(
-    'share_statement'.tr,
-    style: rubikMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
-  ),
-),
-                            const SizedBox(
-                                height: Dimensions.paddingSizeDefault),
-                          ],
-                        )
-                      : const SizedBox(),
+//                   transactionMoneyController.isNextBottomSheet
+//                       ? Column(
+//                           children: [
+//                             const Padding(
+//                               padding: EdgeInsets.symmetric(
+//                                   horizontal:
+//                                       Dimensions.paddingSizeDefault / 1.7),
+//                               child:
+//                                   Divider(height: Dimensions.dividerSizeSmall),
+//                             ),
+//                             const SizedBox(
+//                                 height: Dimensions.paddingSizeDefault),
+//                          CustomInkWellWidget(
+//   onTap: () async {
+//     try {
+//       final shareController = Get.find<ShareControllerSl>();
+//       await shareController.statementScreenShootFunction(
+//         amount: widget.amount,
+//         transactionType: widget.transactionType,
+//         contactModel: widget.contactModel,
+//         charge: widget.transactionType == 'send_money'
+//             ? Get.find<SplashController>()
+//                 .configModel!
+//                 .sendMoneyChargeFlat
+//                 .toString()
+//             : cashOutCharge.toString(),
+//         trxId: transactionId,
+//         eduboxService: widget.edubox_service,
+//         studentInfo: '${'code'.tr}: ${widget.studentCode}\n${'name'.tr}: ${widget.studentName}',
+//         inputBalance: widget.inputBalance,
+//         dataList: widget.dataList,
+//         productIndex: widget.productIndex,
+//         amountToPay: widget.amountToPay,
+//         nowPaid: widget.nowPaid,
+//         remainingAmount: widget.availableBalance,
+//         vat: widget.vat,
+//         serviceCharge: widget.serviceCharge,
+//         totalNowPaid: widget.totalNowPaid,
+//         serviceValue: widget.serviceValue,
+//         serviceIndex: widget.serviceIndex,
+//       );
+//     } catch (e) {
+//       Get.snackbar(
+//         'Error',
+//         'Failed to share: ${e.toString()}',
+//         snackPosition: SnackPosition.BOTTOM,
+//       );
+//       debugPrint('Error sharing statement: $e');
+//     }
+//   },
+//   child: Text(
+//     'share_statement'.tr,
+//     style: rubikMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+//   ),
+// ),
+//                             const SizedBox(
+//                                 height: Dimensions.paddingSizeDefault),
+//                           ],
+//                         )
+//                       : const SizedBox(),
                   transactionMoneyController.isNextBottomSheet
                       ? Padding(
                           padding: const EdgeInsets.symmetric(
@@ -448,10 +448,10 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderPS> {
                               onTap: () {
                                 if (!kIsWeb) {
                                   Get.find<BottomSliderController>()
-                                      .goBackButton();
+                                      .goBackToHomeButton();
                                 } else {
                                         Get.find<BottomSliderController>()
-                                      .goBackButton();
+                                      .goBackToHomeButton();
                                 //   Get.offAll(const MzaziScreen(isShop: false));
                                 //   Get.put(AllSchoolController(
                                 //           allSchoolRepo: Get.find()))

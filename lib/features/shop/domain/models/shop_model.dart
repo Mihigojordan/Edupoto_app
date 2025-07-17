@@ -3,6 +3,7 @@ import 'package:hosomobile/features/shop/domain/models/brand_model.dart';
 import 'package:hosomobile/features/shop/domain/models/category_model.dart';
 
 class Product {
+  int? id;
   String? name;
   List<WooImage>? images; // Use a dedicated class for images
   String? price;
@@ -22,10 +23,13 @@ class Product {
       this.shortDescription,
       this.categories,
       this.brands,
-      this.attributes});
+      this.attributes,
+      this.id
+      });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
+      id: json['id'],
       name: json['name'],
       images: (json['images']
               as List<dynamic>?) // WooCommerce uses 'images' (plural)
@@ -53,6 +57,7 @@ class Product {
 
   Map<String, dynamic> toJson() {
     return {
+      'id':id,
       'name': name,
       'images': images?.map((image) => image.toJson()).toList(),
       'price': price,

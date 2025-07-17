@@ -156,7 +156,9 @@ class AppConstants {
   static double vatPercentage = 18;
   static double convenienceFeePercentage = 1.0;
   static double deliveryCost = 3000.00;
-
+  static String deliveryCompany= "Maestro";
+  static String city= "Kigali";
+  static String country= "Rwanda";
   static double calculateVAT(double amount) {
     return (amount * vatPercentage) / 100;
   }

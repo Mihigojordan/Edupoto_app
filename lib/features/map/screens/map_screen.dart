@@ -57,7 +57,7 @@ class DeliveryMapScreen extends StatefulWidget {
     required this.eduboxService,
     required this.dataList,
     required this.shipper,
-    required this.destination,
+
     required this.homePhone,
     required this.productId,
     required this.pinCodeFieldController,
@@ -80,6 +80,9 @@ class DeliveryMapScreen extends StatefulWidget {
     this.product,
     this.quantity,
     this.studentIndex,
+   required this.phoneNumberEditingController,
+  required  this.descriptionController,
+  required  this.destinationController
   });
 
   final int schoolId;
@@ -96,7 +99,7 @@ class DeliveryMapScreen extends StatefulWidget {
   final List<EduboxMaterialModel> dataList;
   final String shipper;
   final String homePhone;
-  final String destination;
+
   final int productId;
   final String pinCodeFieldController;
   final String transactionType;
@@ -118,6 +121,9 @@ class DeliveryMapScreen extends StatefulWidget {
   final int? quantity;
   final int? studentIndex;
   final double deliveryCost;
+  final TextEditingController phoneNumberEditingController;
+  final TextEditingController descriptionController;
+  final TextEditingController destinationController;
 
   @override
   _DeliveryMapScreenState createState() => _DeliveryMapScreenState();
@@ -139,7 +145,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
   late TextEditingController cityTextController;
   late TextEditingController stateTextController;
   late TextEditingController zipTextController;
-  final _descriptionController = TextEditingController();
+  
 
   Districts? selectedDistrict;
   AllSchoolModel? selectedCategory;
@@ -150,7 +156,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
   List<Districts>? allSchoolList;
   String deliveryOptionsValue = 'choose_delivery_company'.tr;
   String? _deliveryOptionError;
-  TextEditingController phoneNumberEditingController = TextEditingController();
+
 
   List<Map<dynamic, String>> topSize =  [
     {'name': 'Dropp', 'logo': 'assets/icons1/dropp.jpeg', 'status': 'busy'.tr},
@@ -169,7 +175,6 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
 
   // Controllers for source and destination text fields
   final TextEditingController _sourceController = TextEditingController();
-  final TextEditingController _destinationController = TextEditingController();
   String _distance = '';
   String _duration = '';
 
@@ -308,7 +313,7 @@ LatLng? _previousMarkerPosition;
     cityTextController.dispose();
     stateTextController.dispose();
     zipTextController.dispose();
-    _descriptionController.dispose();
+    widget.descriptionController!.dispose();
 
     super.dispose();
   }
@@ -339,7 +344,7 @@ LatLng? _previousMarkerPosition;
     final address = await _getAddressFromLatLng(latLng);
     setState(() {
       _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
-      _destinationController.text = address;
+      widget.destinationController!.text = address;
       _destinationLatLng = latLng;
       _draggableMarker = _createDraggableMarker(latLng, address);
       _markers.add(_draggableMarker!);
@@ -425,7 +430,7 @@ LatLng? _previousMarkerPosition;
       // Stack(
       //   children: [
       //    TextField(
-      //   controller: _destinationController,
+      //   controller: widget.destinationController!,
       //   decoration: InputDecoration(
       //     labelText: 'where_to'.tr,
       //     hintText: '${'eg'.tr} KN 360 St 6',
@@ -494,13 +499,13 @@ LatLng? _previousMarkerPosition;
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // _destinationController.text == ''
+                // widget.destinationController!.text == ''
                 //     ? const SizedBox.shrink()
                 //     : Column(
                 //         children: [
                 //           _buildListTile(
                 //               icon: Icons.location_on,
-                //               title: _destinationController.text,
+                //               title: widget.destinationController!.text,
                 //               onTap: () {}),
                 //           sizedBox15,
                 //         ],
@@ -516,7 +521,7 @@ LatLng? _previousMarkerPosition;
                 sizedBox10,
     buildFormField(
   'phone_number'.tr,
-  phoneNumberEditingController,
+ widget.phoneNumberEditingController!,
   TextInputType.phone,
   '07XXXXXXXX',
   isPhoneNumber: true,
@@ -527,7 +532,7 @@ LatLng? _previousMarkerPosition;
 ),
                 sizedBox10,
                      ShortDescriptionInput(
-                controller: _descriptionController,
+                controller: widget.descriptionController!,
                 labelText: 'product_delivery_description'.tr,
                 hintText: 'describe_in_200_characters_or_less'.tr,
                 maxLength: 200,
@@ -714,7 +719,7 @@ Future<void> _getCurrentLocation() async {
       _sourceLatLng = const LatLng(-1.9482248511453184, 30.05919848211911); // Fixed pickup point
       _destinationLatLng = currentLatLng;
       _currentAddress = address;
-      _destinationController.text = address;
+      widget.destinationController!.text = address;
       _capturedAddresses.add(address); // Store the initial address
       
       // Clear existing markers and add new ones
@@ -788,7 +793,7 @@ Marker _createDraggableMarker(LatLng position, String address) {
       final newAddress = await _getAddressFromLatLng(newPosition);
       setState(() {
         _destinationLatLng = newPosition;
-        _destinationController.text = newAddress;
+        widget.destinationController!.text = newAddress;
         _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
         _draggableMarker = _createDraggableMarker(newPosition, newAddress);
         _markers.add(_draggableMarker!);
@@ -988,7 +993,7 @@ String _getBestLocationName(Placemark place) {
   }
 
   void _setDestinationFromInput() async {
-    final destination = _destinationController.text;
+    final destination = widget.destinationController!.text;
 
     if (destination.isEmpty || destination == 'current_location'.tr) {
       // If the source field is empty or set to "current_location".tr, use the current_location.tr    
@@ -1112,7 +1117,7 @@ String _getBestLocationName(Placemark place) {
     //   );
     //   return;
     // } 
-    else if (phoneNumberEditingController.text == '') {
+    else if (widget.phoneNumberEditingController!.text == '') {
        if (!_formKey.currentState!.validate()) {
     return; // Don't proceed if validation fails
   }
@@ -1133,8 +1138,8 @@ String _getBestLocationName(Placemark place) {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${'where_to'.tr}: ${_destinationController.text}'),
-              Text('${'receiver_phone_number'.tr}: ${phoneNumberEditingController.text}'),
+              Text('${'where_to'.tr}: ${'coordites'.tr}(${widget.destinationController!.text})'),
+              Text('${'receiver_phone_number'.tr}: ${widget.phoneNumberEditingController!.text}'),
               Text('${'distance'.tr}: $_distance'),
               Text('${'time_remaining'.tr}: $_duration'),
             ],
@@ -1168,9 +1173,13 @@ String _getBestLocationName(Placemark place) {
                           //**************** Bottom Sheet with slider */
                           return widget.isShop == 0
                               ? BottomSheetWithSlider(
-                                  shipper: widget.shipper,
-                                  homePhone: widget.homePhone,
-                                  destination: widget.destination,
+                                 
+                                  homePhone: widget.phoneNumberEditingController.text,
+                                        shippingAddress1:'${widget.schoolName}, ${widget.className}, ${widget.studentName}, ${widget.studentCode}',
+                                    shippingAddress2: '',
+                                    shippingCompany: AppConstants.deliveryCompany,
+                                    shippingCity: 'Kigali',
+                                    shippingCountry: 'Rwanda',
                                   availableBalance: '0.00',
                                   amount: widget.calculatedTotal.toString(),
                                   productId: widget.productId,
@@ -1202,11 +1211,15 @@ String _getBestLocationName(Placemark place) {
                                   schoolName: widget.schoolName,
                                 )
                               : BottomSheetWithSliderSp(
+                                customerNote: widget.descriptionController!.text,
                                   deliveryCost: widget.deliveryCost,
                                   materialCost: widget.calculatedTotal.toStringAsFixed(2),
-                                  shipper: widget.shipper,
-                                  homePhone: widget.homePhone,
-                                  destination: widget.destination,
+                                    shippingAddress1:widget.destinationController!.text,
+                                    shippingAddress2: '',
+                                    shippingCompany: AppConstants.deliveryCompany,
+                                    shippingCity: 'Kigali',
+                                    shippingCountry: 'Rwanda',
+                                  homePhone: widget.phoneNumberEditingController.text,
                                   studentId: widget.checkedStudentsId??0,
                                   randomNumber: widget.randomNumber,
                                   selectedProducts: widget.cart!,

@@ -1088,7 +1088,11 @@ sizedBox
                                 //**************** Bottom Sheet with slider */
                                 return BottomSheetWithSliderSl(
                                   availableBalance:availableBalance.toStringAsFixed(2),
-                                  shipper: widget.shipper,
+                                     shippingAddress1:'$schoolName, $className, $studentInfo',
+                                    shippingAddress2: '',
+                                    shippingCompany: AppConstants.deliveryCompany,
+                                    shippingCity: 'Kigali',
+                                    shippingCountry: 'Rwanda',
                                   homePhone: widget.homePhone,
                                   destination: widget.destination,
                                   amount: (widget.inputBalance.toString()==''||widget.inputBalance ==-1) ? totalAmount.toString():widget.inputBalance.toString(),

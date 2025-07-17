@@ -41,27 +41,39 @@ class PaymentMethodSelector extends StatefulWidget {
   final int randomNumber;
   final String edubox_service;
   final String service_charge;
-  final String destination;
   final String homePhone;
-  final String shipper;
   final List<EduboxMaterialModel>? svProductList;
   final List<SchoolLists>? productList;
   final String productName;
-  final List<String>? shopList;
+  final List<Map<String,dynamic>>? shopList;
   final String vat;
   final double? deliveryCost;
+  final String? customerNote;
+  final String  shippingAddress1;
+  final String shippingAddress2;
+  final String shippingFirstName;
+  final String shippingLastName;
+  final String shippingCompany;
+  final String shippingCity;
+  final String shippingCountry;
 
   PaymentMethodSelector(
       {super.key,
+      this.customerNote,
       this.deliveryCost,
-      required this.shipper,
+      required this.shippingAddress1,
+      required this.shippingAddress2,
+      required this.shippingFirstName,
+      required this.shippingLastName,
+      required this.shippingCompany,
+      required this.shippingCity,
+      required this.shippingCountry,
       required this.service_charge,
       this.shopList,
       required this.productName,
       this.productList,
       this.svProductList,
       required this.randomNumber,
-      required this.destination,
       required this.homePhone,
       required this.edubox_service,
       required this.transactionMoneyController,
@@ -115,6 +127,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
                   fontWeight: FontWeight.bold,
                 ),
           ),
+        
           const SizedBox(height: 20),
           _buildPaymentMethodSelector(),
           const SizedBox(height: 20),
@@ -315,8 +328,8 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
                         ),
                         onPressed: () async {
                           // await _initiatePayment();
-              //*******************************TEMPORARY PAYMENT CHECK */
-                           _handleSuccessfulPayment();
+                          //*******************************TEMPORARY PAYMENT CHECK */
+                          _handleSuccessfulPayment();
                         },
                         child: Text(
                           'pay_now'.tr,
@@ -356,7 +369,6 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
   }
 
   Future<void> _initiatePayment() async {
-
     // Show processing message
     _selectedMobileProvider != null
         ? showCustomSnackBarHelper(
@@ -448,88 +460,100 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
     final userId = Get.find<AuthController>().getUserId();
 
     try {
-    
-        await widget.shopController!.createOrder(
-            currency: AppConstants.currency,
-            shippingTotal: widget.deliveryCost!.toStringAsFixed(2),
-            total: widget.amount,
-            customerId: 6,
-            paymentMethod: _selectedMethod == 0
-                ? 'mobile_money'.tr
-                : _selectedMethod == 1
-                    ? 'card'.tr
-                    : _selectedMethod == 2
-                        ? 'bank'.tr
-                        : 'no_method'.tr,
-            paymentMethodTitle: _selectedMobileProvider == 0
-                ? 'MTN'
-                : _selectedMobileProvider == 1
-                    ? 'Airtel'
-                    : _selectedBankProvider == 0
-                        ? 'BK'
-                        : 'no_bank'.tr,
-            createdVia: 'Customer',
-            customerNote: 'customerNote');
-          
-    
-        if (widget.transactionType == "send_money") {
-          // First safely parse all numeric values
-          final amount = _parseDouble(widget.amount);
-          final totalAmount = _parseDouble(widget.amountToPay);
-          final balance = _parseDouble(widget.availableBalance);
-          final charge = _parseDouble(widget.serviceCharge);
+      if(widget.shopList!=null){
 
-          // Process successful payment
-          final transaction = await widget.transactionMoneyController.sendMoney(
-            contactModel: widget.contactModel,
-            amount: amount,
-            purpose: widget.purpose,
-            pinCode: widget.pinCode,
-            onSuggest: () => widget.contactController.addToSuggestContact(
-              widget.contactModel,
-              type: SuggestType.sendMoney,
-            ),
-          );
+      await widget.shopController!.createOrder(
+        products: widget.shopList??[],
+        feeName: 'convenience_fee'.tr,
+        feeAmount:'${double.parse(widget.service_charge).toInt()}',
+        shippingAddress1: widget.shippingAddress1,
+        shippingAddress2: widget.shippingAddress2,
+        shippingFirstName: widget.shippingFirstName,
+        shippingLastName: widget.shippingLastName,
+        shippingCompany: widget.shippingCompany,
+        shippingCity: widget.shippingCity,
+        shippingCountry: widget.shippingCountry,
+        currency: AppConstants.currency,
+        shippingTotal: widget.deliveryCost!.toStringAsFixed(2),
+        total: widget.amount,
+        customerId: 6,
+        paymentMethod: _selectedMethod == 0
+            ? 'mobile_money'.tr
+            : _selectedMethod == 1
+                ? 'card'.tr
+                : _selectedMethod == 2
+                    ? 'bank'.tr
+                    : 'no_method'.tr,
+        paymentMethodTitle: _selectedMobileProvider == 0
+            ? 'MTN'
+            : _selectedMobileProvider == 1
+                ? 'Airtel'
+                : _selectedBankProvider == 0
+                    ? 'BK'
+                    : 'no_bank'.tr,
+        createdVia: 'Customer',
+        customerNote: widget.customerNote ?? '',
+        homePhone: widget.homePhone,
+      );
+      }
 
-          widget.transactionId = transaction.body['transaction_id'];
+      if (widget.transactionType == "send_money") {
+        // First safely parse all numeric values
+        final amount = _parseDouble(widget.amount);
+        final totalAmount = _parseDouble(widget.amountToPay);
+        final balance = _parseDouble(widget.availableBalance);
+        final charge = _parseDouble(widget.serviceCharge);
 
-          await widget.transactionMoneyController.makePayment(
-            payment_method: _selectedMethod == 0
-                ? 'mobile_money'.tr
-                : _selectedMethod == 1
-                    ? 'card'.tr
-                    : _selectedMethod == 2
-                        ? 'bank'.tr
-                        : 'no_method'.tr,
-            payment_media: _selectedMobileProvider == 0
-                ? 'MTN'
-                : _selectedMobileProvider == 1
-                    ? 'Airtel'
-                    : _selectedBankProvider == 0
-                        ? 'BK'
-                        : 'no_bank'.tr,
-            payment_phone: _phoneController.text,
-            parent_id: userId!,
-            product_name: widget.edubox_service,
-            sv_product_list: widget.svProductList!,
-            destination: widget.destination,
-            homePhone: widget.homePhone,
-            shipper: widget.shipper,
-            studentId:
-                widget.studentId == 0 ? int.parse(userId) : widget.studentId,
-            amount: amount,
-            totalAmount: totalAmount,
-            productType: widget.productId,
-            productId: widget.productId,
-            balance: balance,
-            phoneNumber: widget.contactModel.phoneNumber!,
-            charge: charge,
-          );
+        // Process successful payment
+        final transaction = await widget.transactionMoneyController.sendMoney(
+          contactModel: widget.contactModel,
+          amount: amount,
+          purpose: widget.purpose,
+          pinCode: widget.pinCode,
+          onSuggest: () => widget.contactController.addToSuggestContact(
+            widget.contactModel,
+            type: SuggestType.sendMoney,
+          ),
+        );
 
-          showCustomSnackBarHelper('${'payment_successfully'.tr}!',
-              isError: false);
-        }
-      
+        widget.transactionId = transaction.body['transaction_id'];
+
+        await widget.transactionMoneyController.makePayment(
+          payment_method: _selectedMethod == 0
+              ? 'mobile_money'.tr
+              : _selectedMethod == 1
+                  ? 'card'.tr
+                  : _selectedMethod == 2
+                      ? 'bank'.tr
+                      : 'no_method'.tr,
+          payment_media: _selectedMobileProvider == 0
+              ? 'MTN'
+              : _selectedMobileProvider == 1
+                  ? 'Airtel'
+                  : _selectedBankProvider == 0
+                      ? 'BK'
+                      : 'no_bank'.tr,
+          payment_phone: _phoneController.text,
+          parent_id: userId!,
+          product_name: widget.edubox_service,
+          sv_product_list: widget.svProductList ?? [],
+          destination: widget.shippingAddress1,
+          homePhone: widget.homePhone,
+          shipper: widget.shippingCompany,
+          studentId:
+              widget.studentId == 0 ? int.parse(userId) : widget.studentId,
+          amount: amount,
+          totalAmount: totalAmount,
+          productType: widget.productId,
+          productId: widget.productId,
+          balance: balance,
+          phoneNumber: widget.contactModel.phoneNumber!,
+          charge: charge,
+        );
+
+        showCustomSnackBarHelper('${'payment_successfully'.tr}!',
+            isError: false);
+      }
     } catch (e) {
       print('Error processing successful payment: $e');
       showCustomSnackBarHelper(
@@ -626,7 +650,6 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
             style: Theme.of(context).textTheme.titleSmall,
           ),
           const SizedBox(height: 10),
-          Text('this is body:$body'),
           TextFormField(
             controller:
                 _selectedMethod == 0 ? _phoneController : _cardController,

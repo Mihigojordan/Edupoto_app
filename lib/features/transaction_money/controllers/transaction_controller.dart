@@ -207,7 +207,7 @@ class TransactionMoneyController extends GetxController implements GetxService {
 
     // }
     // else{
-    //   print('**********Failed to save sent money');
+      //  print('**********Failed to save sent money ${response.body}');
     // }
    
    }else{

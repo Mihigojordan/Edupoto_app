@@ -126,7 +126,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   //   onTap: () => Get.to(()=> const RequestedMoneyListScreen(requestType: RequestType.request)),
                   // ),
                       CustomInkWellWidget(
-                    child: widget.MenuItem(image: Images.withdraw,title: 'my_order'.tr),
+                    child: widget.MenuItem(image: Images.withdraw,title: 'my_orders'.tr),
                     onTap: () => Get.to(()=>  ShopOrderScreen()),
                   ),
 

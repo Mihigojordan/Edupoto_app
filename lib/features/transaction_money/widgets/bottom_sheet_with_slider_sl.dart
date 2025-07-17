@@ -54,12 +54,20 @@ class BottomSheetWithSliderSl extends StatefulWidget {
   final int randomNumber;
   final String homePhone;
   final String destination;
-  final String shipper;
+  final String shippingAddress1;
+  final String shippingAddress2;
+  final String shippingCompany;
+  final String shippingCity;
+  final String shippingCountry;
 
   const BottomSheetWithSliderSl({
     super.key,
     this.amountToPay,
-    required this.shipper,
+    required this.shippingAddress1,
+    required this.shippingAddress2,
+    required this.shippingCompany,
+    required this.shippingCity,
+    required this.shippingCountry,
     required this.homePhone,
     required this.destination,
     required this.studentName,
@@ -329,8 +337,13 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                     vat: widget.vat!,
                                     productList: widget.dataList??[],
                                     productName:widget.edubox_service??'no product found',
-                                    shipper:widget.shipper,
-                                    destination:widget.destination,
+                                     shippingAddress1:widget.shippingAddress1,
+                                    shippingAddress2: widget.shippingAddress2,
+                                    shippingFirstName: '',
+                                    shippingLastName: '',
+                                    shippingCompany: widget.shippingCompany,
+                                    shippingCity: widget.shippingCity,
+                                    shippingCountry: widget.shippingCountry,
                                     homePhone:widget.homePhone,
                                     service_charge:widget.serviceCharge??'0',
                                     edubox_service:widget.edubox_service??'no Edubox Service',
@@ -397,56 +410,56 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                       ],
                     ),
                   ),
-              transactionMoneyController.isNextBottomSheet ?
-                   Column(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      Dimensions.paddingSizeDefault / 1.7),
-                              child:
-                                  Divider(height: Dimensions.dividerSizeSmall),
-                            ),
-                            const SizedBox(
-                                height: Dimensions.paddingSizeDefault),
-                            CustomInkWellWidget(
-                              onTap: () async =>
-                                  await Get.find<ShareControllerSl>()
-                                      .statementScreenShootFunction(
-                                        destination: widget.destination,
-                                amount: widget.amount,
-                                transactionType: widget.transactionType,
-                                contactModel: widget.contactModel,
-                                charge: widget.transactionType == 'send_money'
-                                    ? Get.find<SplashController>()
-                                        .configModel!
-                                        .sendMoneyChargeFlat
-                                        .toString()
-                                    : cashOutCharge.toString(),
-                                trxId: transactionId,
-                                eduboxService: widget.edubox_service,
-                                studentInfo:
-                                    '${'code'.tr}: ${widget.studentCode}\n${'name'.tr}: ${widget.studentName}',
-                                inputBalance: widget.inputBalance,
-                                dataList: widget.dataList,
-                                productIndex: widget.productIndex,
-                                amountToPay: widget.amountToPay,
-                                nowPaid: widget.nowPaid,
-                                remainingAmount: widget.availableBalance,
-                                vat: widget.vat,
-                                serviceCharge: widget.serviceCharge,
-                                totalNowPaid: widget.totalNowPaid,
-                                serviceValue: widget.serviceValue,
-                                serviceIndex: widget.serviceIndex,
-                              ),
-                              child: Text('share_statement'.tr,
-                                  style: rubikMedium.copyWith(
-                                      fontSize: Dimensions.fontSizeLarge)),
-                            ),
-                            const SizedBox(
-                                height: Dimensions.paddingSizeDefault),
-                          ],
-                        ): const SizedBox(),
+              // transactionMoneyController.isNextBottomSheet ?
+              //      Column(
+              //             children: [
+              //               const Padding(
+              //                 padding: EdgeInsets.symmetric(
+              //                     horizontal:
+              //                         Dimensions.paddingSizeDefault / 1.7),
+              //                 child:
+              //                     Divider(height: Dimensions.dividerSizeSmall),
+              //               ),
+              //               const SizedBox(
+              //                   height: Dimensions.paddingSizeDefault),
+              //               CustomInkWellWidget(
+              //                 onTap: () async =>
+              //                     await Get.find<ShareControllerSl>()
+              //                         .statementScreenShootFunction(
+              //                           destination: widget.destination,
+              //                   amount: widget.amount,
+              //                   transactionType: widget.transactionType,
+              //                   contactModel: widget.contactModel,
+              //                   charge: widget.transactionType == 'send_money'
+              //                       ? Get.find<SplashController>()
+              //                           .configModel!
+              //                           .sendMoneyChargeFlat
+              //                           .toString()
+              //                       : cashOutCharge.toString(),
+              //                   trxId: transactionId,
+              //                   eduboxService: widget.edubox_service,
+              //                   studentInfo:
+              //                       '${'code'.tr}: ${widget.studentCode}\n${'name'.tr}: ${widget.studentName}',
+              //                   inputBalance: widget.inputBalance,
+              //                   dataList: widget.dataList,
+              //                   productIndex: widget.productIndex,
+              //                   amountToPay: widget.amountToPay,
+              //                   nowPaid: widget.nowPaid,
+              //                   remainingAmount: widget.availableBalance,
+              //                   vat: widget.vat,
+              //                   serviceCharge: widget.serviceCharge,
+              //                   totalNowPaid: widget.totalNowPaid,
+              //                   serviceValue: widget.serviceValue,
+              //                   serviceIndex: widget.serviceIndex,
+              //                 ),
+              //                 child: Text('share_statement'.tr,
+              //                     style: rubikMedium.copyWith(
+              //                         fontSize: Dimensions.fontSizeLarge)),
+              //               ),
+              //               const SizedBox(
+              //                   height: Dimensions.paddingSizeDefault),
+              //             ],
+              //           ): const SizedBox(),
                   transactionMoneyController.isNextBottomSheet
                       ?
                        Padding(
@@ -463,10 +476,10 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                               onTap: () {
                                 if (!kIsWeb) {
                                   Get.find<BottomSliderController>()
-                                      .goBackButton();
+                                      .goBackToHomeButton();
                                 } else {
                                         Get.find<BottomSliderController>()
-                                      .goBackButton();
+                                      .goBackToHomeButton();
       //                             Get.back();
       //                                 Get.put(AllSchoolController(allSchoolRepo: Get.find()))        .getSchoolList(false)
       //   .then((_) {

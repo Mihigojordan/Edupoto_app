@@ -662,5 +662,9 @@
   "billing": "Kwishyura",
   "paid_on": "Yishyuwe ku",
   "ref": "Ref",
-  "qty": "Umubare"
+  "qty": "Umubare",
+
+   "delivery_company":"Delivery Company",
+   "receiver_phone": "Receiver's Phone Number",
+   "customer_note":"Customer Note"
 }

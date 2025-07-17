@@ -25,7 +25,7 @@ class TransactionRepo {
   }
 
    Future<Response>  makePaymentApi({ required List<SchoolLists> product_list, required payment_media,required payment_method,required payment_phone, required parent_id,  required String product_name, List<EduboxMaterialModel>? sv_product_list, required int? studentId, required double amount,required double? totalAmount,required double charge,required int productId,required int productType,required String phoneNumber,required double balance,required String destination,required String shipper,required String homePhone }) async {
-    return await apiClient.postData(AppConstants.paymentHistory,{'payment_media':payment_media,'payment_method':payment_method,'payment_phone':payment_phone, 'parent_id':parent_id, 'student_id': studentId, 'amount': amount, 'total_amount':totalAmount, 'charge': charge, 'product_id':productId,'product_type':productType,'phone_number':phoneNumber,'balance':balance,'home_phone':homePhone,'destination':destination,'shipper':shipper, 'product_name':product_name,'product_list':sv_product_list??product_list });
+    return await apiClient.postData(AppConstants.paymentHistory,{'payment_media':payment_media,'payment_method':payment_method,'payment_phone':payment_phone, 'parent_id':parent_id, 'student_id': studentId, 'amount': amount, 'total_amount':totalAmount, 'charge': charge, 'product_id':productId,'product_type':productType,'phone_number':phoneNumber,'balance':balance,'home_phone':homePhone,'destination':destination,'shipper':shipper, 'product_name':product_name,'product_list':sv_product_list==[]?product_list:sv_product_list });
   }
 
   Future<Response>  requestMoneyApi({required String? phoneNumber, required double amount}) async {

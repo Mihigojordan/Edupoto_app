@@ -61,14 +61,14 @@ queryCategoryString = {
 queryOrderString = {
   "consumer_key": consumerKey,
   "consumer_secret": consumerSecret,
-  "_fields[]":['id','status','currency','prices_include_tax','date_created','date_modified','discount_total','discount_tax','shipping_total','shipping_tax','total','total_tax','cart_tax','customer_id','order_key','billing','shipping','payment_method','payment_method_title','transaction_id','customer_note','date_completed','date_paid','cart_hash','number','line_items',],
+  "_fields[]":['id','status','currency','prices_include_tax','date_created','date_modified','discount_total','discount_tax','shipping_total','shipping_tax','total','total_tax','cart_tax','customer_id','order_key','billing','shipping','payment_method','payment_method_title','transaction_id','customer_note','date_completed','date_paid','cart_hash','number','line_items','fee_lines','shipping_lines'],
   "per_page": "100"
 };
 
 queryCustomerString={
     "consumer_key": consumerKey,
   "consumer_secret": consumerSecret,
-  "_fields[]":['id','status','currency','prices_include_tax','date_created','date_modified','discount_total','discount_tax','shipping_total','shipping_tax','total','total_tax','cart_tax','customer_id','order_key','billing','shipping','payment_method','payment_method_title','transaction_id','customer_note','date_completed','date_paid','cart_hash','number','line_items',],
+  "_fields[]":['email','first_name','last_name','billing','shipping'],
   "per_page": "100"
 };
 
