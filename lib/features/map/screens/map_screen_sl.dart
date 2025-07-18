@@ -41,46 +41,45 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DeliveryMapScreenSl extends StatefulWidget {
-  const DeliveryMapScreenSl({
-    super.key,
-    required this.schoolId,
-    required this.classId,
-    required this.studentId,
-    required this.className,
-    required this.schoolName,
-    required this.studentName,
-    required this.studentCode,
-    required this.screenId,
-    required this.calculatedTotal,
-    required this.contactModel,
-    required this.eduboxService,
-    required this.dataList,
-    required this.shipper,
-    required this.destination,
-    required this.homePhone,
-    required this.productId,
-    required this.pinCodeFieldController,
-    required this.transactionType,
-    required this.calculatedTotalWithServices,
-    required this.productIndex,
-    required this.purpose,
-    required this.calculateServiceCharge,
-    required this.calculateVAT,
-    required this.productName,
-    required this.randomNumber,
-    required this.serviceIndex,
-    required this.totalAmount,
-    required this.vatPercentage,
-    required this.isShop,
-    required this.deliveryCost,
-    this.cart,
-    this.checkedStudents,
-    this.checkedStudentsId,
-    this.product,
-    this.quantity,
-    this.studentIndex,
-    required this.availableBalance
-  });
+  const DeliveryMapScreenSl(
+      {super.key,
+      required this.schoolId,
+      required this.classId,
+      required this.studentId,
+      required this.className,
+      required this.schoolName,
+      required this.studentName,
+      required this.studentCode,
+      required this.screenId,
+      required this.calculatedTotal,
+      required this.contactModel,
+      required this.eduboxService,
+      required this.dataList,
+      required this.shipper,
+      required this.destination,
+      required this.homePhone,
+      required this.productId,
+      required this.pinCodeFieldController,
+      required this.transactionType,
+      required this.calculatedTotalWithServices,
+      required this.productIndex,
+      required this.purpose,
+      required this.calculateServiceCharge,
+      required this.calculateVAT,
+      required this.productName,
+      required this.randomNumber,
+      required this.serviceIndex,
+      required this.totalAmount,
+      required this.vatPercentage,
+      required this.isShop,
+      required this.deliveryCost,
+      this.cart,
+      this.checkedStudents,
+      this.checkedStudentsId,
+      this.product,
+      this.quantity,
+      this.studentIndex,
+      required this.availableBalance});
 
   final double availableBalance;
   final int schoolId;
@@ -140,7 +139,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
   late TextEditingController cityTextController;
   late TextEditingController stateTextController;
   late TextEditingController zipTextController;
-  final _descriptionController =TextEditingController();
+  final _descriptionController = TextEditingController();
 
   Districts? selectedDistrict;
   AllSchoolModel? selectedCategory;
@@ -153,7 +152,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
   String? _deliveryOptionError;
   TextEditingController phoneNumberEditingController = TextEditingController();
 
-  List<Map<dynamic, String>> topSize =  [
+  List<Map<dynamic, String>> topSize = [
     {'name': 'Dropp', 'logo': 'assets/icons1/dropp.jpeg', 'status': 'busy'.tr},
     {
       'name': 'i-Posita',
@@ -178,12 +177,11 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
   LatLng? _sourceLatLng;
   LatLng? _destinationLatLng;
 
-Marker? _draggableMarker;
-bool _isDragging = false;
-String _currentAddress = '';
-bool _isLoadingAddress = false;
-LatLng? _previousMarkerPosition;
-
+  Marker? _draggableMarker;
+  bool _isDragging = false;
+  String _currentAddress = '';
+  bool _isLoadingAddress = false;
+  LatLng? _previousMarkerPosition;
 
   @override
   void initState() {
@@ -309,7 +307,7 @@ LatLng? _previousMarkerPosition;
     cityTextController.dispose();
     stateTextController.dispose();
     zipTextController.dispose();
-      _descriptionController.dispose();
+    _descriptionController.dispose();
 
     super.dispose();
   }
@@ -328,153 +326,156 @@ LatLng? _previousMarkerPosition;
             child: Stack(
               children: [
                 // Google Map
-      GoogleMap(
-  onMapCreated: (controller) => _mapController = controller,
-  initialCameraPosition: CameraPosition(
-    target: _initialPosition,
-    zoom: 14,
-  ),
-  markers: _markers,
-  polylines: _polylines,
-  onTap: (latLng) async {
-    final address = await _getAddressFromLatLng(latLng);
-    setState(() {
-      _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
-      _destinationController.text = address;
-      _destinationLatLng = latLng;
-      _draggableMarker = _createDraggableMarker(latLng, address);
-      _markers.add(_draggableMarker!);
-    });
-    _drawRoute();
-  },
-),
+                GoogleMap(
+                  onMapCreated: (controller) => _mapController = controller,
+                  initialCameraPosition: CameraPosition(
+                    target: _initialPosition,
+                    zoom: 14,
+                  ),
+                  markers: _markers,
+                  polylines: _polylines,
+                  onTap: (latLng) async {
+                    final address = await _getAddressFromLatLng(latLng);
+                    setState(() {
+                      _markers.removeWhere(
+                          (m) => m.markerId.value == 'draggable_marker');
+                      _destinationController.text = address;
+                      _destinationLatLng = latLng;
+                      _draggableMarker =
+                          _createDraggableMarker(latLng, address);
+                      _markers.add(_draggableMarker!);
+                    });
+                    _drawRoute();
+                  },
+                ),
 
                 // Floating Source and Destination Input Fields
-         Positioned(
-        top: 20,
-        left: 16,
-        right: 16,
-        child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-        border: Border.all(
-          color: Colors.grey.shade200,
-          width: 1,
-        ),
-      ),
-      child: RichText(
-        text: TextSpan(
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey.shade800,
-            height: 1.4,
-          ),
-          children: [
-            TextSpan(
-              text: '📍 ',
-              style: TextStyle(
-                color: Colors.red.shade400,
-              ),
-            ),
-            TextSpan(
-              text: 'drop_the_pin_to_your'.tr,
-             style:const TextStyle(
-               fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextSpan(
-              text: 'exact_delivery_location'.tr,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.blue.shade600,
-              ),
-            ),
-          ],
-        ),
-      ),
-        ),
-      ),
-      //               Positioned(
-      //                 top: 20, // Adjust the position as needed
-      //                 left: 16,
-      //                 right: 16,
-      //                 child: Container(
-      //                   padding: const EdgeInsets.all(16),
-      //                   decoration: BoxDecoration(
-      //                     color: Colors.white,
-      //                     borderRadius: BorderRadius.circular(10),
-      //                     boxShadow: const [
-      //                       BoxShadow(
-      //                         color: Colors.black26,
-      //                         blurRadius: 10,
-      //                         offset: Offset(0, 4),
-      //                       )
-      //                     ],
-      //                   ),
-      //                   child: Column(
-      //                     children: [
-      //           // Wrap  text field with a Stack to show loading
-      // Stack(
-      //   children: [
-      //    TextField(
-      //   controller: _destinationController,
-      //   decoration: InputDecoration(
-      //     labelText: 'where_to'.tr,
-      //     hintText: '${'eg'.tr} KN 360 St 6',
-      //     hintStyle: const TextStyle(color: Colors.grey),
-      //     border: const OutlineInputBorder(),
-      //     suffixIcon: IconButton(
-      //       icon: const Icon(Icons.search),
-      //       onPressed: () => _setDestinationFromInput(),
-      //     ),
-      //   ),
-      //   onChanged: (value) async {
-      //     if (value.isNotEmpty && value.length > 3) {
-      //       // Call your geocoding service for suggestions
-      //       List<Location> locations = await locationFromAddress(value);
-      //       if (locations.isNotEmpty) {
-      //         // Update the marker position
-      //         LatLng newPosition = LatLng(
-      //           locations.first.latitude,
-      //           locations.first.longitude,
-      //         );
-      //         setState(() {
-      //           _draggableMarker = _draggableMarker!.copyWith(
-      //             positionParam: newPosition,
-      //           );
-      //           _mapController.animateCamera(
-      //             CameraUpdate.newLatLng(newPosition),
-      //           );
-      //         });
-      //       }
-      //     }
-      //   },
-      // ),
-      //     if (_isLoadingAddress)
-      //       Positioned.fill(
-      //         child: Container(
-      //           color: Colors.black.withOpacity(0.1),
-      //           child: const Center(
-      //             child: CircularProgressIndicator(),
-      //           ),
-      //         ),
-      //       ),
-      //   ],
-      // ),
-      // Text('Drop the pin to a place you can receive your the product')
-      //                     ],
-      //                   ),
-      //                 ),
-      //               ),
+                Positioned(
+                  top: 20,
+                  left: 16,
+                  right: 16,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                      border: Border.all(
+                        color: Colors.grey.shade200,
+                        width: 1,
+                      ),
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade800,
+                          height: 1.4,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: '📍 ',
+                            style: TextStyle(
+                              color: Colors.red.shade400,
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'drop_the_pin_to_your'.tr,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'exact_delivery_location'.tr,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.blue.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                //               Positioned(
+                //                 top: 20, // Adjust the position as needed
+                //                 left: 16,
+                //                 right: 16,
+                //                 child: Container(
+                //                   padding: const EdgeInsets.all(16),
+                //                   decoration: BoxDecoration(
+                //                     color: Colors.white,
+                //                     borderRadius: BorderRadius.circular(10),
+                //                     boxShadow: const [
+                //                       BoxShadow(
+                //                         color: Colors.black26,
+                //                         blurRadius: 10,
+                //                         offset: Offset(0, 4),
+                //                       )
+                //                     ],
+                //                   ),
+                //                   child: Column(
+                //                     children: [
+                //           // Wrap  text field with a Stack to show loading
+                // Stack(
+                //   children: [
+                //    TextField(
+                //   controller: _destinationController,
+                //   decoration: InputDecoration(
+                //     labelText: 'where_to'.tr,
+                //     hintText: '${'eg'.tr} KN 360 St 6',
+                //     hintStyle: const TextStyle(color: Colors.grey),
+                //     border: const OutlineInputBorder(),
+                //     suffixIcon: IconButton(
+                //       icon: const Icon(Icons.search),
+                //       onPressed: () => _setDestinationFromInput(),
+                //     ),
+                //   ),
+                //   onChanged: (value) async {
+                //     if (value.isNotEmpty && value.length > 3) {
+                //       // Call your geocoding service for suggestions
+                //       List<Location> locations = await locationFromAddress(value);
+                //       if (locations.isNotEmpty) {
+                //         // Update the marker position
+                //         LatLng newPosition = LatLng(
+                //           locations.first.latitude,
+                //           locations.first.longitude,
+                //         );
+                //         setState(() {
+                //           _draggableMarker = _draggableMarker!.copyWith(
+                //             positionParam: newPosition,
+                //           );
+                //           _mapController.animateCamera(
+                //             CameraUpdate.newLatLng(newPosition),
+                //           );
+                //         });
+                //       }
+                //     }
+                //   },
+                // ),
+                //     if (_isLoadingAddress)
+                //       Positioned.fill(
+                //         child: Container(
+                //           color: Colors.black.withOpacity(0.1),
+                //           child: const Center(
+                //             child: CircularProgressIndicator(),
+                //           ),
+                //         ),
+                //       ),
+                //   ],
+                // ),
+                // Text('Drop the pin to a place you can receive your the product')
+                //                     ],
+                //                   ),
+                //                 ),
+                //               ),
               ],
             ),
           ),
@@ -510,33 +511,36 @@ LatLng? _previousMarkerPosition;
                 //     icon: Icons.star, title: 'choose_saved_place'.tr, onTap: () {}),
                 sizedBox10,
                 Text(
-                  'please_provide_phone_number_available_at_your_current_location'.tr,
+                  'please_provide_phone_number_available_at_your_current_location'
+                      .tr,
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: kErrorBorderColor, fontWeight: FontWeight.normal),
                 ),
                 sizedBox10,
-    buildFormField(
-  'phone_number'.tr,
-  phoneNumberEditingController,
-  TextInputType.phone,
-  '07XXXXXXXX',
-  isPhoneNumber: true,
-  validator: (value) {
-    return _validatePhoneNumber(value) ?? 
-      (value?.isEmpty ?? true ? 'please_select_receiver_phone_number'.tr : null);
-  },
-),
-                    sizedBox10,
-                     ShortDescriptionInput(
-                controller: _descriptionController,
-                labelText: 'product_delivery_description'.tr,
-                hintText: 'describe_in_200_characters_or_less'.tr,
-                maxLength: 200,
-                onChanged: (value) {
-                  // Handle real-time changes if needed
-                },
-              ),
-              sizedBox10,
+                buildFormField(
+                  'phone_number'.tr,
+                  phoneNumberEditingController,
+                  TextInputType.phone,
+                  '07XXXXXXXX',
+                  isPhoneNumber: true,
+                  validator: (value) {
+                    return _validatePhoneNumber(value) ??
+                        (value?.isEmpty ?? true
+                            ? 'please_select_receiver_phone_number'.tr
+                            : null);
+                  },
+                ),
+                sizedBox10,
+                ShortDescriptionInput(
+                  controller: _descriptionController,
+                  labelText: 'product_delivery_description'.tr,
+                  hintText: 'describe_in_200_characters_or_less'.tr,
+                  maxLength: 200,
+                  onChanged: (value) {
+                    // Handle real-time changes if needed
+                  },
+                ),
+                sizedBox10,
                 // CustomDropdown(
                 //     onChanged: (onChanged) {
                 //       setState(() {
@@ -553,7 +557,7 @@ LatLng? _previousMarkerPosition;
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     InkWell(
-                      onTap: () => _captureInformation( ),
+                      onTap: () => _captureInformation(),
                       child: Container(
                         // width: MediaQuery.of(context).size.width,
                         margin: const EdgeInsets.all(10.0),
@@ -570,9 +574,9 @@ LatLng? _previousMarkerPosition;
                             ),
                           ],
                         ),
-                        child:  Text(
+                        child: Text(
                           'next'.tr,
-                          style:const TextStyle(
+                          style: const TextStyle(
                             fontSize: 16.0,
                             color: Colors.white,
                           ),
@@ -589,92 +593,93 @@ LatLng? _previousMarkerPosition;
     );
   }
 
-TextFormField buildFormField(
-  String labelText,
-  TextEditingController editingController,
-  TextInputType textInputType,
-  String hintText, {
-  String? Function(String?)? validator,
-  bool isPhoneNumber = false,
-}) {
-  return TextFormField(
-    textAlign: TextAlign.start,
-    controller: editingController,
-    keyboardType: textInputType,
-    style: kInputTextStyle,
-    validator: validator,
-    inputFormatters: isPhoneNumber
-        ? [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
-            LengthLimitingTextInputFormatter(15), // For international numbers
-            PhoneNumberFormatter(),
-          ]
-        : null,
-    decoration: InputDecoration(
-      isCollapsed: true,
-      contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 15),
-      isDense: true,
-      focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: kamber300Color),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: kTextLightColor),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      labelText: labelText,
-      hintStyle: const TextStyle(color: Colors.grey),
-      hintText: hintText,
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-      suffixIcon: isPhoneNumber
-          ? ValueListenableBuilder<TextEditingValue>(
-              valueListenable: editingController,
-              builder: (context, value, _) {
-                if (value.text.isEmpty) return const SizedBox.shrink();
-                final isValid = _validatePhoneNumber(value.text) == null;
-                return Icon(
-                  isValid ? Icons.check_circle : Icons.error,
-                  color: isValid ? Colors.green : Colors.red,
-                  size: 20,
-                );
-              },
-            )
+  TextFormField buildFormField(
+    String labelText,
+    TextEditingController editingController,
+    TextInputType textInputType,
+    String hintText, {
+    String? Function(String?)? validator,
+    bool isPhoneNumber = false,
+  }) {
+    return TextFormField(
+      textAlign: TextAlign.start,
+      controller: editingController,
+      keyboardType: textInputType,
+      style: kInputTextStyle,
+      validator: validator,
+      inputFormatters: isPhoneNumber
+          ? [
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
+              LengthLimitingTextInputFormatter(15), // For international numbers
+              PhoneNumberFormatter(),
+            ]
           : null,
-    ),
-  );
-}
-
-String? _validatePhoneNumber(String? value) {
-  if (value == null || value.isEmpty) return null;
-  
-  final cleaned = value.replaceAll(RegExp(r'[^\d+]'), '');
-
-  // 1. International numbers (+ prefix)
-  if (cleaned.startsWith('+')) {
-    return cleaned.length >= 9 && cleaned.length <= 15 
-        ? null 
-        : 'Enter 9-15 digits after +';
+      decoration: InputDecoration(
+        isCollapsed: true,
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 13, horizontal: 15),
+        isDense: true,
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 1, color: kamber300Color),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 1, color: kTextLightColor),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        labelText: labelText,
+        hintStyle: const TextStyle(color: Colors.grey),
+        hintText: hintText,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: isPhoneNumber
+            ? ValueListenableBuilder<TextEditingValue>(
+                valueListenable: editingController,
+                builder: (context, value, _) {
+                  if (value.text.isEmpty) return const SizedBox.shrink();
+                  final isValid = _validatePhoneNumber(value.text) == null;
+                  return Icon(
+                    isValid ? Icons.check_circle : Icons.error,
+                    color: isValid ? Colors.green : Colors.red,
+                    size: 20,
+                  );
+                },
+              )
+            : null,
+      ),
+    );
   }
 
-  // 2. Rwandan numbers (07, 72, 73, 78)
-  if (cleaned.startsWith('07') || cleaned.startsWith('72') || 
-     cleaned.startsWith('73') || cleaned.startsWith('78')) {
-    return cleaned.length == 10 ? null : 'Rwandan number must be 10 digits';
+  String? _validatePhoneNumber(String? value) {
+    if (value == null || value.isEmpty) return null;
+
+    final cleaned = value.replaceAll(RegExp(r'[^\d+]'), '');
+
+    // 1. International numbers (+ prefix)
+    if (cleaned.startsWith('+')) {
+      return cleaned.length >= 9 && cleaned.length <= 15
+          ? null
+          : 'Enter 9-15 digits after +';
+    }
+
+    // 2. Rwandan numbers (07, 72, 73, 78)
+    if (cleaned.startsWith('07') ||
+        cleaned.startsWith('72') ||
+        cleaned.startsWith('73') ||
+        cleaned.startsWith('78')) {
+      return cleaned.length == 10 ? null : 'Rwandan number must be 10 digits';
+    }
+
+    // 3. General 10-digit numbers (US/Canada/India etc.)
+    if (cleaned.length == 9 && !cleaned.startsWith('0')) {
+      return null;
+    }
+
+    return 'Enter valid 10-digit, Rwandan (07...) or international (+...) number';
   }
-
-  // 3. General 10-digit numbers (US/Canada/India etc.)
-  if (cleaned.length == 9 && !cleaned.startsWith('0')) {
-    return null;
-  }
-
-  return 'Enter valid 10-digit, Rwandan (07...) or international (+...) number';
-}
-
-
 
   Widget _buildListTile({
     required IconData icon,
@@ -696,141 +701,143 @@ String? _validatePhoneNumber(String? value) {
     );
   }
 
-
 // Add these variables to your state class
-final List<String> _capturedAddresses = []; // Stores all captured addresses
-String? _selectedAddress; // Currently selected address for printing
+  final List<String> _capturedAddresses = []; // Stores all captured addresses
+  String? _selectedAddress; // Currently selected address for printing
 
-Future<void> _getCurrentLocation() async {
-  // Check and request location permissions
-  if (!await _checkLocationPermissions()) return;
+  Future<void> _getCurrentLocation() async {
+    // Check and request location permissions
+    if (!await _checkLocationPermissions()) return;
 
-  try {
-    Position position = await Geolocator.getCurrentPosition();
-    LatLng currentLatLng = LatLng(position.latitude, position.longitude);
-    String address = await _getAddressFromLatLng(currentLatLng);
+    try {
+      Position position = await Geolocator.getCurrentPosition();
+      LatLng currentLatLng = LatLng(position.latitude, position.longitude);
+      String address = await _getAddressFromLatLng(currentLatLng);
 
-    setState(() {
-      _initialPosition = currentLatLng;
-      _sourceLatLng = const LatLng(-1.929662943503856, 30.114273068056985); // Fixed pickup point
-      _destinationLatLng = currentLatLng;
-      _currentAddress = address;
-      _destinationController.text = address;
-      _capturedAddresses.add(address); // Store the initial address
-      
-      // Clear existing markers and add new ones
-      _markers.clear();
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('fixed_source'),
-          position: _sourceLatLng!,
-          infoWindow: const InfoWindow(title: 'Pickup Location'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-        ),
-      );
-      
-      _draggableMarker = _createDraggableMarker(currentLatLng, address);
-      _markers.add(_draggableMarker!);
-      
-      // Draw initial route
-      _drawRoute();
-    });
-    
-  } catch (e) {
-    debugPrint('Error getting location: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Could not get location: ${e.toString()}')),
-    );
-  }
-}
+      setState(() {
+        _initialPosition = currentLatLng;
+        _sourceLatLng = const LatLng(
+            -1.929662943503856, 30.114273068056985); // Fixed pickup point
+        _destinationLatLng = currentLatLng;
+        _currentAddress = address;
+        _destinationController.text = address;
+        _capturedAddresses.add(address); // Store the initial address
 
-Future<bool> _checkLocationPermissions() async {
-  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please enable location services')),
-    );
-    return false;
-  }
+        // Clear existing markers and add new ones
+        _markers.clear();
+        _markers.add(
+          Marker(
+            markerId: const MarkerId('fixed_source'),
+            position: _sourceLatLng!,
+            infoWindow: const InfoWindow(title: 'Pickup Location'),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueGreen),
+          ),
+        );
 
-  LocationPermission permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
+        _draggableMarker = _createDraggableMarker(currentLatLng, address);
+        _markers.add(_draggableMarker!);
+
+        // Draw initial route
+        _drawRoute();
+      });
+    } catch (e) {
+      debugPrint('Error getting location: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Location permissions are required')),
+        SnackBar(content: Text('Could not get location: ${e.toString()}')),
       );
-      return false;
     }
   }
 
-  if (permission == LocationPermission.deniedForever) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Enable location permissions in settings')),
-    );
-    return false;
+  Future<bool> _checkLocationPermissions() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enable location services')),
+      );
+      return false;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are required')),
+        );
+        return false;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Enable location permissions in settings')),
+      );
+      return false;
+    }
+
+    return true;
   }
 
-  return true;
-}
-
-Marker _createDraggableMarker(LatLng position, String address) {
-  return Marker(
-    markerId: const MarkerId('draggable_marker'),
-    position: position,
-    draggable: true,
-    infoWindow: InfoWindow(
-      title: 'Delivery Location',
-      snippet: address.length > 30 ? '${address.substring(0, 30)}...' : address,
-      onTap: () => _showAddressDialog(address),
-    ),
-    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    onDragEnd: (newPosition) async {
-      final newAddress = await _getAddressFromLatLng(newPosition);
-      setState(() {
-        _destinationLatLng = newPosition;
-        _destinationController.text = newAddress;
-        _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
-        _draggableMarker = _createDraggableMarker(newPosition, newAddress);
-        _markers.add(_draggableMarker!);
-      });
-      _drawRoute();
-    },
-  );
-}
+  Marker _createDraggableMarker(LatLng position, String address) {
+    return Marker(
+      markerId: const MarkerId('draggable_marker'),
+      position: position,
+      draggable: true,
+      infoWindow: InfoWindow(
+        title: 'Delivery Location',
+        snippet:
+            address.length > 30 ? '${address.substring(0, 30)}...' : address,
+        onTap: () => _showAddressDialog(address),
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      onDragEnd: (newPosition) async {
+        final newAddress = await _getAddressFromLatLng(newPosition);
+        setState(() {
+          _destinationLatLng = newPosition;
+          _destinationController.text = newAddress;
+          _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
+          _draggableMarker = _createDraggableMarker(newPosition, newAddress);
+          _markers.add(_draggableMarker!);
+        });
+        _drawRoute();
+      },
+    );
+  }
 
 // Add proper address dialog
-void _showAddressDialog(String address) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Captured Address'),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(address),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _printAddress(address);
-                Navigator.pop(context);
-              },
-              child: const Text('Print Address'),
-            ),
-          ],
+  void _showAddressDialog(String address) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Captured Address'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(address),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  _printAddress(address);
+                  Navigator.pop(context);
+                },
+                child: const Text('Print Address'),
+              ),
+            ],
+          ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Close'),
-        ),
-      ],
-    ),
-  );
-}
+    );
+  }
 // Replace your _getAddressFromLatLng with this more robust version
 // Future<String> _getAddressFromLatLng(LatLng position) async {
 //   try {
@@ -845,7 +852,7 @@ void _showAddressDialog(String address) {
 
 //     final place = placemarks.first;
 //     final addressParts = <String>[];
-    
+
 //     void addPart(String? value, [String? prefix]) {
 //       if (value != null && value.isNotEmpty) {
 //         addressParts.add(prefix != null ? '$prefix $value' : value);
@@ -859,7 +866,7 @@ void _showAddressDialog(String address) {
 //     addPart(place.country);
 //     addPart(place.postalCode, "Postal Code");
 
-//     return addressParts.isNotEmpty 
+//     return addressParts.isNotEmpty
 //         ? addressParts.join('\n')
 //         : _formatFallbackCoordinates(position);
 
@@ -872,31 +879,31 @@ void _showAddressDialog(String address) {
 //   }
 // }
 
-String _formatFallbackCoordinates(LatLng position) {
-  return "Location: ${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}";
-}
+  String _formatFallbackCoordinates(LatLng position) {
+    return "Location: ${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}";
+  }
 
-void _printAddress(String address) {
-  debugPrint('====== DELIVERY ADDRESS ======');
-  debugPrint(address);
-  debugPrint('Captured: ${DateTime.now()}');
-  debugPrint('=============================');
-  
-  // For actual printing (requires printing package):
-  // Printing.layoutPdf(
-  //   onLayout: (format) => _generatePdf(address),
-  // );
-  
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Address prepared for printing')),
-  );
-}
+  void _printAddress(String address) {
+    debugPrint('====== DELIVERY ADDRESS ======');
+    debugPrint(address);
+    debugPrint('Captured: ${DateTime.now()}');
+    debugPrint('=============================');
+
+    // For actual printing (requires printing package):
+    // Printing.layoutPdf(
+    //   onLayout: (format) => _generatePdf(address),
+    // );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Address prepared for printing')),
+    );
+  }
 
   void _addCurrentLocationMarker(Position position) {
     final currentLocationMarker = Marker(
       markerId: const MarkerId('current_location'),
       position: LatLng(position.latitude, position.longitude),
-      infoWindow:  InfoWindow(
+      infoWindow: InfoWindow(
         title: 'your_location'.tr,
         snippet: '${'you_are_here'.tr}!',
       ),
@@ -908,71 +915,76 @@ void _printAddress(String address) {
     });
   }
 
-Future<String> _getAddressFromLatLng(LatLng position) async {
-  setState(() => _isLoadingAddress = true);
-  try {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
+  Future<String> _getAddressFromLatLng(LatLng position) async {
+    setState(() => _isLoadingAddress = true);
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
 
-    if (placemarks.isNotEmpty) {
-      Placemark place = placemarks.first;
-      
-      // Hierarchical address suggestion - tries to find the most specific name first
-      String address = _getBestLocationName(place);
-      
-      // If we still don't have a good name, show coordinates
-      if (address.isEmpty) {
-        return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+
+        // Hierarchical address suggestion - tries to find the most specific name first
+        String address = _getBestLocationName(place);
+
+        // If we still don't have a good name, show coordinates
+        if (address.isEmpty) {
+          return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+        }
+
+        // Add district/city if available to provide context
+        if (place.locality != null &&
+            place.locality!.isNotEmpty &&
+            !address.contains(place.locality!)) {
+          address += ', ${place.locality}';
+        }
+
+        return address;
       }
-      
-      // Add district/city if available to provide context
-      if (place.locality != null && place.locality!.isNotEmpty && 
-          !address.contains(place.locality!)) {
-        address += ', ${place.locality}';
-      }
-      
-      return address;
+      return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+    } catch (e) {
+      print('Reverse geocoding error: $e');
+      return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+    } finally {
+      setState(() => _isLoadingAddress = false);
     }
-    return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
-  } catch (e) {
-    print('Reverse geocoding error: $e');
-    return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
-  } finally {
-    setState(() => _isLoadingAddress = false);
   }
-}
 
 // Helper method to get the best possible location name
-String _getBestLocationName(Placemark place) {
-  // Try to get the most specific name first
-  if (place.name != null && place.name!.isNotEmpty && place.name != 'Unnamed Road') {
-    return place.name!;
+  String _getBestLocationName(Placemark place) {
+    // Try to get the most specific name first
+    if (place.name != null &&
+        place.name!.isNotEmpty &&
+        place.name != 'Unnamed Road') {
+      return place.name!;
+    }
+
+    if (place.street != null && place.street!.isNotEmpty) {
+      return place.street!;
+    }
+
+    if (place.subLocality != null && place.subLocality!.isNotEmpty) {
+      return place.subLocality!;
+    }
+
+    if (place.locality != null && place.locality!.isNotEmpty) {
+      return place.locality!;
+    }
+
+    if (place.subAdministrativeArea != null &&
+        place.subAdministrativeArea!.isNotEmpty) {
+      return place.subAdministrativeArea!;
+    }
+
+    if (place.administrativeArea != null &&
+        place.administrativeArea!.isNotEmpty) {
+      return place.administrativeArea!;
+    }
+
+    return '';
   }
-  
-  if (place.street != null && place.street!.isNotEmpty) {
-    return place.street!;
-  }
-  
-  if (place.subLocality != null && place.subLocality!.isNotEmpty) {
-    return place.subLocality!;
-  }
-  
-  if (place.locality != null && place.locality!.isNotEmpty) {
-    return place.locality!;
-  }
-  
-  if (place.subAdministrativeArea != null && place.subAdministrativeArea!.isNotEmpty) {
-    return place.subAdministrativeArea!;
-  }
-  
-  if (place.administrativeArea != null && place.administrativeArea!.isNotEmpty) {
-    return place.administrativeArea!;
-  }
-  
-  return '';
-}
 
   void _setSourceFromInput() async {
     final source = _sourceController.text;
@@ -992,7 +1004,7 @@ String _getBestLocationName(Placemark place) {
     final destination = _destinationController.text;
 
     if (destination.isEmpty || destination == 'current_location'.tr) {
-      // If the source field is empty or set to "current_location".tr, use the current_location.tr    
+      // If the source field is empty or set to "current_location".tr, use the current_location.tr
       setState(() {
         _sourceLatLng = _initialPosition;
         _addMarker(_initialPosition, 'source'.tr, BitmapDescriptor.hueGreen);
@@ -1002,7 +1014,8 @@ String _getBestLocationName(Placemark place) {
       if (destinationLatLng != null) {
         setState(() {
           _destinationLatLng = destinationLatLng;
-          _addMarker(destinationLatLng, 'destination'.tr, BitmapDescriptor.hueRed);
+          _addMarker(
+              destinationLatLng, 'destination'.tr, BitmapDescriptor.hueRed);
         });
         _drawRoute();
       }
@@ -1029,7 +1042,7 @@ String _getBestLocationName(Placemark place) {
       final geometry = data['routes'][0]['geometry']['coordinates'];
       final distance = (data['routes'][0]['distance'] / 1000)
           .toStringAsFixed(2); // Distance in km
-      final duration = ((data['routes'][0]['duration'] / 60)+5)
+      final duration = ((data['routes'][0]['duration'] / 60) + 5)
           .toStringAsFixed(2); // Duration in minutes
 
       setState(() {
@@ -1045,7 +1058,6 @@ String _getBestLocationName(Placemark place) {
             width: 5,
           ),
         );
-        
       });
     } else {
       print('Failed to fetch route from OSRM.');
@@ -1077,7 +1089,8 @@ String _getBestLocationName(Placemark place) {
       position: position,
       infoWindow: InfoWindow(
         title: title,
-        snippet: '${'coordinates'.tr}: ${position.latitude}, ${position.longitude}',
+        snippet:
+            '${'coordinates'.tr}: ${position.latitude}, ${position.longitude}',
       ),
       icon: BitmapDescriptor.defaultMarkerWithHue(hue),
     );
@@ -1087,9 +1100,7 @@ String _getBestLocationName(Placemark place) {
     });
   }
 
-
-
-   void _captureInformation() {
+  void _captureInformation() {
     final screenWidth = MediaQuery.of(context).size.width;
 
     if (_sourceLatLng == null || _destinationLatLng == null) {
@@ -1101,7 +1112,7 @@ String _getBestLocationName(Placemark place) {
         ),
       );
       return;
-    } 
+    }
     // else if (deliveryOptionsValue == 'choose_delivery_company'.tr) {
     //   setState(() {
     //     _deliveryOptionError = 'please_select_delivery_option'.tr;
@@ -1114,10 +1125,10 @@ String _getBestLocationName(Placemark place) {
     //     ),
     //   );
     //   return;
-    // } 
+    // }
     else if (phoneNumberEditingController.text == '') {
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
+        SnackBar(
           content: Text('please_select_receiver_phone_number'.tr),
           backgroundColor: Colors.red,
         ),
@@ -1128,14 +1139,18 @@ String _getBestLocationName(Placemark place) {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title:  Text('confirm'.tr),
+          title: Text('confirm'.tr),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('${'where_to'.tr}: ${_destinationController.text}'),
-              Text('${'distance'.tr}: $_distance'),
-              Text('${'time_remaining'.tr}: $_duration'),
+              _distance == ''
+                  ? const SizedBox.shrink()
+                  : Text('${'distance'.tr}: $_distance'),
+              _duration == ''
+                  ? const SizedBox.shrink()
+                  : Text('${'time_remaining'.tr}: $_duration'),
             ],
           ),
           actions: [
@@ -1167,11 +1182,11 @@ String _getBestLocationName(Placemark place) {
                           //**************** Bottom Sheet with slider */
                           return widget.isShop == 0
                               ? BottomSheetWithSliderSl(
-                                shippingAddress1:widget.destination,
-                                    shippingAddress2: '',
-                                    shippingCompany: AppConstants.deliveryCompany,
-                                    shippingCity: 'Kigali',
-                                    shippingCountry: 'Rwanda',
+                                  shippingAddress1: widget.destination,
+                                  shippingAddress2: '',
+                                  shippingCompany: AppConstants.deliveryCompany,
+                                  shippingCity: 'Kigali',
+                                  shippingCountry: 'Rwanda',
                                   homePhone: widget.homePhone,
                                   destination: widget.destination,
                                   availableBalance: '0.00',
@@ -1205,17 +1220,17 @@ String _getBestLocationName(Placemark place) {
                                   schoolName: widget.schoolName,
                                 )
                               : BottomSheetWithSliderSp(
-                                customerNote: '',
+                                  customerNote: '',
                                   deliveryCost: widget.deliveryCost,
-                                  materialCost: widget.calculatedTotal.toStringAsFixed(2),
-                                
+                                  materialCost:
+                                      widget.calculatedTotal.toStringAsFixed(2),
                                   homePhone: widget.homePhone,
-                                  shippingAddress1:widget.destination,
-                                    shippingAddress2: '',
-                                    shippingCompany: AppConstants.deliveryCompany,
-                                    shippingCity: 'Kigali',
-                                    shippingCountry: 'Rwanda',
-                                  studentId: widget.checkedStudentsId??0,
+                                  shippingAddress1: widget.destination,
+                                  shippingAddress2: '',
+                                  shippingCompany: AppConstants.deliveryCompany,
+                                  shippingCity: 'Kigali',
+                                  shippingCountry: 'Rwanda',
+                                  studentId: widget.checkedStudentsId ?? 0,
                                   randomNumber: widget.randomNumber,
                                   selectedProducts: widget.cart!,
                                   quantity: widget.quantity!,

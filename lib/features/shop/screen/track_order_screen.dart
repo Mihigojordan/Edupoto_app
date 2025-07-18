@@ -197,14 +197,14 @@ class TrackOrderScreen extends StatelessWidget {
             _buildShippingDetailRow(
               context,
               'carrier'.tr,
-              'Express Shipping',
+             order.shipping.company,
               Icons.local_shipping,
             ),
             const Divider(height: 24),
             _buildShippingDetailRow(
               context,
               'tracking_number'.tr,
-              'RW${order.id}456789',
+              'RW${order.id}',
               Icons.confirmation_number,
             ),
             const Divider(height: 24),

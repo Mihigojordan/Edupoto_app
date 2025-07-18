@@ -49,6 +49,7 @@ class ShopOrderScreen extends StatelessWidget {
       ),
       body: GetBuilder<ShopController>(
         builder: (shopController) {
+          final customerId= Get.find<ShopController>().getCustomerId();
           // Show loading indicator while loading
           if (shopController.isLoading && shopController.orderList == null) {
             return Center(child: CircularProgressIndicator());
@@ -82,7 +83,7 @@ class ShopOrderScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final order = shopController.orderList![index];
                   //***********************************display order based on specific user */
-                  return shopController.orderList![index].customerId==6? OrderCard(order: order):const SizedBox.shrink();
+                  return shopController.orderList![index].customerId==customerId? OrderCard(order: order):const SizedBox.shrink();
                 },
               ),
             ),

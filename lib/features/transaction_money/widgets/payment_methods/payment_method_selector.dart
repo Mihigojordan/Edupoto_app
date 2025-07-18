@@ -103,13 +103,26 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
   int _selectedMethod = 0; // 0=MOMO, 1=Card, 2=Bank
   int? _selectedMobileProvider; // 0=MTN, 1=Airtel
   int? _selectedBankProvider; // 0=BK
+  final customerId = Get.find<ShopController>().getCustomerId();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _cardController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final _firstNameController = TextEditingController();
+final _lastNameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var body;
 
+@override
+void dispose() {
+  _firstNameController.dispose();
+  _lastNameController.dispose();
+  super.dispose();
+}
+
   @override
   Widget build(BuildContext context) {
+
+    
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -135,6 +148,13 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
           if (_selectedMethod == 2) _buildBankProviders(),
           const SizedBox(height: 10),
           _buildPaymentInputField(),
+          sizedBox10,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _customerInfo(),
+            ],
+          ),
           const SizedBox(height: 30),
           // _buildConfirmButton(),
           _confirmationButton(),
@@ -330,6 +350,10 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
                           // await _initiatePayment();
                           //*******************************TEMPORARY PAYMENT CHECK */
                           _handleSuccessfulPayment();
+                          if(customerId==null){
+                            _createCustomer(); 
+                          }
+                         
                         },
                         child: Text(
                           'pay_now'.tr,
@@ -456,11 +480,28 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
     }
   }
 
+  void _createCustomer(){
+    try{
+  if (_formKey.currentState!.validate()) {
+    // If form is valid, proceed with submissi
+    widget.shopController!.customerReg(email:_emailController.text,phone: _phoneController.text,firstName: _firstNameController.text,lastName:_lastNameController.text);
+    }
+    }catch (e){
+      print('email error $e' );
+         showCustomSnackBarHelper(
+        'user_creation_failed'.tr,
+        isError: true,
+      );
+    }
+  
+  }
+
   void _handleSuccessfulPayment() async {
     final userId = Get.find<AuthController>().getUserId();
-
+ 
     try {
-      if(widget.shopList!=null){
+
+      if(widget.shopList!=null && customerId!=null){
 
       await widget.shopController!.createOrder(
         products: widget.shopList??[],
@@ -476,7 +517,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
         currency: AppConstants.currency,
         shippingTotal: widget.deliveryCost!.toStringAsFixed(2),
         total: widget.amount,
-        customerId: 6,
+        customerId: customerId!,
         paymentMethod: _selectedMethod == 0
             ? 'mobile_money'.tr
             : _selectedMethod == 1
@@ -698,6 +739,151 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
       ),
     );
   }
+
+Widget _customerInfo() {
+  final shopController = Get.find<ShopController>();
+  final customerInfo = shopController.getCustomerInfo();
+  final bool isLoggedIn = customerId != null;
+  bool showAdditionalInfo = isLoggedIn ? false : false;
+  bool isEditing = false; // Track editing state
+
+  // Initialize controllers with customer data if available
+  final _emailController = TextEditingController(text: customerInfo?.email ?? '');
+  final _firstNameController = TextEditingController(text: customerInfo?.firstName ?? '');
+  final _lastNameController = TextEditingController(text: customerInfo?.lastName ?? '');
+
+  return StatefulBuilder(
+    builder: (context, setState) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          // Email field (editable when not logged in or in edit mode)
+          if (!isLoggedIn || isEditing) ...[
+             Text('enter_your_email_to_continue'.tr),
+            TextFormField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              decoration: InputDecoration(
+                hintText: 'email_address'.tr,
+                prefixIcon: const Icon(Icons.email),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                errorMaxLines: 2,
+              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'please_enter_required_details'.tr;
+                }
+                final emailRegex = RegExp(
+                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
+                );
+                if (!emailRegex.hasMatch(value.trim())) {
+                  return 'please_enter_a_valid_email'.tr;
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 16),
+          ],
+
+          // Display customer info when not editing
+          if (isLoggedIn && !isEditing && customerInfo != null) 
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Email: ${customerInfo.email ?? 'N/A'}'),
+                if (customerInfo.firstName != null)
+                  Text('First Name: ${customerInfo.firstName}'),
+                if (customerInfo.lastName != null)
+                  Text('Last Name: ${customerInfo.lastName}'),
+              ],
+            ),
+
+          // Edit/Save button for logged-in users
+          if (isLoggedIn) 
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  isEditing = !isEditing;
+                  if (!isEditing) {
+                    // Save changes
+                    shopController.updateCustomerInfo(
+                      id:customerId!,
+                      phone: _phoneController.text,
+                      email: _emailController.text,
+                      firstName: _firstNameController.text,
+                      lastName: _lastNameController.text,
+                    );
+                  }
+                });
+              },
+              child: Text(isEditing ? 'Save Changes' : 'Edit Information'),
+            ),
+
+          // Additional info section (for non-logged-in or editing)
+          if (!isLoggedIn || isEditing) ...[
+            // Toggle button for non-logged-in users
+            if (!isLoggedIn) 
+              TextButton(
+                onPressed: () => setState(() => showAdditionalInfo = !showAdditionalInfo),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(showAdditionalInfo 
+                      ? 'Hide Additional Information'.tr 
+                      : 'Show Additional Information'.tr),
+                    Icon(showAdditionalInfo 
+                      ? Icons.keyboard_arrow_up 
+                      : Icons.keyboard_arrow_down),
+                  ],
+                ),
+              ),
+
+            // Additional fields (shown when expanded or editing)
+            if (showAdditionalInfo || isEditing) ...[
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _firstNameController,
+                decoration: InputDecoration(
+                  hintText: 'first_name'.tr,
+                  prefixIcon: const Icon(Icons.person),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'please_enter_required_details'.tr;
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _lastNameController,
+                decoration: InputDecoration(
+                  hintText: 'last_name'.tr,
+                  prefixIcon: const Icon(Icons.person),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'please_enter_required_details'.tr;
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ],
+        ],
+      );
+    },
+  );
+}
 
   Widget _buildDragHandle() {
     return Center(

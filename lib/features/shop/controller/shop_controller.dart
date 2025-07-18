@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/data/api/api_checker.dart';
 import 'package:get/get.dart';
@@ -7,6 +9,7 @@ import 'package:hosomobile/features/shop/domain/models/attribute_model.dart';
 import 'package:hosomobile/features/shop/domain/models/category_model.dart';
 import 'package:hosomobile/features/shop/domain/models/brand_model.dart';
 import 'package:hosomobile/features/shop/domain/models/customer_model.dart';
+import 'package:hosomobile/features/shop/domain/models/customer_short_data_model.dart';
 import 'package:hosomobile/features/shop/domain/models/order_model.dart';
 import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/features/shop/domain/repository/shop_repo.dart';
@@ -218,21 +221,21 @@ class ShopController extends GetxController implements GetxService{
 
   }
 
-   Future<Response> customerReg(String email) async{
+   Future<Response> customerReg({required String email,required String phone,required String firstName,required String lastName} ) async{
       _isLoading = true;
       update();
 
-      Response response = await shopRepo.createCustomer(email: email);
+      Response response = await shopRepo.createCustomer(email: email,phone: phone,firstName: firstName,lastName: lastName);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
+        print('cusotmer id ${response.body['id'].toString()}');
 
-
-        // Get.offAllNamed(RouteHelper.getWelcomeRoute(
-        //   countryCode: signUpBody.dialCountryCode,phoneNumber: signUpBody.phone,
-        //   password: signUpBody.password,
-        // ));
-    // ************************ remove the delay after registration******************
-            // Get.offAllNamed(RouteHelper.getRestart());
+       setCustomerData(CustomerShortDataModel(
+          email: response.body['email'].toString(),
+          phone: response.body['phone'].toString(),
+          firstName: response.body['first_name'].toString(),
+          lastName: response.body['last_name'].toString(),
+        ));
        //Set Parent Id for the child
        shopRepo.setCustomerId(response.body['id'].toString());
 
@@ -243,5 +246,55 @@ class ShopController extends GetxController implements GetxService{
       update();
       return response;
   }
+
+    Future<Response> updateCustomerInfo({ required int id, required String email,required String phone,required String firstName,required String lastName} ) async{
+      _isLoading = true;
+      update();
+
+      Response response = await shopRepo.editCustomer(id:id, email: email,phone: phone,firstName: firstName,lastName: lastName);
+
+      if (response.statusCode == 200) {
+       
+
+       setCustomerData(CustomerShortDataModel(
+          email: response.body['email'].toString(),
+          phone: response.body['phone'].toString(),
+          firstName: response.body['first_name'].toString(),
+          lastName: response.body['last_name'].toString(),
+        ));
+       //Set Parent Id for the child
+       shopRepo.setCustomerId(response.body['id'].toString());
+
+      } else {
+        ApiChecker.checkApi(response);
+      }
+      _isLoading = false;
+      update();
+      return response;
+  }
+
+    Future setCustomerData(CustomerShortDataModel customerData) async {
+    await shopRepo.setCustomerData(customerData);
+  }
+  CustomerShortDataModel? getCustomerInfo(){
+    CustomerShortDataModel? customerData;
+    if(shopRepo.getCustomerData() != '') {
+      customerData = CustomerShortDataModel.fromJson(jsonDecode(shopRepo.getCustomerData()));
+    }
+    return customerData;
+  }
+
+   Future setCustomerId(String customerId) async {
+    await shopRepo.setCustomerId(customerId);
+  }
+ int? getCustomerId(){
+    int? customerId;
+    if(shopRepo.getCustomerId() != '') {
+      customerId = int.parse(shopRepo.getCustomerId());
+    }
+    return customerId;
+  }
+
+  void removeUserId()=>  shopRepo.removeCustomerId();
 
 }

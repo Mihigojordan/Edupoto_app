@@ -187,6 +187,15 @@ bool _isDragging = false;
 String _currentAddress = '';
 bool _isLoadingAddress = false;
 LatLng? _previousMarkerPosition;
+bool _isInputLocation= false;
+
+void onInputLocation(){
+  setState(
+    (){
+_isInputLocation = !_isInputLocation;
+    }
+  );
+}
 
 
   @override
@@ -354,131 +363,148 @@ LatLng? _previousMarkerPosition;
 ),
 
                 // Floating Source and Destination Input Fields
-         Positioned(
+     _isInputLocation==false?Positioned(
         top: 20,
         left: 16,
         right: 16,
-        child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-        border: Border.all(
-          color: Colors.grey.shade200,
-          width: 1,
-        ),
-      ),
-      child: RichText(
-        text: TextSpan(
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey.shade800,
-            height: 1.4,
-          ),
-          children: [
-            TextSpan(
-              text: '📍 ',
-              style: TextStyle(
-                color: Colors.red.shade400,
-              ),
-            ),
-            TextSpan(
-              text: 'drop_the_pin_to_your'.tr,
-             style:const TextStyle(
-               fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextSpan(
-              text: 'exact_delivery_location'.tr,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.blue.shade600,
-              ),
+        child: InkWell(
+          onTap: () => onInputLocation(),
+          child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
+          border: Border.all(
+            color: Colors.grey.shade200,
+            width: 1,
+          ),
+                ),
+                child: RichText(
+          text: TextSpan(
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade800,
+              height: 1.4,
+            ),
+            children: [
+              TextSpan(
+                text: '📍 ',
+                style: TextStyle(
+                  color: Colors.red.shade400,
+                ),
+              ),
+              TextSpan(
+                text: 'drop_the_pin_to_your'.tr,
+               style:const TextStyle(
+                 fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextSpan(
+                text: ' ${'exact_delivery_location'.tr}',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.blue.shade600,
+                ),
+              ),
+                  TextSpan(
+                text: ' ${'or'.tr} ',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: kTextBlackColor,
+                ),
+              ),
+                     TextSpan(
+            text: ' ${'click_here_to_enter_where_to_deliver'.tr}',
+            style:const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.red,
+              decoration: TextDecoration.underline, // This is the correct way to underline
+            ),            ),
+            ],
+          ),
+                ),
+          ),
         ),
-      ),
+      ):
+                    Positioned(
+                      top: 20, // Adjust the position as needed
+                      left: 16,
+                      right: 16,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            )
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                // Wrap  text field with a Stack to show loading
+      Stack(
+        children: [
+         TextField(
+        controller: widget.destinationController,
+        decoration: InputDecoration(
+          labelText: 'where_to'.tr,
+          hintText: '${'eg'.tr} KN 360 St 6',
+          hintStyle: const TextStyle(color: Colors.grey),
+          border: const OutlineInputBorder(),
+          // suffixIcon: IconButton(
+          //   icon: const Icon(Icons.search),
+          //   onPressed: () => _setDestinationFromInput(),
+          // ),
         ),
+        onChanged: (value) async {
+          if (value.isNotEmpty && value.length > 3) {
+            // Call your geocoding service for suggestions
+            List<Location> locations = await locationFromAddress(value);
+            if (locations.isNotEmpty) {
+              // Update the marker position
+              LatLng newPosition = LatLng(
+                locations.first.latitude,
+                locations.first.longitude,
+              );
+              setState(() {
+                _draggableMarker = _draggableMarker!.copyWith(
+                  positionParam: newPosition,
+                );
+                _mapController.animateCamera(
+                  CameraUpdate.newLatLng(newPosition),
+                );
+              });
+            }
+          }
+        },
       ),
-      //               Positioned(
-      //                 top: 20, // Adjust the position as needed
-      //                 left: 16,
-      //                 right: 16,
-      //                 child: Container(
-      //                   padding: const EdgeInsets.all(16),
-      //                   decoration: BoxDecoration(
-      //                     color: Colors.white,
-      //                     borderRadius: BorderRadius.circular(10),
-      //                     boxShadow: const [
-      //                       BoxShadow(
-      //                         color: Colors.black26,
-      //                         blurRadius: 10,
-      //                         offset: Offset(0, 4),
-      //                       )
-      //                     ],
-      //                   ),
-      //                   child: Column(
-      //                     children: [
-      //           // Wrap  text field with a Stack to show loading
-      // Stack(
-      //   children: [
-      //    TextField(
-      //   controller: widget.destinationController!,
-      //   decoration: InputDecoration(
-      //     labelText: 'where_to'.tr,
-      //     hintText: '${'eg'.tr} KN 360 St 6',
-      //     hintStyle: const TextStyle(color: Colors.grey),
-      //     border: const OutlineInputBorder(),
-      //     suffixIcon: IconButton(
-      //       icon: const Icon(Icons.search),
-      //       onPressed: () => _setDestinationFromInput(),
-      //     ),
-      //   ),
-      //   onChanged: (value) async {
-      //     if (value.isNotEmpty && value.length > 3) {
-      //       // Call your geocoding service for suggestions
-      //       List<Location> locations = await locationFromAddress(value);
-      //       if (locations.isNotEmpty) {
-      //         // Update the marker position
-      //         LatLng newPosition = LatLng(
-      //           locations.first.latitude,
-      //           locations.first.longitude,
-      //         );
-      //         setState(() {
-      //           _draggableMarker = _draggableMarker!.copyWith(
-      //             positionParam: newPosition,
-      //           );
-      //           _mapController.animateCamera(
-      //             CameraUpdate.newLatLng(newPosition),
-      //           );
-      //         });
-      //       }
-      //     }
-      //   },
-      // ),
-      //     if (_isLoadingAddress)
-      //       Positioned.fill(
-      //         child: Container(
-      //           color: Colors.black.withOpacity(0.1),
-      //           child: const Center(
-      //             child: CircularProgressIndicator(),
-      //           ),
-      //         ),
-      //       ),
-      //   ],
-      // ),
-      // Text('Drop the pin to a place you can receive your the product')
-      //                     ],
-      //                   ),
-      //                 ),
-      //               ),
+          if (_isLoadingAddress)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.1),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
+        ],
+      ),
+   
+                          ],
+                        ),
+                      ),
+                    ),
               ],
             ),
           ),
@@ -719,7 +745,7 @@ Future<void> _getCurrentLocation() async {
       _sourceLatLng = const LatLng(-1.9482248511453184, 30.05919848211911); // Fixed pickup point
       _destinationLatLng = currentLatLng;
       _currentAddress = address;
-      widget.destinationController!.text = address;
+      widget.destinationController.text = address;
       _capturedAddresses.add(address); // Store the initial address
       
       // Clear existing markers and add new ones
@@ -1138,10 +1164,10 @@ String _getBestLocationName(Placemark place) {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${'where_to'.tr}: ${'coordites'.tr}(${widget.destinationController!.text})'),
+              Text('${'where_to'.tr}: ${widget.destinationController.text}'),
               Text('${'receiver_phone_number'.tr}: ${widget.phoneNumberEditingController!.text}'),
-              Text('${'distance'.tr}: $_distance'),
-              Text('${'time_remaining'.tr}: $_duration'),
+            _distance==''?const SizedBox.shrink():  Text('${'distance'.tr}: $_distance'),
+              _duration==''?const SizedBox.shrink():  Text('${'time_remaining'.tr}: $_duration'),
             ],
           ),
           actions: [
@@ -1211,10 +1237,10 @@ String _getBestLocationName(Placemark place) {
                                   schoolName: widget.schoolName,
                                 )
                               : BottomSheetWithSliderSp(
-                                customerNote: widget.descriptionController!.text,
+                                customerNote: widget.descriptionController.text,
                                   deliveryCost: widget.deliveryCost,
                                   materialCost: widget.calculatedTotal.toStringAsFixed(2),
-                                    shippingAddress1:widget.destinationController!.text,
+                                    shippingAddress1:widget.destinationController.text,
                                     shippingAddress2: '',
                                     shippingCompany: AppConstants.deliveryCompany,
                                     shippingCity: 'Kigali',

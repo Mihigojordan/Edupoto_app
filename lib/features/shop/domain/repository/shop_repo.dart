@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:hosomobile/data/api/api_client.dart';
 import 'package:hosomobile/data/api/woocommerce_api_client.dart';
 import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
+import 'package:hosomobile/features/shop/domain/models/customer_short_data_model.dart';
 import 'package:hosomobile/util/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -91,9 +94,29 @@ class ShopRepo {
     return await apiClient.getCustomerData(AppConstants.getCustomer);
   }
 
-  Future<Response> createCustomer({required String email}) async {
-    return await apiClient.postData(AppConstants.getCustomer, {'email': email});
+  Future<Response> createCustomer({required String email,required String phone,required String firstName,required String lastName}) async {
+    return await apiClient.postData(AppConstants.getCustomer, {'email': email,'phone': phone,'first_name':firstName,'last_name':lastName});
   }
+
+    Future<Response> editCustomer({required int id, required String email,required String phone,required String firstName,required String lastName}) async {
+    return await apiClient.postData('${AppConstants.getCustomer}/$id', {'email': email,'phone': phone,'first_name':firstName,'last_name':lastName});
+  }
+
+     Future<void> setCustomerData(CustomerShortDataModel customerData) async{
+     try{
+       await sharedPreferences.setString(AppConstants.customerData, jsonEncode(customerData.toJson()));
+     }
+     catch(e){
+       rethrow;
+     }
+   }
+
+     void removeCustomerData()=> sharedPreferences.remove(AppConstants.customerData);
+  
+
+   String getCustomerData() {
+     return sharedPreferences.getString(AppConstants.customerData) ?? '';
+   }
 
   Future<void> setCustomerId(String customerId) async {
     try {

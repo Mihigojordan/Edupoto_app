@@ -109,7 +109,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.picture_as_pdf),
-              title: const Text('save_as_PDF'),
+              title:  Text('save_as_pdf'.tr),
               onTap: () {
                 Navigator.pop(context);
                 _generateAndSavePdf();
@@ -117,7 +117,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.share),
-              title: const Text('share_order'),
+              title:  Text('share_order'.tr),
               onTap: () {
                 Navigator.pop(context);
                 _shareOrder();
