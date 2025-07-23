@@ -149,12 +149,7 @@ void dispose() {
           const SizedBox(height: 10),
           _buildPaymentInputField(),
           sizedBox10,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              _customerInfo(),
-            ],
-          ),
+          _customerInfo(),
           const SizedBox(height: 30),
           // _buildConfirmButton(),
           _confirmationButton(),
@@ -347,13 +342,15 @@ void dispose() {
                           ),
                         ),
                         onPressed: () async {
-                          // await _initiatePayment();
+                         
                           //*******************************TEMPORARY PAYMENT CHECK */
-                          _handleSuccessfulPayment();
+                         
                           if(customerId==null){
                             _createCustomer(); 
-                          }
-                         
+                          }else{
+                              await _initiatePayment();
+                              //  _handleSuccessfulPayment();
+                          } 
                         },
                         child: Text(
                           'pay_now'.tr,
@@ -392,7 +389,7 @@ void dispose() {
     );
   }
 
-  Future<void> _initiatePayment() async {
+  Future<void> _initiatePayment({int? customId}) async {
     // Show processing message
     _selectedMobileProvider != null
         ? showCustomSnackBarHelper(
@@ -416,10 +413,10 @@ void dispose() {
     );
 
     // Start polling for payment status
-    _pollPaymentStatus();
+    _pollPaymentStatus(customId:customId);
   }
 
-  void _pollPaymentStatus() async {
+  void _pollPaymentStatus({int? customId}) async {
     const maxAttempts = 10; // Maximum number of polling attempts
     const interval = Duration(seconds: 3); // Poll every 3 seconds
     int attempts = 0;
@@ -438,7 +435,7 @@ void dispose() {
         switch (status) {
           case 'SUCCESSFUL':
             paymentCompleted = true;
-            _handleSuccessfulPayment();
+            _handleSuccessfulPayment(customId: customId);
             break;
 
           case 'FAILED':
@@ -480,11 +477,16 @@ void dispose() {
     }
   }
 
-  void _createCustomer(){
+  void _createCustomer()  {
+
     try{
   if (_formKey.currentState!.validate()) {
     // If form is valid, proceed with submissi
-    widget.shopController!.customerReg(email:_emailController.text,phone: _phoneController.text,firstName: _firstNameController.text,lastName:_lastNameController.text);
+    widget.shopController!.customerReg(email:_emailController.text,phone: _phoneController.text,firstName: _firstNameController.text,lastName:_lastNameController.text).then((value) async{
+      //  _handleSuccessfulPayment(customId:value.body['id']);
+      await _initiatePayment(customId:value.body['id'] );
+    });
+  
     }
     }catch (e){
       print('email error $e' );
@@ -496,12 +498,12 @@ void dispose() {
   
   }
 
-  void _handleSuccessfulPayment() async {
+  void _handleSuccessfulPayment({int ? customId}) async {
     final userId = Get.find<AuthController>().getUserId();
- 
+    print('88888888888888 $customId'); 
     try {
 
-      if(widget.shopList!=null && customerId!=null){
+      if((widget.shopList!=null && customId!=null)|| (widget.shopList!=null && customerId!=null)){
 
       await widget.shopController!.createOrder(
         products: widget.shopList??[],
@@ -517,7 +519,7 @@ void dispose() {
         currency: AppConstants.currency,
         shippingTotal: widget.deliveryCost!.toStringAsFixed(2),
         total: widget.amount,
-        customerId: customerId!,
+        customerId: customerId??customId!,
         paymentMethod: _selectedMethod == 0
             ? 'mobile_money'.tr
             : _selectedMethod == 1
@@ -747,10 +749,12 @@ Widget _customerInfo() {
   bool showAdditionalInfo = isLoggedIn ? false : false;
   bool isEditing = false; // Track editing state
 
-  // Initialize controllers with customer data if available
-  final _emailController = TextEditingController(text: customerInfo?.email ?? '');
-  final _firstNameController = TextEditingController(text: customerInfo?.firstName ?? '');
-  final _lastNameController = TextEditingController(text: customerInfo?.lastName ?? '');
+ // Initialize controllers with customer data if available
+  if (customerInfo != null) {
+    _emailController.text = customerInfo.email ?? '';
+    _firstNameController.text = customerInfo.firstName ?? '';
+    _lastNameController.text = customerInfo.lastName ?? '';
+  }
 
   return StatefulBuilder(
     builder: (context, setState) {
@@ -759,11 +763,16 @@ Widget _customerInfo() {
         children: [
           // Email field (editable when not logged in or in edit mode)
           if (!isLoggedIn || isEditing) ...[
-             Text('enter_your_email_to_continue'.tr),
+             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+               children: [
+                 Text('enter_your_email_to_continue'.tr),
+               ],
+             ),
             TextFormField(
-              controller: _emailController,
+               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+               autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration: InputDecoration(
                 hintText: 'email_address'.tr,
                 prefixIcon: const Icon(Icons.email),
@@ -785,19 +794,24 @@ Widget _customerInfo() {
                 return null;
               },
             ),
-            SizedBox(height: 16),
+       const     SizedBox(height: 16),
           ],
 
           // Display customer info when not editing
           if (isLoggedIn && !isEditing && customerInfo != null) 
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text('Email: ${customerInfo.email ?? 'N/A'}'),
-                if (customerInfo.firstName != null)
-                  Text('First Name: ${customerInfo.firstName}'),
-                if (customerInfo.lastName != null)
-                  Text('Last Name: ${customerInfo.lastName}'),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Email: ${customerInfo.email ?? 'N/A'}'),
+                    if (customerInfo.firstName != null)
+                      Text('First Name: ${customerInfo.firstName}'),
+                    if (customerInfo.lastName != null)
+                      Text('Last Name: ${customerInfo.lastName}'),
+                  ],
+                ),
               ],
             ),
 
@@ -845,7 +859,7 @@ Widget _customerInfo() {
             if (showAdditionalInfo || isEditing) ...[
               SizedBox(height: 16),
               TextFormField(
-                controller: _firstNameController,
+                 controller: _firstNameController,
                 decoration: InputDecoration(
                   hintText: 'first_name'.tr,
                   prefixIcon: const Icon(Icons.person),
@@ -862,7 +876,7 @@ Widget _customerInfo() {
               ),
               SizedBox(height: 16),
               TextFormField(
-                controller: _lastNameController,
+               controller: _lastNameController,
                 decoration: InputDecoration(
                   hintText: 'last_name'.tr,
                   prefixIcon: const Icon(Icons.person),

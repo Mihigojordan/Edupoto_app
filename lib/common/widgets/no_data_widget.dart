@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/components/custom_buttons.dart';
+import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
+import 'package:hosomobile/features/shop/screen/shop_screen.dart';
 import 'package:hosomobile/util/dimensions.dart';
 import 'package:hosomobile/util/images.dart';
 import 'package:hosomobile/util/styles.dart';
@@ -27,7 +31,7 @@ class NoDataFoundWidget extends StatelessWidget {
              'no_data_found'.tr, textAlign: TextAlign.center, style: rubikRegular,
           ),
           const SizedBox(height: 40),
-
+         DefaultButtonWidth(onPress: ()=>Get.to(const ShoppingScreen()), title: 'continue_shopping'.tr, color1: kyellow800Color, color2: kamber300Color, width: 150)
         ],
       ),
     ),

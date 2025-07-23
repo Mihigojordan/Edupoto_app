@@ -139,6 +139,20 @@ void _calculateTotals() {
     }
   }
 
+     String? getHeading(List<SchoolLists> schoolList, int schoolListIndex) {
+  if (schoolList.isEmpty) return null;
+  
+  final item = schoolList[0]; // Safe to access since we checked isEmpty
+  switch (item.transactionType) {
+    case AppConstants.classRequirement:
+      return 'class_requirements'.tr;
+    case AppConstants.dormitoryEssential:
+      return 'dormitory_essentials'.tr;
+    default:
+      return null;
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SchoolListController>(builder: (schoolLists) {
@@ -159,21 +173,6 @@ void _calculateTotals() {
 
   int schoolListIndex = schoolLists.schoolListIndex;
 
-    String? 
-    heading = 
-    // schoolList[schoolListIndex].transactionType == AppConstants.headteacherMessage
-    //       ? 'Headteachers Message'
-    //       : 
-      schoolList[schoolListIndex].transactionType == AppConstants.classRequirement
-              ? 'class_requirements'.tr: schoolList[schoolListIndex].transactionType == AppConstants.dormitoryEssential
-          ? 'dormitory_essentials'.tr
-          : schoolList[schoolListIndex].transactionType == AppConstants.tuitionFee
-              ? 'paid_at_school'.tr
-          : schoolList[schoolListIndex].transactionType == AppConstants.textBook
-              ? 'text_books'.tr
-                          : '';
-
-
       return Column(
         children: [
           !schoolLists.firstLoading
@@ -184,7 +183,7 @@ void _calculateTotals() {
           schoolLists.isLoading
               ? _buildLoadingIndicator(context)
               : const SizedBox.shrink(),
-     schoolLists.schoolListIndex !=1?  _buildTotalPriceAndButtons(context,  schoolListIndex:schoolLists.schoolListIndex,heading:heading,schoolList:schoolList,isChecked:isChecked):const SizedBox.shrink(),
+     schoolLists.schoolListIndex !=1? getHeading(schoolList, schoolListIndex)==null?const SizedBox.shrink(): _buildTotalPriceAndButtons(context,  schoolListIndex:schoolLists.schoolListIndex,heading:getHeading(schoolList, schoolListIndex)??'' ,schoolList:schoolList,isChecked:isChecked):const SizedBox.shrink(),
         ],
       );
     });
@@ -208,10 +207,10 @@ void _calculateTotals() {
       case 7:
         return schoolLists.paymentList;
       default:
-        // Filter out tuition fee items when showing all_school_list
+        // Filter out tuition fee/headteacher message/text books items when showing all_school_list
        return schoolLists.schoolList.where((item) => 
           item.transactionType != AppConstants.tuitionFee 
-           && item.transactionType != AppConstants.headteacherMessage
+           && item.transactionType != AppConstants.headteacherMessage && item.transactionType != AppConstants.textBook
         ).toList();
     }
   }
@@ -223,6 +222,8 @@ void _calculateTotals() {
 }
 
 Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int schoolListIndex) {
+  final heading = getHeading(schoolList, schoolListIndex) ?? '';
+  
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeExtraSmall),
     child: Container(
@@ -235,29 +236,31 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
         border: Border.all(width: 1, color: Colors.grey),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Scrollbar(
-        thumbVisibility: true,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: schoolList.length,
-          itemBuilder: (ctx, index) {
-            // Skip tuition fee items and headteacher messages when showing all lists
-            if (schoolListIndex == 0 && 
-                (schoolList[index].transactionType == AppConstants.tuitionFee ) ) {
-              return const SizedBox.shrink();
-            }
-            
-            return SingleSchoolListWidget(
-              index: schoolListIndex,
-              schoolLists: schoolList[index],
-              initialChecked: isChecked[index],
-              onChanged: (value) {
-                onCheckboxChanged(index, value!);
-              },
-            );
-          },
-        ),
-      ),
+      child: schoolList.isEmpty 
+          ? Center(child: Text('no_items_available'.tr))
+          : Scrollbar(
+              thumbVisibility: true,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: schoolList.length,
+                itemBuilder: (ctx, index) {
+                  // Skip tuition fee items and headteacher messages when showing all lists
+                  if (schoolListIndex == 0 && 
+                      (schoolList[index].transactionType == AppConstants.tuitionFee)) {
+                    return const SizedBox.shrink();
+                  }
+                  
+                  return SingleSchoolListWidget(
+                    index: schoolListIndex,
+                    schoolLists: schoolList[index],
+                    initialChecked: isChecked[index],
+                    onChanged: (value) {
+                      onCheckboxChanged(index, value!);
+                    },
+                  );
+                },
+              ),
+            ),
     ),
   );
 }
@@ -348,7 +351,7 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
             () => SchoolTransactionConfirmationScreen(
               studentController: widget.studentController,
               studentIndex: widget.studentIndex,
-              availableBalance: totalPrice,
+              availableBalance: 0.00,
               shipper:widget.shipper,
               homePhone:widget.homePhone,
               destination:widget.destination,
@@ -396,7 +399,7 @@ Widget _buildSchoolList(BuildContext context, List<SchoolLists> schoolList, int 
 
 final materialBalance=_calculateMaterialBalance(schoolListModel);
         // Validate amount against balance
-  if (amount < 100 || amount > materialBalance || materialBalance <= 0.00) {
+  if (amount < 100  || materialBalance < 0.00) {
     dialog.showWarningDialog(
       context: context,
       balance: materialBalance,
@@ -461,7 +464,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
             () => SchoolTransactionConfirmationScreen(
               studentController: widget.studentController,
               studentIndex: widget.studentIndex,
-              availableBalance: totalPrice,
+              availableBalance:0.00,
               screenId:1,
               homePhone:widget.homePhone,
               shipper:widget.shipper,
@@ -587,7 +590,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
             () => SchoolTransactionConfirmationScreen(
               studentController: widget.studentController,
               studentIndex: widget.studentIndex,
-              availableBalance: totalPrice,
+              availableBalance: 0.00,
               studentId: widget.studentId!,
               shipper: widget.shipper,
               homePhone:widget.homePhone,
@@ -638,7 +641,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
 
 final materialBalance=_calculateMaterialBalance(schoolListModel);
         // Validate amount against balance
-  if (amount < 100 || amount > materialBalance || materialBalance <= 0.00) {
+  if (amount < 100 || materialBalance < 0.00) {
     dialog.showWarningDialog(
       context: context,
       balance: materialBalance,
@@ -702,7 +705,7 @@ final materialBalance=_calculateMaterialBalance(schoolListModel);
             () => SchoolTransactionConfirmationScreen(
               studentController: widget.studentController,
               studentIndex: widget.studentIndex,
-              availableBalance: totalPrice,
+              availableBalance: 0.00,
               homePhone: widget.homePhone,
               destination: widget.destination,
               screenId:1,
@@ -764,7 +767,7 @@ double _calculateMaterialBalance(SchoolLists material) {
     return (material.paymentHistory?.balance != null && 
             double.tryParse(material.paymentHistory!.balance ?? '0.00')! > 0.00)
         ? double.parse(material.paymentHistory!.balance!)
-        : double.parse('$totalPrice');
+        : double.parse('0.00');
   } catch (e) {
     return 0.00;
   }

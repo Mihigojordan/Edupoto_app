@@ -69,13 +69,7 @@ class WidgetDialog {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const SizedBox(height: 16),
-            if(inputAmaount > balance) 
-             Text(
-                '${'you_have_exceeded_balance_to_be_paid_of'.tr} $balance ${AppConstants.currency}',
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.red,fontSize: 18, fontWeight: FontWeight.w300),
-              )
-            else if(balance<=0.00)
+           if(balance<0.00)
               Text(
                 '${'your_payment_has_completed'.tr}, ${'thank_you_for_choosing'.tr} ${AppConstants.appName}',
                 textAlign: TextAlign.center,

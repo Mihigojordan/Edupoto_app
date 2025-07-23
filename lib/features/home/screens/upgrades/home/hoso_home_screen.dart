@@ -87,11 +87,11 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
         .then((_) {
       announcenents = Get.find<AnnouncementController>().announcementList;
     });
-    await Get.find<SchoolListController>()
-        .getSchoolListData(1, reload: reload)
-        .then((_) {
-      schoolList = Get.find<SchoolListController>().schoolList;
-    });
+    // await Get.find<SchoolListController>()
+    //     .getSchoolListData(1, reload: reload)
+    //     .then((_) {
+    //   schoolList = Get.find<SchoolListController>().schoolList;
+    // });
 
     // Perform the other fetch operations as needed
     Get.find<ProfileController>().getProfileData(reload: reload);

@@ -1004,7 +1004,7 @@ class _HomeCard1State extends State<HomeCard1> {
     }
 
     // Validate amount against balance
-    if (amount < 100 || amount > materialBalance || materialBalance <= 0.00) {
+    if (amount < 100 ||  materialBalance < 0.00) {
       dialog.showWarningDialog(
         context: context,
         balance: materialBalance,
@@ -1027,7 +1027,7 @@ class _HomeCard1State extends State<HomeCard1> {
               double.tryParse(material.paymentHistory!.balance ?? '0.00')! >
                   0.00)
           ? double.parse(material.paymentHistory!.balance!)
-          : double.parse(material.price?.toString() ?? '0.00');
+          : double.parse('0.00');
     } catch (e) {
       return 0.00;
     }

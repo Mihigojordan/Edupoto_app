@@ -664,12 +664,15 @@
   "ref": "Ref",
   "qty": "Umubare",
 
-   "delivery_company":"Delivery Company",
-   "receiver_phone": "Receiver's Phone Number",
-   "customer_note":"Customer Note",
-   "or": "Or",
-   "click_here_to_enter_where_to_deliver": "Click here to enter where to deliver",
-   "please_enter_a_valid_email": "Please enter a valid email",
-   "user_creation_failed": "User Creation Failed",
-   "enter_your_email_to_continue":"Enter Your Email To Continue"
+  "delivery_company": "Sosiyete itanga",
+  "receiver_phone": "Numero ya telefoni y'uwakira",
+  "customer_note": "Icyitonderwa cy'umukiriya",
+  "or": "Cyangwa",
+  "click_here_to_enter_where_to_deliver": "Kanda hano winjire aho gutumiza",
+  "please_enter_a_valid_email": "Nyamuneka andika imeri yemewe",
+  "user_creation_failed": "Gukora konti byanze",
+  "enter_your_email_to_continue": "Injiza imeri yawe kugirango ukomeze",
+  "please_wait_while_your_information_is_being_processed": "Nyamuneka tegereza amakuru yawe ari gukorerwa",
+
+  "continue_shopping": "Komeza Ugura"
 }

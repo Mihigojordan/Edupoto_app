@@ -145,6 +145,8 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
   late TextEditingController cityTextController;
   late TextEditingController stateTextController;
   late TextEditingController zipTextController;
+
+ 
   
 
   Districts? selectedDistrict;
@@ -1165,7 +1167,7 @@ String _getBestLocationName(Placemark place) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('${'where_to'.tr}: ${widget.destinationController.text}'),
-              Text('${'receiver_phone_number'.tr}: ${widget.phoneNumberEditingController!.text}'),
+              Text('${'receiver_phone_number'.tr}: ${widget.phoneNumberEditingController.text}'),
             _distance==''?const SizedBox.shrink():  Text('${'distance'.tr}: $_distance'),
               _duration==''?const SizedBox.shrink():  Text('${'time_remaining'.tr}: $_duration'),
             ],
@@ -1187,6 +1189,7 @@ String _getBestLocationName(Placemark place) {
                         material: widget.dataList,
                       ))
                     : showModalBottomSheet(
+                      
                         isScrollControlled: true,
                         context: Get.context!,
                         isDismissible: false,
@@ -1207,7 +1210,7 @@ String _getBestLocationName(Placemark place) {
                                     shippingCity: 'Kigali',
                                     shippingCountry: 'Rwanda',
                                   availableBalance: '0.00',
-                                  amount: widget.calculatedTotal.toString(),
+                                  amount: widget.totalAmount.toString(),
                                   productId: widget.productId,
                                   contactModel: widget.contactModel,
                                   pinCode: widget.pinCodeFieldController,

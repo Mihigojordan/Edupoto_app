@@ -35,11 +35,14 @@ class DependentSchoolDropdowns extends StatefulWidget {
   final int? index;
   final String? titleImage;
   final bool isShop;
-  final Function({required String schoolName,required String className,required String studentName,required String studentCode}) onInputStudent;
+  final Function(
+      {required String schoolName,
+      required String className,
+      required String studentName,
+      required String studentCode}) onInputStudent;
 
   DependentSchoolDropdowns(
-      {
-      required this.onInputStudent,
+      {required this.onInputStudent,
       required this.isShop,
       required this.studentController,
       required this.isAddAccount,
@@ -515,7 +518,18 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                             color1: kamber300Color,
                                             color2: kyellowColor,
                                             onPress: () {
-                                              widget.onInputStudent(schoolName:  selectedCategory!.schoolName!,className:  selectedSubCategory!.className!,studentName:  studentNameEditingController.text,studentCode:studentCodeEditingController.text);
+                                              widget.onInputStudent(
+                                                  schoolName: selectedCategory!
+                                                      .schoolName!,
+                                                  className:
+                                                      selectedSubCategory!
+                                                          .className!,
+                                                  studentName:
+                                                      studentNameEditingController
+                                                          .text,
+                                                  studentCode:
+                                                      studentCodeEditingController
+                                                          .text);
                                               //****************************Check if you want to edit student registration or you do not have student */
                                               if (widget.isAddAccount == true ||
                                                   widget.studentController

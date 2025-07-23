@@ -8,7 +8,7 @@ class SchoolListRepo{
 
   SchoolListRepo({required this.apiClient});
 
-  Future<Response> getSchoolList(int offset) async {
-    return await apiClient.getData('${AppConstants.schoolList}?limit=1000&offset=$offset');
+  Future<Response> getSchoolList(int offset, int schoolId) async {
+    return await apiClient.getData('${AppConstants.schoolList}/$schoolId?limit=1000&offset=$offset');
   }
 }

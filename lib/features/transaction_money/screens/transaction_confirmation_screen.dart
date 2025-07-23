@@ -130,6 +130,8 @@ class _TransactionConfirmationScreenState
   TextEditingController mapDestinationEditingController =
       TextEditingController();
   TextEditingController phoneNumberEditingController = TextEditingController();
+  TextEditingController descriptionEditingController =TextEditingController();
+  TextEditingController destinationEditingController =TextEditingController();
   String deliveryOptionsValue = 'Choose Delivery Company';
   String? _deliveryOptionError;
 
@@ -165,6 +167,38 @@ class _TransactionConfirmationScreenState
     Get.back();
   }
 
+String calculateAvailableBalance(String totalAmount) {
+  // Handle null case first
+  if (widget.availableBalance == null) {
+    return totalAmount;
+  }
+  
+  // Trim and check for empty/zero cases
+  final availableBalance = widget.availableBalance!.trim();
+  
+  if (availableBalance.isEmpty || 
+      availableBalance == '0' || 
+      availableBalance == '0.00') {
+    return totalAmount;
+  }
+  
+  // Ensure the balance is properly formatted
+  try {
+    // If you need to perform calculations:
+    final total = double.parse(totalAmount);
+    final balance = double.parse(availableBalance);
+    
+    // Example calculation - adjust based on your needs
+    return (balance >= total) ? totalAmount : balance.toStringAsFixed(2);
+    
+    // Or if you just want to return the available balance:
+    // return availableBalance;
+  } catch (e) {
+    // Fallback if parsing fails
+    return totalAmount;
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -177,9 +211,12 @@ class _TransactionConfirmationScreenState
         double.parse('${widget.inputBalance}'));
     final vat =
         AppConstants.calculateVAT(double.parse('${widget.inputBalance}'));
-    final availableBalance = AppConstants.availableBalance(
+
+final balance= calculateAvailableBalance(totalAmount);
+
+    final availableBalance =  AppConstants.availableBalance(
             amount: double.parse('${widget.inputBalance}'),
-            balance: double.parse('${widget.availableBalance}'))
+            balance: double.parse(balance))
         .toStringAsFixed(2);
     int randomNumber = random.nextInt(90000000) + 10000000;
   //  final student =widget.studentController!.studentList![widget.studentIndex!];
@@ -329,7 +366,7 @@ class _TransactionConfirmationScreenState
                                                 randomNumber: randomNumber,
                                                 className: widget.studentController!.studentList![widget.studentIndex!].studentClass!,
                                                 studentInfo:'${'student_name'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].name} ${'code'.tr}: ${widget.studentController!.studentList![widget.studentIndex!].code}',
-                                                totalAmount: totalAmount,
+                                                totalAmount:    availableBalance=='0.00'?  totalAmount:widget.inputBalance!.toStringAsFixed(2),
                                                 productName:
                                                     widget.serviceValue!,
                                                 orderId: randomNumber.toString(),
@@ -356,8 +393,8 @@ class _TransactionConfirmationScreenState
                             )
                           : DeliveryMapScreen(
                             phoneNumberEditingController: phoneNumberEditingController,
-                            descriptionController: TextEditingController(),
-                            destinationController: TextEditingController(),
+                            descriptionController: descriptionEditingController,
+                            destinationController: destinationEditingController,
                               isShop: 0,
                               deliveryCost: AppConstants.deliveryCost,
                               schoolId: widget.schoolId!,
@@ -392,7 +429,7 @@ class _TransactionConfirmationScreenState
                               randomNumber: randomNumber,
                               serviceIndex: widget.serviceIndex ?? 0,
                               totalAmount:
-                                  double.tryParse(totalAmount ?? '0') ?? 0,
+                                availableBalance=='0.00'?  double.tryParse(totalAmount ) ?? 0:widget.inputBalance!,
                               vatPercentage: AppConstants.vatPercentage,
                             ),
                     ],

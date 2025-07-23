@@ -238,7 +238,7 @@ class ShopController extends GetxController implements GetxService{
         ));
        //Set Parent Id for the child
        shopRepo.setCustomerId(response.body['id'].toString());
-
+      
       } else {
         ApiChecker.checkApi(response);
       }
@@ -264,7 +264,7 @@ class ShopController extends GetxController implements GetxService{
         ));
        //Set Parent Id for the child
        shopRepo.setCustomerId(response.body['id'].toString());
-
+      
       } else {
         ApiChecker.checkApi(response);
       }

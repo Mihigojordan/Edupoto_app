@@ -34,6 +34,7 @@ class SchoolListModel {
 }
 
 class SchoolLists {
+  int? schoolId;
   String? transactionType;
   String? transactionId;
   double? debit;
@@ -56,10 +57,12 @@ class SchoolLists {
         this.receiver,
         this.sender,
         this.amount,
-        this.paymentHistory
+        this.paymentHistory,
+        this.schoolId
         });
 
   SchoolLists.fromJson(Map<String, dynamic> json) {
+    schoolId=json['user_id'];
     transactionType = json['transaction_type'];
     transactionId = json['transaction_id'];
     debit = json['debit'].toDouble();
@@ -82,6 +85,7 @@ class SchoolLists {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_id']=schoolId;
     data['transaction_type'] = transactionType;
     data['transaction_id'] = transactionId;
     data['debit'] = debit;

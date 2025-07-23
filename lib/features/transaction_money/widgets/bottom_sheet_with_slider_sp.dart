@@ -158,6 +158,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
       canPop: true,
       onPopInvoked: (_) => Get.back(closeOverlays: true, canPop: true),
       child: Container(
+        
           decoration: BoxDecoration(
             color: ColorResources.getBackgroundColor(),
             borderRadius: const BorderRadius.only(

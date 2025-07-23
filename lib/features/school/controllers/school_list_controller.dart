@@ -14,7 +14,9 @@ class SchoolListController extends GetxController implements GetxService{
   bool _firstLoading = true;
   bool get firstLoading => _firstLoading;
   int _offset = 1;
+  int _schoolId = 0;
   int get offset =>_offset;
+  int get schoolId => _schoolId;
   int _schoolListIndex = 0;
 
 
@@ -60,7 +62,7 @@ class SchoolListController extends GetxController implements GetxService{
   }
 
 
-  Future getSchoolListData(int offset, {bool reload = false}) async{
+  Future getSchoolListData(int offset, {bool reload = false,required int schoolId}) async{
     if(reload) {
       _offsetList = [];
       _schoolList = [];
@@ -74,10 +76,11 @@ class SchoolListController extends GetxController implements GetxService{
       _paymentList = [];
     }
     _offset = offset;
+    _schoolId=schoolId;
     if(!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      Response response = await schoolListRepo.getSchoolList(offset);
+      Response response = await schoolListRepo.getSchoolList(offset,schoolId);
       print('this is the controllers response xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ${response.body}');
       if(response.body['transactions'] != null && response.body['transactions'] != {} && response.statusCode==200){
         _schoolList = [];
@@ -92,6 +95,7 @@ class SchoolListController extends GetxController implements GetxService{
 
         response.body['transactions'].forEach((transactionHistory) {
           SchoolLists history = SchoolLists.fromJson(transactionHistory);
+          
           if(history.transactionType == AppConstants.headteacherMessage){
             _headteacherMessageList.add(history);
           }else if(history.transactionType == AppConstants.classRequirement){

@@ -445,7 +445,8 @@ class _TransactionConfirmationScreenState
                                                 studentName: studentName,
                                                 pinCode: _pinCodeFieldController.text,
                                                 homePhone: phoneNumberEditingController.text,
-                                                customerNote: descriptionEditingController.text
+                                                customerNote: descriptionEditingController.text,
+                                                
                                               ),
                                 isShop: true,
                                 isNotRegStudent: true,
@@ -536,7 +537,7 @@ _captureInformation(
                                                 convenienceFee: convenienceFee,
                                        pinCode: _pinCodeFieldController.text,
                                        homePhone: phoneNumberEditingController.text,
-                                       customerNote: destinationEditingController.text
+                                       customerNote: descriptionEditingController.text
                                               );
     }
                                           } ,
@@ -612,9 +613,9 @@ _captureInformation(
 
                                     )
                                 : DeliveryMapScreen(
-                                  phoneNumberEditingController: TextEditingController(),
-                                  descriptionController: TextEditingController(),
-                                  destinationController: TextEditingController(),
+                                  phoneNumberEditingController: phoneNumberEditingController,
+                                  descriptionController: descriptionEditingController,
+                                  destinationController:destinationEditingController,
                                     deliveryCost: deliveryCost,
                                     isShop: 1,
                                     product: widget.product,

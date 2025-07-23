@@ -153,6 +153,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     ),
   ];
 
+  List<Product> _filterProductsBySearch(List<Product> products, String query) {
+  if (query.isEmpty) return products;
+  return products.where((product) =>
+      product.name!.toLowerCase().contains(query.toLowerCase())).toList();
+}
+
   @override
   void initState() {
     super.initState();
@@ -250,18 +256,23 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
-                      decoration: InputDecoration(
-                        hintText: '${'search_products'.tr}...',
-                        prefixIcon: const Icon(Icons.search),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                      ),
-                      onChanged: (value) =>
-                          setState(() => _searchQuery = value),
-                    ),
+  decoration: InputDecoration(
+    hintText: '${'search_products'.tr}...',
+    prefixIcon: const Icon(Icons.search),
+    suffixIcon: _searchQuery.isNotEmpty
+        ? IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: () => setState(() => _searchQuery = ''),
+          )
+        : null,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+    filled: true,
+    fillColor: Colors.grey[100],
+  ),
+  onChanged: (value) => setState(() => _searchQuery = value),
+),
                   ),
                   // Company Type Navigation
                   CompanyTypeNavigationBar(
@@ -553,70 +564,75 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     return [...preferredAttributes, ...otherAttributes];
   }
 
-  Widget _buildProductView(ShopController shopController) {
-    if (shopController.shopList == null ||
-        shopController.categoryList == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
+Widget _buildProductView(ShopController shopController) {
+  if (shopController.shopList == null ||
+      shopController.categoryList == null) {
+    return const Center(child: CircularProgressIndicator());
+  }
 
-    List<Product> filteredProducts = shopController.shopList!;
+  List<Product> filteredProducts = shopController.shopList!;
 
-    // Apply attribute filter if an attribute is selected
-    final filteredCompanyTypes = _getFilteredCompanyTypes(shopController);
-    if (_selectedTypeIndex >= 0 &&
-        _selectedTypeIndex < filteredCompanyTypes.length) {
-      final selectedAttributeId = filteredCompanyTypes[_selectedTypeIndex].id;
+  // Apply attribute filter if an attribute is selected
+  final filteredCompanyTypes = _getFilteredCompanyTypes(shopController);
+  if (_selectedTypeIndex >= 0 &&
+      _selectedTypeIndex < filteredCompanyTypes.length) {
+    final selectedAttributeId = filteredCompanyTypes[_selectedTypeIndex].id;
+    filteredProducts = filteredProducts.where((product) {
+      return product.attributes != null &&
+          product.attributes!.isNotEmpty &&
+          product.attributes!.any((attr) => attr.id == selectedAttributeId);
+    }).toList();
+  }
+
+  // Apply category filter only if a specific category is selected (not "All")
+  if (_selectedCategoryIndex > 0) {
+    final filteredCategories = _getFilteredCategories(shopController);
+    if (_selectedCategoryIndex < filteredCategories.length) {
+      final selectedCategoryId =
+          filteredCategories[_selectedCategoryIndex].id;
       filteredProducts = filteredProducts.where((product) {
-        return product.attributes != null &&
-            product.attributes!.isNotEmpty &&
-            product.attributes!.any((attr) => attr.id == selectedAttributeId);
+        return product.categories != null &&
+            product.categories!.isNotEmpty &&
+            product.categories!
+                .any((category) => category.id == selectedCategoryId);
       }).toList();
     }
-
-    // Apply category filter only if a specific category is selected (not "All")
-    if (_selectedCategoryIndex > 0) {
-      final filteredCategories = _getFilteredCategories(shopController);
-      if (_selectedCategoryIndex < filteredCategories.length) {
-        final selectedCategoryId =
-            filteredCategories[_selectedCategoryIndex].id;
-        filteredProducts = filteredProducts.where((product) {
-          return product.categories != null &&
-              product.categories!.isNotEmpty &&
-              product.categories!
-                  .any((category) => category.id == selectedCategoryId);
-        }).toList();
-      }
-    }
-
-    // Apply brand filter if a brand is selected
-    if (_selectedCompanyIndex > 0) {
-      final filteredBrands = _getFilteredBrands(shopController);
-      if (_selectedCompanyIndex < filteredBrands.length) {
-        final selectedBrandId = filteredBrands[_selectedCompanyIndex].id;
-        filteredProducts = filteredProducts.where((product) {
-          return product.brands != null &&
-              product.brands!.isNotEmpty &&
-              product.brands!.any((brand) => brand.id == selectedBrandId);
-        }).toList();
-      }
-    }
-
-    if (filteredProducts.isEmpty) {
-      return Center(child: Text('no_products_found'.tr));
-    }
-
-    return _isGridView
-        ? ProductGrid(
-            products: filteredProducts,
-            onAddToCart: _addToCart,
-            cart: _cart,
-          )
-        : ProductList(
-            products: filteredProducts,
-            onAddToCart: _addToCart,
-            cart: _cart,
-          );
   }
+
+  // Apply brand filter if a brand is selected
+  if (_selectedCompanyIndex > 0) {
+    final filteredBrands = _getFilteredBrands(shopController);
+    if (_selectedCompanyIndex < filteredBrands.length) {
+      final selectedBrandId = filteredBrands[_selectedCompanyIndex].id;
+      filteredProducts = filteredProducts.where((product) {
+        return product.brands != null &&
+            product.brands!.isNotEmpty &&
+            product.brands!.any((brand) => brand.id == selectedBrandId);
+      }).toList();
+    }
+  }
+
+  // Apply search filter if there's a query
+  if (_searchQuery.isNotEmpty) {
+    filteredProducts = _filterProductsBySearch(filteredProducts, _searchQuery);
+  }
+
+  if (filteredProducts.isEmpty) {
+    return Center(child: Text('no_products_found'.tr));
+  }
+
+  return _isGridView
+      ? ProductGrid(
+          products: filteredProducts,
+          onAddToCart: _addToCart,
+          cart: _cart,
+        )
+      : ProductList(
+          products: filteredProducts,
+          onAddToCart: _addToCart,
+          cart: _cart,
+        );
+}
 
 // Widget _buildProductView(ShopController shopController) {
 //   // Check if data exists

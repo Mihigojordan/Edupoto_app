@@ -175,32 +175,55 @@ class _TransactionConfirmationScreenState
   }
 
   // Method to calculate the total price
-  void calculateTotalPrice() {
-    // Reset calculatedTotal to avoid adding multiple times
-    calculatedTotal = 0.0;
-    checkedProducts = 0;
-    if (widget.serviceIndex! > 0) {
-      for (int i = 0; i < widget.dataList!.length; i++) {
-        if (widget.isChecked![i]) {
-          calculatedTotal +=
-              widget.dataList![i].amount ?? 0.0; // Ensure price is not null
-          checkedProducts = i + 1;
-        }
-      }
+void calculateTotalPrice() {
+  calculatedTotal = 0.0;
+  checkedProducts = 0;
+  
+  // First calculate the subtotal
+  for (int i = 0; i < widget.dataList!.length; i++) {
+    if (widget.isChecked![i]) {
+      calculatedTotal += widget.dataList![i].amount ?? 0.0;
+      checkedProducts++;
     }
-    for (int i = 0; i < widget.dataList!.length; i++) {
-      if (widget.isChecked![i]) {
-        calculatedTotal +=
-            widget.dataList![i].amount ?? 0.0; // Ensure price is not null
-        checkedProducts = i + 1;
-      }
-    }
-
-    setState(() {
-      totalPrice = calculatedTotal - widget.dataList![5].amount!;
-      subTotalPrice = calculatedTotal;
-    });
   }
+
+  // Now calculate the total, safely checking if index 5 exists
+  double discountOrFee = 0.0;
+  if (widget.dataList!.length > 5) {
+    discountOrFee = widget.dataList![5].amount ?? 0.0;
+  }
+
+  setState(() {
+    subTotalPrice = calculatedTotal;
+    totalPrice = calculatedTotal - discountOrFee;
+  });
+}
+
+  String calculateAvailableBalance(String totalAmount) {
+  
+  // Trim and check for empty/zero cases
+  final availableBalance = widget.availableBalance;
+  
+  if (availableBalance == 0 || 
+      availableBalance == 0.00) {
+    return totalAmount;
+  }
+  
+  // Ensure the balance is properly formatted
+  try {
+    // If you need to perform calculations:
+    final total = double.parse(totalAmount);
+    
+    // Example calculation - adjust based on your needs
+    return (availableBalance >= total) ? totalAmount : availableBalance.toStringAsFixed(2);
+    
+    // Or if you just want to return the available balance:
+    // return availableBalance;
+  } catch (e) {
+    // Fallback if parsing fails
+    return totalAmount;
+  }
+}
 
 
   @override
@@ -212,7 +235,8 @@ class _TransactionConfirmationScreenState
     final  SchoolLists product = widget.dataList![widget.productIndex!];
     final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('$subTotalPrice')); 
     final vat =AppConstants.calculateVAT(double.parse('$subTotalPrice')) ;
-    final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse('${widget.availableBalance}')).toStringAsFixed(2);
+   final balance= calculateAvailableBalance(totalAmount);
+    final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse(balance)).toStringAsFixed(2);
       int randomNumber = random.nextInt(90000000) + 10000000;
 
     // final student=  widget.studentController.studentList![widget.studentIndex];
@@ -427,7 +451,7 @@ class _TransactionConfirmationScreenState
                                                 schoolName:widget.studentController.studentList![widget.studentIndex].school!,
                                                 randomNumber: randomNumber,
                                                 className: widget.studentController.studentList![widget.studentIndex].studentClass!,
-                                                totalAmount: totalAmount,
+                                                totalAmount:  (availableBalance=='0.00'||availableBalance=='-1.00')?  totalAmount:widget.inputBalance!.toStringAsFixed(2),
                                                 studentInfo:'${'student_name'.tr}: ${widget.studentController.studentList![widget.studentIndex].name} ${'code'.tr}: ${widget.studentController.studentList![widget.studentIndex].code}',
                                                 productName: widget.productName!,
                                                 orderId: '21323443421',
@@ -484,7 +508,7 @@ class _TransactionConfirmationScreenState
                               productName: widget.productName??'',
                               randomNumber: randomNumber,
                               serviceIndex: widget.serviceIndex??0,
-                              totalAmount: double.parse(totalAmount),
+                              totalAmount:  (availableBalance=='0.00'||availableBalance=='-1.00')?  double.parse(totalAmount):widget.inputBalance!,
                               vatPercentage: AppConstants.vatPercentage,
                               availableBalance:double.parse(availableBalance)
                               ),
@@ -523,20 +547,21 @@ class _TransactionConfirmationScreenState
                   ),
 sizedBox10,
            sizedBox10,
-          widget.inputBalance.toString()==''||widget.inputBalance==-1 ?    Column(
-                children: [
+
+
                   Text('${'pending'.tr}/${'remaining_amount_to_be_paid'.tr}',
                       style: rubikSemiBold.copyWith(
                           fontSize: Dimensions.fontSizeLarge,
                           color: ColorResources.getGreyBaseGray1())),
+
+
                              Text(
                   '$availableBalance ${AppConstants.currency}',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.bold,
                       )),
               const SizedBox(height: 15),      
-                ],
-              ):const SizedBox.shrink(),
+            
      
 
                 ],
@@ -1045,7 +1070,7 @@ sizedBox
                     } else {
                       widget.screenId == 1
                           ? Get.to(PaymentMethodSl(
-                              amountTotal:(widget.inputBalance.toString()==''||widget.inputBalance ==-1) ? totalAmount.toString():widget.inputBalance.toString(),
+                              amountTotal: totalAmount,
                               parent: widget.contactModel!.name,
                               studentName: widget.studentName,
                               studentCode: widget.studentCode,
@@ -1095,7 +1120,7 @@ sizedBox
                                     shippingCountry: 'Rwanda',
                                   homePhone: widget.homePhone,
                                   destination: widget.destination,
-                                  amount: (widget.inputBalance.toString()==''||widget.inputBalance ==-1) ? totalAmount.toString():widget.inputBalance.toString(),
+                                  amount: totalAmount,
                                   productId: widget.productId!,
                                   contactModel: widget.contactModel,
                                   pinCode: _pinCodeFieldController.text,

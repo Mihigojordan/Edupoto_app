@@ -8,7 +8,7 @@ class AppConstants {
   // 'http://192.168.1.83/edupoto_rw_admin';
 
   static const String baseUrl = 'https://edupoto.com';
-  // 'http://127.0.0.1/edupoto_rw_admin';
+                                  //  'http://127.0.0.1/edupoto_rw_admin';
   static const String wooBaseUrl = 'https://hosomobile.rw';
   //  'http://192.168.1.76/edupoto_rw_admin''https://www.hosomobile.rw' ;                                         //'http://192.168.1.69/edupoto_rw_admin'; //'http://192.168.1.66/edupoto_rw_admin';
   static const bool demo = false;

@@ -34,7 +34,7 @@ class ShopOrderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Initialize the controller and load data when screen builds
     final shopController = Get.find<ShopController>();
-    
+      final customerId= Get.find<ShopController>().getCustomerId();
     return Scaffold(
       appBar: AppBar(
         title:  Text('my_orders'.tr, style: TextStyle(fontWeight: FontWeight.bold)),
@@ -49,7 +49,7 @@ class ShopOrderScreen extends StatelessWidget {
       ),
       body: GetBuilder<ShopController>(
         builder: (shopController) {
-          final customerId= Get.find<ShopController>().getCustomerId();
+        
           // Show loading indicator while loading
           if (shopController.isLoading && shopController.orderList == null) {
             return Center(child: CircularProgressIndicator());

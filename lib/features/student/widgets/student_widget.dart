@@ -26,6 +26,7 @@ import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_updat
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/add_account.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/student_add_info.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/tereka_asome/tereka_asome.dart';
+import 'package:hosomobile/features/school/controllers/school_list_controller.dart';
 import 'package:hosomobile/features/school/screens/school_list_screen.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/helper/route_helper.dart';
@@ -60,6 +61,7 @@ class _StudentWidgetState extends State<StudentWidget> {
   int? classId;
   int? schoolId;
   bool isAddAccount = false;
+  bool isNotRegStudent=false;
   final _formKey = GlobalKey<FormState>(); // Form key for validation
 
   TextEditingController studentEditingController = TextEditingController();
@@ -78,6 +80,12 @@ class _StudentWidgetState extends State<StudentWidget> {
   setAddAccount() {
     setState(() {
       isAddAccount = !isAddAccount;
+    });
+  }
+
+  setIsNotRegStudent(){
+       setState(() {
+      isNotRegStudent = !isNotRegStudent;
     });
   }
 
@@ -285,81 +293,94 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                   studentController
                                                       .studentList!.isEmpty) {
                                                 //  if (selectedStudent == null) {
-
-                                                if (index == 0) {
-                                                  Get.to(
-                                                    SchoolListScreen(
-                                                      studentController: studentController,
-                                                      studentIndex: selectedIndex,
-                                                      studentCode:
-                                                          studentCodeEditingController
-                                                              .text,
-                                                      shipper: 'shipper',
-                                                      homePhone: 'homePhone',
-                                                      destination:
-                                                          'destination',
-                                                      studentName:
-                                                          studentNameEditingController
-                                                              .text,
-                                                      className: '',
-                                                      schoolName: '',
-                                                      schoolId: 0,
-                                                      studentId: 0,
-                                                      classId: 0,
-                                                    ),
-                                                  );
+                                         
+                                                  if (index == 0) {
+                                                           if (studentController
+                                                            .studentList ==
+                                                        null ||
+                                                    studentController
+                                                        .studentList!.isEmpty) {
+                                                  setIsNotRegStudent();
                                                 } else {
-                                                  // Safe user data access
-                                                  final userData =
-                                                      Get.find<AuthController>()
-                                                          .getUserData();
-
-                                                  Get.to(
-                                                    TerekaAsome(
-                                                        studentCode:  '',
-                                                        studentName: '',
-                                                        studentClass: '',
-                                                        studentSchool: '',
-                                                        productId: edubox.id,
-                                                        studentId: 0,
+                                                    Get.to(
+                                                      SchoolListScreen(
+                                                        studentController:
+                                                            studentController,
+                                                        studentIndex:
+                                                            selectedIndex,
+                                                        studentCode:
+                                                            studentCodeEditingController
+                                                                .text,
+                                                        shipper: 'shipper',
+                                                        homePhone: 'homePhone',
+                                                        destination:
+                                                            'destination',
+                                                        studentName:
+                                                            studentNameEditingController
+                                                                .text,
+                                                        className: '',
+                                                        schoolName: '',
                                                         schoolId: 0,
+                                                        studentId: 0,
                                                         classId: 0,
-                                                        contactModelMtn:
-                                                            ContactModelMtn(
-                                                          phoneNumber:
-                                                              '${userData?.countryCode}${userData?.phone}' ??
-                                                                  '',
-                                                          name:
-                                                              '${userData?.name}',
-                                                        ),
-                                                        transactionType:
-                                                            TransactionType
-                                                                .sendMoney,
-                                                        contactModel:
-                                                            ContactModel(
-                                                          phoneNumber:
-                                                              '${userData?.countryCode}${userData?.phone}' ??
-                                                                  '',
-                                                          name:
-                                                              '${userData?.name}',
-                                                          avatarImage:
-                                                              '${Get.find<SplashController>().configModel!.baseUrls!.customerImageUrl}/${'image' ?? ''}',
-                                                        ),
-                                                        studentIndex: 0,
-                                                        productValue:
-                                                            productValueList[index]
-                                                                [
-                                                                'action'], // Dynamic value
-                                                        productIndex: index,
-                                                        iconImages:
-                                                            "${AppConstants.baseUrl}/storage/app/public/edupoto_product/$titleImage", // Adjust icon logic
-                                                        edubox_service:
-                                                            productValueList[
-                                                                    index]
-                                                                ['action'],
-                                                        parent: userData?.name),
-                                                  );
+                                                      ),
+                                                    );
                                                 }
+                                                  } else {
+                                                    // Safe user data access
+                                                    final userData = Get.find<
+                                                            AuthController>()
+                                                        .getUserData();
+
+                                                    Get.to(
+                                                      TerekaAsome(
+                                                          studentCode: '',
+                                                          studentName: '',
+                                                          studentClass: '',
+                                                          studentSchool: '',
+                                                          productId: edubox.id,
+                                                          studentId: 0,
+                                                          schoolId: 0,
+                                                          classId: 0,
+                                                          contactModelMtn:
+                                                              ContactModelMtn(
+                                                            phoneNumber:
+                                                                '${userData?.countryCode}${userData?.phone}' ??
+                                                                    '',
+                                                            name:
+                                                                '${userData?.name}',
+                                                          ),
+                                                          transactionType:
+                                                              TransactionType
+                                                                  .sendMoney,
+                                                          contactModel:
+                                                              ContactModel(
+                                                            phoneNumber:
+                                                                '${userData?.countryCode}${userData?.phone}' ??
+                                                                    '',
+                                                            name:
+                                                                '${userData?.name}',
+                                                            avatarImage:
+                                                                '${Get.find<SplashController>().configModel!.baseUrls!.customerImageUrl}/${'image' ?? ''}',
+                                                          ),
+                                                          studentIndex: 0,
+                                                          productValue:
+                                                              productValueList[
+                                                                      index]
+                                                                  [
+                                                                  'action'], // Dynamic value
+                                                          productIndex: index,
+                                                          iconImages:
+                                                              "${AppConstants.baseUrl}/storage/app/public/edupoto_product/$titleImage", // Adjust icon logic
+                                                          edubox_service:
+                                                              productValueList[
+                                                                      index]
+                                                                  ['action'],
+                                                          parent:
+                                                              userData?.name),
+                                                    );
+                                                  }
+                                               
                                                 // }
                                               } else {
                                                 final student =
@@ -385,23 +406,43 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                 final schoolName =
                                                     student.school ?? '';
                                                 if (index == 0) {
-                                                  Get.to(
-                                                    SchoolListScreen(
-                                                      studentController: studentController,
-                                                      studentIndex: selectedIndex,
-                                                      studentCode: studentCode,
-                                                      shipper: 'shipper',
-                                                      homePhone: 'homePhone',
-                                                      destination:
-                                                          'destination',
-                                                      studentName: studentName,
-                                                      className: className,
-                                                      schoolName: schoolName,
-                                                      schoolId: schoolId,
-                                                      studentId: studentId,
-                                                      classId: classId,
-                                                    ),
-                                                  );
+                                                  Get.find<
+                                                          SchoolListController>()
+                                                      .getSchoolListData(1,
+                                                          reload: true,
+                                                          schoolId: schoolId);
+                                                  if (studentController
+                                                              .studentList ==
+                                                          null ||
+                                                      studentController
+                                                          .studentList!
+                                                          .isEmpty) {
+
+                                                  setIsNotRegStudent();
+
+                                                  } else {
+                                                    Get.to(
+                                                      SchoolListScreen(
+                                                        studentController:
+                                                            studentController,
+                                                        studentIndex:
+                                                            selectedIndex,
+                                                        studentCode:
+                                                            studentCode,
+                                                        shipper: 'shipper',
+                                                        homePhone: 'homePhone',
+                                                        destination:
+                                                            'destination',
+                                                        studentName:
+                                                            studentName,
+                                                        className: className,
+                                                        schoolName: schoolName,
+                                                        schoolId: schoolId,
+                                                        studentId: studentId,
+                                                        classId: classId,
+                                                      ),
+                                                    );
+                                                  }
                                                 } else {
                                                   // Safe user data access
                                                   final userData =
@@ -417,11 +458,14 @@ class _StudentWidgetState extends State<StudentWidget> {
 
                                                   Get.to(
                                                     TerekaAsome(
-                                                      studentClass: student.studentClass,
-                                                      studentSchool: student.school,
-                                                      studentCode: student.code,
-                                                      studentName: student.name,
-                                                      
+                                                        studentClass: student
+                                                            .studentClass,
+                                                        studentSchool: student
+                                                            .school,
+                                                        studentCode: student
+                                                            .code,
+                                                        studentName: student
+                                                            .name,
                                                         productId: edubox.id,
                                                         studentId:
                                                             studentController
@@ -651,7 +695,6 @@ class _StudentWidgetState extends State<StudentWidget> {
 
                           isAddAccount == true
                               ? addAccount(
-                                  student: student,
                                   studentRegController:
                                       studentRegistrationController,
                                   studentController: studentController,
@@ -659,7 +702,6 @@ class _StudentWidgetState extends State<StudentWidget> {
                                 )
                               : studentController.studentList!.isEmpty
                                   ? addAccount(
-                                      student: student,
                                       studentRegController:
                                           studentRegistrationController,
                                       studentController: studentController,
@@ -859,8 +901,8 @@ class _StudentWidgetState extends State<StudentWidget> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               SizedBox(
-                    height: screenHeight >= 763 ? 125 : 50,
-                    width: screenHeight >= 763 ? 85 : 35,
+                  height: screenHeight >= 763 ? 125 : 50,
+                  width: screenHeight >= 763 ? 85 : 35,
                   child: const IconImages('assets/image/edubox_kid.png')),
               // Padding(
               //   padding: const EdgeInsets.all(10.0),
@@ -872,6 +914,7 @@ class _StudentWidgetState extends State<StudentWidget> {
             ],
           ),
         ),
+
         Container(
             // margin: const EdgeInsets.only(top: 100),
             padding: const EdgeInsets.all(8.0),
@@ -889,9 +932,42 @@ class _StudentWidgetState extends State<StudentWidget> {
             ),
             clipBehavior: Clip.antiAlias,
             //******************Row Button ************************/
-            child: isAddAccount == true
+            child: isNotRegStudent==true?
+                  
+                  DependentSchoolDropdowns(
+                                onInputStudent: ({required schoolName,required className,required studentName,required studentCode}) {
+                                
+                                                  Get.to(
+                                                      SchoolListScreen(
+                                                        studentController:
+                                                            studentController,
+                                                        studentIndex:
+                                                            selectedIndex,
+                                                        studentCode:
+                                                            studentCodeEditingController
+                                                                .text,
+                                                        shipper: 'shipper',
+                                                        homePhone: 'homePhone',
+                                                        destination:
+                                                            'destination',
+                                                        studentName:
+                                                            studentNameEditingController
+                                                                .text,
+                                                        className: '',
+                                                        schoolName: '',
+                                                        schoolId: 0,
+                                                        studentId: 0,
+                                                        classId: 0,
+                                                      ),
+                                                    );
+                                },
+                                  isShop: false,
+                                  studentController: studentController,
+                                  isAddAccount: false,
+                                  isNotRegStudent: true):
+          
+            isAddAccount == true
                 ? addAccount(
-                    student: studentController.studentList ?? [],
                     studentRegController: studentRegistrationController,
                     studentController: studentController,
                     eduboxController: eduboxController,
@@ -1082,12 +1158,11 @@ class _StudentWidgetState extends State<StudentWidget> {
         : const SizedBox();
   }
 
-  Widget addAccount({
-    required student,
-    required StudentRegistrationController studentRegController,
-    required StudentController studentController,
-    required EduboxMaterialController eduboxController,
-  }) {
+  Widget addAccount(
+      {required StudentRegistrationController studentRegController,
+      required StudentController studentController,
+      required EduboxMaterialController eduboxController,
+      bool? isRegStudent}) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     ClassModel? classModel;
@@ -1111,11 +1186,13 @@ class _StudentWidgetState extends State<StudentWidget> {
             SizedBox(
               width: screenWidth / 1.1,
               child: DependentSchoolDropdowns(
-                onInputStudent: ({required className, required schoolName, required studentCode, required studentName}) {
-                  
-                },
+                onInputStudent: (
+                    {required className,
+                    required schoolName,
+                    required studentCode,
+                    required studentName}) {},
                 isShop: false,
-                isNotRegStudent: false,
+                isNotRegStudent: isRegStudent ?? false,
                 isAddAccount: isAddAccount,
                 studentController: studentController,
                 studentRegistrationController: studentRegController,
