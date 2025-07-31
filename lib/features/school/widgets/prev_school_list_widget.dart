@@ -9,15 +9,13 @@ import 'package:hosomobile/features/school/controllers/school_list_controller.da
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/school/widgets/school_list_shimmer_widget.dart';
 import 'package:hosomobile/common/widgets/no_data_widget.dart';
-import 'package:hosomobile/features/school/widgets/single_school_list_widget.dart';
-import 'package:hosomobile/features/shop/controller/shop_controller.dart';
-import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/screens/paid_at_school_transaction_confirmation_screen.dart';
 import 'package:hosomobile/features/transaction_money/screens/school_transaction_confirmation_screen.dart';
 import 'package:hosomobile/helper/transaction_type.dart';
 import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/dimensions.dart';
+import 'prev_single_school_list_widget.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/custom_buttons.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 
@@ -66,23 +64,6 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
   double totalPrice = 0.0; // Total price for all items
   List<bool> isChecked = [];
   Map<int, double> caseTotals = {}; // Map to store totals for each case
-  double _aggregatedTotal = 0.0;
-    final Map<int, double> _transactionTypeTotals = {
-    1: 0.0, // Tuition Fee (filtered)
-    2: 0.0, // Class Requirements
-    3: 0.0, // Dormitory Essentials
-    4: 0.0, // Text Books
-    5: 0.0, // Tuition Fee (all)
-    6: 0.0, // Withdraw
-    7: 0.0, // Payment
-  };
-
-    // Track product quantities per transaction type
-  final Map<int, Map<Product, int>> _productSelections = {
-    2: {}, // Class Requirements
-    3: {}, // Dormitory Essentials
-    4: {}, // Text Books
-  };
 
   WidgetDialog dialog = WidgetDialog();
   TextEditingController inputBalanceController = TextEditingController();
@@ -97,103 +78,56 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
     final schoolList = Get.find<SchoolListController>().schoolList;
     setState(() {
       isChecked = List<bool>.filled(schoolList.length, true);
-    _calculateTotals();
+      _calculateTotals();
     });
   }
-
-  int getTotalProductQuantity() {
-    int totalQuantity = 0;
-    _productSelections.forEach((type, products) {
-      products.forEach((product, quantity) {
-        totalQuantity += quantity;
-      });
-    });
-    return totalQuantity;
-  }
-
-void _handleTotalChange(double newTotal, int transactionType) {
-  setState(() {
-    // Update the specific transaction type total
-    _transactionTypeTotals[transactionType] = newTotal;
-    
-    // Recalculate the combined total
-    _calculateCombinedTotal();
-  });
-}
-
-void _calculateCombinedTotal() {
-  double combined = 0.0;
-  _transactionTypeTotals.forEach((type, total) {
-    combined += total;
-  });
-  
-  // Also include non-product based totals
-  // final schoolList = _getFilteredSchoolList(Get.find<SchoolListController>());
-  // for (int i = 0; i < schoolList.length; i++) {
-  //   final item = schoolList[i];
-  //   if (![2, 3, 4].contains(item.transactionType) && 
-  //       i < isChecked.length && 
-  //       isChecked[i]) {
-  //     combined += item.amount ?? 0.0;
-  //   }
-  // }
-  
-  setState(() {
-    totalPrice = combined;
-  });
-}
 
   void _calculateTotals() {
     final schoolLists = Get.find<SchoolListController>();
+    double calculatedTotal = 0.0;
     caseTotals.clear();
 
-    // Always use the most recent aggregated total for product-based categories
+    // Get the filtered list
+    List<SchoolLists> filteredList = _getFilteredSchoolList(schoolLists);
+
+    // Calculate total for all items
+    for (int i = 0; i < filteredList.length; i++) {
+      if (i < isChecked.length && isChecked[i]) {
+        calculatedTotal += filteredList[i].amount ?? 0.0;
+      }
+    }
+
+    // Calculate totals for each case (excluding tuition fee from all lists)
+    _calculateCaseTotal(
+        schoolLists.tuitionFeeList
+            .where((item) =>
+                item.transactionType != AppConstants.headteacherMessage)
+            .toList(),
+        1);
     _calculateCaseTotal(schoolLists.classRequirementList, 2);
     _calculateCaseTotal(schoolLists.domitoryEssentialList, 3);
     _calculateCaseTotal(schoolLists.textBookList, 4);
-    
-    // For non-product categories, calculate normally
-    _calculateCaseTotal(
-        schoolLists.tuitionFeeList
-            .where((item) => item.transactionType != AppConstants.headteacherMessage)
-            .toList(),
-        1);
     _calculateCaseTotal(schoolLists.tuitionFeeList, 5);
     _calculateCaseTotal(schoolLists.withdrawList, 6);
     _calculateCaseTotal(schoolLists.paymentList, 7);
 
     setState(() {
-      totalPrice = _aggregatedTotal > 0 ? _aggregatedTotal : _calculateSimpleTotal();
+      totalPrice = calculatedTotal;
     });
-  }
-
-  double _calculateSimpleTotal() {
-    double total = 0.0;
-    // final schoolList = _getFilteredSchoolList(Get.find<SchoolListController>());
-    // for (int i = 0; i < schoolList.length; i++) {
-    //   if (i < isChecked.length && isChecked[i]) {
-    //     total += schoolList[i].amount ?? 0.0;
-    //   }
-    // }
-    return total;
   }
 
   void _calculateCaseTotal(List<SchoolLists> caseList, int caseIndex) {
     double caseTotal = 0.0;
-    
-    // For product-based categories, use the aggregated total
-    if (caseIndex == 2 || caseIndex == 3 || caseIndex == 4) {
-      caseTotal = _aggregatedTotal;
-    } else {
-      // For non-product categories, calculate normally
-      for (int i = 0; i < caseList.length; i++) {
-        if (i < isChecked.length && isChecked[i]) {
-          caseTotal += caseList[i].amount ?? 0.0;
-        }
+    for (int i = 0; i < caseList.length; i++) {
+      if (i < isChecked.length && isChecked[i]) {
+        caseTotal += caseList[i].amount ?? 0.0;
+        print(
+            'clclclclclclclclcl ${isChecked[i]}:${caseList[i].amount}:${caseList.length}:$i');
       }
     }
-    
-    caseTotals[caseIndex] = caseTotal;
+
+    caseTotals[caseIndex] = caseTotal; // Store the total for this case
+    print('ccccccccccccccccccccc ${caseTotals[caseIndex]}');
   }
 
   void onCheckboxChanged(int index, bool value) {
@@ -202,7 +136,7 @@ void _calculateCombinedTotal() {
         isChecked[index] = value;
       });
 
-     _calculateTotals(); // Recalculate totals when checkbox state changes
+      _calculateTotals(); // Recalculate totals when checkbox state changes
     }
   }
 
@@ -233,7 +167,7 @@ void _calculateCombinedTotal() {
           if (mounted) {
             setState(() {
               isChecked = List<bool>.filled(schoolList.length, true);
-            _calculateTotals();
+              _calculateTotals();
             });
           }
         });
@@ -241,12 +175,11 @@ void _calculateCombinedTotal() {
 
       int schoolListIndex = schoolLists.schoolListIndex;
 
-      return GetBuilder<ShopController>(builder: (shop){
-        return Column(
+      return Column(
         children: [
           !schoolLists.firstLoading
               ? schoolList.isNotEmpty
-                  ? _buildSchoolList(context, schoolList, schoolListIndex,shop)
+                  ? _buildSchoolList(context, schoolList, schoolListIndex)
                   : NoDataFoundWidget(fromHome: widget.isHome)
               : const SchoolListShimmerWidget(),
           schoolLists.isLoading
@@ -263,7 +196,6 @@ void _calculateCombinedTotal() {
               : const SizedBox.shrink(),
         ],
       );
-        });
     });
   }
 
@@ -298,82 +230,58 @@ void _calculateCombinedTotal() {
     return schoolLists.schoolList
         .where((item) => item.transactionType != AppConstants.tuitionFee
             && item.transactionType != AppConstants.headteacherMessage
-            && item.transactionType != AppConstants.textBook
+            && item.transactionType != AppConstants.headteacherMessage
             )
         .toList();
   }
 
-Widget _buildSchoolList(
-  BuildContext context, 
-  List<SchoolLists> schoolList, 
-  int schoolListIndex, 
-  ShopController shop
-) {
-  final heading = getHeading(schoolList, schoolListIndex) ?? '';
-  final categoryList = shop.categoryList;
-  
-  return Padding(
-    padding: const EdgeInsets.symmetric(
-      horizontal: Dimensions.paddingSizeExtraSmall),
-    child: Container(
-      height: schoolListIndex == 1
-          ? MediaQuery.of(context).size.height / 1.5
-          : MediaQuery.of(context).size.height / 2.5,
-      margin: const EdgeInsets.symmetric(horizontal: 5),
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.05),
-        border: Border.all(width: 1, color: Colors.grey.withOpacity(0.2)),
-        borderRadius: BorderRadius.circular(12),
+  Widget _buildSchoolList(
+      BuildContext context, List<SchoolLists> schoolList, int schoolListIndex) {
+    final heading = getHeading(schoolList, schoolListIndex) ?? '';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: Dimensions.paddingSizeExtraSmall),
+      child: Container(
+        height: schoolListIndex == 1
+            ? MediaQuery.of(context).size.height / 1.5
+            : MediaQuery.of(context).size.height / 2.5,
+        margin: const EdgeInsets.symmetric(horizontal: 5),
+        decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(0.1),
+          border: Border.all(width: 1, color: Colors.grey),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child:
+         schoolList.isEmpty
+            ? Center(child: Text('no_items_available'.tr))
+            : Scrollbar(
+                thumbVisibility: true,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: schoolList.length,
+                  itemBuilder: (ctx, index) {
+                    // Skip tuition fee items and headteacher messages when showing all lists
+                    if (schoolListIndex == 0 &&
+                        (schoolList[index].transactionType ==
+                            AppConstants.tuitionFee)) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return SingleSchoolListWidget(
+                      index: schoolListIndex,
+                      schoolLists: schoolList[index],
+                      initialChecked: isChecked[index],
+                      onChanged: (value) {
+                        onCheckboxChanged(index, value!);
+                      },
+                    );
+                  },
+                ),
+              ),
       ),
-      child: schoolList.isEmpty
-          ? Center(
-              child: Text(
-                'no_items_available'.tr,
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-            )
-          : Scrollbar(
-              thumbVisibility: true,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: schoolList.length,
-                itemBuilder: (ctx, index) {
-                  // Skip tuition fee items and headteacher messages when showing all lists
-                  if (schoolListIndex == 0 &&
-                      (schoolList[index].transactionType == AppConstants.tuitionFee)) {
-                    return const SizedBox.shrink();
-                  }
-
-                  return SingleSchoolListModernWidget(
-                     onTotalChanged: (total, transactionType) {
-    _handleTotalChange(total, transactionType);
-  },
-  transactionType: _getTransactionType(schoolList[index]),
-                    index: schoolListIndex,
-                    schoolLists: schoolList[index],
-                    initialChecked: isChecked[index],
-                    onChanged: (value) {
-                      onCheckboxChanged(index, value!);
-                    },
-                    products: shop.shopList, // Pass the products list
-                  );
-                },
-              ),
-            ),
-    ),
-  );
-}
-
-int _getTransactionType(SchoolLists item) {
-  switch(item.transactionType) {
-    case AppConstants.classRequirement: return 2;
-    case AppConstants.dormitoryEssential: return 3;
-    case AppConstants.textBook: return 4;
-    case AppConstants.tuitionFee: return 5;
-    // ... other cases ...
-    default: return 0;
+    );
   }
-}
 
   Widget _buildLoadingIndicator(BuildContext context) {
     return Center(
@@ -394,7 +302,6 @@ int _getTransactionType(SchoolLists item) {
       required List<bool> isChecked}) {
     final userData = Get.find<AuthController>().getUserData();
     late SchoolLists schoolListModel = SchoolLists();
-    final currentTypeTotal = _transactionTypeTotals[schoolListIndex] ?? 0.0;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -403,13 +310,8 @@ int _getTransactionType(SchoolLists item) {
           if (schoolListIndex > 0 && schoolListIndex != 5)
             Column(
               children: [
-              _buildRichTextSutitle(
-                context, 
-                heading, 
-                '${'sub_total'.tr}:',
-                currentTypeTotal.toStringAsFixed(2), 
-                AppConstants.currency
-              ),
+                _buildRichTextSutitle(context, heading, '${'sub_total'.tr}:',
+                    '${caseTotals[schoolListIndex]}', AppConstants.currency),
                 const SizedBox(height: 10),
                 //       DefaultButton2(
                 //         onPress: () => Get.to(

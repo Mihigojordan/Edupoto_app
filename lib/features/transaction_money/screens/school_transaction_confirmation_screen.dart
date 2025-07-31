@@ -395,7 +395,7 @@ void calculateTotalPrice() {
                                   widget
                                       .studentController!.studentList!.isEmpty)
                               ? DependentSchoolDropdowns(
-                                onInputStudent: ({required schoolName,required className,required studentName,required studentCode}) {
+                                onInputStudent: ({required schoolName,required className,required studentName,required studentCode, required schoolId}) {
                                    _captureInformation(
                                               availableBalance: widget.availableBalance,
                                                 context,

@@ -39,7 +39,7 @@ class Product {
       regularPrice:
           json['regular_price'], // WooCommerce uses 'sku' for product codes
       salePrice: json['sale_price'],
-      shortDescription: json['short_description'],
+      shortDescription: json['description'],
       categories: (json['categories']
               as List<dynamic>?) // WooCommerce uses 'images' (plural)
           ?.map((category) => WooCategory.fromJson(category))
@@ -63,7 +63,7 @@ class Product {
       'price': price,
       'regular_price': regularPrice, // Map back to 'sku' for API compliance
       'sale_price': salePrice,
-      'short_description': shortDescription,
+      'description': shortDescription,
       'categories': categories?.map((category) => category.toJson()).toList(),
       'brands': brands?.map((brand) => brand.toJson()).toList(),
       'attributes': attributes?.map((attribute) => attribute.toJson()).toList()

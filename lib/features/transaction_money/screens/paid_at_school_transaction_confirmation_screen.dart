@@ -241,31 +241,31 @@ class _TransactionConfirmationScreenState
                         ),
                   ),
                   sizedBox15,
-                  PreviewAmountWidget(
-                      amountText: calculatedTotal.toStringAsFixed(2) ?? "",
-                      onTap: widget.callBack),
-                  Container(
-                    height: Dimensions.dividerSizeMedium,
-                    color: Theme.of(context).dividerColor,
-                  ),
-                  sizedBox10,
-                  Text(
-                      '${'amount_to_be_paid'.tr}: $totalPrice ${AppConstants.currency}'),
+                  // PreviewAmountWidget(
+                  //     amountText: calculatedTotal.toStringAsFixed(2) ?? "",
+                  //     onTap: widget.callBack),
+                  // Container(
+                  //   height: Dimensions.dividerSizeMedium,
+                  //   color: Theme.of(context).dividerColor,
+                  // ),
+                  // sizedBox10,
+                  // Text(
+                  //     '${'amount_to_be_paid'.tr}: $totalPrice ${AppConstants.currency}'),
                   // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
-                  Text(
-                      '${'vat'.tr} : $vat ${AppConstants.currency}'),
-                  Text(
-                      '${'convenience_fee'.tr} : $convenienceFee ${AppConstants.currency}'),
-                  const Divider(),
-                  Text(
-                    '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
+                  // Text(
+                  //     '${'vat'.tr} : $vat ${AppConstants.currency}'),
+                  // Text(
+                  //     '${'convenience_fee'.tr} : $convenienceFee ${AppConstants.currency}'),
+                  // const Divider(),
+                  // Text(
+                  //   '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
+                  //   style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  //         fontWeight: FontWeight.bold,
+                  //       ),
+                  // ),
                 ],
               ),
-              sizedBox10,
+              // sizedBox10,
               if (widget.transactionType == TransactionType.withdrawRequest)
                 PreviewAmountWidget(
                   amountText:
@@ -342,6 +342,7 @@ class _TransactionConfirmationScreenState
                     //         fontSize: Dimensions.fontSizeLarge,
                     //       )),
                     // ),
+                    sizedBox10,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -578,7 +579,8 @@ class _TransactionConfirmationScreenState
                           ),
                         ),
                       ],
-                    )
+                    ),
+                    sizedBox
                   ],
                 ),
               )

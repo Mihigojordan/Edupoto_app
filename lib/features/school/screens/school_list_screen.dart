@@ -261,12 +261,12 @@ class SchoolListScreen extends StatelessWidget {
                                     schoolListController.classRequirementList,
                               ),
                               const SizedBox(width: 10),
-                              // SchoolListButtonWidget(
-                              //   text: 'paid_at_school'.tr,
-                              //   index: 5,
-                              //   schoolList: schoolListController.tuitionFeeList,
-                              // ),
-                              // const SizedBox(width: 10),
+                              SchoolListButtonWidget(
+                                text: 'paid_at_school'.tr,
+                                index: 5,
+                                schoolList: schoolListController.tuitionFeeList,
+                              ),
+                              const SizedBox(width: 10),
                               SchoolListButtonWidget(
                                 text: 'dormitory_essentials'.tr,
                                 index: 3,

@@ -430,7 +430,7 @@ class _TransactionConfirmationScreenState
                             ?
                             // ************************DISPLAY FIELD FOR ENTERING STUDENT FOR ACCOMPLISH PAYMENT****************
                             DependentSchoolDropdowns(
-                              onInputStudent: ({required className, required schoolName, required studentCode, required studentName}) => _captureInformation(
+                              onInputStudent: ({required className, required schoolName, required studentCode, required studentName, required schoolId}) => _captureInformation(
                                                 context,
                                                 studentIndex:0, // Use first selected student
                                                 productIndex: productIndex,

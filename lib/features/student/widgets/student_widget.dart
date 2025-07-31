@@ -935,7 +935,7 @@ class _StudentWidgetState extends State<StudentWidget> {
             child: isNotRegStudent==true?
                   
                   DependentSchoolDropdowns(
-                                onInputStudent: ({required schoolName,required className,required studentName,required studentCode}) {
+                                onInputStudent: ({required schoolName,required className,required studentName,required studentCode,required schoolId}) {
                                 
                                                   Get.to(
                                                       SchoolListScreen(
@@ -953,9 +953,9 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                         studentName:
                                                             studentNameEditingController
                                                                 .text,
-                                                        className: '',
-                                                        schoolName: '',
-                                                        schoolId: 0,
+                                                        className: className,
+                                                        schoolName: schoolName,
+                                                        schoolId: schoolId,
                                                         studentId: 0,
                                                         classId: 0,
                                                       ),
@@ -1190,7 +1190,9 @@ class _StudentWidgetState extends State<StudentWidget> {
                     {required className,
                     required schoolName,
                     required studentCode,
-                    required studentName}) {},
+                    required studentName,
+                    required schoolId
+                    }) {},
                 isShop: false,
                 isNotRegStudent: isRegStudent ?? false,
                 isAddAccount: isAddAccount,

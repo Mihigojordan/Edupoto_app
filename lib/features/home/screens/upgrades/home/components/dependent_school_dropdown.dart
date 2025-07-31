@@ -39,7 +39,9 @@ class DependentSchoolDropdowns extends StatefulWidget {
       {required String schoolName,
       required String className,
       required String studentName,
-      required String studentCode}) onInputStudent;
+      required String studentCode,
+      required int schoolId
+      }) onInputStudent;
 
   DependentSchoolDropdowns(
       {required this.onInputStudent,
@@ -529,7 +531,9 @@ class _DependentSchoolDropdownsState extends State<DependentSchoolDropdowns> {
                                                           .text,
                                                   studentCode:
                                                       studentCodeEditingController
-                                                          .text);
+                                                          .text,
+                                                       schoolId:selectedCategory!.id!   
+                                                          );
                                               //****************************Check if you want to edit student registration or you do not have student */
                                               if (widget.isAddAccount == true ||
                                                   widget.studentController
