@@ -19,7 +19,8 @@ import 'package:hosomobile/features/home/screens/upgrades/home/constants/constan
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/show_info_dialog.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/studentpoto_screen/components/shikabamba/widget/widget2/student_data.dart';
-import 'package:hosomobile/features/map/screens/map_screen.dart';
+import 'package:hosomobile/features/map/screens/autocompletes_map_screen.dart';
+import 'package:hosomobile/features/map/screens/delivery_map_screen.dart';
 import 'package:hosomobile/features/setting/controllers/profile_screen_controller.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
@@ -192,8 +193,8 @@ class _TransactionConfirmationScreenState
             .toStringAsFixed(2);
     final double convenienceFee = AppConstants.calculateConvenienceFee(
         double.parse('${widget.totalAmount}'));
-    final vat =
-        AppConstants.calculateVAT(double.parse('${widget.totalAmount}'));
+    // final vat =
+    //     AppConstants.calculateVAT(double.parse('${widget.totalAmount}'));
     final availableBalance = AppConstants.availableBalance(
             amount: double.parse('${widget.totalAmount}'),
             balance: double.parse('${widget.totalAmount}'))
@@ -439,7 +440,7 @@ class _TransactionConfirmationScreenState
                                                 className: className,
                                                 totalAmount: totalAmount,
                                                 orderId: '21323443421',
-                                                vat: vat,
+                                                vat:0,
                                                 convenienceFee: convenienceFee,
                                                 studentCode: studentCode,
                                                 studentName: studentName,
@@ -533,7 +534,7 @@ _captureInformation(
                                                     .name,
                                                 totalAmount: totalAmount,
                                                 orderId: '21323443421',
-                                                vat: vat,
+                                                vat: 0,
                                                 convenienceFee: convenienceFee,
                                        pinCode: _pinCodeFieldController.text,
                                        homePhone: phoneNumberEditingController.text,
@@ -601,7 +602,7 @@ _captureInformation(
                                     productIndex: 0,
                                     purpose: '',
                                     calculateServiceCharge: convenienceFee,
-                                    calculateVAT: vat,
+                                    calculateVAT: 0,
                                     productName: widget.product.name!,
                                     randomNumber: randomNumber,
                                     serviceIndex: 0,
@@ -659,7 +660,7 @@ _captureInformation(
                                     productIndex: 0,
                                     purpose: '',
                                     calculateServiceCharge: convenienceFee,
-                                    calculateVAT: vat,
+                                    calculateVAT: 0,
                                     productName: widget.product.name!,
                                     randomNumber: randomNumber,
                                     serviceIndex: 0,
@@ -677,7 +678,7 @@ _captureInformation(
                     Text(
                         '${'material_cost'.tr}: ${widget.totalAmount} ${AppConstants.currency}'),
                     // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
-                    Text('${'vat'.tr}: $vat ${AppConstants.currency}'),
+                    Text('${'vat'.tr}: ${'inclusive'.tr}'),
 
                     Text(
                         '${'convenience_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
@@ -1012,7 +1013,7 @@ void _showTransactionBottomSheet(
                                   nowPaid:
                                       '${'material_cost'.tr}: ${widget.totalAmount}',
                                   vat:
-                                      '${'vat'.tr} (${AppConstants.vatPercentage}%): $vat ${AppConstants.currency}',
+                                      '${'vat'.tr}: ${'inclusive'.tr}',
                                   serviceCharge: convenienceFee
                                       .toStringAsFixed(2),
                                   totalNowPaid:
@@ -1023,46 +1024,7 @@ void _showTransactionBottomSheet(
 }
 }
 
-TextFormField buildFormField(
-    String labelText,
-    TextEditingController editingController,
-    TextInputType textInputType,
-    hintText) {
-  return TextFormField(
-    textAlign: TextAlign.start,
-    controller: editingController,
-    keyboardType: textInputType,
-    style: kInputTextStyle,
-    decoration: InputDecoration(
-      isCollapsed: true,
-      contentPadding: const EdgeInsets.symmetric(
-          vertical: 13, horizontal: 15), // Customize as needed
-      isDense: true,
-      focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: kamber300Color),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: kTextLightColor),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      labelText: labelText,
-      hintStyle: const TextStyle(color: Colors.grey),
-      hintText: hintText,
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-    ),
-    validator: (value) {
-      if (value == null || value.isEmpty) {
-        return 'Please enter some text';
-      }
-      return null; // Return null if the input is valid
-    },
-  );
-}
+
 
 Widget _buildListTile({
   required IconData icon,

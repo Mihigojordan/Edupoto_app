@@ -7,6 +7,11 @@ import 'package:hosomobile/features/shop/screen/track_order_screen.dart';
 import 'package:intl/intl.dart';
 
 class ShopOrderScreen extends StatelessWidget {
+  final int? customerId;
+  ShopOrderScreen({
+    super.key, 
+    this.customerId
+  });
   // final List<OrderModel> orders = [
   //   // Your list of orders would come from your data source
   //   OrderModel(
@@ -34,7 +39,7 @@ class ShopOrderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Initialize the controller and load data when screen builds
     final shopController = Get.find<ShopController>();
-      final customerId= Get.find<ShopController>().getCustomerId();
+ 
     return Scaffold(
       appBar: AppBar(
         title:  Text('my_orders'.tr, style: TextStyle(fontWeight: FontWeight.bold)),

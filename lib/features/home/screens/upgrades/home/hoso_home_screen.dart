@@ -16,6 +16,7 @@ import 'package:hosomobile/features/language/controllers/localization_controller
 import 'package:hosomobile/features/school/controllers/school_list_controller.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/shop/controller/shop_controller.dart';
+import 'package:hosomobile/features/shop/screen/shop_screen.dart';
 import 'package:hosomobile/helper/route_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:hosomobile/data/api/mtn_momo_api_client.dart';
@@ -468,9 +469,10 @@ class _HomeCard1State extends State<HomeCard1> {
                               horizontal: screenHeight >= 763 ? 10.0 : 5,
                               onPress: () {
                                 mtnMomoApiClient.createMomoToken();
-                                Get.to(const MzaziScreen(
-                                  isShop: false,
-                                ));
+                                Get.to(const ShoppingScreen());
+                                // Get.to(const MzaziScreen(
+                                //   isShop: false,
+                                // ));
                               },
                               // Navigator.push(context,MaterialPageRoute(builder: (context)=>MzaziScreen())),
                               height: 30,
@@ -485,8 +487,11 @@ class _HomeCard1State extends State<HomeCard1> {
                               vertical: screenHeight >= 763 ? 10.0 : 5,
                               textColor: kTextBlackColor,
                               horizontal: screenHeight >= 763 ? 10 : 5,
-                              onPress: () =>
-                                  _launchURL('https://supply.hosomobile.rw/'),
+                              onPress: () {
+                                    mtnMomoApiClient.createMomoToken();
+                                Get.to(const ShoppingScreen());
+                              },
+                                  // _launchURL('https://supply.hosomobile.rw/'),
                               height: 30,
                               width:
                                   screenWidth >= 520 ? 148 : screenWidth / 2.5,

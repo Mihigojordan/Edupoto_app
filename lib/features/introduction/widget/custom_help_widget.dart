@@ -38,7 +38,7 @@ class CustomHelpWidget extends StatelessWidget {
   
 }
 
-  void showHelpOptions() {
+  void showHelpOptions({required String email,required String phone,}) {
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.all(20),
@@ -52,7 +52,7 @@ class CustomHelpWidget extends StatelessWidget {
               leading: const Icon(Icons.email),
               title:  Text('email_support'.tr),
               onTap: () {
-                launchUrl(Uri.parse('mailto:support@example.com'));
+                launchUrl(Uri.parse('mailto:$email'));
                 Get.back();
               },
             ),
@@ -60,7 +60,7 @@ class CustomHelpWidget extends StatelessWidget {
               leading: const Icon(Icons.phone),
               title:  Text('call_support'.tr),
               onTap: () {
-                launchUrl(Uri.parse('tel:+250793903844'));
+                launchUrl(Uri.parse('tel:+$phone'));
                 Get.back();
               },
             ),
@@ -70,7 +70,7 @@ class CustomHelpWidget extends StatelessWidget {
   onTap: () async {
 var message = 'hello_ineed_help_with_babyeyi'.tr;
 final encodedMessage = Uri.encodeComponent(message);
-final url = Uri.parse('https://wa.me/250793903844?text=$encodedMessage');
+final url = Uri.parse('https://wa.me/$phone?text=$encodedMessage');
     try {
       if (await canLaunchUrl(url)) {
         await launchUrl(url);

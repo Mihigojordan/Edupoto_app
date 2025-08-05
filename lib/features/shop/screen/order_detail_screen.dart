@@ -524,7 +524,7 @@ Widget _buildStatusCard(BuildContext context) {
           Expanded(
             child: ElevatedButton(
               onPressed: () {
-             showHelpOptions();
+             showHelpOptions(email: 'katendeshema@gmail.com',phone: '250781699866');
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),

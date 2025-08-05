@@ -8,6 +8,7 @@ import 'package:hosomobile/features/home/domain/models/edubox_material_model.dar
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/shop/controller/shop_controller.dart';
+import 'package:hosomobile/features/shop/domain/models/customer_model.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/transaction_controller.dart';
 import 'package:hosomobile/features/transaction_money/domain/enums/suggest_type_enum.dart';
@@ -45,11 +46,11 @@ class PaymentMethodSelector extends StatefulWidget {
   final List<EduboxMaterialModel>? svProductList;
   final List<SchoolLists>? productList;
   final String productName;
-  final List<Map<String,dynamic>>? shopList;
+  final List<Map<String, dynamic>>? shopList;
   final String vat;
   final double? deliveryCost;
   final String? customerNote;
-  final String  shippingAddress1;
+  final String shippingAddress1;
   final String shippingAddress2;
   final String shippingFirstName;
   final String shippingLastName;
@@ -108,21 +109,19 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
   final TextEditingController _cardController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final _firstNameController = TextEditingController();
-final _lastNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var body;
 
-@override
-void dispose() {
-  _firstNameController.dispose();
-  _lastNameController.dispose();
-  super.dispose();
-}
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -140,7 +139,7 @@ void dispose() {
                   fontWeight: FontWeight.bold,
                 ),
           ),
-        
+
           const SizedBox(height: 20),
           _buildPaymentMethodSelector(),
           const SizedBox(height: 20),
@@ -149,8 +148,8 @@ void dispose() {
           const SizedBox(height: 10),
           _buildPaymentInputField(),
           sizedBox10,
-          _customerInfo(),
-          const SizedBox(height: 30),
+          // _customerInfo(),
+          // const SizedBox(height: 30),
           // _buildConfirmButton(),
           _confirmationButton(),
           const SizedBox(height: 10),
@@ -342,15 +341,54 @@ void dispose() {
                           ),
                         ),
                         onPressed: () async {
-                         
-                          //*******************************TEMPORARY PAYMENT CHECK */
-                         
-                          if(customerId==null){
-                            _createCustomer(); 
-                          }else{
-                              await _initiatePayment();
-                              //  _handleSuccessfulPayment();
-                          } 
+                          if (_formKey.currentState!.validate()) {
+                            if (_selectedMethod == 0 &&
+                                _selectedMobileProvider == null) {
+                              print(
+                                  'ssssssssssssssssssssssssssss $_selectedMethod | $_selectedMobileProvider');
+                              showCustomSnackBarHelper(
+                                  'please_select_mobile_money_provider'.tr,
+                                  isError: true);
+
+                              return;
+                            }
+                            if (_selectedMethod == 2 &&
+                                _selectedBankProvider == null) {
+                              showCustomSnackBarHelper('please_select_bank'.tr,
+                                  isError: true);
+
+                              return;
+                            }
+
+                            final paymentDetails = _selectedMethod == 0
+                                ? _phoneController.text
+                                : _cardController.text;
+
+                            final method = _selectedMethod == 0
+                                ? 'mobile_money'.tr
+                                : _selectedMethod == 1
+                                    ? 'card'.tr
+                                    : 'bank'.tr;
+
+                            String? provider;
+                            if (_selectedMethod == 0) {
+                              provider = _selectedMobileProvider == 0
+                                  ? 'MTN'
+                                  : 'Airtel';
+                            } else if (_selectedMethod == 2) {
+                              provider = 'BK';
+                            }
+
+                            //*******************************TEMPORARY PAYMENT CHECK */
+   print('ggggggggggggggggggggggggggggggggggggggg$customerId ');
+                            if (customerId == null) {
+                              _createCustomer();
+                            } else {
+                        await _initiatePayment(customId: customerId);
+                        //  _handleSuccessfulPayment(customId: customerId);
+                      
+                            }
+                          }
                         },
                         child: Text(
                           'pay_now'.tr,
@@ -413,7 +451,7 @@ void dispose() {
     );
 
     // Start polling for payment status
-    _pollPaymentStatus(customId:customId);
+    _pollPaymentStatus(customId: customId);
   }
 
   void _pollPaymentStatus({int? customId}) async {
@@ -477,67 +515,116 @@ void dispose() {
     }
   }
 
-  void _createCustomer()  {
-
-    try{
-  if (_formKey.currentState!.validate()) {
-    // If form is valid, proceed with submissi
-    widget.shopController!.customerReg(email:_emailController.text,phone: _phoneController.text,firstName: _firstNameController.text,lastName:_lastNameController.text).then((value) async{
-      //  _handleSuccessfulPayment(customId:value.body['id']);
-      await _initiatePayment(customId:value.body['id'] );
-    });
-  
-    }
-    }catch (e){
-      print('email error $e' );
-         showCustomSnackBarHelper(
-        'user_creation_failed'.tr,
-        isError: true,
-      );
-    }
-  
-  }
-
-  void _handleSuccessfulPayment({int ? customId}) async {
+void _createCustomer() async {
+  try {
     final userId = Get.find<AuthController>().getUserId();
-    print('88888888888888 $customId'); 
+    final userData = Get.find<AuthController>().getUserData();
+    final name = userData!.name!;
+    final String nameWithoutSpaces = name.replaceAll(' ', '');
+    final String email = '$nameWithoutSpaces$userId@gmail.com';
+    
+    final List<String> nameParts = 
+        name.trim().split(' ').where((part) => part.isNotEmpty).toList();
+
+    final String firstName = nameParts.isNotEmpty ? nameParts[0] : '';
+    final String lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
+
+    // Fetch customer list
+    await widget.shopController!.getCustomerData(reload: true);
+    
+    // Safely find customer by email in the list
+    CustomerModel? existingCustomer;
     try {
-
-      if((widget.shopList!=null && customId!=null)|| (widget.shopList!=null && customerId!=null)){
-
-      await widget.shopController!.createOrder(
-        products: widget.shopList??[],
-        feeName: 'convenience_fee'.tr,
-        feeAmount:'${double.parse(widget.service_charge).toInt()}',
-        shippingAddress1: widget.shippingAddress1,
-        shippingAddress2: widget.shippingAddress2,
-        shippingFirstName: widget.shippingFirstName,
-        shippingLastName: widget.shippingLastName,
-        shippingCompany: widget.shippingCompany,
-        shippingCity: widget.shippingCity,
-        shippingCountry: widget.shippingCountry,
-        currency: AppConstants.currency,
-        shippingTotal: widget.deliveryCost!.toStringAsFixed(2),
-        total: widget.amount,
-        customerId: customerId??customId!,
-        paymentMethod: _selectedMethod == 0
-            ? 'mobile_money'.tr
-            : _selectedMethod == 1
-                ? 'card'.tr
-                : _selectedMethod == 2
-                    ? 'bank'.tr
-                    : 'no_method'.tr,
-        paymentMethodTitle: _selectedMobileProvider == 0
-            ? 'MTN'
-            : _selectedMobileProvider == 1
-                ? 'Airtel'
-                : _selectedBankProvider == 0
-                    ? 'BK'
-                    : 'no_bank'.tr,
-        createdVia: 'Customer',
-        customerNote: widget.customerNote ?? '',
-        homePhone: widget.homePhone,
+      existingCustomer = widget.shopController!.customerList
+          ?.firstWhere((customer) => 
+              customer.email?.toLowerCase() == email.toLowerCase());
+    } catch (e) {
+      // No customer found, existingCustomer remains null
+      debugPrint('No existing customer found: $e');
+    }
+print('ggggggggggggggggggggggggggggggggggggggg${existingCustomer!.firstName} | ${existingCustomer!.id}');
+    if (existingCustomer?.id == null || existingCustomer!.id == 0) {
+      // Customer doesn't exist or has invalid ID, create new one
+      debugPrint('Creating new customer with email: $email');
+      final response = await widget.shopController!.customerReg(
+        email: email,
+        phone: _phoneController.text,
+        firstName: firstName,
+        lastName: lastName,
       );
+      
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final newCustomerId = response.body['id'];
+        if (newCustomerId != null && newCustomerId > 0) {
+           _initiatePayment(customId: newCustomerId);
+          //  _handleSuccessfulPayment(customId: newCustomerId);
+          widget.shopController!.setCustomerId(newCustomerId.toString());
+        } else {
+          throw Exception('Received invalid customer ID: $newCustomerId');
+        }
+      } else {
+        throw Exception('Failed to create customer: ${response.statusText}');
+      }
+    } else {
+      // Customer exists, use existing ID
+      print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Using existing customer with ID: ${existingCustomer.id} name: ${existingCustomer.firstName}');
+       _initiatePayment(customId:existingCustomer.id);
+      //  _handleSuccessfulPayment(customId: existingCustomer.id);
+      widget.shopController!.setCustomerId(existingCustomer.id.toString());
+    }
+  } catch (e) {
+    debugPrint('Customer creation error: $e');
+    showCustomSnackBarHelper(
+      'user_creation_failed'.tr,
+      isError: true,
+    );
+    // Consider adding retry logic or alternative flow here
+  }
+}
+
+  void _handleSuccessfulPayment({int? customId}) async {
+    final userId = Get.find<AuthController>().getUserId();
+
+    try {
+      if ((widget.shopList != null && customId != null) ||
+          (widget.shopList != null && customerId != null)) {
+        await widget.shopController!
+            .createOrder(
+          products: widget.shopList ?? [],
+          feeName: 'convenience_fee'.tr,
+          feeAmount: '${double.parse(widget.service_charge).toInt()}',
+          shippingAddress1: widget.shippingAddress1,
+          shippingAddress2: widget.shippingAddress2,
+          shippingFirstName: widget.shippingFirstName,
+          shippingLastName: widget.shippingLastName,
+          shippingCompany: widget.shippingCompany,
+          shippingCity: widget.shippingCity,
+          shippingCountry: widget.shippingCountry,
+          currency: AppConstants.currency,
+          shippingTotal: widget.deliveryCost!.toStringAsFixed(2),
+          total: widget.amount,
+          customerId: customerId ?? customId!,
+          paymentMethod: _selectedMethod == 0
+              ? 'mobile_money'.tr
+              : _selectedMethod == 1
+                  ? 'card'.tr
+                  : _selectedMethod == 2
+                      ? 'bank'.tr
+                      : 'no_method'.tr,
+          paymentMethodTitle: _selectedMobileProvider == 0
+              ? 'MTN'
+              : _selectedMobileProvider == 1
+                  ? 'Airtel'
+                  : _selectedBankProvider == 0
+                      ? 'BK'
+                      : 'no_bank'.tr,
+          createdVia: 'Customer',
+          customerNote: widget.customerNote ?? '',
+          homePhone: widget.homePhone,
+        )
+            .then((onValue) {
+          Get.find<ShopController>().getOrderList(true);
+        });
       }
 
       if (widget.transactionType == "send_money") {
@@ -742,162 +829,162 @@ void dispose() {
     );
   }
 
-Widget _customerInfo() {
-  final shopController = Get.find<ShopController>();
-  final customerInfo = shopController.getCustomerInfo();
-  final bool isLoggedIn = customerId != null;
-  bool showAdditionalInfo = isLoggedIn ? false : false;
-  bool isEditing = false; // Track editing state
+  Widget _customerInfo() {
+    final shopController = Get.find<ShopController>();
+    final customerInfo = shopController.getCustomerInfo();
+    final bool isLoggedIn = customerId != null;
+    bool showAdditionalInfo = isLoggedIn ? false : false;
+    bool isEditing = false; // Track editing state
 
- // Initialize controllers with customer data if available
-  if (customerInfo != null) {
-    _emailController.text = customerInfo.email ?? '';
-    _firstNameController.text = customerInfo.firstName ?? '';
-    _lastNameController.text = customerInfo.lastName ?? '';
-  }
+    // Initialize controllers with customer data if available
+    if (customerInfo != null) {
+      _emailController.text = customerInfo.email ?? '';
+      _firstNameController.text = customerInfo.firstName ?? '';
+      _lastNameController.text = customerInfo.lastName ?? '';
+    }
 
-  return StatefulBuilder(
-    builder: (context, setState) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          // Email field (editable when not logged in or in edit mode)
-          if (!isLoggedIn || isEditing) ...[
-             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-               children: [
-                 Text('enter_your_email_to_continue'.tr),
-               ],
-             ),
-            TextFormField(
-               controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-               autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: InputDecoration(
-                hintText: 'email_address'.tr,
-                prefixIcon: const Icon(Icons.email),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                errorMaxLines: 2,
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            // Email field (editable when not logged in or in edit mode)
+            if (!isLoggedIn || isEditing) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text('enter_your_email_to_continue'.tr),
+                ],
               ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'please_enter_required_details'.tr;
-                }
-                final emailRegex = RegExp(
-                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
-                );
-                if (!emailRegex.hasMatch(value.trim())) {
-                  return 'please_enter_a_valid_email'.tr;
-                }
-                return null;
-              },
-            ),
-       const     SizedBox(height: 16),
-          ],
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration: InputDecoration(
+                  hintText: 'email_address'.tr,
+                  prefixIcon: const Icon(Icons.email),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  errorMaxLines: 2,
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'please_enter_required_details'.tr;
+                  }
+                  final emailRegex = RegExp(
+                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+                  if (!emailRegex.hasMatch(value.trim())) {
+                    return 'please_enter_a_valid_email'.tr;
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
 
-          // Display customer info when not editing
-          if (isLoggedIn && !isEditing && customerInfo != null) 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Email: ${customerInfo.email ?? 'N/A'}'),
-                    if (customerInfo.firstName != null)
-                      Text('First Name: ${customerInfo.firstName}'),
-                    if (customerInfo.lastName != null)
-                      Text('Last Name: ${customerInfo.lastName}'),
-                  ],
+            // Display customer info when not editing
+            if (isLoggedIn && !isEditing && customerInfo != null)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Email: ${customerInfo.email ?? 'N/A'}'),
+                      if (customerInfo.firstName != null)
+                        Text('First Name: ${customerInfo.firstName}'),
+                      if (customerInfo.lastName != null)
+                        Text('Last Name: ${customerInfo.lastName}'),
+                    ],
+                  ),
+                ],
+              ),
+
+            // Edit/Save button for logged-in users
+            if (isLoggedIn)
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    isEditing = !isEditing;
+                    if (!isEditing) {
+                      // Save changes
+                      shopController.updateCustomerInfo(
+                        id: customerId!,
+                        phone: _phoneController.text,
+                        email: _emailController.text,
+                        firstName: _firstNameController.text,
+                        lastName: _lastNameController.text,
+                      );
+                    }
+                  });
+                },
+                child: Text(isEditing ? 'Save Changes' : 'Edit Information'),
+              ),
+
+            // Additional info section (for non-logged-in or editing)
+            if (!isLoggedIn || isEditing) ...[
+              // Toggle button for non-logged-in users
+              if (!isLoggedIn)
+                TextButton(
+                  onPressed: () =>
+                      setState(() => showAdditionalInfo = !showAdditionalInfo),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(showAdditionalInfo
+                          ? 'Hide Additional Information'.tr
+                          : 'Show Additional Information'.tr),
+                      Icon(showAdditionalInfo
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down),
+                    ],
+                  ),
+                ),
+
+              // Additional fields (shown when expanded or editing)
+              if (showAdditionalInfo || isEditing) ...[
+                SizedBox(height: 16),
+                TextFormField(
+                  controller: _firstNameController,
+                  decoration: InputDecoration(
+                    hintText: 'first_name'.tr,
+                    prefixIcon: const Icon(Icons.person),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'please_enter_required_details'.tr;
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  controller: _lastNameController,
+                  decoration: InputDecoration(
+                    hintText: 'last_name'.tr,
+                    prefixIcon: const Icon(Icons.person),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'please_enter_required_details'.tr;
+                    }
+                    return null;
+                  },
                 ),
               ],
-            ),
-
-          // Edit/Save button for logged-in users
-          if (isLoggedIn) 
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  isEditing = !isEditing;
-                  if (!isEditing) {
-                    // Save changes
-                    shopController.updateCustomerInfo(
-                      id:customerId!,
-                      phone: _phoneController.text,
-                      email: _emailController.text,
-                      firstName: _firstNameController.text,
-                      lastName: _lastNameController.text,
-                    );
-                  }
-                });
-              },
-              child: Text(isEditing ? 'Save Changes' : 'Edit Information'),
-            ),
-
-          // Additional info section (for non-logged-in or editing)
-          if (!isLoggedIn || isEditing) ...[
-            // Toggle button for non-logged-in users
-            if (!isLoggedIn) 
-              TextButton(
-                onPressed: () => setState(() => showAdditionalInfo = !showAdditionalInfo),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(showAdditionalInfo 
-                      ? 'Hide Additional Information'.tr 
-                      : 'Show Additional Information'.tr),
-                    Icon(showAdditionalInfo 
-                      ? Icons.keyboard_arrow_up 
-                      : Icons.keyboard_arrow_down),
-                  ],
-                ),
-              ),
-
-            // Additional fields (shown when expanded or editing)
-            if (showAdditionalInfo || isEditing) ...[
-              SizedBox(height: 16),
-              TextFormField(
-                 controller: _firstNameController,
-                decoration: InputDecoration(
-                  hintText: 'first_name'.tr,
-                  prefixIcon: const Icon(Icons.person),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'please_enter_required_details'.tr;
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-               controller: _lastNameController,
-                decoration: InputDecoration(
-                  hintText: 'last_name'.tr,
-                  prefixIcon: const Icon(Icons.person),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'please_enter_required_details'.tr;
-                  }
-                  return null;
-                },
-              ),
             ],
           ],
-        ],
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 
   Widget _buildDragHandle() {
     return Center(

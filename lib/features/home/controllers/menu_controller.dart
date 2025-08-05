@@ -6,6 +6,7 @@ import 'package:hosomobile/features/setting/screens/profile_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hosomobile/features/shop/screen/shop_screen.dart';
 
 class MenuItemController extends GetxController implements GetxService{
   int _currentTabIndex = 0;
@@ -15,7 +16,8 @@ class MenuItemController extends GetxController implements GetxService{
   final List<Widget> screen = [
    const HosoHomeScreen(),
   //  const HomeScreen(),
-    const MzaziScreen(isShop: false,isNavigation:1),
+ const ShoppingScreen(),
+    // const MzaziScreen(isShop: false,isNavigation:1),
      const NoConnection(),
     const ProfileScreen()
 

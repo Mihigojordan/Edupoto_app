@@ -586,7 +586,7 @@
   "drop_the_pin_to_your": "Drag and drop the pin to your",
   "exact_delivery_location": "Exact Delivery Location",
   "no_category": "No Category",
-  "no_products_found": "No product found",
+  "no_products_found": "Products will be available soon. Thanks for your patience!",
   "product_details": "Product Details",
   "leviticus_shop": "Leviticus Shop",
   "product_delivery_description": "Delivery additional information",
@@ -672,5 +672,8 @@
   "please_wait_while_your_information_is_being_processed": "Please wait while your information is being processed",
 
    "continue_shopping": "Continue Shopping",
-   "powered_by": "Powered by"
+   "powered_by": "Powered by",
+
+   "gadgets": "Gadgets",
+   "enter_exact_house_number": "Enter the exact house number"
 }

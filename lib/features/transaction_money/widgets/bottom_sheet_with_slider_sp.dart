@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hosomobile/common/controllers/share_controller_sp.dart';
 import 'package:hosomobile/common/models/contact_model_mtn.dart';
 import 'package:hosomobile/data/api/mtn_momo_api_client.dart';
+import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
 import 'package:hosomobile/features/home/controllers/all_school_controller.dart';
 import 'package:hosomobile/features/home/domain/models/all_school_model.dart';
 import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
@@ -9,6 +10,7 @@ import 'package:hosomobile/features/home/domain/models/student_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
 import 'package:hosomobile/features/shop/controller/shop_controller.dart';
+import 'package:hosomobile/features/shop/domain/models/customer_model.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/features/shop/screen/shop_order_screen.dart';
@@ -110,11 +112,67 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
   String? transactionId;
   final MtnMomoApiClient mtnMomoApiClient = MtnMomoApiClient();
   List<Districts>? allSchoolList;
+  final ShopController _shopController = Get.find<ShopController>();
+  final AuthController _authController = Get.find<AuthController>();
+  int? customerId;
 
   @override
   void initState() {
     Get.find<TransactionMoneyController>().changeTrueFalse();
     super.initState();
+    _fetchCustomer();
+  }
+
+    Future<void> _fetchCustomer() async {
+    try {
+      // First check if we already have a customer ID stored locally
+     customerId = _shopController.getCustomerId();
+      
+      if (customerId == null ) {
+        // If no customer ID exists, try to find or create one
+        final userId = _authController.getUserId();
+        final userData = _authController.getUserData();
+        final name = userData?.name ?? 'User$userId';
+        final String nameWithoutSpaces = name.replaceAll(' ', '');
+        final String email = '$nameWithoutSpaces$userId@gmail.com';
+
+        // Fetch customer list from API
+        await _shopController.getCustomerData(reload: true);
+
+        // Try to find existing customer by email
+        CustomerModel? existingCustomer;
+        try {
+          existingCustomer = _shopController.customerList?.firstWhere(
+            (customer) => customer.email?.toLowerCase() == email.toLowerCase(),
+          );
+        } catch (e) {
+          debugPrint('No existing customer found: $e');
+        }
+
+        // If customer exists, store the ID
+        if (existingCustomer?.id != null) {
+          _shopController.setCustomerId(existingCustomer!.id.toString());
+          customerId=existingCustomer.id;
+        } else {
+          // If customer doesn't exist, create a new one
+          final response = await _shopController.customerReg(
+            email: email,
+            phone: userData?.phone ?? '',
+            firstName: name.split(' ').first,
+            lastName: name.split(' ').length > 1 ? name.split(' ').sublist(1).join(' ') : '',
+          );
+
+          if (response.statusCode == 200 || response.statusCode == 201) {
+            final newCustomerId = response.body['id']?.toString();
+            if (newCustomerId != null) {
+              _shopController.setCustomerId(newCustomerId);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching customer: $e');
+    }
   }
 
   @override
@@ -136,6 +194,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
         '${Get.find<SplashController>().configModel!.baseUrls!.agentImageUrl}/${widget.contactModel!.avatarImage}';
 
     final ContactController contactController = Get.find<ContactController>();
+    
 
    final List<Map<String, dynamic>> productMaps = 
     widget.selectedProducts.entries.map((entry) {
@@ -537,7 +596,11 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                           Dimensions.radiusSizeSmall),
                                     ),
                                     child: CustomInkWellWidget(
-                                      onTap: () => Get.to(ShopOrderScreen()),
+                                      onTap: () {
+                                         
+                                        Get.to(ShopOrderScreen(customerId: customerId,)) ;
+                                      }
+                                      ,
                                       radius: Dimensions.radiusSizeSmall,
                                       highlightColor: Theme.of(context)
                                           .textTheme

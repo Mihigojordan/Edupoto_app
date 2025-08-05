@@ -32,7 +32,6 @@ import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/screens/school_transaction_confirmation_screen.dart';
 import 'package:hosomobile/features/transaction_money/screens/transaction_confirmation_screen.dart';
 import 'package:hosomobile/features/transaction_money/widgets/bottom_sheet_with_slider_sl.dart';
-import 'package:google_maps_places_autocomplete_widgets/address_autocomplete_widgets.dart';
 import 'package:hosomobile/features/transaction_money/widgets/bottom_sheet_with_slider_sp.dart';
 import 'package:hosomobile/helper/transaction_type.dart';
 import 'package:hosomobile/util/app_constants.dart';
@@ -198,17 +197,6 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
     zipTextController = TextEditingController();
   }
 
-  // when they choose an address
-  String? onSuggestionClickGetTextToUseForControl(Place placeDetails) {
-    String? forOurAddressBox = placeDetails.streetAddress;
-    if (forOurAddressBox == null || forOurAddressBox.isEmpty) {
-      forOurAddressBox = placeDetails.streetNumber ?? '';
-      forOurAddressBox += (forOurAddressBox.isNotEmpty ? ' ' : '');
-      forOurAddressBox += placeDetails.streetShort ?? '';
-    }
-    return forOurAddressBox;
-  }
-
   /// countries other than the united states.
   String prepareQuery(String baseAddressQuery) {
     debugPrint('prepareQuery() baseAddressQuery=$baseAddressQuery');
@@ -245,35 +233,6 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
     }
   }
 
-  // This gets us an IMMEDIATE form fill but address has no abbreviations
-  // and we must wait for the zipcode.
-  void onInitialSuggestionClick(Suggestion suggestion) {
-    final description = suggestion.description;
-
-    debugPrint('onInitialSuggestionClick()  description=$description');
-    debugPrint('  suggestion = $suggestion');
-    /* COULD BE USED TO SHOW IMMEDIATE values in form
-       BEFORE PlaceDetails arrive from API
-
-    var parts = description.split(',');
-
-    if(parts.length<4) {
-      parts = [ '','','','' ];
-    }
-    addressTextController.text = parts[0];
-    cityTextController.text = parts[1];
-    stateTextController.text = parts[2].trim();
-    zipTextController.clear(); // we wont have zip until details come thru
-    */
-  }
-
-  void onSuggestionClick(Place placeDetails) {
-    debugPrint('onSuggestionClick() placeDetails:$placeDetails');
-
-    cityTextController.text = placeDetails.city ?? '';
-    stateTextController.text = placeDetails.state ?? '';
-    zipTextController.text = placeDetails.zipCode ?? '';
-  }
 
   InputDecoration getInputDecoration(String hintText) {
     return InputDecoration(
@@ -1206,7 +1165,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
                                   nowPaid:
                                       '${'material_cost'.tr}: ${widget.calculatedTotal.toStringAsFixed(2)}',
                                   vat:
-                                      '${'vat'.tr} (${widget.vatPercentage.toStringAsFixed(1)}%): ${widget.calculateVAT.toStringAsFixed(2)} ${AppConstants.currency}',
+                                      '${'vat'.tr}: ${'inclusive'.tr}',
                                   serviceCharge:
                                       '${'convenient_fee'.tr}: ${widget.calculateServiceCharge.toStringAsFixed(2)}',
                                   totalNowPaid:
@@ -1252,7 +1211,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
                                   nowPaid:
                                       '${'material_cost'.tr}: ${widget.calculatedTotal.toStringAsFixed(2)}',
                                   vat:
-                                      '${'vat'.tr} (${widget.vatPercentage.toStringAsFixed(1)}%): ${widget.calculateVAT.toStringAsFixed(2)} ${AppConstants.currency}',
+                                      '${'vat'.tr}: ${'inclusive'.tr}',
                                   serviceCharge: widget.calculateServiceCharge
                                       .toStringAsFixed(2),
                                   totalNowPaid:

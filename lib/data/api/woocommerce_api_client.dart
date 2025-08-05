@@ -68,7 +68,7 @@ queryOrderString = {
 queryCustomerString={
     "consumer_key": consumerKey,
   "consumer_secret": consumerSecret,
-  "_fields[]":['email','first_name','last_name','billing','shipping'],
+  "_fields[]":['id','email','first_name','last_name','billing','shipping'],
   "per_page": "100"
 };
 

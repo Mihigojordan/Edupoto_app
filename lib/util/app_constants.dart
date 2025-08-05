@@ -7,10 +7,12 @@ class AppConstants {
   static const String appName = 'Babyeyi';
   // 'http://192.168.1.83/edupoto_rw_admin';
 
-  static const String baseUrl = 'https://edupoto.com';
-                                  //  'http://127.0.0.1/edupoto_rw_admin';
+  static const String baseUrl = 'https://system.edupoto.com';
+  //  'http://127.0.0.1/edupoto_rw_admin';
   static const String wooBaseUrl = 'https://hosomobile.rw';
   //  'http://192.168.1.76/edupoto_rw_admin''https://www.hosomobile.rw' ;                                         //'http://192.168.1.69/edupoto_rw_admin'; //'http://192.168.1.66/edupoto_rw_admin';
+  
+  static const String mapBaseUrl = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
   static const bool demo = false;
   static const double appVersion = 4.3;
   static const String customerPhoneCheckUri =
@@ -87,6 +89,10 @@ class AppConstants {
       '/api/v1/customer/withdrawal-requests';
   static const String getImage = '/storage/app/public/banner/';
 
+  //Google API Key
+  static const String googlePlacesApiKey =
+      "AIzaSyBjO0TDpvkwkhs0ej-VcZw-9FT_Lm-MOn0";
+
   //Mtn MOMO Api Url Links
 
   static const String sendMoneyMtnMomo = '/api/v1/momopay/pay';
@@ -137,7 +143,7 @@ class AppConstants {
   static const String contactPermission = '';
   static const String userData = 'user';
   static const String userId = 'userId';
-  static const String customerId = 'customerId'; 
+  static const String customerId = 'customerId';
   static const String customerData = 'customer';
 
   //topic
@@ -156,25 +162,25 @@ class AppConstants {
   static String currency = 'RWF';
   static double vatPercentage = 18;
   static double convenienceFeePercentage = 1.0;
-  static double deliveryCost = 3000.00;
-  static String deliveryCompany= "Maestro";
-  static String city= "Kigali";
-  static String country= "Rwanda";
-  static double calculateVAT(double amount) {
-    return (amount * vatPercentage) / 100;
-  }
+  static double deliveryCost = 1500.00;
+  static String deliveryCompany = "Maestro";
+  static String city = "Kigali";
+  static String country = "Rwanda";
+  // static double calculateVAT(double amount) {
+  //   return (amount * vatPercentage) / 100;
+  // }
 
   static double calculateConvenienceFee(double amount) {
     return (amount * convenienceFeePercentage) / 100;
   }
 
-  static double calculateOriginalAmaount(double amount) {
-    return amount - calculateVAT(amount) - calculateConvenienceFee(amount);
-  }
+  // static double calculateOriginalAmaount(double amount) {
+  //   return amount - calculateVAT(amount) - calculateConvenienceFee(amount);
+  // }
 
-  static double calculateOriginalVat(double amount) {
-    return ((amount - calculateVAT(amount)) * vatPercentage) / 100;
-  }
+  // static double calculateOriginalVat(double amount) {
+  //   return ((amount - calculateVAT(amount)) * vatPercentage) / 100;
+  // }
 
   static double calculateTotalWithService(double amount) {
     double convenienceFee = calculateConvenienceFee(amount);
@@ -182,9 +188,8 @@ class AppConstants {
   }
 
   static double calculateTotal(double amount) {
-    double vat = calculateVAT(amount);
     double convenienceFee = calculateConvenienceFee(amount);
-    return amount + vat + convenienceFee + deliveryCost;
+    return amount + convenienceFee + deliveryCost;
   }
 
   static double calculateServiceCharge0fPrice(double amount) {

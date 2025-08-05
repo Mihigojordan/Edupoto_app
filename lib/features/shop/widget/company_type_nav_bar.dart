@@ -3,6 +3,7 @@ import 'package:hosomobile/features/shop/domain/models/attribute_model.dart';
 import 'package:hosomobile/features/shop/domain/models/company.dart';
 import 'package:hosomobile/features/shop/domain/models/company_type.dart';
 
+
 class CompanyTypeNavigationBar extends StatelessWidget {
   final List<AttributeModel> companyTypes;
   final int selectedIndex;

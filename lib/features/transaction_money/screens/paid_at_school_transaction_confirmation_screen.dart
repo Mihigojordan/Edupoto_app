@@ -142,7 +142,7 @@ class _TransactionConfirmationScreenState
    final totalAmount = AppConstants.calculateTotal(double.parse('${widget.inputBalance}')).toStringAsFixed(2);
     final  SchoolLists product = widget.dataList![widget.productIndex!];
     final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('${widget.inputBalance}')); 
-    final vat =AppConstants.calculateVAT(double.parse('${widget.inputBalance}')) ;
+    // final vat =AppConstants.calculateVAT(double.parse('${widget.inputBalance}')) ;
     final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse('${widget.inputBalance}')).toStringAsFixed(2);
       int randomNumber = random.nextInt(90000000) + 10000000;
     //   bottomSliderController.setIsPinCompleted(isCompleted: false, isNotify: false);
@@ -520,7 +520,7 @@ class _TransactionConfirmationScreenState
                                                       nowPaid: calculatedTotal
                                                           .toStringAsFixed(2),
                                                       vat:
-                                                          '${'vat'.tr}: $vat ${AppConstants.currency}',
+                                                          '${'vat'.tr}: ${'inclusive'.tr}',
                                                       serviceCharge:convenienceFee.toStringAsFixed(2),
                                                       totalNowPaid:
                                                           '${'total_amount_paid_now'}: $totalAmount ${AppConstants.currency}',

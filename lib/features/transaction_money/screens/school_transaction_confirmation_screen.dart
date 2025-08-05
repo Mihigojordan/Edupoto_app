@@ -17,7 +17,7 @@ import 'package:hosomobile/features/home/screens/upgrades/home/components/image.
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/component/payment_method.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/component/payment_method_sl.dart';
-import 'package:hosomobile/features/map/screens/map_screen.dart';
+import 'package:hosomobile/features/map/screens/autocompletes_map_screen.dart';
 import 'package:hosomobile/features/map/screens/map_screen_modified.dart';
 import 'package:hosomobile/features/map/screens/map_screen_named_location.dart';
 import 'package:hosomobile/features/map/screens/map_screen_sl.dart';
@@ -234,7 +234,7 @@ void calculateTotalPrice() {
   final totalAmount = AppConstants.calculateTotal(double.parse('$subTotalPrice')).toStringAsFixed(2);
     final  SchoolLists product = widget.dataList![widget.productIndex!];
     final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('$subTotalPrice')); 
-    final vat =AppConstants.calculateVAT(double.parse('$subTotalPrice')) ;
+    // final vat =AppConstants.calculateVAT(double.parse('$subTotalPrice')) ;
    final balance= calculateAvailableBalance(totalAmount);
     final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse(balance)).toStringAsFixed(2);
       int randomNumber = random.nextInt(90000000) + 10000000;
@@ -406,7 +406,7 @@ void calculateTotalPrice() {
                                                 studentInfo:'${'student_name'.tr}: $studentName ${'code'.tr}: $studentCode',
                                                 productName: widget.productName!,
                                                 orderId: '21323443421',
-                                                vat: vat,
+                                                vat: 0,
                                                 convenienceFee: convenienceFee);
                                 },
                                   isShop: false,
@@ -455,7 +455,7 @@ void calculateTotalPrice() {
                                                 studentInfo:'${'student_name'.tr}: ${widget.studentController.studentList![widget.studentIndex].name} ${'code'.tr}: ${widget.studentController.studentList![widget.studentIndex].code}',
                                                 productName: widget.productName!,
                                                 orderId: '21323443421',
-                                                vat: vat,
+                                                vat:0,
                                                 convenienceFee: convenienceFee),
                                             title: 'next'.tr,
                                             color1: kamber300Color,
@@ -504,7 +504,7 @@ void calculateTotalPrice() {
                               productIndex: widget.productIndex??0,
                               purpose: widget.purpose??'',
                               calculateServiceCharge:convenienceFee,
-                              calculateVAT: vat,
+                              calculateVAT: 0,
                               productName: widget.productName??'',
                               randomNumber: randomNumber,
                               serviceIndex: widget.serviceIndex??0,
@@ -534,7 +534,7 @@ void calculateTotalPrice() {
 
                   Text('${'material_cost'.tr}: $subTotalPrice ${AppConstants.currency}'),
                   // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
-                  Text('${'vat'.tr} (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
+                  Text('${'vat'.tr}: ${'inclusive'.tr}'),
 
                   Text( '${'convenience_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
                   const Divider(),
@@ -1134,7 +1134,7 @@ sizedBox
                                   amountToPay: '${'delivery_cost'.tr}: ${AppConstants.deliveryCost.toStringAsFixed(2)}',
                                   nowPaid: '${'material_cost'.tr}: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}',
                                   vat:
-                                      '${'vat'.tr} (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
+                                      '${'vat'.tr}: ${'inclusive'.tr}',
                                   serviceCharge: convenienceFee.toStringAsFixed(2) ,
                                   totalNowPaid:'${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
                                   serviceValue: widget.productName,

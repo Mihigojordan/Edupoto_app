@@ -22,6 +22,7 @@ import 'package:hosomobile/features/home/screens/upgrades/home/constants/show_in
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/component/payment_method.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/tereka_asome/tereka_asome.dart';
 import 'package:hosomobile/features/map/screens/left_aligned_row.dart';
+import 'package:hosomobile/features/map/widgets/build_form_field.dart';
 import 'package:hosomobile/features/map/widgets/text_field_description.dart';
 import 'package:hosomobile/features/map/widgets/text_field_formatter.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
@@ -30,12 +31,12 @@ import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/screens/school_transaction_confirmation_screen.dart';
+import 'package:google_maps_places_autocomplete_widgets/address_autocomplete_widgets.dart';
+import 'package:hosomobile/features/transaction_money/screens/shop_transaction_confirmation_screen.dart';
 import 'package:hosomobile/features/transaction_money/screens/transaction_confirmation_screen.dart';
 import 'package:hosomobile/features/transaction_money/widgets/bottom_sheet_with_slider.dart';
 import 'package:hosomobile/features/transaction_money/widgets/bottom_sheet_with_slider_sl.dart';
-import 'package:google_maps_places_autocomplete_widgets/address_autocomplete_widgets.dart';
 import 'package:hosomobile/features/transaction_money/widgets/bottom_sheet_with_slider_sp.dart';
-import 'package:hosomobile/helper/transaction_type.dart';
 import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/dimensions.dart';
 import 'package:http/http.dart' as http;
@@ -183,6 +184,8 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
   // Variables to store source and destination coordinates
   LatLng? _sourceLatLng;
   LatLng? _destinationLatLng;
+  LatLng? _currentMapCenter;
+bool _isMapIdle = true;
 
 Marker? _draggableMarker;
 bool _isDragging = false;
@@ -200,10 +203,11 @@ _isInputLocation = !_isInputLocation;
 }
 
 
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation(); // Fetch current_location .trand set it as the default source
+@override
+void initState() {
+  super.initState();
+  // _getCurrentLocation(); // Fetch current location
+     _getCurrentLocation(); // Fetch current_location .trand set it as the default source
     addressFocusNode = FocusNode();
     cityFocusNode = FocusNode();
     stateFocusNode = FocusNode();
@@ -213,18 +217,16 @@ _isInputLocation = !_isInputLocation;
     cityTextController = TextEditingController();
     stateTextController = TextEditingController();
     zipTextController = TextEditingController();
-  }
-
-  // when they choose an address
-  String? onSuggestionClickGetTextToUseForControl(Place placeDetails) {
-    String? forOurAddressBox = placeDetails.streetAddress;
-    if (forOurAddressBox == null || forOurAddressBox.isEmpty) {
-      forOurAddressBox = placeDetails.streetNumber ?? '';
-      forOurAddressBox += (forOurAddressBox.isNotEmpty ? ' ' : '');
-      forOurAddressBox += placeDetails.streetShort ?? '';
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (_mapController != null) {
+      // Center the map on the destination (if available)
+      _mapController.animateCamera(
+        CameraUpdate.newLatLng(_destinationLatLng ?? _initialPosition),
+      );
     }
-    return forOurAddressBox;
-  }
+  });
+}
+
 
   /// countries other than the united states.
   String prepareQuery(String baseAddressQuery) {
@@ -262,35 +264,6 @@ _isInputLocation = !_isInputLocation;
     }
   }
 
-  // This gets us an IMMEDIATE form fill but address has no abbreviations
-  // and we must wait for the zipcode.
-  void onInitialSuggestionClick(Suggestion suggestion) {
-    final description = suggestion.description;
-
-    debugPrint('onInitialSuggestionClick()  description=$description');
-    debugPrint('  suggestion = $suggestion');
-    /* COULD BE USED TO SHOW IMMEDIATE values in form
-       BEFORE PlaceDetails arrive from API
-
-    var parts = description.split(',');
-
-    if(parts.length<4) {
-      parts = [ '','','','' ];
-    }
-    addressTextController.text = parts[0];
-    cityTextController.text = parts[1];
-    stateTextController.text = parts[2].trim();
-    zipTextController.clear(); // we wont have zip until details come thru
-    */
-  }
-
-  void onSuggestionClick(Place placeDetails) {
-    debugPrint('onSuggestionClick() placeDetails:$placeDetails');
-
-    cityTextController.text = placeDetails.city ?? '';
-    stateTextController.text = placeDetails.state ?? '';
-    zipTextController.text = placeDetails.zipCode ?? '';
-  }
 
   InputDecoration getInputDecoration(String hintText) {
     return InputDecoration(
@@ -313,6 +286,69 @@ _isInputLocation = !_isInputLocation;
       ),
     );
   }
+
+  // Add these helper methods:
+// void _updateCenterPosition() async {
+//   if (_mapController == null) return;
+  
+//   // Get current center of the visible map
+//   final visibleRegion = await _mapController.getVisibleRegion();
+//   final centerLat = (visibleRegion.northeast.latitude + visibleRegion.southwest.latitude) / 2;
+//   final centerLng = (visibleRegion.northeast.longitude + visibleRegion.southwest.longitude) / 2;
+//   final center = LatLng(centerLat, centerLng);
+  
+//   _updateMarkerPosition(center);
+// }
+
+// Add this method to update the marker position
+// void _updateMarkerPosition(LatLng position) async {
+//   final address = await _getAddressFromLatLng(position);
+//   setState(() {
+//     _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
+//     widget.destinationController.text = address;
+//     _destinationLatLng = position;
+//     _draggableMarker = _createDraggableMarker(position, address);
+//     _markers.add(_draggableMarker!);
+//   });
+//   _drawRoute();
+// }
+
+
+Future<void> _updateMarkerPosition(LatLng position) async {
+  if (_isLoadingAddress) return;
+  
+  setState(() => _isLoadingAddress = true);
+  try {
+    final address = await _getAddressFromLatLng(position);
+    setState(() {
+      _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
+      widget.destinationController.text = address;
+      _destinationLatLng = position;
+      _draggableMarker = _createDraggableMarker(position, address);
+      _markers.add(_draggableMarker!);
+    });
+    _drawRoute();
+  } finally {
+    setState(() => _isLoadingAddress = false);
+  }
+}
+
+// Update your marker creation method
+Marker _createDraggableMarker(LatLng position, String address) {
+  return Marker(
+    markerId: const MarkerId('draggable_marker'),
+    position: position,
+    draggable: true, // Keep this true if you want manual dragging too
+    infoWindow: InfoWindow(
+      title: 'Delivery Location',
+      snippet: address,
+    ),
+    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    onDragEnd: (newPosition) {
+      _updateMarkerPosition(newPosition);
+    },
+  );
+}
 
   void dispose() {
     addressFocusNode.dispose();
@@ -342,171 +378,146 @@ _isInputLocation = !_isInputLocation;
             height: MediaQuery.of(context).size.height / 1.8,
             child: Stack(
               children: [
+
+                // Add to your Stack widget above the GoogleMap:
+Positioned(
+  top: MediaQuery.of(context).size.height / 2 - 30,
+  left: MediaQuery.of(context).size.width / 2 - 15,
+  child: Icon(Icons.location_pin, size: 30, color: Colors.red),
+),
                 // Google Map
-      GoogleMap(
-  onMapCreated: (controller) => _mapController = controller,
+// In your GoogleMap widget
+GoogleMap(
+  onMapCreated: (controller) {
+    _mapController = controller;
+    // Center the map on destination (if available)
+    if (_destinationLatLng != null) {
+      controller.animateCamera(
+        CameraUpdate.newLatLng(_destinationLatLng!),
+      );
+    }
+  },
   initialCameraPosition: CameraPosition(
-    target: _initialPosition,
+    target: _destinationLatLng ?? _initialPosition, // Default to destination or initial
     zoom: 14,
   ),
   markers: _markers,
   polylines: _polylines,
-  onTap: (latLng) async {
-    final address = await _getAddressFromLatLng(latLng);
-    setState(() {
-      _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
-      widget.destinationController!.text = address;
-      _destinationLatLng = latLng;
-      _draggableMarker = _createDraggableMarker(latLng, address);
-      _markers.add(_draggableMarker!);
-    });
-    _drawRoute();
+  onTap: (latLng) {
+    _updateMarkerPosition(latLng); // Allow tap-to-place
   },
 ),
 
+
+
+
+
                 // Floating Source and Destination Input Fields
-     _isInputLocation==false?Positioned(
-        top: 20,
+ Positioned(
+        top: 16,
         left: 16,
         right: 16,
-        child: InkWell(
-          onTap: () => onInputLocation(),
-          child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-          border: Border.all(
-            color: Colors.grey.shade200,
-            width: 1,
+        child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-                ),
-                child: RichText(
-          text: TextSpan(
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey.shade800,
-              height: 1.4,
-            ),
-            children: [
-              TextSpan(
-                text: '📍 ',
-                style: TextStyle(
-                  color: Colors.red.shade400,
-                ),
-              ),
-              TextSpan(
-                text: 'drop_the_pin_to_your'.tr,
-               style:const TextStyle(
-                 fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextSpan(
-                text: ' ${'exact_delivery_location'.tr}',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.blue.shade600,
-                ),
-              ),
-                  TextSpan(
-                text: ' ${'or'.tr} ',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: kTextBlackColor,
-                ),
-              ),
-                     TextSpan(
-            text: ' ${'click_here_to_enter_where_to_deliver'.tr}',
-            style:const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.red,
-              decoration: TextDecoration.underline, // This is the correct way to underline
-            ),            ),
-            ],
-          ),
-                ),
-          ),
-        ),
-      ):
-                    Positioned(
-                      top: 20, // Adjust the position as needed
-                      left: 16,
-                      right: 16,
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            )
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                // Wrap  text field with a Stack to show loading
-      Stack(
-        children: [
-         TextField(
-        controller: widget.destinationController,
-        decoration: InputDecoration(
-          labelText: 'where_to'.tr,
-          hintText: '${'eg'.tr} KN 360 St 6',
-          hintStyle: const TextStyle(color: Colors.grey),
-          border: const OutlineInputBorder(),
-          // suffixIcon: IconButton(
-          //   icon: const Icon(Icons.search),
-          //   onPressed: () => _setDestinationFromInput(),
-          // ),
-        ),
-        onChanged: (value) async {
-          if (value.isNotEmpty && value.length > 3) {
-            // Call your geocoding service for suggestions
-            List<Location> locations = await locationFromAddress(value);
-            if (locations.isNotEmpty) {
-              // Update the marker position
-              LatLng newPosition = LatLng(
-                locations.first.latitude,
-                locations.first.longitude,
-              );
-              setState(() {
-                _draggableMarker = _draggableMarker!.copyWith(
-                  positionParam: newPosition,
-                );
-                _mapController.animateCamera(
-                  CameraUpdate.newLatLng(newPosition),
-                );
-              });
-            }
-          }
-        },
-      ),
-          if (_isLoadingAddress)
-            Positioned.fill(
-              child: Container(
-                color: Colors.black.withOpacity(0.1),
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            ),
         ],
-      ),
-   
-                          ],
-                        ),
-                      ),
-                    ),
+        border: Border.all(
+          color: Colors.grey.shade200,
+          width: 1,
+        ),
+              ),
+              child: Column(
+                children: [
+                  RichText(
+                              text: TextSpan(
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade800,
+                                  height: 1.4,
+                                ),
+                                children: [
+                                  TextSpan(
+                  text: '📍 ',
+                  style: TextStyle(
+                    color: Colors.red.shade400,
+                  ),
+                                  ),
+                                  TextSpan(
+                  text: 'drop_the_pin_to_your'.tr,
+                                   style:const TextStyle(
+                   fontWeight: FontWeight.bold,
+                  ),
+                                  ),
+                                  TextSpan(
+                  text: ' ${'exact_delivery_location'.tr}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.blue.shade600,
+                  ),
+                                  ),
+                    TextSpan(
+                  text: ' ${'or'.tr} ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: kTextBlackColor,
+                  ),
+                                  ),
+                       TextSpan(
+                                text: ' ${'enter_exact_house_number'.tr}',
+                                style:const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                  // decoration: TextDecoration.underline, // This is the correct way to underline
+                                ),            ),
+                                ],
+                              ),
+                  ),            sizedBox05h,
+         TextField(
+                  controller: widget.destinationController,
+                  decoration: InputDecoration(
+                    labelText: 'where_to'.tr,
+                    hintText: '${'eg'.tr} KN 360 St 6, Kigali',
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    border: const OutlineInputBorder(),
+                    // suffixIcon: IconButton(
+                    //   icon: const Icon(Icons.search),
+                    //   onPressed: () {}//=> _setDestinationFromInput(),
+                    // ),
+                  ),
+                  onChanged: (value) async {
+                    if (value.isNotEmpty && value.length > 3) {
+                      // Call your geocoding service for suggestions
+                      List<Location> locations = await locationFromAddress(value);
+                      if (locations.isNotEmpty) {
+                        // Update the marker position
+                        LatLng newPosition = LatLng(
+                          locations.first.latitude,
+                          locations.first.longitude,
+                        );
+                        setState(() {
+                          _draggableMarker = _draggableMarker!.copyWith(
+                            positionParam: newPosition,
+                          );
+                          _mapController.animateCamera(
+                            CameraUpdate.newLatLng(newPosition),
+                          );
+                        });
+                      }
+                    }
+                  },
+                ),
+                ],
+              ),
+        ),
+      )
               ],
             ),
           ),
@@ -547,15 +558,17 @@ _isInputLocation = !_isInputLocation;
                       color: kErrorBorderColor, fontWeight: FontWeight.normal),
                 ),
                 sizedBox10,
-    buildFormField(
-  'phone_number'.tr,
- widget.phoneNumberEditingController!,
+              
+buildFormField(
+  'Phone Number',
+  widget.phoneNumberEditingController,
   TextInputType.phone,
   '07XXXXXXXX',
   isPhoneNumber: true,
+  maxLength: 15,
   validator: (value) {
-    return _validatePhoneNumber(value) ?? 
-      (value?.isEmpty ?? true ? 'please_select_receiver_phone_number'.tr : null);
+    if (value == null || value.isEmpty) return 'Please enter phone number';
+    return null;
   },
 ),
                 sizedBox10,
@@ -621,92 +634,6 @@ _isInputLocation = !_isInputLocation;
     );
   }
 
-TextFormField buildFormField(
-  String labelText,
-  TextEditingController editingController,
-  TextInputType textInputType,
-  String hintText, {
-  String? Function(String?)? validator,
-  bool isPhoneNumber = false,
-}) {
-  return TextFormField(
-    textAlign: TextAlign.start,
-    controller: editingController,
-    keyboardType: textInputType,
-    style: kInputTextStyle,
-    validator: validator,
-    inputFormatters: isPhoneNumber
-        ? [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
-            LengthLimitingTextInputFormatter(15), // For international numbers
-            PhoneNumberFormatter(),
-          ]
-        : null,
-    decoration: InputDecoration(
-      isCollapsed: true,
-      contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 15),
-      isDense: true,
-      focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: kamber300Color),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: kTextLightColor),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      labelText: labelText,
-      hintStyle: const TextStyle(color: Colors.grey),
-      hintText: hintText,
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-      suffixIcon: isPhoneNumber
-          ? ValueListenableBuilder<TextEditingValue>(
-              valueListenable: editingController,
-              builder: (context, value, _) {
-                if (value.text.isEmpty) return const SizedBox.shrink();
-                final isValid = _validatePhoneNumber(value.text) == null;
-                return Icon(
-                  isValid ? Icons.check_circle : Icons.error,
-                  color: isValid ? Colors.green : Colors.red,
-                  size: 20,
-                );
-              },
-            )
-          : null,
-    ),
-  );
-}
-
-String? _validatePhoneNumber(String? value) {
-  if (value == null || value.isEmpty) return null;
-  
-  final cleaned = value.replaceAll(RegExp(r'[^\d+]'), '');
-
-  // 1. International numbers (+ prefix)
-  if (cleaned.startsWith('+')) {
-    return cleaned.length >= 9 && cleaned.length <= 15 
-        ? null 
-        : 'Enter 9-15 digits after +';
-  }
-
-  // 2. Rwandan numbers (07, 72, 73, 78)
-  if (cleaned.startsWith('07') || cleaned.startsWith('72') || 
-     cleaned.startsWith('73') || cleaned.startsWith('78')) {
-    return cleaned.length == 10 ? null : 'Rwandan number must be 10 digits';
-  }
-
-  // 3. General 10-digit numbers (US/Canada/India etc.)
-  if (cleaned.length == 9 && !cleaned.startsWith('0')) {
-    return null;
-  }
-
-  return 'Enter valid 10-digit, Rwandan (07...) or international (+...) number';
-}
-
-
 
   Widget _buildListTile({
     required IconData icon,
@@ -734,7 +661,6 @@ final List<String> _capturedAddresses = []; // Stores all captured addresses
 String? _selectedAddress; // Currently selected address for printing
 
 Future<void> _getCurrentLocation() async {
-  // Check and request location permissions
   if (!await _checkLocationPermissions()) return;
 
   try {
@@ -744,11 +670,10 @@ Future<void> _getCurrentLocation() async {
 
     setState(() {
       _initialPosition = currentLatLng;
-      _sourceLatLng = const LatLng(-1.9482248511453184, 30.05919848211911); // Fixed pickup point
-      _destinationLatLng = currentLatLng;
+      _sourceLatLng = const LatLng(-1.9482, 30.0592); // Fixed pickup point
+      _destinationLatLng = currentLatLng; // Set destination to current location
       _currentAddress = address;
       widget.destinationController.text = address;
-      _capturedAddresses.add(address); // Store the initial address
       
       // Clear existing markers and add new ones
       _markers.clear();
@@ -761,13 +686,17 @@ Future<void> _getCurrentLocation() async {
         ),
       );
       
+      // Add destination marker at center
       _draggableMarker = _createDraggableMarker(currentLatLng, address);
       _markers.add(_draggableMarker!);
-      
-      // Draw initial route
-      _drawRoute();
     });
-    
+
+    // Center the map on the destination
+    _mapController.animateCamera(
+      CameraUpdate.newLatLng(currentLatLng),
+    );
+      
+    _drawRoute(); // Draw initial route
   } catch (e) {
     debugPrint('Error getting location: $e');
     ScaffoldMessenger.of(context).showSnackBar(
@@ -806,30 +735,30 @@ Future<bool> _checkLocationPermissions() async {
   return true;
 }
 
-Marker _createDraggableMarker(LatLng position, String address) {
-  return Marker(
-    markerId: const MarkerId('draggable_marker'),
-    position: position,
-    draggable: true,
-    infoWindow: InfoWindow(
-      title: 'Delivery Location',
-      snippet: address.length > 30 ? '${address.substring(0, 30)}...' : address,
-      onTap: () => _showAddressDialog(address),
-    ),
-    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    onDragEnd: (newPosition) async {
-      final newAddress = await _getAddressFromLatLng(newPosition);
-      setState(() {
-        _destinationLatLng = newPosition;
-        widget.destinationController!.text = newAddress;
-        _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
-        _draggableMarker = _createDraggableMarker(newPosition, newAddress);
-        _markers.add(_draggableMarker!);
-      });
-      _drawRoute();
-    },
-  );
-}
+// Marker _createDraggableMarker(LatLng position, String address) {
+//   return Marker(
+//     markerId: const MarkerId('draggable_marker'),
+//     position: position,
+//     draggable: true,
+//     infoWindow: InfoWindow(
+//       title: 'Delivery Location',
+//       snippet: address.length > 30 ? '${address.substring(0, 30)}...' : address,
+//       onTap: () => _showAddressDialog(address),
+//     ),
+//     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+//     onDragEnd: (newPosition) async {
+//       final newAddress = await _getAddressFromLatLng(newPosition);
+//       setState(() {
+//         _destinationLatLng = newPosition;
+//         widget.destinationController!.text = newAddress;
+//         _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
+//         _draggableMarker = _createDraggableMarker(newPosition, newAddress);
+//         _markers.add(_draggableMarker!);
+//       });
+//       _drawRoute();
+//     },
+//   );
+// }
 
 // Add proper address dialog
 void _showAddressDialog(String address) {
@@ -1226,7 +1155,7 @@ String _getBestLocationName(Placemark place) {
                                   nowPaid:
                                       '${'material_cost'.tr}: ${widget.calculatedTotal.toStringAsFixed(2)}',
                                   vat:
-                                      '${'vat'.tr} (${widget.vatPercentage.toStringAsFixed(1)}%): ${widget.calculateVAT.toStringAsFixed(2)} ${AppConstants.currency}',
+                                      '${'vat'.tr}: ${'inclusive'.tr}',
                                   serviceCharge:
                                       '${'convenience_fee'.tr}: ${widget.calculateServiceCharge.toStringAsFixed(2)}',
                                   totalNowPaid:
@@ -1271,7 +1200,7 @@ String _getBestLocationName(Placemark place) {
                                   nowPaid:
                                       '${'material_cost'.tr}: ${widget.calculatedTotal.toStringAsFixed(2)}',
                                   vat:
-                                      '${'vat'.tr} (${widget.vatPercentage.toStringAsFixed(1)}%): ${widget.calculateVAT.toStringAsFixed(2)} ${AppConstants.currency}',
+                                      '${'vat'.tr}: ${'inclusive'.tr}',
                                   serviceCharge: widget.calculateServiceCharge
                                       .toStringAsFixed(2),
                                   totalNowPaid:

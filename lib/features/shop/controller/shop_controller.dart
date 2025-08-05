@@ -24,10 +24,10 @@ class ShopController extends GetxController implements GetxService{
   List<AttributeModel>? _attributeList;
   List<OrderModel>? _orderList;
 
-  CustomerModel? _customerInfo;
+  List<CustomerModel>? _customerList;
  
 
-  CustomerModel? get userInfo => _customerInfo;
+  List<CustomerModel>? get customerList => _customerList;
   
 
   bool get isLoading => _isLoading;
@@ -198,28 +198,29 @@ class ShopController extends GetxController implements GetxService{
    return response;
   }
 
-   Future<void> getCustomerData({bool reload = false, bool isUpdate = false}) async {
-    if(reload || _customerInfo == null) {
-      _customerInfo = null;
-      _isLoading = true;
-      if(isUpdate) {
-        update();
-      }
-    }
-
-    if(_customerInfo == null) {
-      Response response = await shopRepo.getCustomerDataApi();
-      if (response.statusCode == 200) {
-        _customerInfo = CustomerModel.fromJson(response.body);
-
-      } else {
-        ApiChecker.checkApi(response);
-      }
-      _isLoading = false;
+Future<void> getCustomerData({bool reload = false, bool isUpdate = false}) async {
+  if(reload || _customerList == null) { // Changed from _customerList; to _customerList
+    _customerList = null;
+    _isLoading = true;
+    if(isUpdate) {
       update();
     }
-
   }
+
+  if(_customerList == null) {
+    Response response = await shopRepo.getCustomerDataApi();
+    if (response.statusCode == 200) {
+      // Convert response to List<CustomerModel>
+      _customerList = (response.body as List)
+          .map((customer) => CustomerModel.fromJson(customer))
+          .toList();
+    } else {
+      ApiChecker.checkApi(response);
+    }
+    _isLoading = false;
+    update();
+  }
+}
 
    Future<Response> customerReg({required String email,required String phone,required String firstName,required String lastName} ) async{
       _isLoading = true;

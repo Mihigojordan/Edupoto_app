@@ -6,7 +6,7 @@ import 'package:hosomobile/common/widgets/custom_back_button_widget.dart';
 import 'package:hosomobile/features/history/domain/models/transaction_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/custom_buttons.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/component/payment_method.dart';
-import 'package:hosomobile/features/map/screens/map_screen.dart';
+import 'package:hosomobile/features/map/screens/autocompletes_map_screen.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/transaction_money/widgets/bottom_sheet_with_slider_sl.dart';
 import 'package:http/http.dart';
@@ -137,7 +137,7 @@ homeDeliveryAction() {
     final totalAmount = AppConstants.calculateTotal(double.parse('${widget.inputBalance}')).toStringAsFixed(2);
     final  EduboxMaterialModel product = widget.dataList![widget.productIndex!];
     final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('${product.price}')); 
-    final vat =AppConstants.calculateVAT(double.parse('${product.price}')) ;
+    // final vat =AppConstants.calculateVAT(double.parse('${product.price}')) ;
     final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse(widget.availableBalance!)).toStringAsFixed(2);
 
     String phoneNumber = widget.contactModel!.phoneNumber!.replaceAll('+', '');
@@ -284,7 +284,7 @@ homeDeliveryAction() {
                   Text(
                       '${'now_paying'.tr}: ${widget.inputBalance!.toStringAsFixed(2)} ${AppConstants.currency}'),
                   Text(
-                      '${'vat'.tr} (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
+                      '${'vat'.tr}: ${'inclusive'.tr}'),
                   Text(
                       '${'convenience_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
                   const Divider(),

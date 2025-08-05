@@ -354,7 +354,7 @@ class TrackOrderScreen extends StatelessWidget {
             Expanded(
               child: OutlinedButton(
                 onPressed: () {
-               showHelpOptions();
+              showHelpOptions(email: 'katendeshema@gmail.com',phone: '250781699866');
                 },
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),

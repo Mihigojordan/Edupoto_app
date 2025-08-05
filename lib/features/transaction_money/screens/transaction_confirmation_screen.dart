@@ -6,7 +6,8 @@ import 'package:hosomobile/common/widgets/custom_back_button_widget.dart';
 import 'package:hosomobile/features/home/controllers/student_controller.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/custom_buttons.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/dependent_school_dropdown.dart';
-import 'package:hosomobile/features/map/screens/map_screen.dart';
+import 'package:hosomobile/features/map/screens/autocompletes_map_screen.dart';
+import 'package:hosomobile/features/map/screens/delivery_map_screen.dart';
 import 'package:hosomobile/features/map/screens/map_screen_sl.dart';
 import 'package:hosomobile/features/school_directory/widgets/school_directory_dropdown.dart';
 import 'package:hosomobile/helper/currency_text_input_formatter_helper.dart';
@@ -209,8 +210,8 @@ String calculateAvailableBalance(String totalAmount) {
             .toStringAsFixed(2);
     final double convenienceFee = AppConstants.calculateConvenienceFee(
         double.parse('${widget.inputBalance}'));
-    final vat =
-        AppConstants.calculateVAT(double.parse('${widget.inputBalance}'));
+    // final vat =
+    //     AppConstants.calculateVAT(double.parse('${widget.inputBalance}'));
 
 final balance= calculateAvailableBalance(totalAmount);
 
@@ -323,7 +324,7 @@ final balance= calculateAvailableBalance(totalAmount);
                                                 productName:
                                                     widget.serviceValue!,
                                                 orderId: randomNumber.toString(),
-                                                vat: vat,
+                                                vat: 0,
                                                 convenienceFee: convenienceFee),
                                   isShop: false,
                                   studentController: widget.studentController!,
@@ -370,7 +371,7 @@ final balance= calculateAvailableBalance(totalAmount);
                                                 productName:
                                                     widget.serviceValue!,
                                                 orderId: randomNumber.toString(),
-                                                vat: vat,
+                                                vat:0,
                                                 convenienceFee: convenienceFee),
                                             title: 'next'.tr,
                                             color1: kamber300Color,
@@ -424,7 +425,7 @@ final balance= calculateAvailableBalance(totalAmount);
                               productIndex: widget.productIndex ?? 0,
                               purpose: widget.purpose ?? '',
                               calculateServiceCharge: convenienceFee,
-                              calculateVAT: vat,
+                              calculateVAT: 0,
                               productName: widget.edubox_service ?? '',
                               randomNumber: randomNumber,
                               serviceIndex: widget.serviceIndex ?? 0,
@@ -445,7 +446,7 @@ final balance= calculateAvailableBalance(totalAmount);
                   Text(
                       '${'now_paying'.tr}: ${widget.inputBalance!.toStringAsFixed(2)} ${AppConstants.currency}'),
                   Text(
-                      '${'vat'.tr} (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}'),
+                      '${'vat'.tr}: ${'inclusive'.tr}'),
                   Text(
                       '${'convenience_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
                   const Divider(),
@@ -702,7 +703,7 @@ final balance= calculateAvailableBalance(totalAmount);
                             nowPaid:
                                 '${'now_paid'.tr}: ${inputBalance.toStringAsFixed(2)} ${AppConstants.currency}',
                             vat:
-                                '${'vat'.tr} (${AppConstants.vatPercentage.toStringAsFixed(1)}%): $vat ${AppConstants.currency}',
+                                '${'vat'.tr}: ${'inclusive'.tr}',
                             serviceCharge: convenienceFee.toStringAsFixed(2),
                             totalNowPaid:
                                 '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
@@ -722,56 +723,7 @@ final balance= calculateAvailableBalance(totalAmount);
   }
 }
 
-TextFormField buildFormField(
-    String labelText,
-    TextEditingController editingController,
-    TextInputType textInputType,
-    String hint,
-    List<TextInputFormatter>? formatter,
-    FocusNode? focusNode) {
-  return TextFormField(
-    textAlign: TextAlign.start,
-    controller: editingController,
-    keyboardType: textInputType,
-    style: kInputTextStyle,
-    inputFormatters: formatter,
-    focusNode: focusNode,
-    decoration: InputDecoration(
-      isCollapsed: true,
-      hintText: hint,
-      contentPadding: const EdgeInsets.symmetric(
-          vertical: 13,
-          horizontal: 15), //Change this value to custom as you like
-      isDense: true,
-      focusedBorder: OutlineInputBorder(
-        ////<-- SEE HERE
-        borderSide: const BorderSide(width: 1, color: kamber300Color),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
 
-      enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 1, color: kTextLightColor),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-
-      errorBorder: OutlineInputBorder(
-        //<-- SEE HERE
-        borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-        borderRadius: BorderRadius.circular(20.0),
-        //<-- SEE HERE
-      ),
-
-      labelText: labelText,
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-    ),
-    validator: (value) {
-      if (value == null || value.isEmpty) {
-        return 'please_enter_some_text'.tr;
-      }
-      return null;
-    },
-  );
-}
 
 class _MethodFieldWidget extends StatelessWidget {
   final String type;

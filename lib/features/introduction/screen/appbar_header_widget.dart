@@ -47,7 +47,7 @@ class AppBarHeaderWidget extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: showHelpOptions,
+            onTap:()=> showHelpOptions(email: 'katendeshema@gmail.com',phone: '250793903844'),
             child: Column(
               children: [
             const CustomHelpWidget(height: 50.0, width: 50.0),
