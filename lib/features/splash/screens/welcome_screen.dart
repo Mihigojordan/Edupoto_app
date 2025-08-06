@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
 import 'package:hosomobile/util/app_constants.dart';
-import 'dart:html' as html;
 import 'package:hosomobile/helper/route_helper.dart';
 import 'package:hosomobile/main.dart';
 import 'package:hosomobile/util/app_constants.dart';

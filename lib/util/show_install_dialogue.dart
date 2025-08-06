@@ -1,4 +1,3 @@
-import 'dart:js_interop';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -79,7 +78,7 @@ void showInstallPrompt(BuildContext context) {
       ),
       onPressed: () {
         Navigator.pop(context);
-        _triggerInstall();
+        // _triggerInstall();
       },
       child: const Text('Ok'),
     ),
@@ -93,10 +92,4 @@ void showInstallPrompt(BuildContext context) {
   );
 }
 
-// Define the JavaScript function
-@JS('triggerInstall')
-external void triggerInstall();
 
-void _triggerInstall() {
-  triggerInstall(); // Call the JavaScript function
-}

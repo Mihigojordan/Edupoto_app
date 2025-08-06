@@ -7,7 +7,6 @@ import 'package:hosomobile/features/home/screens/upgrades/home/constants/constan
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
 import 'package:hosomobile/data/api/api_checker.dart';
-import 'dart:html' as html;
 import 'package:hosomobile/helper/route_helper.dart';
 import 'package:hosomobile/util/images.dart';
 import 'package:flutter/material.dart';
