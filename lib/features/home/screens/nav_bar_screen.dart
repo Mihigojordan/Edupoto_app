@@ -62,51 +62,63 @@ class _NavBarScreenState extends State<NavBarScreen> {
               bucket: bucket,
               child: menuController.screen[menuController.currentTabIndex]),
           floatingActionButton: !kIsWeb
-              ? FloatingActionButtonWidget(
-                  strokeWidth: 1.5,
-                  radius: 40,
-                  gradient: LinearGradient(
-                    colors: [
-                      ColorResources.gradientColor,
-                      ColorResources.gradientColor.withOpacity(0.5),
-                      ColorResources.secondaryColor.withOpacity(0.3),
-                      ColorResources.gradientColor.withOpacity(0.05),
-                      ColorResources.gradientColor.withOpacity(0),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  child: FloatingActionButton(
-                    shape: const CircleBorder(),
-                    backgroundColor: Theme.of(context).secondaryHeaderColor,
-                    elevation: 1,
-                    onPressed: () => Get.to(const ShoppingScreen()),
-                    //  Get.to(()=> const CameraScreen(
-                    //   fromEditProfile: false, isBarCodeScan: true, isHome: true,
-                    // )),
-                    child: Container(
-                      height: screenHeight * 0.1,
-                      width: screenHeight * 0.1,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                              color: const Color(0xFF1b4922).withOpacity(0.1),
-                              spreadRadius: 3,
-                              blurRadius: 7,
-                              offset: const Offset(0, 3)),
-                        ],
-                        color: const Color(0xFFFFA000),
+              ? SizedBox(
+                height: 90,
+                child: Column(
+                  children: [
+                       Text('Librairie Caritas', style: TextStyle(
+                                  color: ColorResources.blackColor,
+                                  fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w400,
+                                )),
+                          const   SizedBox(height: 2,),
+                    FloatingActionButtonWidget(
+                        strokeWidth: 1.5,
+                        radius: 40,
+                        gradient: LinearGradient(
+                          colors: [
+                            ColorResources.gradientColor,
+                            ColorResources.gradientColor.withOpacity(0.5),
+                            ColorResources.secondaryColor.withOpacity(0.3),
+                            ColorResources.gradientColor.withOpacity(0.05),
+                            ColorResources.gradientColor.withOpacity(0),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        child: FloatingActionButton(
+                          shape: const CircleBorder(),
+                          backgroundColor: Theme.of(context).secondaryHeaderColor,
+                          elevation: 1,
+                          onPressed: () => Get.to(const ShoppingScreen()),
+                          //  Get.to(()=> const CameraScreen(
+                          //   fromEditProfile: false, isBarCodeScan: true, isHome: true,
+                          // )),
+                          child: Container(
+                            height: screenHeight * 0.1,
+                            width: screenHeight * 0.1,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: const Color(0xFF1b4922).withOpacity(0.1),
+                                    spreadRadius: 3,
+                                    blurRadius: 7,
+                                    offset: const Offset(0, 3)),
+                              ],
+                              color: const Color(0xFFFFA000),
+                            ),
+                            child: Image.asset(
+                              'assets/image/shop.png',
+                              // height: screenHeight * 0.025,
+                              // width: screenHeight * 0.025,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
                       ),
-                      child: Image.asset(
-                        'assets/image/shop.png',
-                        // height: screenHeight * 0.025,
-                        // width: screenHeight * 0.025,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                )
+                  ],
+                ),
+              )
               : InkWell(
                 onTap:  () {Get.to(const ShoppingScreen());
               mtnMomoApiClient.createMomoToken();

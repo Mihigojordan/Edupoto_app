@@ -48,7 +48,7 @@ return GestureDetector(
                            product.images?[0].src ?? 'no image',
                     fit: BoxFit.cover,
                     placeholder: Images.bannerPlaceHolder),
-      title: Text(product.name??'Unknown', style: const TextStyle(fontSize: 16)),
+      title: Text(product.name??'Unknown', style: const TextStyle(fontSize: 12)),
       subtitle:       RichText(
                     text: TextSpan(
                         style: DefaultTextStyle.of(context).style,
@@ -56,14 +56,14 @@ return GestureDetector(
                       TextSpan(
                         text: '${AppConstants.currency} ${product.regularPrice}',
                         style:
-                            const TextStyle(fontSize: 14, color: Colors.green),
+                            const TextStyle(fontSize: 12, color: Colors.green),
                       ),
                       if (quantity > 0) ...[
                      
                         TextSpan(
                           text: ' X $quantity',
                           style: const TextStyle(
-                            fontSize: 14,
+                            fontSize: 12,
                             color: Colors.grey,
                           ),
                         ),

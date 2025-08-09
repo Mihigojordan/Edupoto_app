@@ -71,7 +71,7 @@ Future<String?> _loadPin() async {
     
     if (!GetPlatform.isWeb) {
       // Step 1: Fetch Contact List
-      await Get.find<ContactController>().getContactList();
+      // await Get.find<ContactController>().getContactList();
 
     } else {
   

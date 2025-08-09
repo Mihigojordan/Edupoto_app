@@ -37,7 +37,9 @@ class ShareControllerSp extends GetxController implements GetxService {
     required String? serviceValue,
     required int? serviceIndex,
     required String destination,
-    required String deliveryCost
+    required String deliveryCost,
+    required String studentName,
+    required String studentCode
    
   }) async {
     if (_isProcessing.value) return;
@@ -47,6 +49,8 @@ class ShareControllerSp extends GetxController implements GetxService {
       _validateParameters(contactModel);
 
       await _navigateToStatementWidget(
+        studentCode: studentCode,
+        studentName: studentName,
         deliveryCost: deliveryCost,
         amount: amount,
         transactionType: transactionType,
@@ -131,10 +135,14 @@ class ShareControllerSp extends GetxController implements GetxService {
     required String? serviceValue,
     required int? serviceIndex,
     required String destination,
-    required String deliveryCost
+    required String deliveryCost,
+    required String studentCode,
+    required String studentName
   }) async {
     await Get.to(
       () => ShareStatementWidgetSp(
+        studentCode: studentCode,
+        studentName: studentName,
         deliveryCost:deliveryCost??'' ,
         destination: destination,
         amount: amount,

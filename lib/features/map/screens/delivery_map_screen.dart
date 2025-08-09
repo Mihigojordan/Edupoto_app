@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
@@ -43,48 +44,46 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DeliveryMapScreen extends StatefulWidget {
-  const DeliveryMapScreen({
-    super.key,
-    required this.schoolId,
-    required this.classId,
-    required this.studentId,
-    required this.className,
-    required this.schoolName,
-    required this.studentName,
-    required this.studentCode,
-    required this.screenId,
-    required this.calculatedTotal,
-    required this.contactModel,
-    required this.eduboxService,
-    required this.dataList,
-    required this.shipper,
-
-    required this.homePhone,
-    required this.productId,
-    required this.pinCodeFieldController,
-    required this.transactionType,
-    required this.calculatedTotalWithServices,
-    required this.productIndex,
-    required this.purpose,
-    required this.calculateServiceCharge,
-    required this.calculateVAT,
-    required this.productName,
-    required this.randomNumber,
-    required this.serviceIndex,
-    required this.totalAmount,
-    required this.vatPercentage,
-    required this.isShop,
-    required this.deliveryCost,
-    this.cart,
-    this.checkedStudents,
-    this.checkedStudentsId,
-    this.product,
-    this.quantity,
-    this.studentIndex,
-   required this.phoneNumberEditingController,
-  required  this.descriptionController,
-  required  this.destinationController
-  });
+  const DeliveryMapScreen(
+      {super.key,
+      required this.schoolId,
+      required this.classId,
+      required this.studentId,
+      required this.className,
+      required this.schoolName,
+      required this.studentName,
+      required this.studentCode,
+      required this.screenId,
+      required this.calculatedTotal,
+      required this.contactModel,
+      required this.eduboxService,
+      required this.dataList,
+      required this.shipper,
+      required this.homePhone,
+      required this.productId,
+      required this.pinCodeFieldController,
+      required this.transactionType,
+      required this.calculatedTotalWithServices,
+      required this.productIndex,
+      required this.purpose,
+      required this.calculateServiceCharge,
+      required this.calculateVAT,
+      required this.productName,
+      required this.randomNumber,
+      required this.serviceIndex,
+      required this.totalAmount,
+      required this.vatPercentage,
+      required this.isShop,
+      required this.deliveryCost,
+      this.cart,
+      this.checkedStudents,
+      this.checkedStudentsId,
+      this.product,
+      this.quantity,
+      this.studentIndex,
+      required this.phoneNumberEditingController,
+      required this.descriptionController,
+      required this.destinationController});
 
   final int schoolId;
   final int studentId;
@@ -147,8 +146,26 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
   late TextEditingController stateTextController;
   late TextEditingController zipTextController;
 
- 
-  
+   String? _suggestionPlaceId;
+  String? _suggestionDescription;
+  String? _name;
+  String? _formattedAddress;
+  String? _formattedAddressZipPlus4;
+  String? _streetAddress;
+  String? _streetNumber;
+  String? _street;
+  String? _streetShort;
+  String? _city;
+  String? _county;
+  String? _state;
+  String? _stateShort;
+  String? _zipCode;
+  String? _zipCodeSuffix;
+  String? _zipCodePlus4;
+  String? _vicinity;
+  String? _country;
+  double? _lat;
+  double? _lng;
 
   Districts? selectedDistrict;
   AllSchoolModel? selectedCategory;
@@ -160,8 +177,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
   String deliveryOptionsValue = 'choose_delivery_company'.tr;
   String? _deliveryOptionError;
 
-
-  List<Map<dynamic, String>> topSize =  [
+  List<Map<dynamic, String>> topSize = [
     {'name': 'Dropp', 'logo': 'assets/icons1/dropp.jpeg', 'status': 'busy'.tr},
     {
       'name': 'i-Posita',
@@ -185,29 +201,27 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
   LatLng? _sourceLatLng;
   LatLng? _destinationLatLng;
   LatLng? _currentMapCenter;
-bool _isMapIdle = true;
+  bool _isMapIdle = true;
 
-Marker? _draggableMarker;
-bool _isDragging = false;
-String _currentAddress = '';
-bool _isLoadingAddress = false;
-LatLng? _previousMarkerPosition;
-bool _isInputLocation= false;
+  Marker? _draggableMarker;
+  bool _isDragging = false;
+  String _currentAddress = '';
+  bool _isLoadingAddress = false;
+  LatLng? _previousMarkerPosition;
+  bool _isInputLocation = false;
 
-void onInputLocation(){
-  setState(
-    (){
-_isInputLocation = !_isInputLocation;
-    }
-  );
-}
+  void onInputLocation() {
+    setState(() {
+      _isInputLocation = !_isInputLocation;
+    });
+  }
 
-
-@override
-void initState() {
-  super.initState();
-  // _getCurrentLocation(); // Fetch current location
-     _getCurrentLocation(); // Fetch current_location .trand set it as the default source
+  @override
+  void initState() {
+    super.initState();
+    // _getCurrentLocation(); // Fetch current location
+    _getCurrentLocation(); // Fetch current_location .trand set it as the default source
+    _initializeControllers();
     addressFocusNode = FocusNode();
     cityFocusNode = FocusNode();
     stateFocusNode = FocusNode();
@@ -217,16 +231,15 @@ void initState() {
     cityTextController = TextEditingController();
     stateTextController = TextEditingController();
     zipTextController = TextEditingController();
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    if (_mapController != null) {
-      // Center the map on the destination (if available)
-      _mapController.animateCamera(
-        CameraUpdate.newLatLng(_destinationLatLng ?? _initialPosition),
-      );
-    }
-  });
-}
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_mapController != null) {
+        // Center the map on the destination (if available)
+        _mapController.animateCamera(
+          CameraUpdate.newLatLng(_destinationLatLng ?? _initialPosition),
+        );
+      }
+    });
+  }
 
   /// countries other than the united states.
   String prepareQuery(String baseAddressQuery) {
@@ -244,9 +257,85 @@ void initState() {
     if (zip.isNotEmpty) {
       built += ' $zip';
     }
-    built += ', USA';
+    built += ', RW';
     debugPrint('prepareQuery made built="$built"');
     return built;
+  }
+
+    String? onSuggestionClickGetTextToUseForControl(Place placeDetails) {
+    //  we just want the street address here, for example if we were using
+    //  the address line of the form to trigger the address autocomplete
+    return placeDetails.streetAddress;
+  }
+
+    void onInitialSuggestionClick(Suggestion suggestion) {
+    debugPrint('=================================onInitialSuggestionClick( suggestion:$suggestion )');
+    setState(() {
+      _suggestionDescription = suggestion.description;
+      _suggestionPlaceId = suggestion.placeId;
+      // clear these until they are loaded...
+      _name = _formattedAddress = _formattedAddressZipPlus4 = _streetAddress =
+          _streetNumber = _street = _streetShort = _city = _county = _state =
+              _stateShort = _zipCode = _zipCodeSuffix =
+                  _zipCodePlus4 = _country = _vicinity = '....';
+      _lat = _lng = 0.0;
+    });
+  }
+
+  void _initializeControllers() {
+    addressFocusNode = FocusNode();
+    cityFocusNode = FocusNode();
+    stateFocusNode = FocusNode();
+    zipFocusNode = FocusNode();
+
+    addressTextController = TextEditingController();
+    cityTextController = TextEditingController();
+    stateTextController = TextEditingController();
+    zipTextController = TextEditingController();
+  }
+
+
+  // This handles when a suggestion is selected from the autocomplete
+  void onSuggestionClick(Place placeDetails) {
+    debugPrint('Selected place: $placeDetails');
+    
+    final newPosition = LatLng(placeDetails.lat!, placeDetails.lng!);
+    
+    setState(() {
+      // Update all the address fields
+      _streetAddress = placeDetails.streetAddress;
+      _city = placeDetails.city;
+      _state = placeDetails.state;
+      _zipCode = placeDetails.zipCode;
+      _country = placeDetails.country;
+      
+      // Update the text controller
+      widget.destinationController.text = placeDetails.formattedAddress ?? placeDetails.streetAddress ?? '';
+      
+      // Move the marker to the new position
+      _updateMarkerPosition(newPosition);
+      
+      // Center the map on the new position
+      _mapController?.animateCamera(CameraUpdate.newLatLng(newPosition));
+    });
+  }
+
+    Future<void> _updateMarkerPosition(LatLng position) async {
+    if (_isLoadingAddress) return;
+
+    setState(() => _isLoadingAddress = true);
+    try {
+      final address = await _getAddressFromLatLng(position);
+      setState(() {
+        _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
+        _destinationLatLng = position;
+        _draggableMarker = _createDraggableMarker(position, address);
+        _markers.add(_draggableMarker!);
+      });
+      _drawRoute();
+    } finally {
+      setState(() => _isLoadingAddress = false);
+    }
   }
 
   void onClearClick() {
@@ -263,7 +352,6 @@ void initState() {
       currentFocus.unfocus();
     }
   }
-
 
   InputDecoration getInputDecoration(String hintText) {
     return InputDecoration(
@@ -290,13 +378,13 @@ void initState() {
   // Add these helper methods:
 // void _updateCenterPosition() async {
 //   if (_mapController == null) return;
-  
+
 //   // Get current center of the visible map
 //   final visibleRegion = await _mapController.getVisibleRegion();
 //   final centerLat = (visibleRegion.northeast.latitude + visibleRegion.southwest.latitude) / 2;
 //   final centerLng = (visibleRegion.northeast.longitude + visibleRegion.southwest.longitude) / 2;
 //   final center = LatLng(centerLat, centerLng);
-  
+
 //   _updateMarkerPosition(center);
 // }
 
@@ -314,56 +402,38 @@ void initState() {
 // }
 
 
-Future<void> _updateMarkerPosition(LatLng position) async {
-  if (_isLoadingAddress) return;
-  
-  setState(() => _isLoadingAddress = true);
-  try {
-    final address = await _getAddressFromLatLng(position);
-    setState(() {
-      _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
-      widget.destinationController.text = address;
-      _destinationLatLng = position;
-      _draggableMarker = _createDraggableMarker(position, address);
-      _markers.add(_draggableMarker!);
-    });
-    _drawRoute();
-  } finally {
-    setState(() => _isLoadingAddress = false);
-  }
-}
-
 // Update your marker creation method
-Marker _createDraggableMarker(LatLng position, String address) {
-  return Marker(
-    markerId: const MarkerId('draggable_marker'),
-    position: position,
-    draggable: true, // Keep this true if you want manual dragging too
-    infoWindow: InfoWindow(
-      title: 'Delivery Location',
-      snippet: address,
-    ),
-    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    onDragEnd: (newPosition) {
-      _updateMarkerPosition(newPosition);
-    },
-  );
-}
+  Marker _createDraggableMarker(LatLng position, String address) {
+    return Marker(
+      markerId: const MarkerId('draggable_marker'),
+      position: position,
+      draggable: true,
+      infoWindow: InfoWindow(
+        title: 'Delivery Location',
+        snippet: address,
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      onDragEnd: (newPosition) {
+        _updateMarkerPosition(newPosition);
+      },
+    );
+  }
 
+  @override
   void dispose() {
+    _mapController?.dispose();
     addressFocusNode.dispose();
     cityFocusNode.dispose();
     stateFocusNode.dispose();
     zipFocusNode.dispose();
-
     addressTextController.dispose();
     cityTextController.dispose();
     stateTextController.dispose();
     zipTextController.dispose();
-    widget.descriptionController!.dispose();
-
+    widget.descriptionController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -378,146 +448,127 @@ Marker _createDraggableMarker(LatLng position, String address) {
             height: MediaQuery.of(context).size.height / 1.8,
             child: Stack(
               children: [
-
                 // Add to your Stack widget above the GoogleMap:
-Positioned(
-  top: MediaQuery.of(context).size.height / 2 - 30,
-  left: MediaQuery.of(context).size.width / 2 - 15,
-  child: Icon(Icons.location_pin, size: 30, color: Colors.red),
-),
+                Positioned(
+                  top: MediaQuery.of(context).size.height / 2 - 30,
+                  left: MediaQuery.of(context).size.width / 2 - 15,
+                  child: Icon(Icons.location_pin, size: 30, color: Colors.red),
+                ),
                 // Google Map
 // In your GoogleMap widget
-GoogleMap(
-  onMapCreated: (controller) {
-    _mapController = controller;
-    // Center the map on destination (if available)
-    if (_destinationLatLng != null) {
-      controller.animateCamera(
-        CameraUpdate.newLatLng(_destinationLatLng!),
-      );
-    }
-  },
-  initialCameraPosition: CameraPosition(
-    target: _destinationLatLng ?? _initialPosition, // Default to destination or initial
-    zoom: 14,
-  ),
-  markers: _markers,
-  polylines: _polylines,
-  onTap: (latLng) {
-    _updateMarkerPosition(latLng); // Allow tap-to-place
-  },
-),
-
-
-
-
-
-                // Floating Source and Destination Input Fields
- Positioned(
-        top: 16,
-        left: 16,
-        right: 16,
-        child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-        border: Border.all(
-          color: Colors.grey.shade200,
-          width: 1,
-        ),
-              ),
-              child: Column(
-                children: [
-                  RichText(
-                              text: TextSpan(
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey.shade800,
-                                  height: 1.4,
-                                ),
-                                children: [
-                                  TextSpan(
-                  text: '📍 ',
-                  style: TextStyle(
-                    color: Colors.red.shade400,
-                  ),
-                                  ),
-                                  TextSpan(
-                  text: 'drop_the_pin_to_your'.tr,
-                                   style:const TextStyle(
-                   fontWeight: FontWeight.bold,
-                  ),
-                                  ),
-                                  TextSpan(
-                  text: ' ${'exact_delivery_location'.tr}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue.shade600,
-                  ),
-                                  ),
-                    TextSpan(
-                  text: ' ${'or'.tr} ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: kTextBlackColor,
-                  ),
-                                  ),
-                       TextSpan(
-                                text: ' ${'enter_exact_house_number'.tr}',
-                                style:const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red,
-                                  // decoration: TextDecoration.underline, // This is the correct way to underline
-                                ),            ),
-                                ],
-                              ),
-                  ),            sizedBox05h,
-         TextField(
-                  controller: widget.destinationController,
-                  decoration: InputDecoration(
-                    labelText: 'where_to'.tr,
-                    hintText: '${'eg'.tr} KN 360 St 6, Kigali',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    border: const OutlineInputBorder(),
-                    // suffixIcon: IconButton(
-                    //   icon: const Icon(Icons.search),
-                    //   onPressed: () {}//=> _setDestinationFromInput(),
-                    // ),
-                  ),
-                  onChanged: (value) async {
-                    if (value.isNotEmpty && value.length > 3) {
-                      // Call your geocoding service for suggestions
-                      List<Location> locations = await locationFromAddress(value);
-                      if (locations.isNotEmpty) {
-                        // Update the marker position
-                        LatLng newPosition = LatLng(
-                          locations.first.latitude,
-                          locations.first.longitude,
-                        );
-                        setState(() {
-                          _draggableMarker = _draggableMarker!.copyWith(
-                            positionParam: newPosition,
-                          );
-                          _mapController.animateCamera(
-                            CameraUpdate.newLatLng(newPosition),
-                          );
-                        });
-                      }
+          GoogleMap(
+                  onMapCreated: (controller) {
+                    _mapController = controller;
+                    if (_destinationLatLng != null) {
+                      controller.animateCamera(
+                        CameraUpdate.newLatLng(_destinationLatLng!),
+                      );
                     }
                   },
+                  initialCameraPosition: CameraPosition(
+                    target: _destinationLatLng ?? _initialPosition,
+                    zoom: 14,
+                  ),
+                  markers: _markers,
+                  polylines: _polylines,
+                  onTap: (latLng) {
+                    _updateMarkerPosition(latLng);
+                  },
                 ),
-                ],
-              ),
-        ),
-      )
+
+                // Floating Source and Destination Input Fields
+              Positioned(
+                  top: 16,
+                  left: 16,
+                  right: 16,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                      border: Border.all(
+                        color: Colors.grey.shade200,
+                        width: 1,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        // Your address instructions here...
+                        kIsWeb
+                            ? TextField(
+                                controller: widget.destinationController,
+                                decoration: InputDecoration(
+                                  labelText: 'where_to'.tr,
+                                  hintText: '${'eg'.tr} KN 360 St 6, Kigali',
+                                  hintStyle: const TextStyle(color: Colors.grey),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                onChanged: (value) async {
+                                  if (value.isNotEmpty && value.length > 3) {
+                                    List<Location> locations = await locationFromAddress(value);
+                                    if (locations.isNotEmpty) {
+                                      LatLng newPosition = LatLng(
+                                        locations.first.latitude,
+                                        locations.first.longitude,
+                                      );
+                                      _updateMarkerPosition(newPosition);
+                                      _mapController?.animateCamera(
+                                        CameraUpdate.newLatLng(newPosition),
+                                      );
+                                    }
+                                  }
+                                },
+                              )
+                            : AddressAutocompleteTextField(
+                                mapsApiKey: AppConstants.googlePlacesApiKey,
+                                onSuggestionClickGetTextToUseForControl: (place) => place.streetAddress,
+                                onInitialSuggestionClick: (suggestion) {
+                                  setState(() {
+                                    _suggestionDescription = suggestion.description;
+                                    _suggestionPlaceId = suggestion.placeId;
+                                  });
+                                },
+                                onSuggestionClick: onSuggestionClick, // This is where we handle the selection
+                                onFinishedEditingWithNoSuggestion: (text) {
+                                  debugPrint('User typed: $text without selecting a suggestion');
+                                },
+                                hoverColor: Colors.purple,
+                                selectionColor: Colors.red,
+                                buildItem: (Suggestion suggestion, int index) {
+                                  return Container(
+                                    margin: const EdgeInsets.fromLTRB(1, 1, 1, 1),
+                                    padding: const EdgeInsets.all(8),
+                                    alignment: Alignment.centerLeft,
+                                    color: Colors.white,
+                                    child: Text(suggestion.description),
+                                  );
+                                },
+                                clearButton: const Icon(Icons.close),
+                                componentCountry: 'rw',
+                                language: 'en-Us',
+                                controller: widget.destinationController,
+                                decoration: InputDecoration(
+                                  labelText: 'where_to'.tr,
+                                  hintText: '${'eg'.tr} KN 360 St 6, Kigali',
+                                  hintStyle: const TextStyle(color: Colors.grey),
+                                  border: const OutlineInputBorder(),
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.search),
+                                    onPressed: _setDestinationFromInput,
+                                  ),
+                                ),
+                              ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -544,7 +595,7 @@ GoogleMap(
                 //         children: [
                 //           _buildListTile(
                 //               icon: Icons.location_on,
-                //               title: widget.destinationController!.text,
+                //               title: _streetAddress??'',
                 //               onTap: () {}),
                 //           sizedBox15,
                 //         ],
@@ -553,35 +604,37 @@ GoogleMap(
                 //     icon: Icons.star, title: 'choose_saved_place'.tr, onTap: () {}),
                 sizedBox10,
                 Text(
-                  'please_provide_phone_number_available_at_your_current_location'.tr,
+                  'please_provide_phone_number_available_at_your_current_location'
+                      .tr,
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: kErrorBorderColor, fontWeight: FontWeight.normal),
                 ),
                 sizedBox10,
-              
-buildFormField(
-  'Phone Number',
-  widget.phoneNumberEditingController,
-  TextInputType.phone,
-  '07XXXXXXXX',
-  isPhoneNumber: true,
-  maxLength: 15,
-  validator: (value) {
-    if (value == null || value.isEmpty) return 'Please enter phone number';
-    return null;
-  },
-),
+
+                buildFormField(
+                  'Phone Number',
+                  widget.phoneNumberEditingController,
+                  TextInputType.phone,
+                  '07XXXXXXXX',
+                  isPhoneNumber: true,
+                  maxLength: 15,
+                  validator: (value) {
+                    if (value == null || value.isEmpty)
+                      return 'Please enter phone number';
+                    return null;
+                  },
+                ),
                 sizedBox10,
-                     ShortDescriptionInput(
-                controller: widget.descriptionController!,
-                labelText: 'product_delivery_description'.tr,
-                hintText: 'describe_in_200_characters_or_less'.tr,
-                maxLength: 200,
-                onChanged: (value) {
-                  // Handle real-time changes if needed
-                },
-              ),
-              sizedBox10,
+                ShortDescriptionInput(
+                  controller: widget.descriptionController!,
+                  labelText: 'product_delivery_description'.tr,
+                  hintText: 'describe_in_200_characters_or_less'.tr,
+                  maxLength: 200,
+                  onChanged: (value) {
+                    // Handle real-time changes if needed
+                  },
+                ),
+                sizedBox10,
                 // CustomDropdown(
                 //     onChanged: (onChanged) {
                 //       setState(() {
@@ -615,9 +668,9 @@ buildFormField(
                             ),
                           ],
                         ),
-                        child:  Text(
+                        child: Text(
                           'next'.tr,
-                          style:const TextStyle(
+                          style: const TextStyle(
                             fontSize: 16.0,
                             color: Colors.white,
                           ),
@@ -633,7 +686,6 @@ buildFormField(
       ),
     );
   }
-
 
   Widget _buildListTile({
     required IconData icon,
@@ -655,85 +707,87 @@ buildFormField(
     );
   }
 
-
 // Add these variables to your state class
-final List<String> _capturedAddresses = []; // Stores all captured addresses
-String? _selectedAddress; // Currently selected address for printing
+  final List<String> _capturedAddresses = []; // Stores all captured addresses
+  String? _selectedAddress; // Currently selected address for printing
 
-Future<void> _getCurrentLocation() async {
-  if (!await _checkLocationPermissions()) return;
+  Future<void> _getCurrentLocation() async {
+    if (!await _checkLocationPermissions()) return;
 
-  try {
-    Position position = await Geolocator.getCurrentPosition();
-    LatLng currentLatLng = LatLng(position.latitude, position.longitude);
-    String address = await _getAddressFromLatLng(currentLatLng);
+    try {
+      Position position = await Geolocator.getCurrentPosition();
+      LatLng currentLatLng = LatLng(position.latitude, position.longitude);
+      String address = await _getAddressFromLatLng(currentLatLng);
 
-    setState(() {
-      _initialPosition = currentLatLng;
-      _sourceLatLng = const LatLng(-1.9482, 30.0592); // Fixed pickup point
-      _destinationLatLng = currentLatLng; // Set destination to current location
-      _currentAddress = address;
-      widget.destinationController.text = address;
-      
-      // Clear existing markers and add new ones
-      _markers.clear();
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('fixed_source'),
-          position: _sourceLatLng!,
-          infoWindow: const InfoWindow(title: 'Pickup Location'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-        ),
+      setState(() {
+        _initialPosition = currentLatLng;
+        _sourceLatLng = const LatLng(-1.9482, 30.0592); // Fixed pickup point
+        _destinationLatLng =
+            currentLatLng; // Set destination to current location
+        _currentAddress = address;
+        widget.destinationController.text = address;
+
+        // Clear existing markers and add new ones
+        _markers.clear();
+        _markers.add(
+          Marker(
+            markerId: const MarkerId('fixed_source'),
+            position: _sourceLatLng!,
+            infoWindow: const InfoWindow(title: 'Pickup Location'),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueGreen),
+          ),
+        );
+
+        // Add destination marker at center
+        _draggableMarker = _createDraggableMarker(currentLatLng, address);
+        _markers.add(_draggableMarker!);
+      });
+
+      // Center the map on the destination
+      _mapController.animateCamera(
+        CameraUpdate.newLatLng(currentLatLng),
       );
-      
-      // Add destination marker at center
-      _draggableMarker = _createDraggableMarker(currentLatLng, address);
-      _markers.add(_draggableMarker!);
-    });
 
-    // Center the map on the destination
-    _mapController.animateCamera(
-      CameraUpdate.newLatLng(currentLatLng),
-    );
-      
-    _drawRoute(); // Draw initial route
-  } catch (e) {
-    debugPrint('Error getting location: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Could not get location: ${e.toString()}')),
-    );
-  }
-}
-
-Future<bool> _checkLocationPermissions() async {
-  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please enable location services')),
-    );
-    return false;
-  }
-
-  LocationPermission permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
+      _drawRoute(); // Draw initial route
+    } catch (e) {
+      debugPrint('Error getting location: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Location permissions are required')),
+        SnackBar(content: Text('Could not get location: ${e.toString()}')),
       );
-      return false;
     }
   }
 
-  if (permission == LocationPermission.deniedForever) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Enable location permissions in settings')),
-    );
-    return false;
-  }
+  Future<bool> _checkLocationPermissions() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enable location services')),
+      );
+      return false;
+    }
 
-  return true;
-}
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are required')),
+        );
+        return false;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Enable location permissions in settings')),
+      );
+      return false;
+    }
+
+    return true;
+  }
 
 // Marker _createDraggableMarker(LatLng position, String address) {
 //   return Marker(
@@ -761,37 +815,37 @@ Future<bool> _checkLocationPermissions() async {
 // }
 
 // Add proper address dialog
-void _showAddressDialog(String address) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Captured Address'),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(address),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _printAddress(address);
-                Navigator.pop(context);
-              },
-              child: const Text('Print Address'),
-            ),
-          ],
+  void _showAddressDialog(String address) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Captured Address'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(address),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  _printAddress(address);
+                  Navigator.pop(context);
+                },
+                child: const Text('Print Address'),
+              ),
+            ],
+          ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Close'),
-        ),
-      ],
-    ),
-  );
-}
+    );
+  }
 // Replace your _getAddressFromLatLng with this more robust version
 // Future<String> _getAddressFromLatLng(LatLng position) async {
 //   try {
@@ -806,7 +860,7 @@ void _showAddressDialog(String address) {
 
 //     final place = placemarks.first;
 //     final addressParts = <String>[];
-    
+
 //     void addPart(String? value, [String? prefix]) {
 //       if (value != null && value.isNotEmpty) {
 //         addressParts.add(prefix != null ? '$prefix $value' : value);
@@ -820,7 +874,7 @@ void _showAddressDialog(String address) {
 //     addPart(place.country);
 //     addPart(place.postalCode, "Postal Code");
 
-//     return addressParts.isNotEmpty 
+//     return addressParts.isNotEmpty
 //         ? addressParts.join('\n')
 //         : _formatFallbackCoordinates(position);
 
@@ -833,31 +887,31 @@ void _showAddressDialog(String address) {
 //   }
 // }
 
-String _formatFallbackCoordinates(LatLng position) {
-  return "Location: ${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}";
-}
+  String _formatFallbackCoordinates(LatLng position) {
+    return "Location: ${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}";
+  }
 
-void _printAddress(String address) {
-  debugPrint('====== DELIVERY ADDRESS ======');
-  debugPrint(address);
-  debugPrint('Captured: ${DateTime.now()}');
-  debugPrint('=============================');
-  
-  // For actual printing (requires printing package):
-  // Printing.layoutPdf(
-  //   onLayout: (format) => _generatePdf(address),
-  // );
-  
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Address prepared for printing')),
-  );
-}
+  void _printAddress(String address) {
+    debugPrint('====== DELIVERY ADDRESS ======');
+    debugPrint(address);
+    debugPrint('Captured: ${DateTime.now()}');
+    debugPrint('=============================');
+
+    // For actual printing (requires printing package):
+    // Printing.layoutPdf(
+    //   onLayout: (format) => _generatePdf(address),
+    // );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Address prepared for printing')),
+    );
+  }
 
   void _addCurrentLocationMarker(Position position) {
     final currentLocationMarker = Marker(
       markerId: const MarkerId('current_location'),
       position: LatLng(position.latitude, position.longitude),
-      infoWindow:  InfoWindow(
+      infoWindow: InfoWindow(
         title: 'your_location'.tr,
         snippet: '${'you_are_here'.tr}!',
       ),
@@ -869,71 +923,76 @@ void _printAddress(String address) {
     });
   }
 
-Future<String> _getAddressFromLatLng(LatLng position) async {
-  setState(() => _isLoadingAddress = true);
-  try {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
+  Future<String> _getAddressFromLatLng(LatLng position) async {
+    setState(() => _isLoadingAddress = true);
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
 
-    if (placemarks.isNotEmpty) {
-      Placemark place = placemarks.first;
-      
-      // Hierarchical address suggestion - tries to find the most specific name first
-      String address = _getBestLocationName(place);
-      
-      // If we still don't have a good name, show coordinates
-      if (address.isEmpty) {
-        return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+
+        // Hierarchical address suggestion - tries to find the most specific name first
+        String address = _getBestLocationName(place);
+
+        // If we still don't have a good name, show coordinates
+        if (address.isEmpty) {
+          return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+        }
+
+        // Add district/city if available to provide context
+        if (place.locality != null &&
+            place.locality!.isNotEmpty &&
+            !address.contains(place.locality!)) {
+          address += ', ${place.locality}';
+        }
+
+        return address;
       }
-      
-      // Add district/city if available to provide context
-      if (place.locality != null && place.locality!.isNotEmpty && 
-          !address.contains(place.locality!)) {
-        address += ', ${place.locality}';
-      }
-      
-      return address;
+      return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+    } catch (e) {
+      print('Reverse geocoding error: $e');
+      return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
+    } finally {
+      setState(() => _isLoadingAddress = false);
     }
-    return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
-  } catch (e) {
-    print('Reverse geocoding error: $e');
-    return '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}';
-  } finally {
-    setState(() => _isLoadingAddress = false);
   }
-}
 
 // Helper method to get the best possible location name
-String _getBestLocationName(Placemark place) {
-  // Try to get the most specific name first
-  if (place.name != null && place.name!.isNotEmpty && place.name != 'Unnamed Road') {
-    return place.name!;
+  String _getBestLocationName(Placemark place) {
+    // Try to get the most specific name first
+    if (place.name != null &&
+        place.name!.isNotEmpty &&
+        place.name != 'Unnamed Road') {
+      return place.name!;
+    }
+
+    if (place.street != null && place.street!.isNotEmpty) {
+      return place.street!;
+    }
+
+    if (place.subLocality != null && place.subLocality!.isNotEmpty) {
+      return place.subLocality!;
+    }
+
+    if (place.locality != null && place.locality!.isNotEmpty) {
+      return place.locality!;
+    }
+
+    if (place.subAdministrativeArea != null &&
+        place.subAdministrativeArea!.isNotEmpty) {
+      return place.subAdministrativeArea!;
+    }
+
+    if (place.administrativeArea != null &&
+        place.administrativeArea!.isNotEmpty) {
+      return place.administrativeArea!;
+    }
+
+    return '';
   }
-  
-  if (place.street != null && place.street!.isNotEmpty) {
-    return place.street!;
-  }
-  
-  if (place.subLocality != null && place.subLocality!.isNotEmpty) {
-    return place.subLocality!;
-  }
-  
-  if (place.locality != null && place.locality!.isNotEmpty) {
-    return place.locality!;
-  }
-  
-  if (place.subAdministrativeArea != null && place.subAdministrativeArea!.isNotEmpty) {
-    return place.subAdministrativeArea!;
-  }
-  
-  if (place.administrativeArea != null && place.administrativeArea!.isNotEmpty) {
-    return place.administrativeArea!;
-  }
-  
-  return '';
-}
 
   void _setSourceFromInput() async {
     final source = _sourceController.text;
@@ -953,7 +1012,7 @@ String _getBestLocationName(Placemark place) {
     final destination = widget.destinationController!.text;
 
     if (destination.isEmpty || destination == 'current_location'.tr) {
-      // If the source field is empty or set to "current_location".tr, use the current_location.tr    
+      // If the source field is empty or set to "current_location".tr, use the current_location.tr
       setState(() {
         _sourceLatLng = _initialPosition;
         _addMarker(_initialPosition, 'source'.tr, BitmapDescriptor.hueGreen);
@@ -963,7 +1022,8 @@ String _getBestLocationName(Placemark place) {
       if (destinationLatLng != null) {
         setState(() {
           _destinationLatLng = destinationLatLng;
-          _addMarker(destinationLatLng, 'destination'.tr, BitmapDescriptor.hueRed);
+          _addMarker(
+              destinationLatLng, 'destination'.tr, BitmapDescriptor.hueRed);
         });
         _drawRoute();
       }
@@ -990,7 +1050,7 @@ String _getBestLocationName(Placemark place) {
       final geometry = data['routes'][0]['geometry']['coordinates'];
       final distance = (data['routes'][0]['distance'] / 1000)
           .toStringAsFixed(2); // Distance in km
-      final duration = ((data['routes'][0]['duration'] / 60)+5)
+      final duration = ((data['routes'][0]['duration'] / 60) + 5)
           .toStringAsFixed(2); // Duration in minutes
 
       setState(() {
@@ -1006,7 +1066,6 @@ String _getBestLocationName(Placemark place) {
             width: 5,
           ),
         );
-        
       });
     } else {
       print('Failed to fetch route from OSRM.');
@@ -1038,7 +1097,8 @@ String _getBestLocationName(Placemark place) {
       position: position,
       infoWindow: InfoWindow(
         title: title,
-        snippet: '${'coordinates'.tr}: ${position.latitude}, ${position.longitude}',
+        snippet:
+            '${'coordinates'.tr}: ${position.latitude}, ${position.longitude}',
       ),
       icon: BitmapDescriptor.defaultMarkerWithHue(hue),
     );
@@ -1054,13 +1114,13 @@ String _getBestLocationName(Placemark place) {
     if (_sourceLatLng == null || _destinationLatLng == null) {
       print('Source or destination coordinates are missing.');
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
+        SnackBar(
           content: Text('please_enter_where_to'.tr),
           backgroundColor: Colors.red,
         ),
       );
       return;
-    } 
+    }
     // else if (deliveryOptionsValue == 'choose_delivery_company'.tr) {
     //   setState(() {
     //     _deliveryOptionError = 'please_select_delivery_option'.tr;
@@ -1073,13 +1133,13 @@ String _getBestLocationName(Placemark place) {
     //     ),
     //   );
     //   return;
-    // } 
+    // }
     else if (widget.phoneNumberEditingController!.text == '') {
-       if (!_formKey.currentState!.validate()) {
-    return; // Don't proceed if validation fails
-  }
+      if (!_formKey.currentState!.validate()) {
+        return; // Don't proceed if validation fails
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
+        SnackBar(
           content: Text('please_enter_receiver_phone_number'.tr),
           backgroundColor: Colors.red,
         ),
@@ -1096,9 +1156,15 @@ String _getBestLocationName(Placemark place) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('${'where_to'.tr}: ${widget.destinationController.text}'),
-              Text('${'receiver_phone_number'.tr}: ${widget.phoneNumberEditingController.text}'),
-            _distance==''?const SizedBox.shrink():  Text('${'distance'.tr}: $_distance'),
-              _duration==''?const SizedBox.shrink():  Text('${'time_remaining'.tr}: $_duration'),
+              Text(
+                  '${'receiver_phone_number'.tr}: ${widget.phoneNumberEditingController.text}'),
+              _distance == ''
+                  ? const SizedBox.shrink()
+                  : Text('${'distance'.tr}: $_distance'),
+              _duration == ''
+                  ? const SizedBox.shrink()
+                  : Text('${'time_remaining'.tr}: $_duration'),
+               
             ],
           ),
           actions: [
@@ -1118,7 +1184,6 @@ String _getBestLocationName(Placemark place) {
                         material: widget.dataList,
                       ))
                     : showModalBottomSheet(
-                      
                         isScrollControlled: true,
                         context: Get.context!,
                         isDismissible: false,
@@ -1131,13 +1196,14 @@ String _getBestLocationName(Placemark place) {
                           //**************** Bottom Sheet with slider */
                           return widget.isShop == 0
                               ? BottomSheetWithSlider(
-                                 
-                                  homePhone: widget.phoneNumberEditingController.text,
-                                        shippingAddress1:'${widget.schoolName}, ${widget.className}, ${widget.studentName}, ${widget.studentCode}',
-                                    shippingAddress2: '',
-                                    shippingCompany: AppConstants.deliveryCompany,
-                                    shippingCity: 'Kigali',
-                                    shippingCountry: 'Rwanda',
+                                  homePhone:
+                                      widget.phoneNumberEditingController.text,
+                                  shippingAddress1:
+                                      '${widget.schoolName}, ${widget.className}, ${widget.studentName}, ${widget.studentCode}',
+                                  shippingAddress2: '',
+                                  shippingCompany: AppConstants.deliveryCompany,
+                                  shippingCity: _city??'Kigali',
+                                  shippingCountry: _country??'Rwanda',
                                   availableBalance: '0.00',
                                   amount: widget.totalAmount.toString(),
                                   productId: widget.productId,
@@ -1154,8 +1220,7 @@ String _getBestLocationName(Placemark place) {
                                       '${'delivery_cost'.tr}: ${widget.deliveryCost.toStringAsFixed(2)}',
                                   nowPaid:
                                       '${'material_cost'.tr}: ${widget.calculatedTotal.toStringAsFixed(2)}',
-                                  vat:
-                                      '${'vat'.tr}: ${'inclusive'.tr}',
+                                  vat: '${'vat'.tr}: ${'inclusive'.tr}',
                                   serviceCharge:
                                       '${'convenience_fee'.tr}: ${widget.calculateServiceCharge.toStringAsFixed(2)}',
                                   totalNowPaid:
@@ -1169,16 +1234,20 @@ String _getBestLocationName(Placemark place) {
                                   schoolName: widget.schoolName,
                                 )
                               : BottomSheetWithSliderSp(
-                                customerNote: widget.descriptionController.text,
+                                  customerNote:
+                                      widget.descriptionController.text,
                                   deliveryCost: widget.deliveryCost,
-                                  materialCost: widget.calculatedTotal.toStringAsFixed(2),
-                                    shippingAddress1:widget.destinationController.text,
-                                    shippingAddress2: '',
-                                    shippingCompany: AppConstants.deliveryCompany,
-                                    shippingCity: 'Kigali',
-                                    shippingCountry: 'Rwanda',
-                                  homePhone: widget.phoneNumberEditingController.text,
-                                  studentId: widget.checkedStudentsId??0,
+                                  materialCost:
+                                      widget.calculatedTotal.toStringAsFixed(2),
+                                  shippingAddress1:
+                                      widget.destinationController.text,
+                                  shippingAddress2: '',
+                                  shippingCompany: AppConstants.deliveryCompany,
+                                  shippingCity:_city?? 'Kigali',
+                                  shippingCountry:_country?? 'Rwanda',
+                                  homePhone:
+                                      widget.phoneNumberEditingController.text,
+                                  studentId: widget.checkedStudentsId ?? 0,
                                   randomNumber: widget.randomNumber,
                                   selectedProducts: widget.cart!,
                                   quantity: widget.quantity!,
@@ -1199,8 +1268,7 @@ String _getBestLocationName(Placemark place) {
                                       '${'delivery_cost'.tr}: ${widget.deliveryCost.toStringAsFixed(2)}',
                                   nowPaid:
                                       '${'material_cost'.tr}: ${widget.calculatedTotal.toStringAsFixed(2)}',
-                                  vat:
-                                      '${'vat'.tr}: ${'inclusive'.tr}',
+                                  vat: '${'vat'.tr}: ${'inclusive'.tr}',
                                   serviceCharge: widget.calculateServiceCharge
                                       .toStringAsFixed(2),
                                   totalNowPaid:

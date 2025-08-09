@@ -38,6 +38,8 @@ class ShareStatementWidgetSp extends StatefulWidget {
   final int? studentIndex;
   final String destination;
   final String? deliveryCost;
+  final String? studentName;
+  final String? studentCode;
   const ShareStatementWidgetSp(
       {super.key,
       this.amountToPay,
@@ -52,6 +54,8 @@ class ShareStatementWidgetSp extends StatefulWidget {
       required this.charge,
       required this.trxId,
       required this.destination,
+    this.studentName,
+ this.studentCode,
        this.deliveryCost,
       this.studentInfo,
       this.inputBalance,
@@ -116,7 +120,15 @@ class ShareStatementWidgetState extends State<ShareStatementWidgetSp> {
                           ),
                           sizedBox10,
                           Column(children: [
-                            ForStudentWidget(studentInfo: widget.studentInfo!),
+                             (widget.studentInfo == null ||
+                               widget.studentInfo!.isEmpty)?
+                               Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                 children: [
+                              widget.studentCode==null? const SizedBox.shrink():      ForStudentWidget(studentInfo: 'Code: ${widget.studentCode}\nName: ${widget.studentName}'),
+                                 ],
+                               ):
+                              ForStudentWidget(studentInfo:widget.studentInfo!),
                           ]),
                           sizedBox15,
                           Text(

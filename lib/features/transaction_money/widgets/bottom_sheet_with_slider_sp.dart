@@ -19,16 +19,19 @@ import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/transaction_controller.dart';
 import 'package:hosomobile/common/models/contact_model.dart';
+import 'package:hosomobile/features/transaction_money/widgets/for_student_widget.dart';
 import 'package:hosomobile/features/transaction_money/widgets/payment_methods/payment_method_selector.dart';
 import 'package:hosomobile/helper/price_converter_helper.dart';
 import 'package:hosomobile/helper/route_helper.dart';
 import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
+import 'package:hosomobile/util/images.dart';
 import 'package:hosomobile/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/common/widgets/custom_ink_well_widget.dart';
+import 'package:lottie/lottie.dart';
 
 class BottomSheetWithSliderSp extends StatefulWidget {
   final String amount;
@@ -65,6 +68,8 @@ class BottomSheetWithSliderSp extends StatefulWidget {
   final String shippingCompany;
   final String shippingCity;
   final String shippingCountry;
+  final String? studentName;
+  final String? studentCode;
 
   BottomSheetWithSliderSp({
     super.key,
@@ -80,6 +85,8 @@ class BottomSheetWithSliderSp extends StatefulWidget {
     this.nowPaid,
     this.studentIndex,
     this.productId,
+    this.studentCode,
+    this.studentName,
     required this.availableBalance,
     required this.selectedProducts,
     this.vat,
@@ -287,31 +294,34 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                         ],
                       ),
                       //********************* Student is Problem Here */
-                      // transactionMoneyController.isNextBottomSheet
-                      //     ? Column(
-                      //         children: [
-                      //           transactionMoneyController.isNextBottomSheet
-                      //               ? Lottie.asset(
-                      //                   Images.successAnimation,
-                      //                   width: 120.0,
-                      //                   fit: BoxFit.contain,
-                      //                   alignment: Alignment.center,
-                      //                 )
-                      //               : Padding(
-                      //                   padding: const EdgeInsets.all(
-                      //                       Dimensions.paddingSizeSmall),
-                      //                   child: Lottie.asset(
-                      //                     Images.failedAnimation,
-                      //                     width: 80.0,
-                      //                     fit: BoxFit.contain,
-                      //                     alignment: Alignment.center,
-                      //                   ),
-                      //                 ),
-                      //         ],
-                      //       )
-                      //     : Column(children: [
-                      //         ForStudentWidget(studentInfo: 'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}'),
-                      //       ]),
+                      transactionMoneyController.isNextBottomSheet
+                          ? Column(
+                              children: [
+                                transactionMoneyController.isNextBottomSheet
+                                    ? Lottie.asset(
+                                        Images.successAnimation,
+                                        width: 120.0,
+                                        fit: BoxFit.contain,
+                                        alignment: Alignment.center,
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.all(
+                                            Dimensions.paddingSizeSmall),
+                                        child: Lottie.asset(
+                                          Images.failedAnimation,
+                                          width: 80.0,
+                                          fit: BoxFit.contain,
+                                          alignment: Alignment.center,
+                                        ),
+                                      ),
+                              ],
+                            )
+                          : Column(children: [
+                             (widget.studentInfo == null ||
+                               widget.studentInfo!.isEmpty)?
+                            widget.studentCode==null?const SizedBox.shrink():    ForStudentWidget(studentInfo: 'Code: ${widget.studentCode}\nName: ${widget.studentName}'):
+                              ForStudentWidget(studentInfo: 'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}'),
+                            ]),
                       Container(
                         color: ColorResources.getBackgroundColor(),
                         child: Column(
@@ -348,6 +358,9 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                             : const SizedBox(),
                                         sizedBox10,
                                         //********************* Student is Problem Here */
+                                        (widget.studentInfo == null ||
+                               widget.studentInfo!.isEmpty)?
+                             widget.studentCode==null?const SizedBox.shrink():  ForStudentWidget(studentInfo: 'Code: ${widget.studentCode}\nName: ${widget.studentName}'):
                                         Wrap(
                                           spacing:
                                               8.0, // Horizontal space between items
@@ -539,20 +552,22 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                       transactionMoneyController.isNextBottomSheet
                           ? Column(
                               children: [
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal:
-                                          Dimensions.paddingSizeDefault / 1.7),
-                                  child: Divider(
-                                      height: Dimensions.dividerSizeSmall),
-                                ),
-                                const SizedBox(
-                                    height: Dimensions.paddingSizeDefault),
+                                // const Padding(
+                                //   padding: EdgeInsets.symmetric(
+                                //       horizontal:
+                                //           Dimensions.paddingSizeDefault / 1.7),
+                                //   child: Divider(
+                                //       height: Dimensions.dividerSizeSmall),
+                                // ),
+                                // const SizedBox(
+                                //     height: Dimensions.paddingSizeDefault),
                                 // CustomInkWellWidget(
                                 //   onTap: () async => await Get.find<ShareControllerSp>()
                                 //       .statementScreenShootFunction(
+                                //         studentCode: widget.studentCode!,
+                                //         studentName: widget.studentName!,
                                 //         deliveryCost: '${'delivery_cost'.tr}: ${widget.deliveryCost!} ${AppConstants.currency}',
-                                //     destination: widget.destination,
+                                //     destination: widget.shippingAddress1,
                                 //     amount: widget.materialCost,
                                 //     transactionType: widget.transactionType,
                                 //     contactModel: widget.contactModel,

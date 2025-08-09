@@ -86,7 +86,6 @@ class _TransactionConfirmationScreenState
 
   // List to store indices of selected students
   List<int> selectedStudents = [];
-  double deliveryCost = 3000.0;
 
   bool isHomeDelivery = false;
   bool isSchoolDelivery = false;
@@ -141,10 +140,6 @@ class _TransactionConfirmationScreenState
     setState(() {
       isSchoolDelivery = !isSchoolDelivery;
     });
-  }
-
-  double deliveryCostWithMAterialCost() {
-    return widget.totalAmount + deliveryCost;
   }
 
   void _validateForm() {
@@ -431,24 +426,30 @@ class _TransactionConfirmationScreenState
                             ?
                             // ************************DISPLAY FIELD FOR ENTERING STUDENT FOR ACCOMPLISH PAYMENT****************
                             DependentSchoolDropdowns(
-                              onInputStudent: ({required className, required schoolName, required studentCode, required studentName, required schoolId}) => _captureInformation(
-                                                context,
-                                                studentIndex:0, // Use first selected student
-                                                productIndex: productIndex,
-                                                schoolName: schoolName,
-                                                randomNumber: randomNumber,
-                                                className: className,
-                                                totalAmount: totalAmount,
-                                                orderId: '21323443421',
-                                                vat:0,
-                                                convenienceFee: convenienceFee,
-                                                studentCode: studentCode,
-                                                studentName: studentName,
-                                                pinCode: _pinCodeFieldController.text,
-                                                homePhone: phoneNumberEditingController.text,
-                                                customerNote: descriptionEditingController.text,
-                                                
-                                              ),
+                                onInputStudent: (
+                                        {required className,
+                                        required schoolName,
+                                        required studentCode,
+                                        required studentName,
+                                        required schoolId}) =>
+                                    _captureInformation(
+                                  context,
+                                  studentIndex: 0, // Use first selected student
+                                  productIndex: productIndex,
+                                  schoolName: schoolName,
+                                  randomNumber: randomNumber,
+                                  className: className,
+                                  totalAmount: totalAmount,
+                                  orderId: '21323443421',
+                                  vat: 0,
+                                  convenienceFee: convenienceFee,
+                                  studentCode: studentCode,
+                                  studentName: studentName,
+                                  pinCode: _pinCodeFieldController.text,
+                                  homePhone: phoneNumberEditingController.text,
+                                  customerNote:
+                                      descriptionEditingController.text,
+                                ),
                                 isShop: true,
                                 isNotRegStudent: true,
                                 parentId: randomNumber.toString(),
@@ -497,51 +498,62 @@ class _TransactionConfirmationScreenState
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       DefaultButtonWidth(
-                                          onPress: (){
-                                                       if (selectedStudents.isEmpty) {
-      // Show error if no students selected
-           ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
-            content: Text('please_select_at_least_one_student_to_proceed'.tr),
-            backgroundColor: Colors.red,
-          ),
-        );
-    } else{
-
-_captureInformation(
-                                                context,
-                                                studentIndex: selectedStudents
-                                                    .first, // Use first selected student
-                                                studentController:
-                                                    studentController,
-                                                productIndex: productIndex,
-                                                schoolName: studentController
-                                                    .studentList![
-                                                        selectedStudents.first]
-                                                    .school!,
-                                                randomNumber: randomNumber,
-                                                className: studentController
-                                                    .studentList![
-                                                        selectedStudents.first]
-                                                    .studentClass!,
-                                                    studentCode: studentController
-                                                    .studentList![
-                                                        selectedStudents.first]
-                                                    .code,
-                                                studentName: studentController
-                                                    .studentList![
-                                                        selectedStudents.first]
-                                                    .name,
-                                                totalAmount: totalAmount,
-                                                orderId: '21323443421',
-                                                vat: 0,
-                                                convenienceFee: convenienceFee,
-                                       pinCode: _pinCodeFieldController.text,
-                                       homePhone: phoneNumberEditingController.text,
-                                       customerNote: descriptionEditingController.text
+                                          onPress: () {
+                                            if (selectedStudents.isEmpty) {
+                                              // Show error if no students selected
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      'please_select_at_least_one_student_to_proceed'
+                                                          .tr),
+                                                  backgroundColor: Colors.red,
+                                                ),
                                               );
-    }
-                                          } ,
+                                            } else {
+                                              _captureInformation(context,
+                                                  studentIndex: selectedStudents
+                                                      .first, // Use first selected student
+                                                  studentController:
+                                                      studentController,
+                                                  productIndex: productIndex,
+                                                  schoolName: studentController
+                                                      .studentList![
+                                                          selectedStudents
+                                                              .first]
+                                                      .school!,
+                                                  randomNumber: randomNumber,
+                                                  className: studentController
+                                                      .studentList![
+                                                          selectedStudents
+                                                              .first]
+                                                      .studentClass!,
+                                                  studentCode: studentController
+                                                      .studentList![
+                                                          selectedStudents
+                                                              .first]
+                                                      .code,
+                                                  studentName: studentController
+                                                      .studentList![
+                                                          selectedStudents
+                                                              .first]
+                                                      .name,
+                                                  totalAmount: totalAmount,
+                                                  orderId: '21323443421',
+                                                  vat: 0,
+                                                  convenienceFee:
+                                                      convenienceFee,
+                                                  pinCode:
+                                                      _pinCodeFieldController
+                                                          .text,
+                                                  homePhone:
+                                                      phoneNumberEditingController
+                                                          .text,
+                                                  customerNote:
+                                                      descriptionEditingController
+                                                          .text);
+                                            }
+                                          },
                                           title: 'next'.tr,
                                           color1: kamber300Color,
                                           color2: kyellowColor,
@@ -568,7 +580,7 @@ _captureInformation(
                             : (studentController.studentList == null ||
                                     studentController.studentList!.isEmpty)
                                 ? DeliveryMapScreen(
-                                    deliveryCost: deliveryCost,
+                                    deliveryCost: AppConstants.deliveryCost,
                                     isShop: 1,
                                     product: widget.product,
                                     cart: widget.cart,
@@ -591,7 +603,8 @@ _captureInformation(
                                     eduboxService: widget.product.name!,
                                     dataList: [],
                                     shipper: widget.shipper,
-                                    homePhone: phoneNumberEditingController.text,
+                                    homePhone:
+                                        phoneNumberEditingController.text,
                                     productId: 0,
                                     pinCodeFieldController:
                                         _pinCodeFieldController.text,
@@ -608,16 +621,21 @@ _captureInformation(
                                     serviceIndex: 0,
                                     totalAmount: double.parse(totalAmount),
                                     vatPercentage: AppConstants.vatPercentage,
-                                    descriptionController: descriptionEditingController,
-                                    destinationController: destinationEditingController,
-                                    phoneNumberEditingController: phoneNumberEditingController,
-
-                                    )
+                                    descriptionController:
+                                        descriptionEditingController,
+                                    destinationController:
+                                        destinationEditingController,
+                                    phoneNumberEditingController:
+                                        phoneNumberEditingController,
+                                  )
                                 : DeliveryMapScreen(
-                                  phoneNumberEditingController: phoneNumberEditingController,
-                                  descriptionController: descriptionEditingController,
-                                  destinationController:destinationEditingController,
-                                    deliveryCost: deliveryCost,
+                                    phoneNumberEditingController:
+                                        phoneNumberEditingController,
+                                    descriptionController:
+                                        descriptionEditingController,
+                                    destinationController:
+                                        destinationEditingController,
+                                    deliveryCost: AppConstants.deliveryCost,
                                     isShop: 1,
                                     product: widget.product,
                                     cart: widget.cart,
@@ -643,8 +661,9 @@ _captureInformation(
                                     studentCode: studentController
                                             .studentList![studentIndex].code ??
                                         randomNumber.toString(),
-                                    studentId:
-                                        studentController.studentList![studentIndex].id ?? 0,
+                                    studentId: studentController
+                                            .studentList![studentIndex].id ??
+                                        0,
                                     studentName: studentController.studentList![studentIndex].name ?? 'unkown_name'.tr,
                                     screenId: 0,
                                     calculatedTotal: widget.totalAmount,
@@ -668,7 +687,7 @@ _captureInformation(
                                     vatPercentage: AppConstants.vatPercentage),
 
                     Text(
-                      '${'delivery_cost'.tr}: ${deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
+                      '${'delivery_cost'.tr}: ${AppConstants.deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             fontWeight: FontWeight.normal,
                           ),
@@ -732,299 +751,327 @@ _captureInformation(
     );
   }
 
-void _captureInformation(
-  BuildContext context, {
-  required int randomNumber,
-  required String totalAmount,
-  required String schoolName,
-  required String className,
-  required String orderId,
-  required double vat,
-  required double convenienceFee,
-  required int studentIndex,
-  StudentController? studentController,
-  required int productIndex,
-  String? studentName,
-  String? studentCode,
-  required String pinCode,
-  required String homePhone,
-  required String customerNote
-}) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text('confirm'.tr),
-        content: (studentController==null || studentController.studentList==null||studentController.studentList!.isEmpty)? 
-           Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('${'your_school_materials_will_be_delivered_at'.tr};'),
-            Text('${'school_name'.tr}: $schoolName'),
-            Text('${'class'.tr}: $className'),
-            Text('${'student_name'.tr}: $studentName ${'student_code'.tr}: $studentCode'),
-            const SizedBox(
-              height: 3,
-              width: double.infinity,
-              child: Divider(thickness: 1,color: Colors.grey,),
+  void _captureInformation(BuildContext context,
+      {required int randomNumber,
+      required String totalAmount,
+      required String schoolName,
+      required String className,
+      required String orderId,
+      required double vat,
+      required double convenienceFee,
+      required int studentIndex,
+      StudentController? studentController,
+      required int productIndex,
+      String? studentName,
+      String? studentCode,
+      required String pinCode,
+      required String homePhone,
+      required String customerNote}) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('confirm'.tr),
+          content: (studentController == null ||
+                  studentController.studentList == null ||
+                  studentController.studentList!.isEmpty)
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${'your_school_materials_will_be_delivered_at'.tr};'),
+                    Text('${'school_name'.tr}: $schoolName'),
+                    Text('${'class'.tr}: $className'),
+                    Text(
+                        '${'student_name'.tr}: $studentName ${'student_code'.tr}: $studentCode'),
+                    const SizedBox(
+                      height: 3,
+                      width: double.infinity,
+                      child: Divider(
+                        thickness: 1,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Text(
+                        '${'delivery_company'.tr}: ${AppConstants.deliveryCompany}'),
+               
+                    customerNote == ''
+                        ? const SizedBox.shrink()
+                        : Text('${'customer_note'.tr}: $customerNote'),
+                  ],
+                )
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${'your_school_materials_will_be_delivered_at'.tr};'),
+                    Text(
+                        '${'school_name'.tr}: ${studentController.studentList![studentIndex].school}'),
+                    Text(
+                        '${'class'.tr}: ${studentController.studentList![studentIndex].studentClass}'),
+                    Text(
+                        '${'student_name'.tr}: ${studentController.studentList![studentIndex].name} ${'student_code'.tr}: ${studentController.studentList![studentIndex].code}'),
+                    const SizedBox(
+                      height: 3,
+                      width: double.infinity,
+                      child: Divider(
+                        thickness: 1,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Text(
+                        '${'delivery_company'.tr}: ${AppConstants.deliveryCompany}'),
+               
+                    customerNote == ''
+                        ? const SizedBox.shrink()
+                        : Text('${'customer_note'.tr}: $customerNote'),
+                  ],
+                ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('cancel'.tr),
             ),
-            Text('${'delivery_company'.tr}: ${AppConstants.deliveryCompany}'),
-            Text('${'receiver_phone'.tr}: $homePhone'),  // Displayed here
-            Text('${'customer_note'.tr}: $customerNote'),
-          ],
-        ):
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('${'your_school_materials_will_be_delivered_at'.tr};'),
-            Text('${'school_name'.tr}: ${studentController.studentList![studentIndex].school}'),
-            Text('${'class'.tr}: ${studentController.studentList![studentIndex].studentClass}'),
-            Text('${'student_name'.tr}: ${studentController.studentList![studentIndex].name} ${'student_code'.tr}: ${studentController.studentList![studentIndex].code}'),
-            const SizedBox(
-              height: 3,
-              width: double.infinity,
-              child: Divider(thickness: 1,color: Colors.grey,),
-            ),
-            Text('${'delivery_company'.tr}: ${AppConstants.deliveryCompany}'),
-            Text('${'receiver_phone'.tr}: $homePhone'),  // Displayed here
-            Text('${'customer_note'.tr}: $customerNote'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('cancel'.tr),
-          ),
-          TextButton(
-            onPressed: () {
-              final configModel = Get.find<SplashController>().configModel;
-              Get.find<TransactionMoneyController>()
-                  .pinVerify(pin: _pinCodeFieldController.text)
-                  .then((isCorrect) {
-                if (isCorrect) {
-                  if (studentController==null || studentController.studentList==null||studentController.studentList!.isEmpty){
-                    if (configModel!.twoFactor! && Get.find<ProfileController>().userInfo!.twoFactor!) {
-                      Get.find<AuthController>()
-                          .checkOtp()
-                          .then((value) => value.isOk
-                              ? _showOtpVerificationDialog(
-                                  context,
-                                  studentId: 0,
-                                  randomNumber: randomNumber,
-                                  productIndex: productIndex,
-                                  vat: vat,
-                                  totalAmount: totalAmount,
-                                  convenienceFee: convenienceFee,
-                                  pinCode: pinCode,
-                                  studentIndex: studentIndex,
-                                  checkedStudents: [],
-                                  shipper: AppConstants.deliveryCompany,
-                                  homePhone: homePhone,  // Added this
-                                  customerNote: customerNote,
-                                  destination: '$schoolName, $className, $studentName, $studentCode'
-                                )
-                              : null);
+            TextButton(
+              onPressed: () {
+                final configModel = Get.find<SplashController>().configModel;
+                Get.find<TransactionMoneyController>()
+                    .pinVerify(pin: _pinCodeFieldController.text)
+                    .then((isCorrect) {
+                  if (isCorrect) {
+                    if (studentController == null ||
+                        studentController.studentList == null ||
+                        studentController.studentList!.isEmpty) {
+                      if (configModel!.twoFactor! &&
+                          Get.find<ProfileController>().userInfo!.twoFactor!) {
+                        Get.find<AuthController>().checkOtp().then((value) => value
+                                .isOk
+                            ? _showOtpVerificationDialog(context,
+                                studentId: 0,
+                                randomNumber: randomNumber,
+                                productIndex: productIndex,
+                                vat: vat,
+                                totalAmount: totalAmount,
+                                convenienceFee: convenienceFee,
+                                pinCode: pinCode,
+                                studentIndex: studentIndex,
+                                checkedStudents: [],
+                                shipper: AppConstants.deliveryCompany,
+                                homePhone: homePhone, // Added this
+                                customerNote: customerNote,
+                                destination:
+                                    '$schoolName, $className, $studentName, $studentCode',
+                                  studentName: studentName!,
+                                  studentCode: studentCode!  
+                                    )
+                            : null);
+                      } else {
+                        _showTransactionBottomSheet(
+                          context,
+                          studentId: 0,
+                          randomNumber: randomNumber,
+                          productIndex: productIndex,
+                          vat: vat,
+                          convenienceFee: convenienceFee,
+                          totalAmount: totalAmount,
+                          pinCode: pinCode,
+                          studentIndex: studentIndex,
+                          checkedStudents: [],
+                          shipper: AppConstants.deliveryCompany,
+                          homePhone: homePhone, // Added this
+                          customerNote: customerNote,
+                          destination: destinationEditingController.text,
+                          studentCode: studentCode!,
+                          studentName: studentName!
+                        );
+                      }
                     } else {
-                      _showTransactionBottomSheet(
-                        context,
-                        studentId: 0,
-                        randomNumber: randomNumber,
-                        productIndex: productIndex,
-                        vat: vat,
-                        convenienceFee: convenienceFee,
-                        totalAmount: totalAmount,
-                        pinCode: pinCode,
-                        studentIndex: studentIndex,
-                        checkedStudents: [],
-                        shipper: AppConstants.deliveryCompany,
-                        homePhone: homePhone,  // Added this
-                        customerNote: customerNote,
-                        destination: destinationEditingController.text
-                      );
-                    }
-                  } else {
-                    if (configModel!.twoFactor! && Get.find<ProfileController>().userInfo!.twoFactor!) {
-                      Get.find<AuthController>()
-                          .checkOtp()
-                          .then((value) => value.isOk
-                              ? _showOtpVerificationDialog(
-                                  context,
-                                  studentId: studentController.studentList![studentIndex].id!,
-                                  randomNumber: randomNumber,
-                                  productIndex: productIndex,
-                                  vat: vat,
-                                  totalAmount: totalAmount,
-                                  convenienceFee: convenienceFee,
-                                  pinCode: pinCode,
-                                  studentIndex: studentIndex,
-                                  checkedStudents: studentController.studentList!,
-                                  shipper: AppConstants.deliveryCompany,
-                                  homePhone: homePhone,  // Added this
-                                  customerNote: customerNote,
-                                  destination: destinationEditingController.text
-                                )
-                              : null);
-                    } else {
-                      _showTransactionBottomSheet(
-                        context,
-                        studentId: studentController.studentList![studentIndex].id!,
-                        randomNumber: randomNumber,
-                        productIndex: productIndex,
-                        vat: vat,
-                        convenienceFee: convenienceFee,
-                        totalAmount: totalAmount,
-                        pinCode: pinCode,
-                        studentIndex: studentIndex,
-                        checkedStudents: studentController.studentList!,
-                        shipper: AppConstants.deliveryCompany,
-                        homePhone: homePhone,  // Added this
-                        customerNote: customerNote,
-                        destination: destinationEditingController.text
-                      );
+                      if (configModel!.twoFactor! &&
+                          Get.find<ProfileController>().userInfo!.twoFactor!) {
+                        Get.find<AuthController>().checkOtp().then((value) =>
+                            value.isOk
+                                ? _showOtpVerificationDialog(context,
+                                    studentId: studentController
+                                        .studentList![studentIndex].id!,
+                                    randomNumber: randomNumber,
+                                    productIndex: productIndex,
+                                    vat: vat,
+                                    totalAmount: totalAmount,
+                                    convenienceFee: convenienceFee,
+                                    pinCode: pinCode,
+                                    studentIndex: studentIndex,
+                                    checkedStudents:
+                                        studentController.studentList!,
+                                    shipper: AppConstants.deliveryCompany,
+                                    homePhone: homePhone, // Added this
+                                    customerNote: customerNote,
+                                    destination:
+                                        destinationEditingController.text,
+                                        studentCode: studentCode!,
+                                        studentName: studentName!
+                                        )
+                                : null);
+                      } else {
+                        _showTransactionBottomSheet(context,
+                            studentId: studentController
+                                .studentList![studentIndex].id!,
+                            randomNumber: randomNumber,
+                            productIndex: productIndex,
+                            vat: vat,
+                            convenienceFee: convenienceFee,
+                            totalAmount: totalAmount,
+                            pinCode: pinCode,
+                            studentIndex: studentIndex,
+                            checkedStudents: studentController.studentList!,
+                            shipper: AppConstants.deliveryCompany,
+                            homePhone: homePhone, // Added this
+                            customerNote: customerNote,
+                            destination: destinationEditingController.text,
+                            studentCode: studentCode!,
+                            studentName: studentName!
+                            );
+                      }
                     }
                   }
-                }
-              });
-            },
-            child: Text('ok'.tr),
-          ),
-        ],
-      );
-    },
-  );
-}
+                });
+              },
+              child: Text('ok'.tr),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 // Helper method for OTP verification dialog
-void _showOtpVerificationDialog(
-  BuildContext context, {
-  required int studentId,
-  required int randomNumber,
-  required int productIndex,
-  required double vat,
-  required double convenienceFee,
-  required String totalAmount,
-  required String pinCode,
-  required int studentIndex,
-  required List<StudentModel> checkedStudents,
-  required String destination,
-  required String homePhone,
-  required String customerNote,
-  required String shipper
-}) {
-  Get.defaultDialog(
-    barrierDismissible: false,
-    title: 'otp_verification'.tr,
-    content: Column(
-      children: [
-        CustomPinCodeFieldWidget(
-          onCompleted: (pin) => Get.find<AuthController>()
-              .verifyOtp(pin)
-              .then((value) {
-            if (value.isOk) {
-              _showTransactionBottomSheet(
-                pinCode: pinCode,
-                Get.context!,
-                studentId: studentId,
-                randomNumber: randomNumber,
-                productIndex: productIndex,
-                vat: vat,
-                convenienceFee: convenienceFee,
-                totalAmount: totalAmount,
-                studentIndex: studentIndex,
-                checkedStudents: checkedStudents,
-                shipper: shipper,
-                 homePhone :homePhone,
-                 customerNote: customerNote,
-                 destination: destination
-              );
-            }
-          }),
-        ),
-        const DemoOtpHintWidget(),
-        GetBuilder<AuthController>(
-          builder: (verifyController) => verifyController.isVerifying
-              ? CircularProgressIndicator(
-                  color: Theme.of(context).textTheme.titleLarge!.color,
-                )
-              : const SizedBox.shrink(),
-        )
-      ],
-    ),
-  );
-}
+  void _showOtpVerificationDialog(BuildContext context,
+      {required int studentId,
+      required int randomNumber,
+      required int productIndex,
+      required double vat,
+      required double convenienceFee,
+      required String totalAmount,
+      required String pinCode,
+      required int studentIndex,
+      required List<StudentModel> checkedStudents,
+      required String destination,
+      required String homePhone,
+      required String customerNote,
+      required String shipper,
+      required String studentCode,
+      required String studentName
+      }) {
+    Get.defaultDialog(
+      barrierDismissible: false,
+      title: 'otp_verification'.tr,
+      content: Column(
+        children: [
+          CustomPinCodeFieldWidget(
+            onCompleted: (pin) =>
+                Get.find<AuthController>().verifyOtp(pin).then((value) {
+              if (value.isOk) {
+                _showTransactionBottomSheet(
+                    pinCode: pinCode,
+                    Get.context!,
+                    studentId: studentId,
+                    randomNumber: randomNumber,
+                    productIndex: productIndex,
+                    vat: vat,
+                    convenienceFee: convenienceFee,
+                    totalAmount: totalAmount,
+                    studentIndex: studentIndex,
+                    checkedStudents: checkedStudents,
+                    shipper: shipper,
+                    homePhone: homePhone,
+                    customerNote: customerNote,
+                    destination: destination,
+                    studentCode: studentCode,
+                    studentName: studentName
+                    );
+              }
+            }),
+          ),
+          const DemoOtpHintWidget(),
+          GetBuilder<AuthController>(
+            builder: (verifyController) => verifyController.isVerifying
+                ? CircularProgressIndicator(
+                    color: Theme.of(context).textTheme.titleLarge!.color,
+                  )
+                : const SizedBox.shrink(),
+          )
+        ],
+      ),
+    );
+  }
 
 // Helper method for transaction bottom sheet
-void _showTransactionBottomSheet(
-  BuildContext context, {
-  required int studentId,
-  required int randomNumber,
-  required int productIndex,
-  required double vat,
-  required double convenienceFee,
-  required String totalAmount,
-  required String pinCode,
-  required int studentIndex,
-  required List<StudentModel> checkedStudents,
-  required String shipper,
-  required String destination,
-  required String customerNote,
-  required String homePhone
-}) {
-  showModalBottomSheet(
-    isScrollControlled: true,
-    context: context,
-    isDismissible: false,
-    enableDrag: false,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(Dimensions.radiusSizeLarge),
-      ),
-    ),
-    builder: (context) => BottomSheetWithSliderSp(
-                                  deliveryCost: deliveryCost,
-                                  materialCost: widget.totalAmount.toStringAsFixed(2),
-                                    shippingAddress1:destinationEditingController.text,
-                                    shippingAddress2: '',
-                                    shippingCompany: shipper,
-                                    shippingCity: 'Kigali',
-                                    shippingCountry: 'Rwanda',
-                                  homePhone:homePhone,
-                                  customerNote: customerNote,
-                                  studentId: studentId,
-                                  randomNumber: randomNumber,
-                                  selectedProducts: widget.cart!,
-                                  quantity: widget.quantity!,
-                                  studentIndex: studentIndex,
-                                  availableBalance: '0.00',
-                                  amount: widget.totalAmount.toStringAsFixed(2),
-                                  productId: 1,
-                                  contactModel: widget.contactModel,
-                                  pinCode: pinCode,
-                                  transactionType: widget.transactionType,
-                                  purpose: widget.transactionType,
-                                  studentInfo: checkedStudents,
-                                  inputBalance: widget.totalAmount,
-                                  product: widget.product!,
-                                  productIndex: productIndex,
-                                  edubox_service: 'shop'.tr,
-                                  amountToPay:
-                                      '${'delivery_cost'.tr}: ${deliveryCost.toStringAsFixed(2)}',
-                                  nowPaid:
-                                      '${'material_cost'.tr}: ${widget.totalAmount}',
-                                  vat:
-                                      '${'vat'.tr}: ${'inclusive'.tr}',
-                                  serviceCharge: convenienceFee
-                                      .toStringAsFixed(2),
-                                  totalNowPaid:
-                                      '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
-                                  serviceValue: widget.product!.name,
-                                )
-  );
+  void _showTransactionBottomSheet(BuildContext context,
+      {required int studentId,
+      required int randomNumber,
+      required int productIndex,
+      required double vat,
+      required double convenienceFee,
+      required String totalAmount,
+      required String pinCode,
+      required int studentIndex,
+      required List<StudentModel> checkedStudents,
+      required String shipper,
+      required String destination,
+      required String customerNote,
+      required String homePhone,
+      required String studentName,
+      required String studentCode
+      }) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        isDismissible: false,
+        enableDrag: false,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(Dimensions.radiusSizeLarge),
+          ),
+        ),
+        builder: (context) => BottomSheetWithSliderSp(
+          studentCode: studentCode,
+          studentName: studentName,
+              deliveryCost: AppConstants.deliveryCost,
+              materialCost: totalAmount,
+              shippingAddress1: destinationEditingController.text,
+              shippingAddress2: '',
+              shippingCompany: shipper,
+              shippingCity: 'Kigali',
+              shippingCountry: 'Rwanda',
+              homePhone: homePhone,
+              customerNote: customerNote,
+              studentId: studentId,
+              randomNumber: randomNumber,
+              selectedProducts: widget.cart!,
+              quantity: widget.quantity!,
+              studentIndex: studentIndex,
+              availableBalance: '0.00',
+              amount: totalAmount,
+              productId: 1,
+              contactModel: widget.contactModel,
+              pinCode: pinCode,
+              transactionType: widget.transactionType,
+              purpose: widget.transactionType,
+              studentInfo: checkedStudents,
+              inputBalance: widget.totalAmount,
+              product: widget.product!,
+              productIndex: productIndex,
+              edubox_service: 'Babyeyi',
+              amountToPay:
+                  '${'delivery_cost'.tr}: ${AppConstants.deliveryCost.toStringAsFixed(2)}',
+              nowPaid: '${'material_cost'.tr}: ${widget.totalAmount}',
+              vat: '${'vat'.tr}: ${'inclusive'.tr}',
+              serviceCharge: convenienceFee.toStringAsFixed(2),
+              totalNowPaid:
+                  '${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
+              serviceValue: widget.product!.name,
+            ));
+  }
 }
-}
-
-
 
 Widget _buildListTile({
   required IconData icon,
