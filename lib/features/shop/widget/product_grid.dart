@@ -110,7 +110,7 @@ class _ProductGridState extends State<ProductGrid> {
               const SizedBox(height: 4),
               
               // Add to Cart Button
-              ElevatedButton(
+              TextButton(
                 onPressed: () => widget.onAddToCart(product, 1),
                 child: Text('add_to_cart'.tr,
                 style: const TextStyle(fontSize: 12, color: kyellow800Color,fontWeight:FontWeight.w400, ),

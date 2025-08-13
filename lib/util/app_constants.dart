@@ -91,7 +91,7 @@ class AppConstants {
 
   //Google API Key
   static const String googlePlacesApiKey =
-      "AIzaSyBjO0TDpvkwkhs0ej-VcZw-9FT_Lm-MOn0";
+      "AIzaSyD2arEwy-YlQ7NU7fWOIxbJgTOLiH6RUqc";
 
   //Mtn MOMO Api Url Links
 

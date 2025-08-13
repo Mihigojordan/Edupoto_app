@@ -250,7 +250,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 onTapTrueText: 'yes'.tr,
                                 isFailed: true,
                                 onTapFalse: () => Get.back(),
-                                onTapTrue: () => Get.find<AuthController>().removeUser(),
+                                onTapTrue: () {
+                                  Get.find<AuthController>().removeUser();
+                                  _shopController.removeUserId();
+                                } ,
                                 bigTitle: true,
                               ),
                               dismissible: false,
@@ -333,7 +336,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       CustomInkWellWidget(
                         child: widget.MenuItem(image: Images.logOut, title: 'logout'.tr),
-                        onTap: () => Get.find<ProfileController>().logOut(context),
+                        onTap: (){
+                          Get.find<ProfileController>().logOut(context);
+                           _shopController.removeUserId();
+                        } 
                       ),
                       const SizedBox(height: Dimensions.paddingSizeLarge),
                     ],

@@ -380,12 +380,12 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
                             }
 
                             //*******************************TEMPORARY PAYMENT CHECK */
-   print('ggggggggggggggggggggggggggggggggggggggg$customerId ');
+   
                             if (customerId == null) {
                               _createCustomer();
                             } else {
-                        await _initiatePayment(customId: customerId);
-                        //  _handleSuccessfulPayment(customId: customerId);
+                       await _initiatePayment(customId: customerId);
+                  //  _handleSuccessfulPayment(customId: customerId);
                       
                             }
                           }
@@ -557,7 +557,7 @@ print('ggggggggggggggggggggggggggggggggggggggg${existingCustomer!.firstName} | $
         final newCustomerId = response.body['id'];
         if (newCustomerId != null && newCustomerId > 0) {
            _initiatePayment(customId: newCustomerId);
-          //  _handleSuccessfulPayment(customId: newCustomerId);
+          // _handleSuccessfulPayment(customId: newCustomerId);
           widget.shopController!.setCustomerId(newCustomerId.toString());
         } else {
           throw Exception('Received invalid customer ID: $newCustomerId');
@@ -569,10 +569,11 @@ print('ggggggggggggggggggggggggggggggggggggggg${existingCustomer!.firstName} | $
       // Customer exists, use existing ID
       print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Using existing customer with ID: ${existingCustomer.id} name: ${existingCustomer.firstName}');
        _initiatePayment(customId:existingCustomer.id);
-      //  _handleSuccessfulPayment(customId: existingCustomer.id);
+        // _handleSuccessfulPayment(customId: existingCustomer.id);
       widget.shopController!.setCustomerId(existingCustomer.id.toString());
     }
   } catch (e) {
+     widget.shopController!.removeUserId();
     debugPrint('Customer creation error: $e');
     showCustomSnackBarHelper(
       'user_creation_failed'.tr,

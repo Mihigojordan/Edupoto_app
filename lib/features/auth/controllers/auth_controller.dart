@@ -280,7 +280,7 @@ Future<Response>  login({String? code, String? phone, String? password}) async {
   update();
 
   try {
-    print('Attempting login with phone: $phone');
+    print('Attempting login with phone: $phone | $password | $code');
     Response response = await authRepo.login(phone: phone, password: password, dialCode: code);
     
     print('Raw API response: ${response.body}');
@@ -294,7 +294,7 @@ Future<Response>  login({String? code, String? phone, String? password}) async {
       
       // Safely access content
       if (responseBody['content'] != null) {
-        await authRepo.saveUserToken(responseBody['content'].toString());
+        await authRepo.saveUserToken(responseBody['content']);
         // await authRepo.updateToken();
 
         // Navigate only if not already there

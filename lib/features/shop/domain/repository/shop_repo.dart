@@ -57,7 +57,7 @@ class ShopRepo {
       }) async {
     return apiClient.postData(AppConstants.getOrder, {
       "currency": currency,
-    "shipping":{
+     "shipping":{
         "first_name":shippingFirstName,
         "last_name": shippingLastName,
         "company": shippingCompany,
