@@ -18,7 +18,7 @@ workflows:
           cd ..
       - name: Build iOS
         script: |
-          flutter build ios --release --no-codesign
+          bash fix_ios.sh   # 👈 runs your custom script
     artifacts:
       - build/ios/ipa/*.ipa
       - build/ios/archive/*.xcarchive
