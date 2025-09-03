@@ -15,16 +15,16 @@ workflows:
 
       - name: Fix iOS Deployment Target
         script: |
-          echo "🔧 Forcing iOS deployment target to 14.0..."
+          echo "🔧 Forcing iOS deployment target to 15.5..."
 
           # Podfile
-          sed -i.bak "s/platform :ios, '.*'/platform :ios, '14.0'/" ios/Podfile || true
+          sed -i.bak "s/platform :ios, '.*'/platform :ios, '15.5'/" ios/Podfile || true
 
           # AppFrameworkInfo.plist
-          plutil -replace MinimumOSVersion -string "14.0" ios/Flutter/AppFrameworkInfo.plist
+          plutil -replace MinimumOSVersion -string "15.5" ios/Flutter/AppFrameworkInfo.plist
 
           # project.pbxproj
-          sed -i.bak "s/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]\+/IPHONEOS_DEPLOYMENT_TARGET = 14.0/g" ios/Runner.xcodeproj/project.pbxproj || true
+          sed -i.bak "s/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]\\+/IPHONEOS_DEPLOYMENT_TARGET = 15.5/g" ios/Runner.xcodeproj/project.pbxproj || true
 
       - name: Install CocoaPods
         script: |
