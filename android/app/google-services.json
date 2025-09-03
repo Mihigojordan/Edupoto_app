@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "249601875105",
+    "project_id": "skullists",
+    "storage_bucket": "skullists.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249601875105:android:d80bdad4df5559599024e0",
+        "android_client_info": {
+          "package_name": "com.edupoto.babyeyi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaioofb5D-eC0nUJUbOayqDNdtKl4YFhE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249601875105:android:e5257f493c8386df9024e0",
+        "android_client_info": {
+          "package_name": "com.kelvinC7.edupoto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaioofb5D-eC0nUJUbOayqDNdtKl4YFhE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

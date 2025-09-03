@@ -1,0 +1,34 @@
+# Add this line at the very top
+platform :ios, '13.0'
+
+# Comment out this line if you are not using Firebase Flutter plugins
+$FirebaseSDKVersion = '10.0.0'
+
+# Environment variables
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+target 'Runner' do
+  use_frameworks!
+  use_modular_headers!
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+end
+
+# THE KEY FIX: Post-install script to set deployment targets
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      # Fix deployment target warning for all pods
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      
+      # Fix Swift optimization level for previews
+      if config.build_settings['SWIFT_VERSION']
+        if config.name == 'Debug'
+          config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-Onone'
+        else
+          config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-O'
+        end
+      end
+    end
+  end
+end
