@@ -6,13 +6,9 @@ workflows:
       xcode: latest
       cocoapods: default
       vars:
-        APPLE_ID: $APPLE_ID                     # Your Apple ID (set in Codemagic env)
-        APP_SPECIFIC_PASSWORD: $APP_SPECIFIC_PASSWORD   # App-specific password (secret)
-        DEVELOPMENT_TEAM: $DEVELOPMENT_TEAM     # Your Team ID, e.g., PDMPL563DB
-      signing:
-        ios:
-          automatic: true
-          team_id: $DEVELOPMENT_TEAM
+        APPLE_ID: $APPLE_ID
+        APP_SPECIFIC_PASSWORD: $APP_SPECIFIC_PASSWORD
+        DEVELOPMENT_TEAM: $DEVELOPMENT_TEAM
     scripts:
       - name: Prepare Flutter
         script: |
@@ -42,6 +38,8 @@ workflows:
             -scheme Runner \
             -configuration Release \
             -archivePath build/ios/archive/Runner.xcarchive \
+            DEVELOPMENT_TEAM="$DEVELOPMENT_TEAM" \
+            CODE_SIGN_STYLE=Automatic \
             clean archive
 
       - name: Export IPA
