@@ -33,9 +33,22 @@ workflows:
           pod install
           cd ..
 
-      - name: Build iOS
+      - name: Build iOS Archive
         script: |
+          echo "🔹 Building iOS archive with automatic code signing..."
           flutter build ios --release
+
+          # Archive the app
+          xcodebuild -workspace ios/Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -archivePath build/ios/archive/Runner.xcarchive archive
+
+          # Export IPA with SwiftSupport
+          xcodebuild -exportArchive \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            -exportOptionsPlist ios/Runner/ExportOptions.plist \
+            -exportPath build/ios/ipa
 
     artifacts:
       - build/ios/ipa/*.ipa

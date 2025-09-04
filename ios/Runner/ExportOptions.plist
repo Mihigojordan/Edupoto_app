@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- App Store export -->
+  <key>method</key>
+  <string>app-store</string>
+
+  <!-- Disable bitcode compilation (optional if using Flutter) -->
+  <key>compileBitcode</key>
+  <false/>
+
+  <!-- Include Swift libraries in SwiftSupport folder -->
+  <key>stripSwiftSymbols</key>
+  <true/>
+
+  <!-- Automatic signing -->
+  <key>signingStyle</key>
+  <string>automatic</string>
+
+  <!-- Upload dSYM symbols -->
+  <key>uploadSymbols</key>
+  <true/>
+</dict>
+</plist>

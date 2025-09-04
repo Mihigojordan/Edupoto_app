@@ -45,5 +45,21 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- 🔑 Privacy Usage Descriptions (required by Apple email) -->
+	<key>NSContactsUsageDescription</key>
+	<string>Babyeyi may request access to your contacts if needed for certain features.</string>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Babyeyi needs access to your photo library so you can upload documents or update your profile.</string>
+
+	<key>NSCameraUsageDescription</key>
+	<string>Babyeyi uses the camera to upload required documents, update your profile, or scan documents.</string>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Babyeyi uses your location to improve services and provide location-based features for delivery accuracy.</string>
+
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Babyeyi may use your location in the background to support continuous location-based features for delivery accuracy.</string>
 </dict>
 </plist>
