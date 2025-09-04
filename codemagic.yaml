@@ -1,6 +1,6 @@
 workflows:
   ios-build:
-    name: iOS Build
+    name: iOS Build (Automatic Signing)
     environment:
       flutter: stable
       xcode: latest
@@ -35,20 +35,26 @@ workflows:
 
       - name: Build iOS Archive
         script: |
-          echo "🔹 Building iOS archive with automatic code signing..."
-          flutter build ios --release
-
-          # Archive the app
+          echo "🔹 Archiving iOS app with automatic signing..."
+          # Build the archive
           xcodebuild -workspace ios/Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
-            -archivePath build/ios/archive/Runner.xcarchive archive
+            -archivePath build/ios/archive/Runner.xcarchive \
+            DEVELOPMENT_TEAM="PDMPL563DB" \
+            CODE_SIGN_STYLE=Automatic \
+            clean archive
 
-          # Export IPA with SwiftSupport
+          # Export IPA using ExportOptions.plist
           xcodebuild -exportArchive \
             -archivePath build/ios/archive/Runner.xcarchive \
             -exportOptionsPlist ios/Runner/ExportOptions.plist \
             -exportPath build/ios/ipa
+
+    code_signing:
+      ios:
+        automatic_signing: true
+        team_id: PDMPL563DB
 
     artifacts:
       - build/ios/ipa/*.ipa
