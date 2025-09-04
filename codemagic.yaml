@@ -6,23 +6,26 @@ workflows:
       xcode: latest
       cocoapods: default
       vars:
-        APPLE_ID: $APPLE_ID
-        APP_SPECIFIC_PASSWORD: $APP_SPECIFIC_PASSWORD
-        DEVELOPMENT_TEAM: $DEVELOPMENT_TEAM
+        APPLE_ID: $APPLE_ID                    # Apple ID email (plain)
+        APP_SPECIFIC_PASSWORD: $APP_SPECIFIC_PASSWORD  # App-specific password (secret)
+        DEVELOPMENT_TEAM: $DEVELOPMENT_TEAM    # Team ID (plain)
     scripts:
       - name: Prepare Flutter
         script: |
+          echo "🔹 Cleaning project and getting packages..."
           flutter clean
           flutter pub get
 
       - name: Fix iOS Deployment Target
         script: |
+          echo "🔧 Setting iOS deployment target to 15.5..."
           sed -i.bak "s/platform :ios, '.*'/platform :ios, '15.5'/" ios/Podfile || true
           plutil -replace MinimumOSVersion -string "15.5" ios/Flutter/AppFrameworkInfo.plist
           sed -i.bak "s/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]\\+/IPHONEOS_DEPLOYMENT_TARGET = 15.5/g" ios/Runner.xcodeproj/project.pbxproj || true
 
       - name: Install CocoaPods
         script: |
+          echo "📦 Installing CocoaPods dependencies..."
           cd ios
           pod repo update
           pod install
@@ -30,6 +33,7 @@ workflows:
 
       - name: Archive iOS App
         script: |
+          echo "📦 Archiving iOS app..."
           xcodebuild -workspace ios/Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
@@ -40,6 +44,7 @@ workflows:
 
       - name: Export IPA
         script: |
+          echo "📦 Exporting IPA..."
           xcodebuild -exportArchive \
             -archivePath build/ios/archive/Runner.xcarchive \
             -exportOptionsPlist ios/Runner/ExportOptions.plist \
@@ -47,6 +52,7 @@ workflows:
 
       - name: Upload IPA to App Store Connect
         script: |
+          echo "🚀 Uploading IPA to App Store Connect..."
           xcrun altool --upload-app \
             -f build/ios/ipa/Runner.ipa \
             -t ios \
