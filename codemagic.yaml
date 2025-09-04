@@ -36,7 +36,6 @@ workflows:
       - name: Build iOS Archive
         script: |
           echo "🔹 Archiving iOS app with automatic signing..."
-          # Build the archive
           xcodebuild -workspace ios/Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
@@ -45,16 +44,10 @@ workflows:
             CODE_SIGN_STYLE=Automatic \
             clean archive
 
-          # Export IPA using ExportOptions.plist
           xcodebuild -exportArchive \
             -archivePath build/ios/archive/Runner.xcarchive \
             -exportOptionsPlist ios/Runner/ExportOptions.plist \
             -exportPath build/ios/ipa
-
-    code_signing:
-      ios:
-        automatic_signing: true
-        team_id: PDMPL563DB
 
     artifacts:
       - build/ios/ipa/*.ipa
