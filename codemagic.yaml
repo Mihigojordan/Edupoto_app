@@ -6,13 +6,17 @@ workflows:
       xcode: latest
       cocoapods: default
       vars:
-        APPLE_ID: $APPLE_ID                    # Apple ID email (plain)
-        APP_SPECIFIC_PASSWORD: $APP_SPECIFIC_PASSWORD  # App-specific password (secret)
-        DEVELOPMENT_TEAM: $DEVELOPMENT_TEAM    # Team ID (plain)
+        APPLE_ID: $APPLE_ID                     # Your Apple ID (set in Codemagic env)
+        APP_SPECIFIC_PASSWORD: $APP_SPECIFIC_PASSWORD   # App-specific password (secret)
+        DEVELOPMENT_TEAM: $DEVELOPMENT_TEAM     # Your Team ID, e.g., PDMPL563DB
+      signing:
+        ios:
+          automatic: true
+          team_id: $DEVELOPMENT_TEAM
     scripts:
       - name: Prepare Flutter
         script: |
-          echo "🔹 Cleaning project and getting packages..."
+          echo "🔹 Cleaning and fetching Flutter packages..."
           flutter clean
           flutter pub get
 
@@ -25,7 +29,7 @@ workflows:
 
       - name: Install CocoaPods
         script: |
-          echo "📦 Installing CocoaPods dependencies..."
+          echo "📦 Installing CocoaPods..."
           cd ios
           pod repo update
           pod install
@@ -33,13 +37,11 @@ workflows:
 
       - name: Archive iOS App
         script: |
-          echo "📦 Archiving iOS app..."
+          echo "📦 Archiving iOS app with automatic signing..."
           xcodebuild -workspace ios/Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -archivePath build/ios/archive/Runner.xcarchive \
-            DEVELOPMENT_TEAM="$DEVELOPMENT_TEAM" \
-            CODE_SIGN_STYLE=Automatic \
             clean archive
 
       - name: Export IPA
