@@ -32,6 +32,18 @@ workflows:
           pod install
           cd ..
 
+      - name: Increment iOS Build Number
+        script: |
+          echo "🔢 Incrementing CFBundleVersion..."
+          PLIST_PATH="ios/Runner/Info.plist"
+          CURRENT_BUILD=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$PLIST_PATH")
+          if [ -z "$CURRENT_BUILD" ]; then
+            CURRENT_BUILD=0
+          fi
+          NEW_BUILD=$((CURRENT_BUILD + 1))
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD" "$PLIST_PATH"
+          echo "CFBundleVersion updated from $CURRENT_BUILD to $NEW_BUILD"
+
       - name: Archive iOS App
         script: |
           echo "📦 Archiving iOS app with automatic signing..."
