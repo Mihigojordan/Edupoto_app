@@ -10,6 +10,7 @@ workflows:
         APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
         APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
         APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY: $APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY
+
     scripts:
       - name: Prepare Flutter
         script: |
@@ -45,9 +46,13 @@ workflows:
 
       - name: Add dummy Swift file (forces SwiftSupport)
         script: |
+          echo "📝 Ensuring Dummy.swift exists..."
           DUMMY_SWIFT_FILE="ios/Runner/Dummy.swift"
           if [ ! -f "$DUMMY_SWIFT_FILE" ]; then
             echo "// Dummy Swift file to force SwiftSupport inclusion" > "$DUMMY_SWIFT_FILE"
+            echo "✅ Dummy.swift created."
+          else
+            echo "ℹ️ Dummy.swift already exists."
           fi
 
       - name: Build Flutter iOS App
@@ -69,7 +74,6 @@ workflows:
       - name: Export IPA
         script: |
           echo "📦 Exporting IPA with Swift libraries embedded..."
-          # Ensure ExportOptions.plist has embedSwiftStandardLibraries = true
           plutil -insert embedSwiftStandardLibraries -bool true ios/Runner/ExportOptions.plist || plutil -replace embedSwiftStandardLibraries -bool true ios/Runner/ExportOptions.plist
           plutil -replace stripSwiftSymbols -bool false ios/Runner/ExportOptions.plist
 
@@ -77,6 +81,21 @@ workflows:
             -archivePath build/ios/archive/Runner.xcarchive \
             -exportOptionsPlist ios/Runner/ExportOptions.plist \
             -exportPath build/ios/ipa
+
+      - name: Verify SwiftSupport
+        script: |
+          echo "🔍 Checking SwiftSupport inside IPA..."
+          cd build/ios/ipa
+          unzip -q Runner.ipa -d ipa_contents
+          if [ -d "ipa_contents/SwiftSupport" ]; then
+            echo "✅ SwiftSupport folder found."
+            echo "📂 SwiftSupport contents:"
+            find ipa_contents/SwiftSupport -type f
+          else
+            echo "❌ SwiftSupport folder missing! Build will fail."
+            exit 1
+          fi
+          cd ../../..
 
       - name: Upload IPA to App Store Connect
         script: |
