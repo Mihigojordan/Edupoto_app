@@ -32,17 +32,21 @@ workflows:
           pod install
           cd ..
 
-      - name: Increment iOS Build Number
+      - name: Increment Flutter Build Number
         script: |
-          echo "🔢 Incrementing CFBundleVersion..."
-          PLIST_PATH="ios/Runner/Info.plist"
-          CURRENT_BUILD=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$PLIST_PATH")
+          echo "🔢 Incrementing Flutter build number (FLUTTER_BUILD_NUMBER)..."
+          CURRENT_BUILD=$(grep "^version:" pubspec.yaml | sed 's/.*+//')
           if [ -z "$CURRENT_BUILD" ]; then
             CURRENT_BUILD=0
           fi
           NEW_BUILD=$((CURRENT_BUILD + 1))
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD" "$PLIST_PATH"
-          echo "CFBundleVersion updated from $CURRENT_BUILD to $NEW_BUILD"
+          echo "Updating build number from $CURRENT_BUILD to $NEW_BUILD"
+          sed -i.bak "s/\(^version:.*+\).*/\1$NEW_BUILD/" pubspec.yaml
+
+      - name: Build Flutter iOS App
+        script: |
+          echo "📦 Building Flutter iOS app..."
+          flutter build ios --release --no-codesign
 
       - name: Archive iOS App
         script: |
@@ -57,7 +61,7 @@ workflows:
 
       - name: Export IPA
         script: |
-          echo "📦 Exporting IPA..."
+          echo "📦 Exporting IPA with Swift libraries embedded..."
           xcodebuild -exportArchive \
             -archivePath build/ios/archive/Runner.xcarchive \
             -exportOptionsPlist ios/Runner/ExportOptions.plist \

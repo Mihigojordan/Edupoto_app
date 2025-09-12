@@ -7,9 +7,13 @@
     <key>method</key>
     <string>app-store</string>
 
-    <!-- Include Swift libraries for SwiftSupport -->
-    <key>stripSwiftSymbols</key>
+    <!-- Embed Swift libraries -->
+    <key>embedSwiftStandardLibraries</key>
     <true/>
+
+    <!-- Do not strip Swift symbols -->
+    <key>stripSwiftSymbols</key>
+    <false/>
 
     <!-- Disable bitcode compilation (Flutter apps usually do this) -->
     <key>compileBitcode</key>
