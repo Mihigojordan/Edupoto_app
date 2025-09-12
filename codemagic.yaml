@@ -6,9 +6,10 @@ workflows:
       xcode: latest
       cocoapods: default
       vars:
-        APPLE_ID: $APPLE_ID
-        APP_SPECIFIC_PASSWORD: $APP_SPECIFIC_PASSWORD
         DEVELOPMENT_TEAM: $DEVELOPMENT_TEAM
+        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
+        APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY: $APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY
     scripts:
       - name: Prepare Flutter
         script: |
@@ -52,14 +53,15 @@ workflows:
 
       - name: Upload IPA to App Store Connect
         script: |
-          echo "🚀 Uploading IPA to App Store Connect..."
-          xcrun altool --upload-app \
-            -f build/ios/ipa/Runner.ipa \
-            -t ios \
-            -u $APPLE_ID \
-            -p $APP_SPECIFIC_PASSWORD \
+          echo "🚀 Uploading IPA to App Store Connect via API key..."
+          app-store-connect publish \
+            --path build/ios/ipa/Runner.ipa \
+            --key-id $APP_STORE_CONNECT_KEY_IDENTIFIER \
+            --issuer-id $APP_STORE_CONNECT_ISSUER_ID \
+            --private-key @env:APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY \
             --verbose
 
     artifacts:
       - build/ios/ipa/*.ipa
       - build/ios/archive/*.xcarchive
+      - build/ios/ipa/*.dSYM.zip
