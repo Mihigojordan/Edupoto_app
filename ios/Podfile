@@ -39,8 +39,17 @@ post_install do |installer|
     flutter_additional_ios_build_settings(target)
 
     target.build_configurations.each do |config|
+      # Keep your existing settings
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.5'
       config.build_settings['ENABLE_BITCODE'] = 'NO'
+
+      # Fix "expected -Onone" warnings in Debug
+      if config.name == 'Debug'
+        config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-Onone'
+      end
+
+      # 🔑 Automatically set signing team
+      config.build_settings['DEVELOPMENT_TEAM'] = 'PDMPL563DB'
     end
   end
 end
