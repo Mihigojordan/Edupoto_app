@@ -43,6 +43,13 @@ workflows:
           echo "Updating build number from $CURRENT_BUILD to $NEW_BUILD"
           sed -i.bak "s/\(^version:.*+\).*/\1$NEW_BUILD/" pubspec.yaml
 
+      - name: Add dummy Swift file (forces SwiftSupport)
+        script: |
+          DUMMY_SWIFT_FILE="ios/Runner/Dummy.swift"
+          if [ ! -f "$DUMMY_SWIFT_FILE" ]; then
+            echo "// Dummy Swift file to force SwiftSupport inclusion" > "$DUMMY_SWIFT_FILE"
+          fi
+
       - name: Build Flutter iOS App
         script: |
           echo "📦 Building Flutter iOS app..."
@@ -65,7 +72,7 @@ workflows:
           # Ensure ExportOptions.plist has embedSwiftStandardLibraries = true
           plutil -insert embedSwiftStandardLibraries -bool true ios/Runner/ExportOptions.plist || plutil -replace embedSwiftStandardLibraries -bool true ios/Runner/ExportOptions.plist
           plutil -replace stripSwiftSymbols -bool false ios/Runner/ExportOptions.plist
-          
+
           xcodebuild -exportArchive \
             -archivePath build/ios/archive/Runner.xcarchive \
             -exportOptionsPlist ios/Runner/ExportOptions.plist \
