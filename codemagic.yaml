@@ -6,13 +6,6 @@ workflows:
       xcode: latest
       cocoapods: default
 
-    # Move variables here
-    vars:
-      DEVELOPMENT_TEAM: $DEVELOPMENT_TEAM
-      APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
-      APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
-      APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY: $APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY
-
     scripts:
       - name: Prepare Flutter
         script: |
@@ -46,6 +39,13 @@ workflows:
           NEW_BUILD=$((CURRENT_BUILD + 1))
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD" "$PLIST_PATH"
           echo "CFBundleVersion updated from $CURRENT_BUILD to $NEW_BUILD"
+
+      - name: Fix Swift Optimization for Archive
+        script: |
+          echo "⚡ Fixing Swift optimization levels for all Pod targets..."
+          find ios/Pods -name 'project.pbxproj' | while read proj; do
+            sed -i.bak "s/SWIFT_OPTIMIZATION_LEVEL = -O/SWIFT_OPTIMIZATION_LEVEL = -Onone/g" "$proj" || true
+          done
 
       - name: Archive iOS App
         script: |
