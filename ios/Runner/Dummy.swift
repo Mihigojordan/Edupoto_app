@@ -1,4 +1,5 @@
-// Dummy Swift file to force inclusion of Swift runtime
+// ios/Runner/Dummy.swift
 import Foundation
-class DummySwiftSupport {}
+
+@objc class DummySwiftSupport: NSObject {}
 
