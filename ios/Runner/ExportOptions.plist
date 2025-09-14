@@ -13,7 +13,7 @@
 
     <!-- Do not strip Swift symbols -->
     <key>stripSwiftSymbols</key>
-    <true/>
+    <false/>
 
     <!-- Disable bitcode compilation (Flutter apps usually do this) -->
     <key>compileBitcode</key>
