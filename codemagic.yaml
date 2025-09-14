@@ -6,11 +6,9 @@ workflows:
       xcode: latest
       cocoapods: default
       vars:
+        APPLE_ID: $APPLE_ID
+        APP_SPECIFIC_PASSWORD: $APP_SPECIFIC_PASSWORD
         DEVELOPMENT_TEAM: $DEVELOPMENT_TEAM
-        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
-        APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY: $APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY
-
     scripts:
       - name: Prepare Flutter
         script: |
@@ -33,33 +31,6 @@ workflows:
           pod install
           cd ..
 
-      - name: Increment Flutter Build Number
-        script: |
-          echo "🔢 Incrementing Flutter build number (FLUTTER_BUILD_NUMBER)..."
-          CURRENT_BUILD=$(grep "^version:" pubspec.yaml | sed 's/.*+//')
-          if [ -z "$CURRENT_BUILD" ]; then
-            CURRENT_BUILD=0
-          fi
-          NEW_BUILD=$((CURRENT_BUILD + 1))
-          echo "Updating build number from $CURRENT_BUILD to $NEW_BUILD"
-          sed -i.bak "s/\(^version:.*+\).*/\1$NEW_BUILD/" pubspec.yaml
-
-      - name: Add dummy Swift file (forces SwiftSupport)
-        script: |
-          echo "📝 Ensuring Dummy.swift exists..."
-          DUMMY_SWIFT_FILE="ios/Runner/Dummy.swift"
-          if [ ! -f "$DUMMY_SWIFT_FILE" ]; then
-            echo "// Dummy Swift file to force SwiftSupport inclusion" > "$DUMMY_SWIFT_FILE"
-            echo "✅ Dummy.swift created."
-          else
-            echo "ℹ️ Dummy.swift already exists."
-          fi
-
-      - name: Build Flutter iOS App
-        script: |
-          echo "📦 Building Flutter iOS app..."
-          flutter build ios --release --no-codesign
-
       - name: Archive iOS App
         script: |
           echo "📦 Archiving iOS app with automatic signing..."
@@ -73,27 +44,22 @@ workflows:
 
       - name: Export IPA
         script: |
-          echo "📦 Exporting IPA with Swift libraries embedded..."
-          plutil -insert embedSwiftStandardLibraries -bool true ios/Runner/ExportOptions.plist || plutil -replace embedSwiftStandardLibraries -bool true ios/Runner/ExportOptions.plist
-          plutil -replace stripSwiftSymbols -bool false ios/Runner/ExportOptions.plist
-
+          echo "📦 Exporting IPA..."
           xcodebuild -exportArchive \
             -archivePath build/ios/archive/Runner.xcarchive \
             -exportOptionsPlist ios/Runner/ExportOptions.plist \
             -exportPath build/ios/ipa
 
-      
       - name: Upload IPA to App Store Connect
         script: |
-          echo "🚀 Uploading IPA to App Store Connect via API key..."
-          app-store-connect publish \
-            --path build/ios/ipa/Runner.ipa \
-            --key-id $APP_STORE_CONNECT_KEY_IDENTIFIER \
-            --issuer-id $APP_STORE_CONNECT_ISSUER_ID \
-            --private-key @env:APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY \
+          echo "🚀 Uploading IPA to App Store Connect..."
+          xcrun altool --upload-app \
+            -f build/ios/ipa/Runner.ipa \
+            -t ios \
+            -u $APPLE_ID \
+            -p $APP_SPECIFIC_PASSWORD \
             --verbose
 
     artifacts:
       - build/ios/ipa/*.ipa
       - build/ios/archive/*.xcarchive
-      - build/ios/ipa/*.dSYM.zip
