@@ -1,6 +1,6 @@
 workflows:
   ios-build-and-upload:
-    name: Flutter iOS Build with SwiftSupport
+    name: iOS Build & Upload to App Store
     environment:
       flutter: stable
       xcode: latest
@@ -10,29 +10,43 @@ workflows:
         APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
         APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
         APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY: $APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY
-
     scripts:
       - name: Prepare Flutter
         script: |
+          echo "🔹 Cleaning and fetching Flutter packages..."
           flutter clean
           flutter pub get
 
-      - name: Add Dummy Swift file
+      - name: Fix iOS Deployment Target
         script: |
-          DUMMY_SWIFT_FILE="ios/Runner/Dummy.swift"
-          if [ ! -f "$DUMMY_SWIFT_FILE" ]; then
-            echo "// Dummy.swift to force SwiftSupport" > "$DUMMY_SWIFT_FILE"
-          fi
+          echo "🔧 Setting iOS deployment target to 15.5..."
+          sed -i.bak "s/platform :ios, '.*'/platform :ios, '15.5'/" ios/Podfile || true
+          plutil -replace MinimumOSVersion -string "15.5" ios/Flutter/AppFrameworkInfo.plist
+          sed -i.bak "s/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]\\+/IPHONEOS_DEPLOYMENT_TARGET = 15.5/g" ios/Runner.xcodeproj/project.pbxproj || true
 
       - name: Install CocoaPods
         script: |
+          echo "📦 Installing CocoaPods..."
           cd ios
-          pod install --repo-update
+          pod repo update
+          pod install
           cd ..
 
-      - name: Build Flutter iOS archive
+      - name: Increment iOS Build Number
         script: |
-          flutter build ios --release --no-codesign
+          echo "🔢 Incrementing CFBundleVersion..."
+          PLIST_PATH="ios/Runner/Info.plist"
+          CURRENT_BUILD=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$PLIST_PATH")
+          if [ -z "$CURRENT_BUILD" ]; then
+            CURRENT_BUILD=0
+          fi
+          NEW_BUILD=$((CURRENT_BUILD + 1))
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD" "$PLIST_PATH"
+          echo "CFBundleVersion updated from $CURRENT_BUILD to $NEW_BUILD"
+
+      - name: Archive iOS App
+        script: |
+          echo "📦 Archiving iOS app with automatic signing..."
           xcodebuild -workspace ios/Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
@@ -41,67 +55,17 @@ workflows:
             CODE_SIGN_STYLE=Automatic \
             clean archive
 
-      - name: Export IPA with SwiftSupport
+      - name: Export IPA
         script: |
-          cat > ios/Runner/ExportOptions.plist <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>embedSwiftStandardLibraries</key>
-            <true/>
-            <key>stripSwiftSymbols</key>
-            <false/>
-          </dict>
-          </plist>
-          EOF
-
+          echo "📦 Exporting IPA..."
           xcodebuild -exportArchive \
             -archivePath build/ios/archive/Runner.xcarchive \
             -exportOptionsPlist ios/Runner/ExportOptions.plist \
             -exportPath build/ios/ipa
 
-      - name: Ensure SwiftSupport exists (Automatic Fix)
-        script: |
-          echo "🔧 Verifying SwiftSupport in IPA..."
-          TMP_DIR="build/ios/ipa/tmp"
-          unzip -q build/ios/ipa/Runner.ipa -d "$TMP_DIR"
-
-          SWIFT_SUPPORT="$TMP_DIR/SwiftSupport/iphoneos"
-          if [ ! -d "$SWIFT_SUPPORT" ]; then
-            echo "⚠️ SwiftSupport missing, creating folder..."
-            mkdir -p "$SWIFT_SUPPORT"
-          fi
-
-          echo "🔧 Copying .dylib files from archive..."
-          XCARCHIVE_SWIFT="$PWD/build/ios/archive/Runner.xcarchive/SwiftSupport/iphoneos"
-          if [ -d "$XCARCHIVE_SWIFT" ]; then
-            cp -n "$XCARCHIVE_SWIFT"/* "$SWIFT_SUPPORT"/ || true
-          fi
-
-          echo "📂 SwiftSupport contents:"
-          ls -lh "$SWIFT_SUPPORT"
-
-          # Check .swiftmodule files in frameworks
-          FRAMEWORKS_DIR="$TMP_DIR/Payload/Runner.app/Frameworks"
-          echo "🔍 Checking for .swiftmodule files in frameworks..."
-          find "$FRAMEWORKS_DIR" -type d -name "*.swiftmodule" | while read MODULE_DIR; do
-            echo "✅ Found Swift module: $MODULE_DIR"
-          done
-
-          # Repack IPA
-          cd "$TMP_DIR"
-          zip -qr ../Runner-fixed.ipa *
-          cd ..
-          mv Runner-fixed.ipa Runner.ipa
-          rm -rf "$TMP_DIR"
-
-          echo "✅ SwiftSupport ensured. IPA ready for upload."
-
       - name: Upload IPA to App Store Connect
         script: |
+          echo "🚀 Uploading IPA to App Store Connect via API key..."
           app-store-connect publish \
             --path build/ios/ipa/Runner.ipa \
             --key-id $APP_STORE_CONNECT_KEY_IDENTIFIER \
