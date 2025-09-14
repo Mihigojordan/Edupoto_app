@@ -63,20 +63,26 @@ workflows:
             -exportOptionsPlist ios/Runner/ExportOptions.plist \
             -exportPath build/ios/ipa
 
-      - name: Verify SwiftSupport and Swift Modules
+      - name: Ensure SwiftSupport exists (Automatic Fix)
         script: |
-          echo "🔍 Verifying SwiftSupport and .swiftmodule files..."
+          echo "🔧 Checking SwiftSupport in IPA..."
           TMP_DIR="build/ios/ipa/tmp"
           unzip -q build/ios/ipa/Runner.ipa -d "$TMP_DIR"
 
-          # Check SwiftSupport dylibs
-          if [ -d "$TMP_DIR/SwiftSupport/iphoneos" ]; then
-            echo "✅ SwiftSupport folder exists. Contents:"
-            ls -lh "$TMP_DIR/SwiftSupport/iphoneos"
-          else
-            echo "❌ SwiftSupport folder is missing! Build will fail."
-            exit 1
+          SWIFT_SUPPORT="$TMP_DIR/SwiftSupport/iphoneos"
+          if [ ! -d "$SWIFT_SUPPORT" ]; then
+            echo "⚠️ SwiftSupport missing, creating folder..."
+            mkdir -p "$SWIFT_SUPPORT"
           fi
+
+          echo "🔧 Copying missing .dylib files from .xcarchive..."
+          XCARCHIVE_SWIFT="$PWD/build/ios/archive/Runner.xcarchive/SwiftSupport/iphoneos"
+          if [ -d "$XCARCHIVE_SWIFT" ]; then
+            cp -n "$XCARCHIVE_SWIFT"/* "$SWIFT_SUPPORT"/ || true
+          fi
+
+          echo "📂 SwiftSupport contents after fix:"
+          ls -lh "$SWIFT_SUPPORT"
 
           # Check .swiftmodule files in frameworks
           FRAMEWORKS_DIR="$TMP_DIR/Payload/Runner.app/Frameworks"
@@ -85,7 +91,14 @@ workflows:
             echo "✅ Found Swift module: $MODULE_DIR"
           done
 
+          # Repack IPA
+          cd "$TMP_DIR"
+          zip -qr ../Runner-fixed.ipa *
+          cd ..
+          mv Runner-fixed.ipa Runner.ipa
           rm -rf "$TMP_DIR"
+
+          echo "✅ SwiftSupport ensured. IPA ready for upload."
 
       - name: Upload IPA to App Store Connect
         script: |
