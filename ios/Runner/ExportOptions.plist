@@ -1,33 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
-  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <!-- App Store distribution method -->
     <key>method</key>
     <string>app-store</string>
 
-    <!-- Embed Swift libraries -->
-    <key>embedSwiftStandardLibraries</key>
-    <true/>
-
-    <!-- Do not strip Swift symbols -->
-    <key>stripSwiftSymbols</key>
-    <false/>
-
-    <!-- Disable bitcode compilation (Flutter apps usually do this) -->
     <key>compileBitcode</key>
     <false/>
 
-    <!-- Automatic signing -->
-    <key>signingStyle</key>
-    <string>automatic</string>
+    <key>embedSwiftStandardLibraries</key>
+    <true/>
 
-    <!-- Include dSYM for crash reports -->
+    <key>stripSwiftSymbols</key>
+    <true/>
+
     <key>uploadSymbols</key>
     <true/>
 
-    <!-- Include app thinning options -->
+    <key>signingStyle</key>
+    <string>automatic</string>
+
     <key>thinning</key>
     <string>&lt;none&gt;</string>
 </dict>

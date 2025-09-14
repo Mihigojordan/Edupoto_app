@@ -10,6 +10,7 @@ workflows:
         APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
         APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
         APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY: $APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY
+
     scripts:
       - name: Prepare Flutter
         script: |
@@ -44,6 +45,13 @@ workflows:
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD" "$PLIST_PATH"
           echo "CFBundleVersion updated from $CURRENT_BUILD to $NEW_BUILD"
 
+      - name: Clean iOS build
+        script: |
+          echo "🧹 Cleaning iOS build..."
+          cd ios
+          xcodebuild clean -workspace Runner.xcworkspace -scheme Runner -configuration Release
+          cd ..
+
       - name: Archive iOS App
         script: |
           echo "📦 Archiving iOS app with automatic signing..."
@@ -53,6 +61,7 @@ workflows:
             -archivePath build/ios/archive/Runner.xcarchive \
             DEVELOPMENT_TEAM="$DEVELOPMENT_TEAM" \
             CODE_SIGN_STYLE=Automatic \
+            ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=YES \
             clean archive
 
       - name: Export IPA
@@ -62,6 +71,21 @@ workflows:
             -archivePath build/ios/archive/Runner.xcarchive \
             -exportOptionsPlist ios/Runner/ExportOptions.plist \
             -exportPath build/ios/ipa
+
+      - name: Verify SwiftSupport
+        script: |
+          echo "🔍 Checking SwiftSupport inside IPA..."
+          cd build/ios/ipa
+          unzip -q Runner.ipa -d ipa_contents
+          if [ -d "ipa_contents/SwiftSupport" ]; then
+            echo "✅ SwiftSupport folder found."
+            echo "📂 SwiftSupport contents:"
+            find ipa_contents/SwiftSupport -type f
+          else
+            echo "❌ SwiftSupport folder missing! Build will fail."
+            exit 1
+          fi
+          cd ../../..
 
       - name: Upload IPA to App Store Connect
         script: |
