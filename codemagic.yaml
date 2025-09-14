@@ -1,3 +1,4 @@
+workflows:
 ios-build-and-upload:
   name: iOS Build & Upload to App Store
   environment:
