@@ -25,13 +25,13 @@ workflows:
           plutil -replace MinimumOSVersion -string "15.5" ios/Flutter/AppFrameworkInfo.plist
           sed -i.bak "s/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]\\+/IPHONEOS_DEPLOYMENT_TARGET = 15.5/g" ios/Runner.xcodeproj/project.pbxproj || true
 
-      - name: Install CocoaPods
-        script: |
-          echo "📦 Installing CocoaPods..."
-          cd ios
-          pod repo update
-          pod install
-          cd ..
+     # - name: Install CocoaPods
+       # script: |
+       #   echo "📦 Installing CocoaPods..."
+       #   cd ios
+       #   pod repo update
+       #  pod install
+       #  cd ..
 
       - name: Increment Flutter Build Number
         script: |
