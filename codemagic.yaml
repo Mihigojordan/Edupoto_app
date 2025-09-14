@@ -5,6 +5,11 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
+      vars:
+        DEVELOPMENT_TEAM: $DEVELOPMENT_TEAM
+        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
+        APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY: $APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY
 
     scripts:
       - name: Prepare Flutter
@@ -28,24 +33,32 @@ workflows:
           pod install
           cd ..
 
-      - name: Increment iOS Build Number
+      - name: Increment Flutter Build Number
         script: |
-          echo "🔢 Incrementing CFBundleVersion..."
-          PLIST_PATH="ios/Runner/Info.plist"
-          CURRENT_BUILD=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$PLIST_PATH")
+          echo "🔢 Incrementing Flutter build number (FLUTTER_BUILD_NUMBER)..."
+          CURRENT_BUILD=$(grep "^version:" pubspec.yaml | sed 's/.*+//')
           if [ -z "$CURRENT_BUILD" ]; then
             CURRENT_BUILD=0
           fi
           NEW_BUILD=$((CURRENT_BUILD + 1))
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD" "$PLIST_PATH"
-          echo "CFBundleVersion updated from $CURRENT_BUILD to $NEW_BUILD"
+          echo "Updating build number from $CURRENT_BUILD to $NEW_BUILD"
+          sed -i.bak "s/\(^version:.*+\).*/\1$NEW_BUILD/" pubspec.yaml
 
-      - name: Fix Swift Optimization for Archive
+      - name: Add dummy Swift file (forces SwiftSupport)
         script: |
-          echo "⚡ Fixing Swift optimization levels for all Pod targets..."
-          find ios/Pods -name 'project.pbxproj' | while read proj; do
-            sed -i.bak "s/SWIFT_OPTIMIZATION_LEVEL = -O/SWIFT_OPTIMIZATION_LEVEL = -Onone/g" "$proj" || true
-          done
+          echo "📝 Ensuring Dummy.swift exists..."
+          DUMMY_SWIFT_FILE="ios/Runner/Dummy.swift"
+          if [ ! -f "$DUMMY_SWIFT_FILE" ]; then
+            echo "// Dummy Swift file to force SwiftSupport inclusion" > "$DUMMY_SWIFT_FILE"
+            echo "✅ Dummy.swift created."
+          else
+            echo "ℹ️ Dummy.swift already exists."
+          fi
+
+      - name: Build Flutter iOS App
+        script: |
+          echo "📦 Building Flutter iOS app..."
+          flutter build ios --release --no-codesign
 
       - name: Archive iOS App
         script: |
@@ -60,11 +73,29 @@ workflows:
 
       - name: Export IPA
         script: |
-          echo "📦 Exporting IPA..."
+          echo "📦 Exporting IPA with Swift libraries embedded..."
+          plutil -insert embedSwiftStandardLibraries -bool true ios/Runner/ExportOptions.plist || plutil -replace embedSwiftStandardLibraries -bool true ios/Runner/ExportOptions.plist
+          plutil -replace stripSwiftSymbols -bool false ios/Runner/ExportOptions.plist
+
           xcodebuild -exportArchive \
             -archivePath build/ios/archive/Runner.xcarchive \
             -exportOptionsPlist ios/Runner/ExportOptions.plist \
             -exportPath build/ios/ipa
+
+      - name: Verify SwiftSupport
+        script: |
+          echo "🔍 Checking SwiftSupport inside IPA..."
+          cd build/ios/ipa
+          unzip -q Runner.ipa -d ipa_contents
+          if [ -d "ipa_contents/SwiftSupport" ]; then
+            echo "✅ SwiftSupport folder found."
+            echo "📂 SwiftSupport contents:"
+            find ipa_contents/SwiftSupport -type f
+          else
+            echo "❌ SwiftSupport folder missing! Build will fail."
+            exit 1
+          fi
+          cd ../../..
 
       - name: Upload IPA to App Store Connect
         script: |
