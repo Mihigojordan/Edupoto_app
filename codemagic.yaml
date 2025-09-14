@@ -44,7 +44,7 @@ workflows:
           echo "Updating build number from $CURRENT_BUILD to $NEW_BUILD"
           sed -i.bak "s/\(^version:.*+\).*/\1$NEW_BUILD/" pubspec.yaml
 
-      - name: Add dummy Swift file (forces SwiftSupport)
+      - name: Ensure Dummy.swift Exists
         script: |
           echo "📝 Ensuring Dummy.swift exists..."
           DUMMY_SWIFT_FILE="ios/Runner/Dummy.swift"
@@ -60,7 +60,7 @@ workflows:
           echo "📦 Building Flutter iOS app..."
           flutter build ios --release --no-codesign
 
-      - name: Archive iOS App
+      - name: Archive iOS App with Swift Libraries
         script: |
           echo "📦 Archiving iOS app with automatic signing..."
           xcodebuild -workspace ios/Runner.xcworkspace \
@@ -71,10 +71,11 @@ workflows:
             CODE_SIGN_STYLE=Automatic \
             clean archive
 
-      - name: Export IPA
+      - name: Export IPA with SwiftSupport
         script: |
           echo "📦 Exporting IPA with Swift libraries embedded..."
-          plutil -insert embedSwiftStandardLibraries -bool true ios/Runner/ExportOptions.plist || plutil -replace embedSwiftStandardLibraries -bool true ios/Runner/ExportOptions.plist
+          # Ensure Swift libraries are embedded
+          plutil -replace embedSwiftStandardLibraries -bool true ios/Runner/ExportOptions.plist
           plutil -replace stripSwiftSymbols -bool false ios/Runner/ExportOptions.plist
 
           xcodebuild -exportArchive \
