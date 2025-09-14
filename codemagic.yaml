@@ -1,5 +1,5 @@
 workflows:
-ios-build-and-upload:
+  ios-build-and-upload:
   name: iOS Build & Upload to App Store
   environment:
     flutter: stable
