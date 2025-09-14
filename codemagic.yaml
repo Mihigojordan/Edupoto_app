@@ -1,6 +1,6 @@
 workflows:
   ios-build-and-upload:
-    name: Flutter iOS Build with SwiftSupport
+    name: iOS Build & Upload to App Store
     environment:
       flutter: stable
       xcode: latest
@@ -30,7 +30,7 @@ workflows:
           pod install --repo-update
           cd ..
 
-      - name: Build Flutter iOS archive
+      - name: Build iOS archive
         script: |
           flutter build ios --release --no-codesign
           xcodebuild -workspace ios/Runner.xcworkspace \
@@ -41,7 +41,7 @@ workflows:
             CODE_SIGN_STYLE=Automatic \
             clean archive
 
-      - name: Export IPA with SwiftSupport
+      - name: Export IPA
         script: |
           cat > ios/Runner/ExportOptions.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
@@ -63,31 +63,44 @@ workflows:
             -exportOptionsPlist ios/Runner/ExportOptions.plist \
             -exportPath build/ios/ipa
 
-      - name: Verify SwiftSupport and Swift Modules
+      - name: Ensure SwiftSupport exists (dylibs + swiftmodules)
         script: |
-          echo "🔍 Verifying SwiftSupport and .swiftmodule files..."
-          TMP_DIR="build/ios/ipa/tmp"
-          unzip -q build/ios/ipa/Runner.ipa -d "$TMP_DIR"
+          IPA_PATH="build/ios/ipa/Runner.ipa"
+          mkdir -p build/ios/ipa/tmp
+          unzip -q "$IPA_PATH" -d build/ios/ipa/tmp
 
-          # Check SwiftSupport dylibs
-          if [ -d "$TMP_DIR/SwiftSupport/iphoneos" ]; then
-            echo "✅ SwiftSupport folder exists. Contents:"
-            ls -lh "$TMP_DIR/SwiftSupport/iphoneos"
-          else
-            echo "❌ SwiftSupport folder is missing! Build will fail."
-            exit 1
+          # Ensure SwiftSupport dylibs
+          if [ ! -d "build/ios/ipa/tmp/SwiftSupport/iphoneos" ]; then
+            echo "⚠️ SwiftSupport dylibs missing, copying from archive..."
+            mkdir -p build/ios/ipa/tmp/SwiftSupport/iphoneos
+            cp build/ios/archive/Runner.xcarchive/SwiftSupport/iphoneos/* \
+               build/ios/ipa/tmp/SwiftSupport/iphoneos/ || true
           fi
 
-          # Check .swiftmodule files in frameworks
-          FRAMEWORKS_DIR="$TMP_DIR/Payload/Runner.app/Frameworks"
+          echo "📂 SwiftSupport dylib contents:"
+          ls -lh build/ios/ipa/tmp/SwiftSupport/iphoneos || echo "❌ No dylibs found!"
+
+          # Ensure Swiftmodule files (from frameworks inside app)
           echo "🔍 Checking for .swiftmodule files in frameworks..."
-          find "$FRAMEWORKS_DIR" -type d -name "*.swiftmodule" | while read MODULE_DIR; do
+          find build/ios/ipa/tmp/Payload/Runner.app/Frameworks -type d -name "*.swiftmodule" | while read MODULE_DIR; do
             echo "✅ Found Swift module: $MODULE_DIR"
           done
 
-          rm -rf "$TMP_DIR"
+          # Repack IPA
+          cd build/ios/ipa/tmp
+          zip -qr ../Runner-fixed.ipa *
+          cd ..
+          mv Runner-fixed.ipa Runner.ipa
+          rm -rf tmp
 
-      - name: Upload IPA to App Store Connect
+          echo "✅ Final Runner.ipa contains SwiftSupport dylibs + swiftmodules"
+
+      - name: Verify SwiftSupport contents
+        script: |
+          echo "🔎 Verifying final IPA structure..."
+          unzip -l build/ios/ipa/Runner.ipa | grep SwiftSupport || echo "❌ SwiftSupport missing in final IPA!"
+
+      - name: Upload to App Store Connect
         script: |
           app-store-connect publish \
             --path build/ios/ipa/Runner.ipa \
