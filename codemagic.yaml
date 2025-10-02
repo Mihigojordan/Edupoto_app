@@ -6,15 +6,16 @@ workflows:
       xcode: latest
       cocoapods: default
       vars:
-        DEVELOPMENT_TEAM: DEVELOPMENT_TEAM
-        APP_STORE_CONNECT_KEY_IDENTIFIER: APP_STORE_CONNECT_KEY_IDENTIFIER
-        APP_STORE_CONNECT_ISSUER_ID: APP_STORE_CONNECT_ISSUER_ID
-        APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY: APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY
+        # Set these in Codemagic UI as secure variables
+        DEVELOPMENT_TEAM: $DEVELOPMENT_TEAM
+        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
+        APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY: $APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY
 
     scripts:
       - name: Prepare Flutter
         script: |
-          echo "🔹 Cleaning and fetching Flutter packages..."
+          echo "🔹 Cleaning Flutter and fetching packages..."
           flutter clean
           flutter pub get
 
@@ -27,7 +28,7 @@ workflows:
 
       - name: Install CocoaPods
         script: |
-          echo "📦 Cleaning old Pods and installing fresh..."
+          echo "📦 Installing CocoaPods..."
           cd ios
           rm -rf Pods Podfile.lock
           pod install --repo-update
@@ -42,17 +43,28 @@ workflows:
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD" "$PLIST_PATH"
           echo "CFBundleVersion updated from $CURRENT_BUILD to $NEW_BUILD"
 
-      - name: Build IPA
+      - name: Archive iOS App (Automatic Signing)
         script: |
-          echo "📦 Building IPA using Flutter (Codemagic recommended way)..."
-          flutter build ipa \
-            --release \
-            --export-options-plist=ios/Runner/ExportOptions.plist \
-            --build-number=$NEW_BUILD
+          echo "📦 Archiving app with automatic signing..."
+          xcodebuild -workspace ios/Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            DEVELOPMENT_TEAM="$DEVELOPMENT_TEAM" \
+            CODE_SIGN_STYLE=Automatic \
+            clean archive
+
+      - name: Export IPA
+        script: |
+          echo "📦 Exporting IPA..."
+          xcodebuild -exportArchive \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            -exportOptionsPlist ios/Runner/ExportOptions.plist \
+            -exportPath build/ios/ipa
 
       - name: Upload IPA to App Store Connect
         script: |
-          echo "🚀 Uploading IPA to App Store Connect via API key..."
+          echo "🚀 Uploading IPA to App Store Connect..."
           app-store-connect publish \
             --path build/ios/ipa/Runner.ipa \
             --key-id $APP_STORE_CONNECT_KEY_IDENTIFIER \
