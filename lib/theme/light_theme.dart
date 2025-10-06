@@ -16,7 +16,8 @@ ThemeData light = ThemeData(
     // bodyMedium: TextStyle(color: Color(0xFF8dbac3)),
     // titleMedium: TextStyle(color: Color(0xFF8dbac3)),
   ),
-  dialogTheme: const DialogTheme(surfaceTintColor: Colors.white),
+ dialogTheme: const DialogThemeData(surfaceTintColor: Colors.white),
+
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     backgroundColor: Colors.white, selectedItemColor: ColorResources.themeLightBackgroundColor,
   ),
