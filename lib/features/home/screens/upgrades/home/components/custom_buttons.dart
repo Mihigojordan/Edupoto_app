@@ -108,6 +108,10 @@ class DefaultButtonWidth extends StatelessWidget {
   final Color color1;
   final Color color2;
   final double width;
+<<<<<<< HEAD
+=======
+  final double? fontSize;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
   const DefaultButtonWidth(
       {super.key,
@@ -115,7 +119,12 @@ class DefaultButtonWidth extends StatelessWidget {
       required this.title,
       required this.color1,
       required this.color2,
+<<<<<<< HEAD
        required this.width
+=======
+       required this.width,
+       this.fontSize=12,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
        });
   @override
   Widget build(BuildContext context) {
@@ -143,7 +152,11 @@ class DefaultButtonWidth extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .titleSmall!
+<<<<<<< HEAD
                     .copyWith(fontSize: 12, color: kTextBlackColor,fontWeight:FontWeight.w700)),
+=======
+                    .copyWith(fontSize: fontSize, color: kTextBlackColor,fontWeight:FontWeight.w700)),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
          
           ],
         ),

@@ -1217,7 +1217,11 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
                                   productIndex: widget.productIndex,
                                   edubox_service: widget.eduboxService,
                                   amountToPay:
+<<<<<<< HEAD
                                       '${'delivery_cost'.tr}: ${widget.deliveryCost.toStringAsFixed(2)}',
+=======
+                                      '${'delivery_cost'.tr}: (${'paid_on_delivery'.tr})',//${widget.deliveryCost.toStringAsFixed(2)}',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                   nowPaid:
                                       '${'material_cost'.tr}: ${widget.calculatedTotal.toStringAsFixed(2)}',
                                   vat: '${'vat'.tr}: ${'inclusive'.tr}',
@@ -1265,7 +1269,11 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreen> {
                                   productIndex: widget.productIndex,
                                   edubox_service: 'shop'.tr,
                                   amountToPay:
+<<<<<<< HEAD
                                       '${'delivery_cost'.tr}: ${widget.deliveryCost.toStringAsFixed(2)}',
+=======
+                                      '${'delivery_cost'.tr}: (${'paid_on_delivery'.tr})',//${widget.deliveryCost.toStringAsFixed(2)}',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                   nowPaid:
                                       '${'material_cost'.tr}: ${widget.calculatedTotal.toStringAsFixed(2)}',
                                   vat: '${'vat'.tr}: ${'inclusive'.tr}',

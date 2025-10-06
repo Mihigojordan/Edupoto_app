@@ -91,7 +91,11 @@ class AllSchoolController extends GetxController {
         _hasMore.value = false;
       }
     } catch (e) {
+<<<<<<< HEAD
       debugPrint('Error loading schools: $e');
+=======
+      // debugPrint('Error loading schools: $e');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       Get.snackbar('Error', 'Failed to load schools: ${e.toString()}');
       _hasMore.value = false;
     } finally {

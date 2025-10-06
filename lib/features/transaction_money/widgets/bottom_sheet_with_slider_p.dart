@@ -9,6 +9,10 @@ import 'package:hosomobile/features/home/domain/models/edubox_material_model.dar
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
+<<<<<<< HEAD
+=======
+import 'package:hosomobile/features/shop/controller/shop_controller.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/features/transaction_money/controllers/bootom_slider_controller.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
@@ -116,6 +120,11 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderP> {
     super.initState();
   }
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   @override
   Widget build(BuildContext context) {
     String type = widget.transactionType == 'send_money'
@@ -147,9 +156,16 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderP> {
             topRight: Radius.circular(Dimensions.radiusSizeLarge),
           ),
         ),
+<<<<<<< HEAD
         child: GetBuilder<TransactionMoneyController>(
             builder: (transactionMoneyController) {
           return SingleChildScrollView(
+=======
+        child:  GetBuilder<ShopController>(builder: (shopController) {
+          return GetBuilder<TransactionMoneyController>(
+              builder: (transactionMoneyController) {
+            return  SingleChildScrollView(
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -372,8 +388,13 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderP> {
                                         'payment', // Default type
                                     onPaymentMethodSelected:
                                         (method, details, provider) {
+<<<<<<< HEAD
                                       debugPrint(
                                           'Selected $method via $provider with details: $details');
+=======
+                                      // debugPrint(
+                                      //     'Selected $method via $provider with details: $details');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                     },
                                     initialAmount: widget.amount ?? '0',
                                   )
@@ -514,7 +535,12 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderP> {
               ),
             ),
           );
+<<<<<<< HEAD
         }),
+=======
+        });
+        })
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       ),
     );
   }

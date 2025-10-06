@@ -255,12 +255,22 @@ void _calculateCombinedTotal() {
           schoolLists.schoolListIndex != 1
               ? getHeading(schoolList, schoolListIndex) == null
                   ? const SizedBox.shrink()
+<<<<<<< HEAD
                   : _buildTotalPriceAndButtons(context,
                       schoolListIndex: schoolLists.schoolListIndex,
                       heading: getHeading(schoolList, schoolListIndex) ?? '',
                       schoolList: schoolList,
                       isChecked: isChecked)
               : const SizedBox.shrink(),
+=======
+                  :const SizedBox.shrink()
+                  // _buildTotalPriceAndButtons(context,
+                  //     schoolListIndex: schoolLists.schoolListIndex,
+                  //     heading: getHeading(schoolList, schoolListIndex) ?? '',
+                  //     schoolList: schoolList,
+                  //     isChecked: isChecked)
+             : const SizedBox.shrink(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
         ],
       );
         });
@@ -316,9 +326,15 @@ Widget _buildSchoolList(
     padding: const EdgeInsets.symmetric(
       horizontal: Dimensions.paddingSizeExtraSmall),
     child: Container(
+<<<<<<< HEAD
       height: schoolListIndex == 1
           ? MediaQuery.of(context).size.height / 1.5
           : MediaQuery.of(context).size.height / 2.5,
+=======
+      height: schoolListIndex == 5
+          ? MediaQuery.of(context).size.height / 1.5
+          : MediaQuery.of(context).size.height / 1.5,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       margin: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
         color: Colors.grey.withOpacity(0.05),
@@ -414,6 +430,10 @@ int _getTransactionType(SchoolLists item) {
                 //       DefaultButton2(
                 //         onPress: () => Get.to(
                 //   () => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+               // cartItems: Map(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                 //     shipper:widget.shipper,
                 //    homePhone:widget.homePhone,
                 //    destination:widget.destination,
@@ -464,6 +484,10 @@ int _getTransactionType(SchoolLists item) {
                     DefaultButtonWidth(
                       onPress: () => Get.to(
                         () => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+                          cartItems: Map(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                           studentController: widget.studentController,
                           studentIndex: widget.studentIndex,
                           availableBalance: 0.00,
@@ -528,6 +552,11 @@ int _getTransactionType(SchoolLists item) {
                           } else {
                             Get.to(
                               () => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+                                cartItems: Map(),
+                              
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                 studentController: widget.studentController,
                                 studentIndex: widget.studentIndex,
                                 availableBalance: materialBalance,
@@ -564,7 +593,11 @@ int _getTransactionType(SchoolLists item) {
                                 studentCode: widget.studentCode,
                                 edubox_service: schoolListIndex > 0
                                     ? heading
+<<<<<<< HEAD
                                     : 'all_school_list'.tr,
+=======
+                                    : 'Babyeyi ${'all_school_list'.tr}',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                 serviceIndex: 0,
                                 price: schoolList.isNotEmpty ? totalPrice : 0,
                               ),
@@ -584,6 +617,10 @@ int _getTransactionType(SchoolLists item) {
                   iconData: Icons.credit_card,
                   onPress: () =>
                       Get.to(() => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+                        cartItems: Map(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                             studentController: widget.studentController,
                             studentIndex: widget.studentIndex,
                             availableBalance: 0.00,
@@ -717,6 +754,10 @@ int _getTransactionType(SchoolLists item) {
                     DefaultButtonWidth(
                       onPress: () => Get.to(
                         () => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+                          cartItems: Map(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                           studentController: widget.studentController,
                           studentIndex: widget.studentIndex,
                           availableBalance: 0.00,
@@ -782,6 +823,10 @@ int _getTransactionType(SchoolLists item) {
                               } else {
                                 Get.to(
                                   () => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+                                    cartItems: Map(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                     studentController: widget.studentController,
                                     studentIndex: widget.studentIndex,
                                     availableBalance: materialBalance,
@@ -841,6 +886,10 @@ int _getTransactionType(SchoolLists item) {
                   iconData: Icons.credit_card,
                   onPress: () =>
                       Get.to(() => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+                        cartItems: Map(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                             studentController: widget.studentController,
                             studentIndex: widget.studentIndex,
                             availableBalance: 0.00,

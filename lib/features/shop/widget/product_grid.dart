@@ -3,7 +3,11 @@ import 'package:get/get.dart';
 import 'package:hosomobile/common/widgets/custom_image_widget.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
+<<<<<<< HEAD
 import 'package:hosomobile/features/shop/screen/prduct_detail_screen.dart';
+=======
+import 'package:hosomobile/features/shop/screen/product_detail_screen.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/images.dart';
@@ -37,7 +41,18 @@ class _ProductGridState extends State<ProductGrid> {
       ),
       itemCount: widget.products.length,
       itemBuilder: (context, index) {
+<<<<<<< HEAD
         final product = widget.products[index];
+=======
+         // Safe access to product
+        if (index >= widget.products.length) return const SizedBox();
+        final product = widget.products[index];
+        
+        // Safe image handling
+        final imageUrl = (product.images != null && product.images!.isNotEmpty)
+            ? product.images![0].src
+            : Images.bannerPlaceHolder;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
         final quantity = widget.cart[product] ?? 0;
 
         return Card(
@@ -60,7 +75,11 @@ class _ProductGridState extends State<ProductGrid> {
                 child: CustomImageWidget(
                   height: screenWidth / 7.5,
                   width: screenWidth / 6.5,
+<<<<<<< HEAD
                   image: product.images?[0].src ?? 'no image',
+=======
+                  image: imageUrl??'no image',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                   fit: BoxFit.cover,
                   placeholder: Images.bannerPlaceHolder,
                 ),
@@ -107,6 +126,7 @@ class _ProductGridState extends State<ProductGrid> {
                 ),
               ),
               
+<<<<<<< HEAD
               const SizedBox(height: 4),
               
               // Add to Cart Button
@@ -114,6 +134,15 @@ class _ProductGridState extends State<ProductGrid> {
                 onPressed: () => widget.onAddToCart(product, 1),
                 child: Text('add_to_cart'.tr,
                 style: const TextStyle(fontSize: 12, color: kyellow800Color,fontWeight:FontWeight.w400, ),
+=======
+        
+              // Add to Cart Button
+              TextButton(
+                
+                onPressed: () => widget.onAddToCart(product, 1),
+                child: Text('add_to_cart'.tr,
+                style: const TextStyle(fontSize: 14, color: kyellow800Color,fontWeight:FontWeight.w500, ),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                 ),
               ),
             ],

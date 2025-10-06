@@ -2,12 +2,23 @@ import 'package:flutter/foundation.dart';
 import 'package:hosomobile/common/controllers/share_controller_sl.dart';
 import 'package:hosomobile/common/models/contact_model_mtn.dart';
 import 'package:hosomobile/data/api/mtn_momo_api_client.dart';
+<<<<<<< HEAD
+=======
+import 'package:hosomobile/features/auth/controllers/auth_controller.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/features/home/controllers/all_school_controller.dart';
 import 'package:hosomobile/features/home/domain/models/all_school_model.dart';
 import 'package:hosomobile/features/home/domain/models/edubox_material_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_update/home_screen_upgrade.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
+<<<<<<< HEAD
+=======
+import 'package:hosomobile/features/shop/controller/shop_controller.dart';
+import 'package:hosomobile/features/shop/domain/models/customer_model.dart';
+import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
+import 'package:hosomobile/features/shop/screen/shop_order_screen.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/features/transaction_money/controllers/bootom_slider_controller.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
@@ -37,6 +48,10 @@ class BottomSheetWithSliderSl extends StatefulWidget {
   final int studentId;
   final double? inputBalance;
   final List<SchoolLists>? dataList;
+<<<<<<< HEAD
+=======
+  final Map<Product, int> selectedProducts;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   final int? productIndex;
   final String? edubox_service;
   final int? studentIndex;
@@ -59,10 +74,21 @@ class BottomSheetWithSliderSl extends StatefulWidget {
   final String shippingCompany;
   final String shippingCity;
   final String shippingCountry;
+<<<<<<< HEAD
+=======
+  final String? customerNote;
+  final double? deliveryCost;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
   const BottomSheetWithSliderSl({
     super.key,
     this.amountToPay,
+<<<<<<< HEAD
+=======
+    this.customerNote,
+    this.deliveryCost,
+    required this.selectedProducts,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     required this.shippingAddress1,
     required this.shippingAddress2,
     required this.shippingCompany,
@@ -104,12 +130,76 @@ class BottomSheetWithSliderSl extends StatefulWidget {
 class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
   String? transactionId;
   final MtnMomoApiClient mtnMomoApiClient = MtnMomoApiClient();
+<<<<<<< HEAD
+=======
+  final ShopController _shopController = Get.find<ShopController>();
+  final AuthController _authController = Get.find<AuthController>();
+  int? customerId;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
  List<Districts>? allSchoolList;
 
   @override
   void initState() {
     Get.find<TransactionMoneyController>().changeTrueFalse();
     super.initState();
+<<<<<<< HEAD
+=======
+    _fetchCustomer();
+  }
+
+    Future<void> _fetchCustomer() async {
+    try {
+      // First check if we already have a customer ID stored locally
+      customerId = _shopController.getCustomerId();
+
+      if (customerId == null) {
+        // If no customer ID exists, try to find or create one
+        final userId = _authController.getUserId();
+        final userData = _authController.getUserData();
+        final name = userData?.name ?? 'User$userId';
+        final String nameWithoutSpaces = name.replaceAll(' ', '');
+        final String email = '$nameWithoutSpaces$userId@gmail.com';
+
+        // Fetch customer list from API
+        await _shopController.getCustomerData(reload: true);
+
+        // Try to find existing customer by email
+        CustomerModel? existingCustomer;
+        try {
+          existingCustomer = _shopController.customerList?.firstWhere(
+            (customer) => customer.email?.toLowerCase() == email.toLowerCase(),
+          );
+        } catch (e) {
+          debugPrint('No existing customer found: $e');
+        }
+
+        // If customer exists, store the ID
+        if (existingCustomer?.id != null) {
+          _shopController.setCustomerId(existingCustomer!.id.toString());
+          customerId = existingCustomer.id;
+        } else {
+          // If customer doesn't exist, create a new one
+          final response = await _shopController.customerReg(
+            email: email,
+            phone: userData?.phone ?? '',
+            firstName: name.split(' ').first,
+            lastName: name.split(' ').length > 1
+                ? name.split(' ').sublist(1).join(' ')
+                : '',
+          );
+
+          if (response.statusCode == 200 || response.statusCode == 201) {
+            final newCustomerId = response.body['id']?.toString();
+            if (newCustomerId != null) {
+              _shopController.setCustomerId(newCustomerId);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching customer: $e');
+    }
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   }
 
   @override
@@ -132,6 +222,23 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
 
     final ContactController contactController = Get.find<ContactController>();
 
+<<<<<<< HEAD
+=======
+     final List<Map<String, dynamic>> productMaps =
+        widget.selectedProducts.entries.map((entry) {
+      final product = entry.key;
+      final quantity = entry.value;
+
+      return {
+        'product_id': product.id,
+        'name': product.name,
+        'price': double.tryParse(product.regularPrice ?? '0') ?? 0.0,
+        'quantity': quantity,
+        // include other required properties
+      };
+    }).toList();
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     return PopScope(
       canPop: false,
       onPopInvoked: (_) => Get.back(),     //Get.offAllNamed(RouteHelper.getNavBarRoute()),
@@ -143,9 +250,16 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
             topRight: Radius.circular(Dimensions.radiusSizeLarge),
           ),
         ),
+<<<<<<< HEAD
         child: GetBuilder<TransactionMoneyController>(
             builder: (transactionMoneyController) {
           return SingleChildScrollView(
+=======
+        child:  GetBuilder<ShopController>(builder: (shopController) {
+          return GetBuilder<TransactionMoneyController>(
+              builder: (transactionMoneyController) {
+            return  SingleChildScrollView(
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -332,6 +446,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                           rubikMedium.copyWith(fontSize: 34.0)),
                                   sizedBox10,
                                   // ************************ Payment Method*******************/
+<<<<<<< HEAD
 
                                   PaymentMethodSelector(
                                     vat: widget.vat!,
@@ -377,6 +492,69 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                                           'Selected $method via $provider with details: $details');
                                     },
                                     initialAmount: widget.amount ?? '0',
+=======
+                                
+                                  PaymentMethodSelector(
+                                   customerNote:widget.customerNote,
+                                    deliveryCost:widget.deliveryCost,
+                                    shopController: shopController,
+                                        vat: widget.vat!,
+                                        shopList: productMaps,
+                                        //  widget.selectedProducts.entries
+                                        //     .map((entry) {
+                                        //   final product = entry.key;
+                                        //   final quantity = entry.value;
+                                        //   return '${product.name} (${product.regularPrice} ${AppConstants.currency}) x $quantity, ';
+                                        // }).toList(),
+                                        shippingAddress1:
+                                            widget.shippingAddress1,
+                                        shippingAddress2:
+                                            widget.shippingAddress2,
+                                        shippingFirstName: '',
+                                        shippingLastName: '',
+                                        shippingCompany: widget.shippingCompany,
+                                        shippingCity: widget.shippingCity,
+                                        shippingCountry: widget.shippingCountry,
+                                        productName: widget.edubox_service ??
+                                            'no product available',
+                                        homePhone: widget.homePhone,
+                                        service_charge:
+                                            widget.serviceCharge ?? '0',
+                                        edubox_service: widget.edubox_service ??
+                                            'no Edubox Service',
+                                        randomNumber: widget.randomNumber,
+                                        transactionMoneyController:
+                                            transactionMoneyController,
+                                        transactionId: transactionId ??
+                                            '', // Provide empty string if null
+                                        studentId: widget.studentId,
+                                        amountToPay: widget.amountToPay ??
+                                            '0', // Default to '0' if null
+                                        productId: widget.productId ??
+                                            0, // Default to 0 if null
+                                        availableBalance:
+                                            widget.availableBalance ?? '0',
+                                        serviceCharge:
+                                            widget.serviceCharge ?? '0',
+                                        contactController: contactController,
+                                        amount: widget.amount ?? '0',
+                                        purpose: widget.purpose ??
+                                            'Payment', // Default purpose
+                                        pinCode: widget.pinCode ??
+                                            '', // Empty string if null
+                                        contactModel: widget.contactModel ??
+                                            ContactModel(), // Default empty model
+                                        mtnMomoApiClient: mtnMomoApiClient,
+                                        transactionType:
+                                            widget.transactionType ??
+                                                'payment', // Default type
+                                        onPaymentMethodSelected:
+                                            (method, details, provider) {
+                                          debugPrint(
+                                              'Selected $method via $provider with details: $details');
+                                        },
+                                        initialAmount: widget.amount ?? '0',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                   )
                                 ],
                               ),
@@ -460,6 +638,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
               //                   height: Dimensions.paddingSizeDefault),
               //             ],
               //           ): const SizedBox(),
+<<<<<<< HEAD
                   transactionMoneyController.isNextBottomSheet
                       ?
                        Padding(
@@ -505,6 +684,107 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
                             ),
                           ),
                         )
+=======
+                       
+                  transactionMoneyController.isNextBottomSheet
+                      ?
+                       Column(
+                         children: [
+ Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: Dimensions
+                                          .paddingSizeExtraExtraLarge),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .secondaryHeaderColor,
+                                      borderRadius: BorderRadius.circular(
+                                          Dimensions.radiusSizeSmall),
+                                    ),
+                                    child: CustomInkWellWidget(
+                                      onTap: () {
+                                        _fetchCustomer();
+                                        // DEBUG: Print the customerId before navigation
+                                        print(
+                                            '👆 Button tapped with customerIdeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee: $customerId');
+
+                                        // Make sure customerId is not null and is the correct type
+                                        if (customerId != null) {
+                                          Get.to(() => ShopOrderScreen(
+                                              customerId: customerId));
+                                        } else {
+                                          print('❌ customerId is null!');
+                                          // Show error or handle null case
+                                          Get.snackbar('Error',
+                                              'Customer ID not available');
+                                        }
+                                      },
+                                      radius: Dimensions.radiusSizeSmall,
+                                      highlightColor: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .color!
+                                          .withOpacity(0.1),
+                                      child: SizedBox(
+                                        height: 50.0,
+                                        child: Center(
+                                            child: Text(
+                                          'my_orders'.tr,
+                                          style: rubikMedium.copyWith(
+                                              fontSize:
+                                                  Dimensions.fontSizeLarge),
+                                        )),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                sizedBox05h,
+                           Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal:
+                                      Dimensions.paddingSizeExtraExtraLarge),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  borderRadius: BorderRadius.circular(
+                                      Dimensions.radiusSizeSmall),
+                                ),
+                                child: CustomInkWellWidget(
+                                  onTap: () {
+                                    if (!kIsWeb) {
+                                      Get.find<BottomSliderController>()
+                                          .goBackToHomeButton();
+                                    } else {
+                                            Get.find<BottomSliderController>()
+                                          .goBackToHomeButton();
+                                 //                             Get.back();
+                                 //                                 Get.put(AllSchoolController(allSchoolRepo: Get.find()))        .getSchoolList(false)
+                                 //   .then((_) {
+                                 // allSchoolList = Get.find<AllSchoolController>().schoolList;
+                               // });
+                                    }
+                                  },
+                                  radius: Dimensions.radiusSizeSmall,
+                                  highlightColor: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge!
+                                      .color!
+                                      .withOpacity(0.1),
+                                  child: SizedBox(
+                                    height: 50.0,
+                                    child: Center(
+                                        child: Text(
+                                      'back_to_home'.tr,
+                                      style: rubikMedium.copyWith(
+                                          fontSize: Dimensions.fontSizeLarge),
+                                    )),
+                                  ),
+                                ),
+                              ),
+                            ),
+                         ],
+                       )
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                       : transactionMoneyController.isLoading
                           ? Center(
                               child: CircularProgressIndicator(
@@ -516,7 +796,12 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSl> {
               ),
             ),
           );
+<<<<<<< HEAD
         }),
+=======
+        });
+        })
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       ),
     );
   }

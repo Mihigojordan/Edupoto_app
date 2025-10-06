@@ -25,7 +25,11 @@ class SchoolRequirementController extends GetxController implements GetxService{
     if(_schoolRequirementList == null ) {
       _schoolRequirementList = [];
       Response response = await schoolRequirementRepo.getSchoolRequirementListApi(schoolId: schoolId,classId: classId,studentId: studentId);
+<<<<<<< HEAD
       print('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww: school requirement: ${response.body}');
+=======
+      // print('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww: school requirement: ${response.body}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       if(response.body != null && response.body != {} && response.statusCode == 200){
         _schoolRequirementList = [];
         response.body['product_types'].forEach((website) {_schoolRequirementList!.add(ProductTypeModel.fromJson(website));});

@@ -117,7 +117,10 @@ print("Device Identifier: $deviceIdentifier");
 
 
   Get.lazyPut(() => ApiClient(
+<<<<<<< HEAD
     appBaseUrl: AppConstants.baseUrl,
+=======
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     sharedPreferences: Get.find(),
     uniqueId: Get.find(),
     deiceInfo: Get.find(),

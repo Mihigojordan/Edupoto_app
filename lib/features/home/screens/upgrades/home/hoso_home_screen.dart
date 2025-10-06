@@ -132,7 +132,11 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
 
     _loadData(context, false, userId!);
 
+<<<<<<< HEAD
     print('++++++++++++++++ user: $userId');
+=======
+    // print('++++++++++++++++ user: $userId');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   }
 
   void onDeposit() {
@@ -303,12 +307,22 @@ class _HosoHomeScreenState extends State<HosoHomeScreen> {
                                   vertical: screenHeight * 0.005,
                                   textColor: kTextBlackColor,
                                   horizontal: screenWidth * 0.025,
+<<<<<<< HEAD
                                   onPress: () => Get.to(AddAccount(
                                         isDirectory: true,
                                         productIndex: 0,
                                         iconImages:
                                             "${AppConstants.baseUrl}/storage/app/public/edupoto_product/titleImage",
                                       )),
+=======
+                                  onPress: () => Get.to(const NoConnection()),
+                                  // Get.to(AddAccount(
+                                  //       isDirectory: true,
+                                  //       productIndex: 0,
+                                  //       iconImages:
+                                  //           "${AppConstants.baseUrl}/storage/app/public/edupoto_product/titleImage",
+                                  //     )),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                   height: screenHeight * 0.05,
                                   width: screenWidth * 0.30,
                                   icon:
@@ -469,10 +483,17 @@ class _HomeCard1State extends State<HomeCard1> {
                               horizontal: screenHeight >= 763 ? 10.0 : 5,
                               onPress: () {
                                 mtnMomoApiClient.createMomoToken();
+<<<<<<< HEAD
                                 Get.to(const ShoppingScreen());
                                 // Get.to(const MzaziScreen(
                                 //   isShop: false,
                                 // ));
+=======
+                                // Get.to(const ShoppingScreen());
+                                Get.to(const MzaziScreen(
+                                  isShop: false,
+                                ));
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                               },
                               // Navigator.push(context,MaterialPageRoute(builder: (context)=>MzaziScreen())),
                               height: 30,

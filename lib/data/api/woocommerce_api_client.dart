@@ -47,8 +47,14 @@ WoocommerceApiClient(){
 queryString = {
   "consumer_key": consumerKey,
   "consumer_secret": consumerSecret,
+<<<<<<< HEAD
   "_fields[]":['id','name','price','regular_price','sale_price','short_description','images','categories','brands','attributes'],
 "per_page": "100"
+=======
+  "_fields[]":['id','name','price','regular_price','sale_price','short_description','description','images','categories','brands','attributes'],
+  "per_page": "100",
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 };
 
 queryCategoryString = {
@@ -122,7 +128,11 @@ queryCustomerString={
 
     return handleResponse(response, uriProduct);
   } catch (e) {
+<<<<<<< HEAD
     debugPrint('yyyyyyyyyyyyyyyyyyyyyyyyyyyyError occurred during API call: $e');
+=======
+    debugPrint('yyyyyyyyyyyyyyyyyyyyyyyyyyyyError occurred during API call: ');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     return Response(statusCode: 1, statusText: noInternetMessage);
   }
 }
@@ -140,7 +150,11 @@ queryCustomerString={
       queryParameters:queryCategoryString
     );
 
+<<<<<<< HEAD
     debugPrint('====> API Call: $url');
+=======
+    // debugPrint('====> API Call: $url');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
     http.Response response = await http.get(
       url,
@@ -149,7 +163,11 @@ queryCustomerString={
 
     return handleResponse(response, uriProduct);
   } catch (e) {
+<<<<<<< HEAD
     debugPrint('yyyyyyyyyyyyyyyyyyyyyyyyyyyyError occurred during API call: $e');
+=======
+    debugPrint('yyyyyyyyyyyyyyyyyyyyyyyyyyyyError occurred during API call: ');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     return Response(statusCode: 1, statusText: noInternetMessage);
   }
 }
@@ -167,7 +185,11 @@ queryCustomerString={
       queryParameters:queryOrderString
     );
 
+<<<<<<< HEAD
     debugPrint('====> API Call: $url');
+=======
+  //  debugPrint('====> API Call: $url');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
     http.Response response = await http.get(
       url,
@@ -176,7 +198,11 @@ queryCustomerString={
 
     return handleResponse(response, uriProduct);
   } catch (e) {
+<<<<<<< HEAD
     debugPrint('yyyyyyyyyyyyyyyyyyyyyyyyyyyyError occurred during API call: $e');
+=======
+    debugPrint('yyyyyyyyyyyyyyyyyyyyyyyyyyyyError occurred during API call: ');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     return Response(statusCode: 1, statusText: noInternetMessage);
   }
 }
@@ -194,7 +220,11 @@ queryCustomerString={
       queryParameters:queryCustomerString
     );
 
+<<<<<<< HEAD
     debugPrint('====> API Call: $url');
+=======
+    // debugPrint('====> API Call: $url');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
     http.Response response = await http.get(
       url,
@@ -203,7 +233,11 @@ queryCustomerString={
 
     return handleResponse(response, uriProduct);
   } catch (e) {
+<<<<<<< HEAD
     debugPrint('Error occurred during API call: $e');
+=======
+    debugPrint('Error occurred during API call: ');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     return Response(statusCode: 1, statusText: noInternetMessage);
   }
 }
@@ -214,9 +248,15 @@ queryCustomerString={
   }
 
   try {
+<<<<<<< HEAD
     debugPrint('🌍 Base URL: $appBaseUrlWoo');
     debugPrint('📢 API Endpoint: $uri');
     debugPrint('📩 Request Body: ${jsonEncode(body)}');
+=======
+    // debugPrint('🌍 Base URL: $appBaseUrlWoo');
+    // debugPrint('📢 API Endpoint: $uri');
+    // debugPrint('📩 Request Body: ${jsonEncode(body)}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
     final response0 = await http.post(
       Uri.parse(appBaseUrlWoo + uri),
@@ -226,11 +266,19 @@ queryCustomerString={
 
     Response response = handleResponse(response0, uri);
     
+<<<<<<< HEAD
     print("🔵 API Response: ${response.statusCode} | ${response.body}");
 
     return response;
   } catch (e) {
     print("🚨 API Call Failed: $e"); // Ensure errors are logged
+=======
+    // print("🔵 API Response: ${response.statusCode} | ${response.body}");
+
+    return response;
+  } catch (e) {
+    print("🚨 API Call Failed: "); // Ensure errors are logged
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     return const Response(statusCode: 1, statusText: 'No Internet Connection');
   }
 }

@@ -366,6 +366,10 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
                     DefaultButtonWidth(
                       onPress: () => Get.to(
                         () => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+                             cartItems: Map(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                           studentController: widget.studentController,
                           studentIndex: widget.studentIndex,
                           availableBalance: 0.00,
@@ -430,6 +434,10 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
                           } else {
                             Get.to(
                               () => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+                                cartItems: Map(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                 studentController: widget.studentController,
                                 studentIndex: widget.studentIndex,
                                 availableBalance: materialBalance,
@@ -486,6 +494,10 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
                   iconData: Icons.credit_card,
                   onPress: () =>
                       Get.to(() => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+                        cartItems: Map(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                             studentController: widget.studentController,
                             studentIndex: widget.studentIndex,
                             availableBalance: 0.00,
@@ -619,6 +631,10 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
                     DefaultButtonWidth(
                       onPress: () => Get.to(
                         () => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+                          cartItems: Map(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                           studentController: widget.studentController,
                           studentIndex: widget.studentIndex,
                           availableBalance: 0.00,
@@ -684,6 +700,10 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
                               } else {
                                 Get.to(
                                   () => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+                                    cartItems: Map(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                     studentController: widget.studentController,
                                     studentIndex: widget.studentIndex,
                                     availableBalance: materialBalance,
@@ -743,6 +763,10 @@ class _SchoolListWidgetState extends State<SchoolListWidget> {
                   iconData: Icons.credit_card,
                   onPress: () =>
                       Get.to(() => SchoolTransactionConfirmationScreen(
+<<<<<<< HEAD
+=======
+                        cartItems: Map(),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                             studentController: widget.studentController,
                             studentIndex: widget.studentIndex,
                             availableBalance: 0.00,

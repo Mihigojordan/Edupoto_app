@@ -8,7 +8,7 @@ class AppConstants {
   // 'http://192.168.1.83/edupoto_rw_admin';
 
   static const String baseUrl = 'https://system.edupoto.com';
-  //  'http://127.0.0.1/edupoto_rw_admin';
+                              // 'http://127.0.0.1/edupoto_rw_admin';
   static const String wooBaseUrl = 'https://hosomobile.rw';
   //  'http://192.168.1.76/edupoto_rw_admin''https://www.hosomobile.rw' ;                                         //'http://192.168.1.69/edupoto_rw_admin'; //'http://192.168.1.66/edupoto_rw_admin';
   
@@ -60,6 +60,7 @@ class AppConstants {
   static const String customerUpdateTwoFactor =
       '/api/v1/customer/update-two-factor';
   static const String customerSendMoney = '/api/v1/customer/send-money';
+  static const String babyeyiTransaction = '/api/v1/customer/babyeyi-transaction';
   static const String customerRequestMoney = '/api/v1/customer/request-money';
   static const String customerCashOut = '/api/v1/customer/cash-out';
   static const String customerPinVerify = '/api/v1/customer/verify-pin';
@@ -161,8 +162,8 @@ class AppConstants {
   //payment invoices
   static String currency = 'RWF';
   static double vatPercentage = 18;
-  static double convenienceFeePercentage = 1.0;
-  static double deliveryCost = 1500.00;
+  static double convenienceFeePercentage = 0.0;
+  static double deliveryCost = 0.00;
   static String deliveryCompany = "Maestro";
   static String city = "Kigali";
   static String country = "Rwanda";

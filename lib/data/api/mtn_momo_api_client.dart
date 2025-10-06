@@ -27,25 +27,41 @@ class MtnMomoApiClient {
   Future<void> saveToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('apiToken', token);  // Save the token with the key 'apiToken'
+<<<<<<< HEAD
     print('Token saved: $token');
+=======
+    // print('Token saved: $token');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   }
 
     Future<void> saveReferenceId(String id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('referenceId',id);  // Save the token with the key 'apiToken'
+<<<<<<< HEAD
     print('Token saved: $id');
+=======
+    // print('Token saved: $id');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   }
 
       Future<void> saveStatus(String status) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('status',status);  // Save the token with the key 'apiToken'
+<<<<<<< HEAD
     print('Token saved: $status');
+=======
+    // print('Token saved: $status');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   }
 
        Future<void> savePaymentStatus(String status) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('payStatus',status);  // Save the token with the key 'apiToken'
+<<<<<<< HEAD
     print('Token saved: $status');
+=======
+    // print('Token saved: $status');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   }
 
   // Method to get the token from SharedPreferences
@@ -93,7 +109,11 @@ class MtnMomoApiClient {
     ).timeout(Duration(seconds: timeoutInSeconds));
 
     // Log the response status
+<<<<<<< HEAD
     print('Response status: ${response.statusCode}');
+=======
+    // print('Response status: ${response.statusCode}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
     // Check if the response status is 200 (OK)
     if (response.statusCode == 200) {
@@ -114,8 +134,13 @@ class MtnMomoApiClient {
         return null; // Return null if the token key is missing
       }
     } else {
+<<<<<<< HEAD
       print('Failed: Response code is not 200. Status code: ${response.statusCode}/${response.body}');
       print('Response body: ${response.body}'); // Log the response body for debugging
+=======
+      // print('Failed: Response code is not 200. Status code: ${response.statusCode}/${response.body}');
+      // print('Response body: ${response.body}'); // Log the response body for debugging
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       return null; // Handle non-200 responses as needed
     }
   } catch (e) {
@@ -171,11 +196,16 @@ class MtnMomoApiClient {
         headers: _mtnMomoHeader,
       ).timeout(Duration(seconds: timeoutInSeconds));
 
+<<<<<<< HEAD
       print('Response status: ${response.statusCode}');
+=======
+      // print('Response status: ${response.statusCode}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       
       // Check if the response status is 202 (Accepted)
       if (response.statusCode == 202) {
          String status = response.statusCode.toString() ;
+<<<<<<< HEAD
         print('Success: The response is 202: $phoneNumber/$referenceId/$message');
         await savePaymentStatus(status);
        
@@ -185,6 +215,17 @@ class MtnMomoApiClient {
       }
     } catch (e) {
       print('Error occurred: $e');
+=======
+        // print('Success: The response is 202: $phoneNumber/$referenceId/$message');
+        await savePaymentStatus(status);
+       
+      } else {
+        // print('Failed: Response code is not $amount. Status code: ${response.body}');
+        return null;  // Handle failure as needed
+      }
+    } catch (e) {
+      // print('Error occurred: $e');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       return null;  // Handle the error and return null or custom message
     }
   }
@@ -198,7 +239,11 @@ class MtnMomoApiClient {
 
   // Ensure the token is available
   if (token == null) {
+<<<<<<< HEAD
     print('Error: Token is required for this operation.');
+=======
+    // print('Error: Token is required for this operation.');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     return null;  // Return null or handle the error as needed
   }
 
@@ -225,7 +270,11 @@ class MtnMomoApiClient {
        body: body,
     );
 
+<<<<<<< HEAD
     print('Response status get mtn: ${response.statusCode}');
+=======
+    // print('Response status get mtn: ${response.statusCode}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     
     // Check if the response status is 200 (OK)
     if (response.statusCode == 200) {
@@ -235,6 +284,7 @@ class MtnMomoApiClient {
       // Extract the status from the JSON response (adjust the key as per the response structure)
       String status = jsonResponse['status']; 
       await saveStatus(status);
+<<<<<<< HEAD
       print('Success: The response status is $status');
 
       
@@ -244,6 +294,17 @@ class MtnMomoApiClient {
     }
   } catch (e) {
     print('Error occurred: $e');
+=======
+      // print('Success: The response status is $status');
+
+      
+    } else {
+      // print('Failed: Response code is not 200. Status code: ${response.statusCode}');
+      return null;  // Handle failure as needed
+    }
+  } catch (e) {
+    // print('Error occurred: $e');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     return null;  // Handle the error and return null or custom message
   }
 }

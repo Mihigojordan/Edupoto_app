@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
+<<<<<<< HEAD
+=======
+import 'package:hosomobile/features/school/controllers/cart_controller.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/school/widgets/product_details_dialog.dart';
 import 'package:hosomobile/features/shop/domain/models/product.dart';
@@ -67,6 +71,23 @@ class _SingleSchoolListWidgetState extends State<SingleSchoolListModernWidget> {
     _currentTotal = newTotal;
   }
 
+<<<<<<< HEAD
+=======
+    void onAddToCart(Product product, int quantity) {
+    final cartController = Get.find<CartController>();
+    cartController.addToCart(product, quantity);
+    
+    // Show a snackbar feedback
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Added ${product.name} to cart'),
+        duration: const Duration(seconds: 1),
+      ),
+    );
+  }
+
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   @override
   Widget build(BuildContext context) {
     String? heading;
@@ -276,6 +297,35 @@ class _SingleSchoolListWidgetState extends State<SingleSchoolListModernWidget> {
                     color: Colors.green[700],
                   ),
             ),
+<<<<<<< HEAD
+=======
+            sizedBox10,
+     Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(200, 50),
+                  backgroundColor: Colors.amber,
+                ),
+                onPressed: () {
+                  // Add all selected products to cart
+                  _selectedProducts.forEach((product, quantity) {
+                    onAddToCart(product, quantity);
+                  });
+                  // Show feedback
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Added ${_selectedProducts.length} items to cart'),
+                      duration: const Duration(seconds: 1),
+                    ),
+                  );
+                },
+                child: Text(
+                  'add_to_cart'.tr,
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ),
+            ),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
           ],
         ),
       ),

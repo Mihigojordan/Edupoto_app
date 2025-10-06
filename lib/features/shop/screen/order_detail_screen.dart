@@ -22,12 +22,20 @@ class OrderDetailsScreen extends StatefulWidget {
 }
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
+<<<<<<< HEAD
  final ScreenshotController _screenshotController = ScreenshotController();
 
   @override
   Widget build(BuildContext context) {
  
       final date = DateTime.tryParse(widget.order.dateCreated) ?? DateTime.now();
+=======
+  final ScreenshotController _screenshotController = ScreenshotController();
+
+  @override
+  Widget build(BuildContext context) {
+    final date = DateTime.tryParse(widget.order.dateCreated) ?? DateTime.now();
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     final formattedDate = DateFormat('MMM dd, yyyy - hh:mm a').format(date);
     final totalAmount = double.tryParse(widget.order.total) ?? 0;
     final shippingAmount = double.tryParse(widget.order.shippingTotal) ?? 0;
@@ -52,6 +60,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+<<<<<<< HEAD
                 // Order Status Card
             _buildStatusCard(context),
             const SizedBox(height: 20),
@@ -84,11 +93,49 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             Text('ordered_items'.tr, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             ...widget.order.lineItems.map((item) => _buildOrderItem(context, item)),
+=======
+              // Order Status Card
+              _buildStatusCard(context),
+              const SizedBox(height: 20),
+
+              // Order Summary
+              Text('order_summary'.tr, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 12),
+              _buildSummaryCard(context, subtotal, shippingAmount, totalAmount),
+              const SizedBox(height: 20),
+
+              // Shipping Information
+              Text('shipping_information'.tr, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 12),
+              _buildAddressCard(context, shipping: widget.order.shipping, billing: widget.order.billing, title: 'shipping'.tr),
+              const SizedBox(height: 20),
+
+              // Billing Information
+              Text('billing_information'.tr, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 12),
+              _buildAddressCard(context, shipping: widget.order.shipping, billing: widget.order.billing, title: 'billing'.tr),
+              const SizedBox(height: 20),
+
+              // Payment Method
+              Text('payment_method'.tr, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 12),
+              _buildPaymentCard(context),
+              const SizedBox(height: 20),
+
+              // Ordered Items
+              Text('ordered_items'.tr, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 12),
+              ...widget.order.lineItems.map((item) => _buildOrderItem(context, item)),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
             ],
           ),
         ),
       ),
+<<<<<<< HEAD
        bottomNavigationBar: _buildBottomActions(context),
+=======
+      bottomNavigationBar: _buildBottomActions(context),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     );
   }
 
@@ -101,7 +148,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.image),
+<<<<<<< HEAD
               title:  Text('save_as_image'.tr),
+=======
+              title: Text('save_as_image'.tr),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
               onTap: () {
                 Navigator.pop(context);
                 _captureAndSaveImage();
@@ -109,7 +160,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.picture_as_pdf),
+<<<<<<< HEAD
               title:  Text('save_as_pdf'.tr),
+=======
+              title: Text('save_as_pdf'.tr),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
               onTap: () {
                 Navigator.pop(context);
                 _generateAndSavePdf();
@@ -117,7 +172,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.share),
+<<<<<<< HEAD
               title:  Text('share_order'.tr),
+=======
+              title: Text('share_order'.tr),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
               onTap: () {
                 Navigator.pop(context);
                 _shareOrder();
@@ -154,6 +213,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       final pdf = pw.Document();
       final image = await _screenshotController.capture();
       
+<<<<<<< HEAD
       pdf.addPage(
         pw.Page(
           build: (pw.Context context) {
@@ -174,6 +234,30 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${'pdf_saved_at'.tr} ${file.path}')),
       );
+=======
+      if (image != null) {
+        pdf.addPage(
+          pw.Page(
+            build: (pw.Context context) {
+              return pw.Center(
+                child: pw.Image(
+                  pw.MemoryImage(image),
+                  fit: pw.BoxFit.contain,
+                ),
+              );
+            },
+          ),
+        );
+
+        final directory = await getApplicationDocumentsDirectory();
+        final file = File('${directory.path}/order_${widget.order.id}.pdf');
+        await file.writeAsBytes(await pdf.save());
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${'pdf_saved_at'.tr} ${file.path}')),
+        );
+      }
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${'failed_to_generate_pdf'.tr}: $e')),
@@ -191,7 +275,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       await File(imagePath).writeAsBytes(image);
 
       await Share.shareXFiles(
+<<<<<<< HEAD
        [ XFile(imagePath)],
+=======
+        [XFile(imagePath)],
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
         text: '${'here_are_my_order_details'.tr} #${widget.order.id}',
         subject: 'order_details'.tr,
       );
@@ -202,7 +290,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     }
   }
 
+<<<<<<< HEAD
 Widget _buildStatusCard(BuildContext context) {
+=======
+  Widget _buildStatusCard(BuildContext context) {
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     return Card(
       elevation: 0,
       color: _getStatusColor(widget.order.status).withOpacity(0.1),
@@ -293,7 +385,13 @@ Widget _buildStatusCard(BuildContext context) {
     );
   }
 
+<<<<<<< HEAD
   Widget _buildAddressCard(BuildContext context,{required ShippingInfo shipping,required String title,required BillingInfo billing}) {
+=======
+  Widget _buildAddressCard(BuildContext context, {required ShippingInfo shipping, required String title, required BillingInfo billing}) {
+    final orderId = billing.email.replaceAll('@gmail.com', '');
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -312,6 +410,7 @@ Widget _buildStatusCard(BuildContext context) {
                   ),
             ),
             const SizedBox(height: 8),
+<<<<<<< HEAD
             Text(
               '${shipping.firstName} ${shipping.lastName}',
               style: Theme.of(context).textTheme.bodyMedium,
@@ -332,6 +431,39 @@ Widget _buildStatusCard(BuildContext context) {
               ),
             ),
             if (shipping.address2.isNotEmpty)
+=======
+            if (title == 'shipping'.tr && shipping.firstName.isNotEmpty) ...[
+              Text(
+                '${shipping.firstName} ${shipping.lastName}',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+            if (title == 'billing'.tr && billing.firstName.isNotEmpty) ...[
+              Text(
+                '${billing.firstName} ${billing.lastName}',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+            if (title == 'shipping'.tr && shipping.company.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  '${'shipping_company'.tr}: ${shipping.company}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ],
+            if (title == 'shipping'.tr && shipping.address1.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  shipping.address1,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ],
+            if (title == 'shipping'.tr && shipping.address2.isNotEmpty) ...[
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(
@@ -339,6 +471,7 @@ Widget _buildStatusCard(BuildContext context) {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
+<<<<<<< HEAD
             Padding(
               padding: const EdgeInsets.only(top: 4),
               child: Text(
@@ -354,6 +487,42 @@ Widget _buildStatusCard(BuildContext context) {
               ),
             ),
             if (shipping.phone.isNotEmpty)
+=======
+            ],
+            if (title == 'shipping'.tr && shipping.city.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  '${shipping.city}, ${shipping.state} ${shipping.postcode}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  shipping.country,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ],
+            if (title == 'billing'.tr && billing.city.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  '${billing.city}, ${billing.state} ${billing.postcode}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  billing.country,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ],
+            if (title == 'shipping'.tr && shipping.phone.isNotEmpty) ...[
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
@@ -361,6 +530,7 @@ Widget _buildStatusCard(BuildContext context) {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
+<<<<<<< HEAD
             if (title == 'billing'.tr && billing.email.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
@@ -369,6 +539,37 @@ Widget _buildStatusCard(BuildContext context) {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
+=======
+            ],
+
+            if (title == 'billing'.tr && billing.phone.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  '${'phone'.tr}: ${billing.phone}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ],
+                  if (title == 'billing'.tr && billing.company.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                 '${'billing_company'.tr}: ${billing.company}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ],
+            if (title == 'billing'.tr && billing.email.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  '${'order_id'.tr}: $orderId',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ],
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
           ],
         ),
       ),
@@ -376,6 +577,13 @@ Widget _buildStatusCard(BuildContext context) {
   }
 
   Widget _buildPaymentCard(BuildContext context) {
+<<<<<<< HEAD
+=======
+    final datePaid = widget.order.datePaid != null && widget.order.datePaid!.isNotEmpty
+        ? DateTime.tryParse(widget.order.datePaid!)
+        : DateTime.now();
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -407,7 +615,11 @@ Widget _buildStatusCard(BuildContext context) {
                   ),
                   const SizedBox(height: 4),
                   Text(
+<<<<<<< HEAD
                     '${'paid_on'.tr} ${DateFormat('MMM dd, yyyy').format(DateTime.tryParse(widget.order.datePaid ?? '') ?? DateTime.now())}',
+=======
+                    '${'paid_on'.tr} ${DateFormat('MMM dd, yyyy').format(datePaid!)}',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
@@ -473,7 +685,11 @@ Widget _buildStatusCard(BuildContext context) {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
+<<<<<<< HEAD
                         '${widget.order.currency}${item.price.toStringAsFixed(2)}',
+=======
+                        '${widget.order.currency}${item.price.toStringAsFixed(2) ?? "0.00"}',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -524,7 +740,11 @@ Widget _buildStatusCard(BuildContext context) {
           Expanded(
             child: ElevatedButton(
               onPressed: () {
+<<<<<<< HEAD
              showHelpOptions(email: 'katendeshema@gmail.com',phone: '250781699866');
+=======
+                showHelpOptions(email: 'katendeshema@gmail.com', phone: '250781699866');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -533,9 +753,15 @@ Widget _buildStatusCard(BuildContext context) {
                 ),
                 backgroundColor: Theme.of(context).primaryColor,
               ),
+<<<<<<< HEAD
               child:  Text(
                 'need_help'.tr,
                 style: TextStyle(color: Colors.white),
+=======
+              child: Text(
+                'need_help'.tr,
+                style: const TextStyle(color: Colors.white),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
               ),
             ),
           ),
@@ -569,5 +795,8 @@ Widget _buildStatusCard(BuildContext context) {
         return Colors.grey;
     }
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 }

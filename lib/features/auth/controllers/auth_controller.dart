@@ -137,11 +137,19 @@ class AuthController extends GetxController implements GetxService {
       _isLoading = true;
       update();
       Response response = await authRepo.checkPhoneNumber(phoneNumber: phone);
+<<<<<<< HEAD
    print('yet to be done for configuration$phone++++++++++++|${response.body}');
       if(response.statusCode == 200){
          print('ready for configuration++++++++++++|${response.body}');
         if(!Get.find<SplashController>().configModel!.phoneVerification!) {
            print('verification++++++++++++|${response.body}');
+=======
+  //  print('yet to be done for configuration$phone++++++++++++|${response.body}');
+      if(response.statusCode == 200){
+        //  print('ready for configuration++++++++++++|${response.body}');
+        if(!Get.find<SplashController>().configModel!.phoneVerification!) {
+          //  print('verification++++++++++++|${response.body}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
           // requestCameraPermission(fromEditProfile: false);
            Get.toNamed(RouteHelper.getOtherInformationRoute());
         }else if(response.body['otp'] == "active"){
@@ -159,7 +167,11 @@ class AuthController extends GetxController implements GetxService {
 
         String? countryCode = phoneNumber.countryCode;
         String? nationalNumber = numberWithCountryCode.replaceAll(countryCode, '');
+<<<<<<< HEAD
               print('We have completed the registration: $nationalNumber++++++++++++${response.body}');
+=======
+              // print('We have completed the registration: $nationalNumber++++++++++++${response.body}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
         authRepo.setBiometric(false);
         Get.offNamed(RouteHelper.getLoginRoute(countryCode: countryCode,phoneNumber: nationalNumber));
 
@@ -280,10 +292,17 @@ Future<Response>  login({String? code, String? phone, String? password}) async {
   update();
 
   try {
+<<<<<<< HEAD
     print('Attempting login with phone: $phone | $password | $code');
     Response response = await authRepo.login(phone: phone, password: password, dialCode: code);
     
     print('Raw API response: ${response.body}');
+=======
+    // print('Attempting login with phone: $phone | $password | $code');
+    Response response = await authRepo.login(phone: phone, password: password, dialCode: code);
+    
+    // print('Raw API response: ${response.body}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   
 
     final responseBody = response.body;
@@ -329,16 +348,26 @@ Future<Response>  login({String? code, String? phone, String? password}) async {
     );
     
   } on FormatException catch (e) {
+<<<<<<< HEAD
     print('Format Exception: $e');
     showCustomSnackBarHelper('Unknown error occurred 3: $e',
+=======
+    // print('Format Exception: $e');
+    showCustomSnackBarHelper('Unknown error occurred : ',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
           isError: true);
     return Response(
       statusCode: 500,
       statusText: 'Invalid response format from server'
     );
   } on Exception catch (e) {
+<<<<<<< HEAD
     print('Login Exception: $e');
      showCustomSnackBarHelper('Login Exception4: $e',
+=======
+    print('Login Exception: ');
+     showCustomSnackBarHelper('Login Exception4: ',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
           isError: true);
     return Response(
       statusCode: 500,

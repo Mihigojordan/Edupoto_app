@@ -26,6 +26,10 @@ import 'package:hosomobile/features/home/screens/upgrades/home/home_screen_updat
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/school_payments/add_account.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/student_add_info.dart';
 import 'package:hosomobile/features/home/screens/upgrades/input_fields/edupay/components/tereka_asome/tereka_asome.dart';
+<<<<<<< HEAD
+=======
+import 'package:hosomobile/features/home/screens/upgrades/no_connection/no_connection.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/features/school/controllers/school_list_controller.dart';
 import 'package:hosomobile/features/school/screens/school_list_screen.dart';
 import 'package:hosomobile/features/splash/controllers/splash_controller.dart';
@@ -61,7 +65,11 @@ class _StudentWidgetState extends State<StudentWidget> {
   int? classId;
   int? schoolId;
   bool isAddAccount = false;
+<<<<<<< HEAD
   bool isNotRegStudent=false;
+=======
+  bool isNotRegStudent = false;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   final _formKey = GlobalKey<FormState>(); // Form key for validation
 
   TextEditingController studentEditingController = TextEditingController();
@@ -83,8 +91,13 @@ class _StudentWidgetState extends State<StudentWidget> {
     });
   }
 
+<<<<<<< HEAD
   setIsNotRegStudent(){
        setState(() {
+=======
+  setIsNotRegStudent() {
+    setState(() {
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       isNotRegStudent = !isNotRegStudent;
     });
   }
@@ -293,6 +306,7 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                   studentController
                                                       .studentList!.isEmpty) {
                                                 //  if (selectedStudent == null) {
+<<<<<<< HEAD
                                          
                                                   if (index == 0) {
                                                            if (studentController
@@ -302,6 +316,23 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                         .studentList!.isEmpty) {
                                                   setIsNotRegStudent();
                                                 } else {
+=======
+
+                                                if (index == 0) {
+                                                  if (studentController
+                                                              .studentList ==
+                                                          null ||
+                                                      studentController
+                                                          .studentList!
+                                                          .isEmpty) {
+                                                    setIsNotRegStudent();
+                                                  } else {
+                                                    Get.find<
+                                                            SchoolListController>()
+                                                        .getSchoolListData(1,
+                                                            reload: true,
+                                                            schoolId: 0);
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                                     Get.to(
                                                       SchoolListScreen(
                                                         studentController:
@@ -325,6 +356,7 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                         classId: 0,
                                                       ),
                                                     );
+<<<<<<< HEAD
                                                 }
                                                   } else {
                                                     // Safe user data access
@@ -381,6 +413,65 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                     );
                                                   }
                                                
+=======
+                                                  }
+                                                } else {
+                                                  // Safe user data access
+                                                  final userData =
+                                                      Get.find<AuthController>()
+                                                          .getUserData();
+                                                  Get.to(const NoConnection());
+
+                                                  // Get.to(
+                                                  //   TerekaAsome(
+                                                  //       studentCode: '',
+                                                  //       studentName: '',
+                                                  //       studentClass: '',
+                                                  //       studentSchool: '',
+                                                  //       productId: edubox.id,
+                                                  //       studentId: 0,
+                                                  //       schoolId: 0,
+                                                  //       classId: 0,
+                                                  //       contactModelMtn:
+                                                  //           ContactModelMtn(
+                                                  //         phoneNumber:
+                                                  //             '${userData?.countryCode}${userData?.phone}' ??
+                                                  //                 '',
+                                                  //         name:
+                                                  //             '${userData?.name}',
+                                                  //       ),
+                                                  //       transactionType:
+                                                  //           TransactionType
+                                                  //               .sendMoney,
+                                                  //       contactModel:
+                                                  //           ContactModel(
+                                                  //         phoneNumber:
+                                                  //             '${userData?.countryCode}${userData?.phone}' ??
+                                                  //                 '',
+                                                  //         name:
+                                                  //             '${userData?.name}',
+                                                  //         avatarImage:
+                                                  //             '${Get.find<SplashController>().configModel!.baseUrls!.customerImageUrl}/${'image' ?? ''}',
+                                                  //       ),
+                                                  //       studentIndex: 0,
+                                                  //       productValue:
+                                                  //           productValueList[
+                                                  //                   index]
+                                                  //               [
+                                                  //               'action'], // Dynamic value
+                                                  //       productIndex: index,
+                                                  //       iconImages:
+                                                  //           "${AppConstants.baseUrl}/storage/app/public/edupoto_product/$titleImage", // Adjust icon logic
+                                                  //       edubox_service:
+                                                  //           productValueList[
+                                                  //                   index]
+                                                  //               ['action'],
+                                                  //       parent:
+                                                  //           userData?.name),
+                                                  // );
+                                                }
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                                 // }
                                               } else {
                                                 final student =
@@ -417,10 +508,20 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                       studentController
                                                           .studentList!
                                                           .isEmpty) {
+<<<<<<< HEAD
 
                                                   setIsNotRegStudent();
 
                                                   } else {
+=======
+                                                    setIsNotRegStudent();
+                                                  } else {
+                                                    Get.find<
+                                                            SchoolListController>()
+                                                        .getSchoolListData(1,
+                                                            reload: true,
+                                                            schoolId: schoolId);
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                                     Get.to(
                                                       SchoolListScreen(
                                                         studentController:
@@ -455,6 +556,7 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                       userData?.phone ?? '';
                                                   final name =
                                                       userData?.name ?? '';
+<<<<<<< HEAD
 
                                                   Get.to(
                                                     TerekaAsome(
@@ -516,6 +618,69 @@ class _StudentWidgetState extends State<StudentWidget> {
                                                                 ['action'],
                                                         parent: userData?.name),
                                                   );
+=======
+                                                  Get.to(const NoConnection());
+                                                  // Get.to(
+                                                  //   TerekaAsome(
+                                                  //       studentClass: student
+                                                  //           .studentClass,
+                                                  //       studentSchool: student
+                                                  //           .school,
+                                                  //       studentCode: student
+                                                  //           .code,
+                                                  //       studentName: student
+                                                  //           .name,
+                                                  //       productId: edubox.id,
+                                                  //       studentId:
+                                                  //           studentController
+                                                  //               .studentList![0]
+                                                  //               .id,
+                                                  //       schoolId:
+                                                  //           studentController
+                                                  //               .studentList![0]
+                                                  //               .schoolId!,
+                                                  //       classId:
+                                                  //           studentController
+                                                  //               .studentList![0]
+                                                  //               .classId!,
+                                                  //       contactModelMtn:
+                                                  //           ContactModelMtn(
+                                                  //         phoneNumber:
+                                                  //             '${userData?.countryCode}${userData?.phone}' ??
+                                                  //                 '',
+                                                  //         name:
+                                                  //             '${userData?.name}',
+                                                  //       ),
+                                                  //       transactionType:
+                                                  //           TransactionType
+                                                  //               .sendMoney,
+                                                  //       contactModel:
+                                                  //           ContactModel(
+                                                  //         phoneNumber:
+                                                  //             '${userData?.countryCode}${userData?.phone}' ??
+                                                  //                 '',
+                                                  //         name:
+                                                  //             '${userData?.name}',
+                                                  //         avatarImage:
+                                                  //             '${Get.find<SplashController>().configModel!.baseUrls!.customerImageUrl}/${'image' ?? ''}',
+                                                  //       ),
+                                                  //       studentIndex:
+                                                  //           selectedIndex,
+                                                  //       productValue:
+                                                  //           productValueList[
+                                                  //                   index]
+                                                  //               [
+                                                  //               'action'], // Dynamic value
+                                                  //       productIndex: index,
+                                                  //       iconImages:
+                                                  //           "${AppConstants.baseUrl}/storage/app/public/edupoto_product/$titleImage", // Adjust icon logic
+                                                  //       edubox_service:
+                                                  //           productValueList[
+                                                  //                   index]
+                                                  //               ['action'],
+                                                  //       parent: userData?.name),
+                                                  // );
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                                 }
                                               }
                                             },
@@ -914,7 +1079,10 @@ class _StudentWidgetState extends State<StudentWidget> {
             ],
           ),
         ),
+<<<<<<< HEAD
 
+=======
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
         Container(
             // margin: const EdgeInsets.only(top: 100),
             padding: const EdgeInsets.all(8.0),
@@ -932,6 +1100,7 @@ class _StudentWidgetState extends State<StudentWidget> {
             ),
             clipBehavior: Clip.antiAlias,
             //******************Row Button ************************/
+<<<<<<< HEAD
             child: isNotRegStudent==true?
                   
                   DependentSchoolDropdowns(
@@ -1049,6 +1218,124 @@ class _StudentWidgetState extends State<StudentWidget> {
                       ),
                     ],
                   )),
+=======
+            child: isNotRegStudent == true
+                ? DependentSchoolDropdowns(
+                    onInputStudent: (
+                        {required schoolName,
+                        required className,
+                        required studentName,
+                        required studentCode,
+                        required schoolId}) {
+                      Get.find<SchoolListController>()
+                          .getSchoolListData(1, reload: true, schoolId: schoolId);
+                      Get.to(
+                        SchoolListScreen(
+                          studentController: studentController,
+                          studentIndex: selectedIndex,
+                          studentCode: studentCodeEditingController.text,
+                          shipper: 'shipper',
+                          homePhone: 'homePhone',
+                          destination: 'destination',
+                          studentName: studentNameEditingController.text,
+                          className: className,
+                          schoolName: schoolName,
+                          schoolId: schoolId,
+                          studentId: 0,
+                          classId: 0,
+                        ),
+                      );
+                    },
+                    isShop: false,
+                    studentController: studentController,
+                    isAddAccount: false,
+                    isNotRegStudent: true)
+                : isAddAccount == true
+                    ? addAccount(
+                        studentRegController: studentRegistrationController,
+                        studentController: studentController,
+                        eduboxController: eduboxController,
+                      )
+                    : Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              'dear_parent_you_can_now_add_your_student'.tr,
+                              overflow: TextOverflow.clip,
+                              textAlign: TextAlign.center,
+                              //  maxLines: 3,
+                            ),
+                          ),
+                          sizedBox10,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              BorderButton1(
+                                onPress: () => setAddAccount(),
+                                icon: (isAddAccount == true)
+                                    ? 'save'.tr
+                                    : 'add_student'.tr,
+                                title: (isAddAccount == true)
+                                    ? 'assets/icons1/save.png'
+                                    : 'assets/icons1/add_account.png',
+                                clas: '',
+                                height: 50,
+                                width: screenWidth >= 520
+                                    ? 200
+                                    : screenWidth / 1.2,
+                                borderColor: Colors.black,
+                                vertical: 5,
+                                textColor: Colors.black,
+                                horizontal: 5,
+                              ),
+                              // PartinerServices(
+                              //   borderColor: Colors.black,
+                              //   vertical: 5,
+                              //   textColor: Colors.black,
+                              //   horizontal: 5,
+                              //   onPress: () => Get.to(
+                              //     TerekaAsome(
+                              //       productId:
+                              //           eduboxController.eduboxMaterialList![6].id,
+                              //       studentId: studentController.studentList![0].id,
+                              //       schoolId:
+                              //           studentController.studentList![0].schoolId!,
+                              //       classId:
+                              //           studentController.studentList![0].classId!,
+                              //       contactModelMtn: ContactModelMtn(
+                              //         phoneNumber:
+                              //             '${userData?.countryCode}${userData?.phone}' ??
+                              //                 '',
+                              //         name: '${userData?.name}',
+                              //       ),
+                              //       transactionType: TransactionType.sendMoney,
+                              //       contactModel: ContactModel(
+                              //         phoneNumber:
+                              //             '${userData?.countryCode}${userData?.phone}' ??
+                              //                 '',
+                              //         name: '${userData?.name}',
+                              //         avatarImage:
+                              //             '${Get.find<SplashController>().configModel!.baseUrls!.customerImageUrl}/${'image' ?? ''}',
+                              //       ),
+                              //       studentIndex: selectedIndex,
+                              //       productValue: productValueList[0]['action'],
+                              //       productIndex: 6,
+                              //       iconImages: 'assets/image/Partner services.png',
+                              //       edubox_service: '${'save'.tr}/${'deposit'.tr}',
+                              //     ),
+                              //   ),
+                              //   height: screenHeight >= 763 ? 40 : 20,
+                              //   width: screenWidth >= 520 ? 148 : screenWidth / 2.8,
+                              //   icon: '${'save'.tr}/${'deposit'.tr}',
+                              //   title: 'assets/image/edubox_icon.png',
+                              //   clas: '',
+                              // )
+                            ],
+                          ),
+                        ],
+                      )),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       ],
     );
   }
@@ -1121,6 +1408,7 @@ class _StudentWidgetState extends State<StudentWidget> {
                 vertical: 5,
                 textColor: Colors.black,
                 horizontal: 5,
+<<<<<<< HEAD
                 onPress: () => Get.to(
                   TerekaAsome(
                     productId: eduboxController.eduboxMaterialList![6].id,
@@ -1147,6 +1435,35 @@ class _StudentWidgetState extends State<StudentWidget> {
                     edubox_service: 'SAVE/DEPOSIT',
                   ),
                 ),
+=======
+                onPress: () => Get.to(const NoConnection()),
+                //  Get.to(
+                //   TerekaAsome(
+                //     productId: eduboxController.eduboxMaterialList![6].id,
+                //     studentId: studentController.studentList![0].id,
+                //     schoolId: studentController.studentList![0].schoolId!,
+                //     classId: studentController.studentList![0].classId!,
+                //     contactModelMtn: ContactModelMtn(
+                //       phoneNumber:
+                //           '${userData?.countryCode}${userData?.phone}' ?? '',
+                //       name: '${userData?.name}',
+                //     ),
+                //     transactionType: TransactionType.sendMoney,
+                //     contactModel: ContactModel(
+                //       phoneNumber:
+                //           '${userData?.countryCode}${userData?.phone}' ?? '',
+                //       name: '${userData?.name}',
+                //       avatarImage:
+                //           '${Get.find<SplashController>().configModel!.baseUrls!.customerImageUrl}/${'image' ?? ''}',
+                //     ),
+                //     studentIndex: selectedIndex,
+                //     productValue: productValueList[0]['action'],
+                //     productIndex: 6,
+                //     iconImages: 'assets/image/Partner services.png',
+                //     edubox_service: 'SAVE/DEPOSIT',
+                //   ),
+                // ),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                 height: screenHeight >= 763 ? 40 : 20,
                 width: screenWidth >= 520 ? 148 : screenWidth / 2.8,
                 icon: 'SAVE/DEPOSIT',
@@ -1191,8 +1508,12 @@ class _StudentWidgetState extends State<StudentWidget> {
                     required schoolName,
                     required studentCode,
                     required studentName,
+<<<<<<< HEAD
                     required schoolId
                     }) {},
+=======
+                    required schoolId}) {},
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                 isShop: false,
                 isNotRegStudent: isRegStudent ?? false,
                 isAddAccount: isAddAccount,

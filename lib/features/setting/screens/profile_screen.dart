@@ -206,15 +206,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             transactionTableModelList: transactionTableModelList,
                           )),
                         ),
+<<<<<<< HEAD
                       CustomInkWellWidget(
                         child: widget.MenuItem(image: Images.pinChangeLogo, title: 'change_pin'.tr),
                         onTap: () => Get.toNamed(RouteHelper.getChangePinRoute()),
                       ),
+=======
+                      // CustomInkWellWidget(
+                      //   child: widget.MenuItem(image: Images.pinChangeLogo, title: 'change_pin'.tr),
+                      //   onTap: () => Get.toNamed(RouteHelper.getChangePinRoute()),
+                      // ),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                       if (AppConstants.languages.length > 1)
                         CustomInkWellWidget(
                           child: widget.MenuItem(image: Images.languageLogo, title: 'change_language'.tr),
                           onTap: () => Get.toNamed(RouteHelper.getChoseLanguageRoute()),
                         ),
+<<<<<<< HEAD
                       if (Get.find<SplashController>().configModel!.twoFactor!)
                         GetBuilder<ProfileController>(
                           builder: (profileController) {
@@ -232,6 +240,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           leading: SizedBox(width: 25, child: Image.asset(Images.fingerprint)),
                           isAuth: true,
                         ),
+=======
+                      // if (Get.find<SplashController>().configModel!.twoFactor!)
+                      //   GetBuilder<ProfileController>(
+                      //     builder: (profileController) {
+                      //       return profileController.isLoading
+                      //           ? const TwoFactorShimmer()
+                      //           : StatusMenu(
+                      //               title: 'two_factor_authentication'.tr,
+                      //               leading: Image.asset(Images.twoFactorAuthentication, width: 28.0),
+                      //             );
+                      //     },
+                      //   ),
+                      // if (authController.isBiometricSupported)
+                      //   StatusMenu(
+                      //     title: 'biometric_login'.tr,
+                      //     leading: SizedBox(width: 25, child: Image.asset(Images.fingerprint)),
+                      //     isAuth: true,
+                      //   ),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                       if (splashController.configModel?.selfDelete == true)
                         CustomInkWellWidget(
                           child: widget.MenuItem(
@@ -261,6 +288,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             );
                           },
                         ),
+<<<<<<< HEAD
                       GetBuilder<ProfileController>(
                         builder: (profileController) {
                           return Container(
@@ -297,6 +325,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           );
                         },
                       )
+=======
+                      // GetBuilder<ProfileController>(
+                      //   builder: (profileController) {
+                      //     return Container(
+                      //       padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall),
+                      //       child: Row(
+                      //         children: [
+                      //           Padding(
+                      //             padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+                      //             child: Image.asset(Images.changeTheme, width: Dimensions.fontSizeOverOverLarge),
+                      //           ),
+                      //           Text('dark_mode'.tr, style: rubikRegular.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                      //           const Spacer(),
+                      //           InkWell(
+                      //             splashColor: Colors.transparent,
+                      //             highlightColor: Colors.transparent,
+                      //             onTap: () => profileController.onChangeTheme(),
+                      //             child: Transform.scale(
+                      //               scale: 1,
+                      //               child: Switch(
+                      //                 onChanged: (_) {
+                      //                   profileController.onChangeTheme();
+                      //                 },
+                      //                 value: profileController.isSwitched,
+                      //                 activeColor: Theme.of(context).primaryColor,
+                      //                 activeTrackColor: Colors.white,
+                      //                 inactiveThumbColor: Theme.of(context).primaryColor,
+                      //                 inactiveTrackColor: Colors.black26,
+                      //               ),
+                      //             ),
+                      //           ),
+                      //           const SizedBox(width: Dimensions.paddingSizeSmall),
+                      //         ],
+                      //       ),
+                      //     );
+                      //   },
+                      // )
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                     ],
                   ),
                   ProfileHeader(title: 'support'.tr),

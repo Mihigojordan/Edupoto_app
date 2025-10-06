@@ -18,6 +18,7 @@ class StudentRegistrationRepo {
     return await apiClient.getData(AppConstants.customerPurposeUrl );
   }
 
+<<<<<<< HEAD
   Future<Response>  sendMoneyApi({required String? phoneNumber, required double amount,required String? purpose,required String? pin }) async {
     return await apiClient.postData(AppConstants.customerSendMoney,{'phone': phoneNumber, 'amount': amount, 'purpose':purpose, 'pin': pin});
   }
@@ -25,6 +26,20 @@ class StudentRegistrationRepo {
    Future<Response>  makePaymentApi({required int? studentId, required double amount,required double? totalAmount,required double charge,required int productId,required int productType,required String phoneNumber,required double balance }) async {
     return await apiClient.postData(AppConstants.paymentHistory,{'student_id': studentId, 'amount': amount, 'total_amount':totalAmount, 'charge': charge, 'product_id':productId,'product_type':productType,'phone_number':phoneNumber,'balance':balance});
   }
+=======
+  // Future<Response>  sendMoneyApi({required String? phoneNumber, required double amount,required String? purpose,required String? pin }) async {
+  //   return await apiClient.postData(AppConstants.customerSendMoney,{'phone': phoneNumber, 'amount': amount, 'purpose':purpose, 'pin': pin});
+  // }
+
+  //  Future<Response>  traApi({required String? phoneNumber, required double amount,required String? purpose,required String? pin }) async {
+  //   return await apiClient.postData(AppConstants.customerSendMoney,{'phone': phoneNumber, 'amount': amount, 'purpose':purpose, 'pin': pin});
+  // }
+
+
+  //  Future<Response>  makePaymentApi({required int? studentId, required double amount,required double? totalAmount,required double charge,required int productId,required int productType,required String phoneNumber,required double balance }) async {
+  //   return await apiClient.postData(AppConstants.paymentHistory,{'student_id': studentId, 'amount': amount, 'total_amount':totalAmount, 'charge': charge, 'product_id':productId,'product_type':productType,'phone_number':phoneNumber,'balance':balance});
+  // }
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
   Future<Response>  requestMoneyApi({required String? phoneNumber, required double amount}) async {
     return await apiClient.postData(AppConstants.customerRequestMoney,  {'phone' : phoneNumber, 'amount' : amount});

@@ -5,6 +5,10 @@ import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/common/widgets/custom_back_button_widget.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/components/image.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
+<<<<<<< HEAD
+=======
+import 'package:hosomobile/features/home/screens/upgrades/no_connection/no_connection.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/features/school_directory/widgets/single_school_directory_screen.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -321,6 +325,7 @@ Widget build(BuildContext context) {
                 _buildListTile(
                   icon: Icons.message,
                   title: '${'parent'.tr} (${'from_the_director'.tr})',
+<<<<<<< HEAD
                   onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'headteacher_messages'.tr)),
                 ),
                 _buildListTile(
@@ -333,6 +338,21 @@ Widget build(BuildContext context) {
                   title: 'requirements_list'.tr,
                   onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'school_requirements'.tr)),
                 ),
+=======
+                  onTap: () =>Get.to(const NoConnection()),
+                  //  Get.to( SingleSchoolDirectoryScreen(title: 'headteacher_messages'.tr)),
+                ),
+                // _buildListTile(
+                //   icon: Icons.account_balance_wallet,
+                //   title: 'school_burser'.tr,
+                //   onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'school_burser'.tr)),
+                // ),
+                // _buildListTile(
+                //   icon: Icons.list_alt,
+                //   title: 'requirements_list'.tr,
+                //   onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'school_requirements'.tr)),
+                // ),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                 _buildListTile(
                   icon: Icons.school,
                   title: 'school_prospectus'.tr,
@@ -348,11 +368,19 @@ Widget build(BuildContext context) {
                   title: 'admissions'.tr,
                   onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'admissions'.tr)),
                 ),
+<<<<<<< HEAD
                 _buildListTile(
                   icon: Icons.download,
                   title: '${'download'.tr}s (Reports, Bankslip)',
                   onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'download'.tr)),
                 ),
+=======
+                // _buildListTile(
+                //   icon: Icons.download,
+                //   title: '${'download'.tr}s (Reports, Bankslip)',
+                //   onTap: () => Get.to( SingleSchoolDirectoryScreen(title: 'download'.tr)),
+                // ),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
               ],
             ),
           ),

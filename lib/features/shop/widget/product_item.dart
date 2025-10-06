@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hosomobile/common/widgets/custom_image_widget.dart';
 import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
+<<<<<<< HEAD
 import 'package:hosomobile/features/shop/screen/prduct_detail_screen.dart';
+=======
+import 'package:hosomobile/features/shop/screen/product_detail_screen.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/images.dart';
 

@@ -28,10 +28,17 @@ class NoDataFoundWidget extends StatelessWidget {
 
           const SizedBox(height: Dimensions.paddingSizeExtraSmall),
           Text(
+<<<<<<< HEAD
              'no_data_found'.tr, textAlign: TextAlign.center, style: rubikRegular,
           ),
           const SizedBox(height: 40),
          DefaultButtonWidth(onPress: ()=>Get.to(const ShoppingScreen()), title: 'continue_shopping'.tr, color1: kyellow800Color, color2: kamber300Color, width: 150)
+=======
+             'babyeyi_school_is_being_prepared'.tr, textAlign: TextAlign.center, style: rubikRegular,
+          ),
+          const SizedBox(height: 40),
+         DefaultButtonWidth(onPress: ()=>Get.to(const ShoppingScreen()), title: 'continue_shopping'.tr, color1: kyellow800Color, color2: kamber300Color, width: 250,fontSize: 16,)
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
         ],
       ),
     ),

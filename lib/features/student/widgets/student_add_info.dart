@@ -268,7 +268,11 @@ class _HomeCard2State extends State<HomeCard2> {
         orderLists = json.decode(response.body)['ads'];
         isLoading = true;
       });
+<<<<<<< HEAD
       print('wayaa: $orderLists');
+=======
+      // print('wayaa: $orderLists');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     } else {
       print('fail');
     }

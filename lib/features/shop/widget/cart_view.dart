@@ -110,7 +110,12 @@ class _CartViewState extends State<CartView> {
           ),
           // Total Amount and Checkout Button
           Container(
+<<<<<<< HEAD
             padding: const EdgeInsets.all(16.0),
+=======
+            padding: const EdgeInsets.only(left:16.0,right: 16.0,top: 16.0,bottom: 60.0),
+            
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
             decoration: BoxDecoration(
               color: Colors.grey[200],
               borderRadius:

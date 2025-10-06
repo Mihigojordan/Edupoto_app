@@ -245,12 +245,25 @@ class _MzaziScreenState extends State<MzaziScreen> {
                                     vertical: screenHeight * 0.005,
                                     textColor: kTextBlackColor,
                                     horizontal: screenWidth * 0.025,
+<<<<<<< HEAD
                                     onPress: () => Get.to(AddAccount(
                                           isDirectory: true,
                                           productIndex: 0,
                                           iconImages:
                                               "${AppConstants.baseUrl}/storage/app/public/edupoto_product/titleImage",
                                         )),
+=======
+                                    onPress: () => Get.to(const NoConnection()),
+                                    
+                                    // Get.to(
+                                      
+                                    //   AddAccount(
+                                    //       isDirectory: true,
+                                    //       productIndex: 0,
+                                    //       iconImages:
+                                    //           "${AppConstants.baseUrl}/storage/app/public/edupoto_product/titleImage",
+                                    //     )),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                     height: screenHeight * 0.05,
                                     width: screenWidth * 0.30,
                                     icon:
@@ -460,7 +473,11 @@ class _BottomNavState extends State<BottomNav> {
 
   String getItem = '';
   void getBottomnavItem() async {
+<<<<<<< HEAD
     print('dah $getItem');
+=======
+    // print('dah $getItem');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   }
 
   bool? isUserLoggedIn = false;

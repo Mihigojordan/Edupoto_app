@@ -12,6 +12,10 @@ import 'package:hosomobile/features/transaction_money/controllers/transaction_co
 import 'package:hosomobile/features/transaction_money/domain/enums/suggest_type_enum.dart';
 import 'package:hosomobile/helper/custom_snackbar_helper.dart';
 import 'package:hosomobile/helper/normalize_phone_number.dart';
+<<<<<<< HEAD
+=======
+import 'package:hosomobile/util/app_constants.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/util/color_resources.dart';
 import 'package:hosomobile/util/dimensions.dart';
 import 'package:hosomobile/util/images.dart';
@@ -41,8 +45,11 @@ class PsPaymentMethodSelector extends StatefulWidget {
   final List<SchoolLists> product_list;
   final String product_name;
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   PsPaymentMethodSelector({
     super.key,
     required this.transactionMoneyController,
@@ -81,7 +88,11 @@ class _PaymentMethodSelectorState extends State<PsPaymentMethodSelector> {
   final TextEditingController _inputAmountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+<<<<<<< HEAD
  double calculateServiceCharge(double amount) {
+=======
+  double calculateServiceCharge(double amount) {
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     return (amount * 4.0) / 100;
   }
 
@@ -272,6 +283,7 @@ class _PaymentMethodSelectorState extends State<PsPaymentMethodSelector> {
     );
   }
 
+<<<<<<< HEAD
 Widget _confirmationButton() {
   return Column(
     children: [
@@ -433,6 +445,292 @@ void _handleSuccessfulPayment() async {
   }
 }
 
+=======
+  Widget _confirmationButton() {
+    return Column(
+      children: [
+        const SizedBox(height: 40.0),
+        const Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+          child: Divider(height: Dimensions.dividerSizeSmall),
+        ),
+        sizedBox10,
+        widget.transactionMoneyController.isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).textTheme.titleLarge!.color,
+                ),
+              )
+            : Column(
+                children: [
+                  // Regular button for tap
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Dimensions.paddingSizeLarge),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).secondaryHeaderColor,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            if (_selectedMethod == 0 &&
+                                _selectedMobileProvider == null) {
+                              print(
+                                  'ssssssssssssssssssssssssssss $_selectedMethod | $_selectedMobileProvider');
+                              showCustomSnackBarHelper(
+                                  'please_select_mobile_money_provider'.tr,
+                                  isError: true);
+
+                              return;
+                            }
+                            if (_selectedMethod == 2 &&
+                                _selectedBankProvider == null) {
+                              showCustomSnackBarHelper('please_select_bank'.tr,
+                                  isError: true);
+
+                              return;
+                            }
+
+                            final paymentDetails = _selectedMethod == 0
+                                ? _phoneController.text
+                                : _cardController.text;
+
+                            final method = _selectedMethod == 0
+                                ? 'mobile_money'.tr
+                                : _selectedMethod == 1
+                                    ? 'card'.tr
+                                    : 'bank'.tr;
+
+                            String? provider;
+                            if (_selectedMethod == 0) {
+                              provider = _selectedMobileProvider == 0
+                                  ? 'MTN'
+                                  : 'Airtel';
+                            } else if (_selectedMethod == 2) {
+                              provider = 'BK';
+                            }
+                            showCustomSnackBarHelper(
+                              'Processing payment... Please wait.',
+                              isError: false,
+                            );
+                            // Initiate payment
+                            await widget.mtnMomoApiClient.postMtnMomo(
+                              transactionId: widget.randomNumber.toString(),
+                              amount: double.parse(_inputAmountController.text)
+                                  .toInt()
+                                  .toString(),
+                              message:
+                                  'You have paid for ${widget.edubox_service}'
+                                 ' ${widget.edubox_service}, ${'vat'.tr} ${'inclusive'.tr}, ',
+                                  // VAT Inc, ${calculateServiceCharge(double.parse(_inputAmountController.text))} RWF Convinience fee',
+                              phoneNumber: normalizeRwandaPhoneNumber(
+                                  _phoneController.text),
+                            );
+
+                            // Start polling for payment status
+                            _pollPaymentStatus();
+                          }
+                        },
+                        child: Text(
+                          'pay_now'.tr,
+                          style: rubikRegular.copyWith(
+                            fontSize: Dimensions.paddingSizeLarge,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  // Swipe confirmation
+                  // ConfirmationSlider(
+                  //   height: 60.0,
+                  //   backgroundColor: ColorResources.getGreyBaseGray6(),
+                  //   text: 'swipe_to_pay'.tr,
+                  //   textStyle: rubikRegular.copyWith(
+                  //       fontSize: Dimensions.paddingSizeLarge),
+                  //   shadow: const BoxShadow(),
+                  //   sliderButtonContent: Container(
+                  //     padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                  //     decoration: BoxDecoration(
+                  //       color: Theme.of(context).secondaryHeaderColor,
+                  //       shape: BoxShape.circle,
+                  //     ),
+                  //     child: Image.asset(Images.slideRightIcon),
+                  //   ),
+                  //   onConfirmation: () async {
+                  //     await _initiatePayment();
+                  //   },
+                  // ),
+                ],
+              ),
+      ],
+    );
+  }
+
+  void _pollPaymentStatus() async {
+    const maxAttempts = 10; // Maximum number of polling attempts
+    const interval = Duration(seconds: 3); // Poll every 3 seconds
+    int attempts = 0;
+    bool paymentCompleted = false;
+
+    while (attempts < maxAttempts && !paymentCompleted) {
+      await Future.delayed(interval);
+      attempts++;
+
+      try {
+        final response = await widget.mtnMomoApiClient.getMtnMomo();
+        final status = await widget.mtnMomoApiClient.getStatus();
+
+        print('Payment status check attempt $attempts: $status');
+
+        switch (status) {
+          case 'SUCCESSFUL':
+            paymentCompleted = true;
+            _handleSuccessfulPayment();
+            break;
+
+          case 'FAILED':
+            paymentCompleted = true;
+            showCustomSnackBarHelper(
+              'Payment failed: Insufficient balance or transaction declined',
+              isError: true,
+            );
+            break;
+
+          case 'PENDING':
+            // Continue polling
+            break;
+
+          default:
+            // Handle unknown status
+            paymentCompleted = true;
+            showCustomSnackBarHelper(
+              'Payment status unknown: $status',
+              isError: true,
+            );
+        }
+      } catch (e) {
+        print('Error checking payment status: $e');
+        if (attempts >= maxAttempts) {
+          showCustomSnackBarHelper(
+            'Payment verification timeout. Please check your transaction history.',
+            isError: false,
+          );
+        }
+      }
+    }
+
+    if (!paymentCompleted) {
+      showCustomSnackBarHelper(
+        'Payment verification timeout. Please check your transaction history.',
+        isError: false,
+      );
+    }
+  }
+
+  void _handleSuccessfulPayment() async {
+    final userId = Get.find<AuthController>().getUserId();
+    try {
+      if (widget.transactionType == "send_money") {
+        // Process successful payment
+        final transaction = await widget.transactionMoneyController.sendMoney(
+          contactModel: widget.contactModel,
+          amount: double.parse(_inputAmountController.text),
+          purpose: widget.purpose,
+          pinCode: widget.pinCode,
+          onSuggest: () => widget.contactController.addToSuggestContact(
+            widget.contactModel,
+            type: SuggestType.sendMoney,
+          ),
+        );
+
+  //  final transaction = await widget.transactionMoneyController
+  //           .babyeyiTransaction(
+  //               userId: int.parse(userId!),
+  //               price: double.parse(_inputAmountController.text),
+  //               totalAmount: double.parse(widget.amountToPay),
+  //               productId: widget.productId,
+  //               productType: '${widget.productId}',
+  //               balance: double.parse(widget.availableBalance),
+  //               charge: double.parse(widget.serviceCharge),
+  //               phoneNumber: _phoneController.text,
+  //               currency: AppConstants.currency,
+  //               paymentMethod: _selectedMethod == 0
+  //             ? 'mobile_money'.tr
+  //             : _selectedMethod == 1
+  //                 ? 'card'.tr
+  //                 : _selectedMethod == 2
+  //                     ? 'bank'.tr
+  //                     : 'no_method'.tr,
+  //               paymentProvider:  _selectedMobileProvider == 0
+  //             ? 'MTN'
+  //             : _selectedMobileProvider == 1
+  //                 ? 'Airtel'
+  //                 : _selectedBankProvider == 0
+  //                     ? 'BK'
+  //                     : 'no_bank'.tr,
+  //               onSuggest: () => widget.contactController.addToSuggestContact(
+  //           widget.contactModel,
+  //           type: SuggestType.sendMoney,
+  //         ),
+                
+  //               );
+
+        widget.transactionId = transaction.body['transaction_id'];
+
+        await widget.transactionMoneyController.makePayment(
+          payment_method: _selectedMethod == 0
+              ? 'Mobile Money'
+              : _selectedMethod == 1
+                  ? 'Card'
+                  : _selectedMethod == 2
+                      ? 'Bank'
+                      : 'No Method',
+          payment_media: _selectedMobileProvider == 0
+              ? 'MTN'
+              : _selectedMobileProvider == 1
+                  ? 'Airtel'
+                  : _selectedBankProvider == 0
+                      ? 'BK'
+                      : 'No Bank',
+          payment_phone: _phoneController.text,
+          product_name: widget.edubox_service,
+          parent_id: userId!,
+          product_list: widget.product_list,
+          destination: '',
+          homePhone: '',
+          shipper: '',
+          studentId: widget.studentId,
+          amount: double.parse(_inputAmountController.text),
+          totalAmount: double.parse(widget.amountToPay),
+          productType: widget.productId,
+          productId: widget.productId,
+          balance: double.parse(widget.availableBalance),
+          phoneNumber: widget.contactModel.phoneNumber!,
+          charge: double.parse(widget.serviceCharge),
+        );
+
+        showCustomSnackBarHelper('Payment successful!', isError: false);
+      }
+    } catch (e) {
+      print('Error processing successful payment: $e');
+      showCustomSnackBarHelper(
+        'Payment verification failed. Please check your transaction history.',
+        isError: true,
+      );
+    }
+  }
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   Widget _buildPaymentMethodSelector() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

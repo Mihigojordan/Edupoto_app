@@ -6,12 +6,17 @@ import 'package:hosomobile/features/shop/screen/order_detail_screen.dart';
 import 'package:hosomobile/features/shop/screen/track_order_screen.dart';
 import 'package:intl/intl.dart';
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 class ShopOrderScreen extends StatelessWidget {
   final int? customerId;
   ShopOrderScreen({
     super.key, 
     this.customerId
   });
+<<<<<<< HEAD
   // final List<OrderModel> orders = [
   //   // Your list of orders would come from your data source
   //   OrderModel(
@@ -38,11 +43,20 @@ class ShopOrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Initialize the controller and load data when screen builds
+=======
+
+  @override
+  Widget build(BuildContext context) {
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     final shopController = Get.find<ShopController>();
  
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
         title:  Text('my_orders'.tr, style: TextStyle(fontWeight: FontWeight.bold)),
+=======
+        title: Text('my_orders'.tr, style: TextStyle(fontWeight: FontWeight.bold)),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
         centerTitle: true,
         elevation: 0,
         actions: [
@@ -54,41 +68,80 @@ class ShopOrderScreen extends StatelessWidget {
       ),
       body: GetBuilder<ShopController>(
         builder: (shopController) {
+<<<<<<< HEAD
         
+=======
+          // Filter orders by customerId first
+          final filteredOrders = shopController.orderList
+              ?.where((order) => order.customerId == customerId)
+              .toList() ?? [];
+          
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
           // Show loading indicator while loading
           if (shopController.isLoading && shopController.orderList == null) {
             return Center(child: CircularProgressIndicator());
           }
           
+<<<<<<< HEAD
           // Handle empty state
           if (shopController.orderList == null || shopController.orderList!.isEmpty) {
+=======
+          // Handle empty state for filtered orders
+          if (filteredOrders.isEmpty) {
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+<<<<<<< HEAD
                   Text('no_order_found'.tr),
                   SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => shopController.getOrderList(true),
                     child: Text('retry'.tr),
                   ),
+=======
+                  Icon(Icons.shopping_bag_outlined, size: 64, color: Colors.grey[300]),
+                  SizedBox(height: 16),
+                  Text(
+                    shopController.orderList == null ? 'loading'.tr : 'no_order_found'.tr,
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                  ),
+                  SizedBox(height: 16),
+                  if (shopController.orderList != null)
+                    ElevatedButton(
+                      onPressed: () => shopController.getOrderList(true),
+                      child: Text('retry'.tr),
+                    ),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                 ],
               ),
             );
           }
           
+<<<<<<< HEAD
           return 
           Container(
+=======
+          return Container(
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
             color: Colors.grey[50],
             child: RefreshIndicator(
               onRefresh: () async => await shopController.getOrderList(true),
               child: ListView.builder(
                 padding: const EdgeInsets.only(top: 8),
+<<<<<<< HEAD
                 itemCount: shopController.orderList!.length,
                 itemBuilder: (context, index) {
                   final order = shopController.orderList![index];
                   //***********************************display order based on specific user */
                   return shopController.orderList![index].customerId==customerId? OrderCard(order: order):const SizedBox.shrink();
+=======
+                itemCount: filteredOrders.length, // Use filtered list length
+                itemBuilder: (context, index) {
+                  final order = filteredOrders[index]; // Use filtered order
+                  return OrderCard(order: order);
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                 },
               ),
             ),

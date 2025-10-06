@@ -497,7 +497,11 @@
   "school_shoes": "inkweto z'ishuri",
   "shopping_screen": "Guhaha",
   "search_products": "Shakisha ibicuruzwa",
+<<<<<<< HEAD
   "add_to_cart": "Urutonde urw'ibigurwa",
+=======
+  "add_to_cart": "Wogera kurutonde urw'ibigurwa",
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   "verify_your_identity": "Ubusobanuro bw'irangamuntu",
   "id_number": "Numero y'irangamuntu",
   "enter_your_id_number": "Injiza numero yawe y'irangamuntu",
@@ -611,8 +615,12 @@
   "amount_must_be_greater_than_zero": "Umubare ugomba kuba munini kuruta zeru",
   "inclusive": "Birimo",
   "you_have_paid_for": "Wishyuriye",
+<<<<<<< HEAD
 
    "my_orders": "Amategeko yanjye",
+=======
+  "my_orders": "Amategeko yanjye",
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   "order_creation_failed": "Gukora itegeko byanze",
   "transaction_history": "Amateka y'amakuru",
   "track_order": "Kurikirana itegeko",
@@ -663,7 +671,10 @@
   "paid_on": "Yishyuwe ku",
   "ref": "Ref",
   "qty": "Umubare",
+<<<<<<< HEAD
 
+=======
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   "delivery_company": "Sosiyete itanga",
   "receiver_phone": "Numero ya telefoni y'uwakira",
   "customer_note": "Icyitonderwa cy'umukiriya",
@@ -673,10 +684,28 @@
   "user_creation_failed": "Gukora konti byanze",
   "enter_your_email_to_continue": "Injiza imeri yawe kugirango ukomeze",
   "please_wait_while_your_information_is_being_processed": "Nyamuneka tegereza amakuru yawe ari gukorerwa",
+<<<<<<< HEAD
 
   "continue_shopping": "Komeza Ugura",
     "powered_by": "Powered by",
 
      "gadgets": "Gadgets",
      "enter_exact_house_number": "Injiza numero y'inyumba neza neza"
+=======
+  "continue_shopping": "Gura muri Librairie Caritas",
+  "powered_by": "Powered by",
+  "gadgets": "Gadgets",
+  "enter_exact_house_number": "Injiza numero y'inyumba neza neza",
+  "how_to_install_app": "Uko ushyiraho App ya Babyeyi",
+  "for_android": "Kuri Android",
+  "for_ios": "Kuri ios",
+  "after_installation_note": "Nyuma yo gushyiraho, urashobora gufungura app nk'isanzwe!",
+  "failed_to_load_image": "Failed to load image",
+  "paid_on_delivery": "Ishyure ubuhe ibintu bigeze",
+  "babyeyi_school_is_being_prepared": "Babyeyi y'irishuri turi kuyitegura",
+  "billing_company": "Kampani y’amafacture",
+  "shipping_company": "Kampani yo gutwara ibintu",
+  "your_cart": "Igare ryawe",
+  "your_cart_is_empty": "Igare ryawe ririmo ubusa"
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 }

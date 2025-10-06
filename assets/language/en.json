@@ -670,10 +670,28 @@
   "user_creation_failed": "User Creation Failed",
   "enter_your_email_to_continue": "Enter Your Email To Continue",
   "please_wait_while_your_information_is_being_processed": "Please wait while your information is being processed",
+<<<<<<< HEAD
 
    "continue_shopping": "Continue Shopping",
    "powered_by": "Powered by",
 
    "gadgets": "Gadgets",
    "enter_exact_house_number": "Enter the exact house number"
+=======
+  "continue_shopping": "Shop from Librairie Caritas",
+  "powered_by": "Powered by",
+  "gadgets": "Gadgets",
+  "enter_exact_house_number": "Enter the exact house number",
+  "how_to_install_app": "How to install Babyeyi App",
+  "for_android": "For Android",
+  "for_ios": "For ios",
+  "after_installation_note": "After installation, you can launch the app like a regular application!",
+  "failed_to_load_image": "Failed to load image",
+  "paid_on_delivery": "Paid on delivery",
+  "babyeyi_school_is_being_prepared": "The Babyeyi school list is being prepared",
+  "billing_company": "Billing Company",
+  "shipping_company": "Shipping Company",
+  "your_cart": "Your Cart",
+  "your_cart_is_empty": "Your Cart is empty"
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 }

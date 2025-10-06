@@ -276,8 +276,13 @@ void initState() {
                                         onChanged: (Districts? value) {
                                           setState(() {
                                             selectedDistrict = value;
+<<<<<<< HEAD
                                             print(
                                                 'this is district id::::::::::::::::::::::: ${selectedDistrict!.id}');
+=======
+                                            // print(
+                                            //     'this is district id::::::::::::::::::::::: ${selectedDistrict!.id}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                             selectedSubCategory =
                                                 null; // Reset class dropdown
                                             selectedStudent =
@@ -352,8 +357,13 @@ void initState() {
                                         onChanged: (AllSchoolModel? value) {
                                           setState(() {
                                             selectedCategory = value;
+<<<<<<< HEAD
                                             print(
                                                 'this is school id::::::::::::::::::::::: ${selectedCategory!.id}');
+=======
+                                            // print(
+                                            //     'this is school id::::::::::::::::::::::: ${selectedCategory!.id}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                             selectedSubCategory =
                                                 null; // Reset class dropdown
                                             selectedStudent =
@@ -439,8 +449,13 @@ void initState() {
                                         onChanged: (ClassDetails? value) {
                                           setState(() {
                                             selectedSubCategory = value;
+<<<<<<< HEAD
                                             print(
                                                 'Class ID: ${selectedSubCategory!.id}');
+=======
+                                            // print(
+                                            //     'Class ID: ${selectedSubCategory!.id}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                             widget.studentController
                                                 .studentList;
                                             selectedStudent =

@@ -195,9 +195,28 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     final currentType = companyTypes[_selectedTypeIndex];
     final currentCompany = currentType.companies[_selectedCompanyIndex];
     final currentCategory = currentCompany.categories[_selectedCategoryIndex];
+=======
+  if (companyTypes.isEmpty) {
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  // Safely get current selections with fallbacks
+  final currentType = _selectedTypeIndex < companyTypes.length 
+      ? companyTypes[_selectedTypeIndex]
+      : companyTypes.first;
+
+  final currentCompany = _selectedCompanyIndex < currentType.companies.length
+      ? currentType.companies[_selectedCompanyIndex]
+      : currentType.companies.first;
+
+  final currentCategory = _selectedCategoryIndex < currentCompany.categories.length
+      ? currentCompany.categories[_selectedCategoryIndex]
+      : currentCompany.categories.first;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
     return Scaffold(
       appBar: AppBar(
@@ -275,6 +294,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
 ),
                   ),
                   // Company Type Navigation
+<<<<<<< HEAD
                   CompanyTypeNavigationBar(
                     companyTypes: _getFilteredCompanyTypes(shopController),
                     selectedIndex: _selectedTypeIndex,
@@ -295,6 +315,37 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       _selectedCategoryIndex = 0;
                     }),
                   ),
+=======
+                // Update your navigation bar callbacks to be safe
+CompanyTypeNavigationBar(
+  companyTypes: _getFilteredCompanyTypes(shopController),
+  selectedIndex: _selectedTypeIndex,
+  onTap: (index) {
+    final filteredTypes = _getFilteredCompanyTypes(shopController);
+    if (index >= 0 && index < filteredTypes.length) {
+      setState(() {
+        _selectedTypeIndex = index;
+        _selectedCompanyIndex = 0;
+        _selectedCategoryIndex = 0;
+      });
+    }
+  },
+),
+                  // Company Navigation
+             CompanyNavigationBar(
+  companies: _getFilteredBrands(shopController),
+  selectedIndex: _selectedCompanyIndex,
+  onTap: (index) {
+    final filteredBrands = _getFilteredBrands(shopController);
+    if (index >= 0 && index < filteredBrands.length) {
+      setState(() {
+        _selectedCompanyIndex = index;
+        _selectedCategoryIndex = 0;
+      });
+    }
+  },
+),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                   // Text('data ${shopController.orderList}'),
                   Expanded(
                     child: Row(
@@ -365,6 +416,11 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     );
   }
 
+<<<<<<< HEAD
+=======
+  
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   void _addToCart(Product product, int quantity) {
     setState(() {
       _cart[product] = (_cart[product] ?? 0) + quantity;
@@ -574,7 +630,12 @@ Widget _buildProductView(ShopController shopController) {
 
   // Apply attribute filter if an attribute is selected
   final filteredCompanyTypes = _getFilteredCompanyTypes(shopController);
+<<<<<<< HEAD
   if (_selectedTypeIndex >= 0 &&
+=======
+  if (filteredCompanyTypes.isNotEmpty && 
+      _selectedTypeIndex >= 0 &&
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       _selectedTypeIndex < filteredCompanyTypes.length) {
     final selectedAttributeId = filteredCompanyTypes[_selectedTypeIndex].id;
     filteredProducts = filteredProducts.where((product) {
@@ -585,6 +646,7 @@ Widget _buildProductView(ShopController shopController) {
   }
 
   // Apply category filter only if a specific category is selected (not "All")
+<<<<<<< HEAD
   if (_selectedCategoryIndex > 0) {
     final filteredCategories = _getFilteredCategories(shopController);
     if (_selectedCategoryIndex < filteredCategories.length) {
@@ -610,6 +672,30 @@ Widget _buildProductView(ShopController shopController) {
             product.brands!.any((brand) => brand.id == selectedBrandId);
       }).toList();
     }
+=======
+  final filteredCategories = _getFilteredCategories(shopController);
+  if (_selectedCategoryIndex > 0 && 
+      _selectedCategoryIndex < filteredCategories.length) {
+    final selectedCategoryId = filteredCategories[_selectedCategoryIndex].id;
+    filteredProducts = filteredProducts.where((product) {
+      return product.categories != null &&
+          product.categories!.isNotEmpty &&
+          product.categories!
+              .any((category) => category.id == selectedCategoryId);
+    }).toList();
+  }
+
+  // Apply brand filter if a brand is selected
+  final filteredBrands = _getFilteredBrands(shopController);
+  if (_selectedCompanyIndex > 0 && 
+      _selectedCompanyIndex < filteredBrands.length) {
+    final selectedBrandId = filteredBrands[_selectedCompanyIndex].id;
+    filteredProducts = filteredProducts.where((product) {
+      return product.brands != null &&
+          product.brands!.isNotEmpty &&
+          product.brands!.any((brand) => brand.id == selectedBrandId);
+    }).toList();
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   }
 
   // Apply search filter if there's a query

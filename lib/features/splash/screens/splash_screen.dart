@@ -97,7 +97,11 @@ Future<String?> _loadPin() async {
 
       // Step 4: Fetch User Data
       final userData = Get.find<AuthController>().getUserData();
+<<<<<<< HEAD
       print('User Data: $userData');
+=======
+      // print('User Data: $userData');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
       // Step 5: Route Navigation
       if (userData != null && Get.find<SplashController>().configModel?.companyName != null) {

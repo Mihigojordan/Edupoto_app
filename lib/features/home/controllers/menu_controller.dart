@@ -16,8 +16,13 @@ class MenuItemController extends GetxController implements GetxService{
   final List<Widget> screen = [
    const HosoHomeScreen(),
   //  const HomeScreen(),
+<<<<<<< HEAD
  const ShoppingScreen(),
     // const MzaziScreen(isShop: false,isNavigation:1),
+=======
+// const ShoppingScreen(),
+ const MzaziScreen(isShop: false,isNavigation:1),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
      const NoConnection(),
     const ProfileScreen()
 

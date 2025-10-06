@@ -191,6 +191,49 @@ class TransactionMoneyController extends GetxController implements GetxService {
    return response;
   }
 
+<<<<<<< HEAD
+=======
+    Future<Response> babyeyiTransaction({ required int userId,
+  required double price,
+  required double totalAmount,
+  required int productId,
+  required String productType,
+  required double balance,
+  required double charge,
+  required String phoneNumber,
+  required String currency,
+  required String paymentMethod,
+  required String paymentProvider,
+  required Function onSuggest
+ }) async{
+
+    _isLoading = true;
+    _isNextBottomSheet = false;
+    update();
+  //  Response responseMtn = await transactionRepo.sendMoneyMtnMomoApi(phoneNumber: contactModel.phoneNumber, amount: amount, purpose: purpose, pin: pinCode);
+   
+  //  if(responseMtn.statusCode == 202){
+
+    Response response = await transactionRepo.babyeyiApi(userId: userId, price: price, totalAmount: totalAmount, productId: productId, productType: productType, balance: balance, charge: charge, phoneNumber: phoneNumber, currency: currency, paymentMethod: paymentMethod, paymentProvider: paymentProvider);
+    if(response.statusCode==200){
+        _isLoading = false;
+     _isNextBottomSheet = true;
+
+      onSuggest();
+    // }
+    // else{
+    //   print('**********Failed to save sent money');
+    // }
+   
+   }else{
+     _isLoading = false;
+     ApiChecker.checkApi(response);
+   }
+   update();
+   return response;
+  }
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
    Future<Response> makePayment({ List<EduboxMaterialModel>? sv_product_list, required String payment_method,required String payment_media,required String payment_phone, required String parent_id, List<SchoolLists>? product_list, required String product_name, required String homePhone,required String destination,required String shipper, required int studentId, required double amount, required double totalAmount, required int productId, required int productType,required String phoneNumber,required double charge,required double balance }) async{
 
     _isLoading = true;

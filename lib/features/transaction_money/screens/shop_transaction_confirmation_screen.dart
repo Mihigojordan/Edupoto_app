@@ -687,7 +687,11 @@ class _TransactionConfirmationScreenState
                                     vatPercentage: AppConstants.vatPercentage),
 
                     Text(
+<<<<<<< HEAD
                       '${'delivery_cost'.tr}: ${AppConstants.deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
+=======
+                      '${'delivery_cost'.tr}:  (${'paid_on_delivery'.tr})',//${AppConstants.deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             fontWeight: FontWeight.normal,
                           ),
@@ -880,7 +884,11 @@ class _TransactionConfirmationScreenState
                           shipper: AppConstants.deliveryCompany,
                           homePhone: homePhone, // Added this
                           customerNote: customerNote,
+<<<<<<< HEAD
                           destination: destinationEditingController.text,
+=======
+                          destination: '$schoolName, $className, $studentName, $studentCode',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                           studentCode: studentCode!,
                           studentName: studentName!
                         );
@@ -905,8 +913,12 @@ class _TransactionConfirmationScreenState
                                     shipper: AppConstants.deliveryCompany,
                                     homePhone: homePhone, // Added this
                                     customerNote: customerNote,
+<<<<<<< HEAD
                                     destination:
                                         destinationEditingController.text,
+=======
+                                    destination:'$schoolName, $className, $studentName, $studentCode',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                         studentCode: studentCode!,
                                         studentName: studentName!
                                         )
@@ -926,7 +938,11 @@ class _TransactionConfirmationScreenState
                             shipper: AppConstants.deliveryCompany,
                             homePhone: homePhone, // Added this
                             customerNote: customerNote,
+<<<<<<< HEAD
                             destination: destinationEditingController.text,
+=======
+                            destination: '$schoolName, $className, $studentName, $studentCode',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                             studentCode: studentCode!,
                             studentName: studentName!
                             );
@@ -1037,7 +1053,11 @@ class _TransactionConfirmationScreenState
           studentName: studentName,
               deliveryCost: AppConstants.deliveryCost,
               materialCost: totalAmount,
+<<<<<<< HEAD
               shippingAddress1: destinationEditingController.text,
+=======
+              shippingAddress1: destination,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
               shippingAddress2: '',
               shippingCompany: shipper,
               shippingCity: 'Kigali',
@@ -1062,7 +1082,11 @@ class _TransactionConfirmationScreenState
               productIndex: productIndex,
               edubox_service: 'Babyeyi',
               amountToPay:
+<<<<<<< HEAD
                   '${'delivery_cost'.tr}: ${AppConstants.deliveryCost.toStringAsFixed(2)}',
+=======
+                  '${'delivery_cost'.tr}: (${'paid_on_delivery'.tr})',//${AppConstants.deliveryCost.toStringAsFixed(2)}',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
               nowPaid: '${'material_cost'.tr}: ${widget.totalAmount}',
               vat: '${'vat'.tr}: ${'inclusive'.tr}',
               serviceCharge: convenienceFee.toStringAsFixed(2),

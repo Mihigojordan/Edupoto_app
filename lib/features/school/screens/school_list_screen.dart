@@ -6,10 +6,20 @@ import 'package:hosomobile/features/history/widgets/transaction_type_button_widg
 import 'package:hosomobile/features/home/controllers/student_controller.dart';
 import 'package:hosomobile/features/home/domain/models/all_school_model.dart';
 import 'package:hosomobile/features/home/screens/upgrades/home/constants/constants.dart';
+<<<<<<< HEAD
 import 'package:hosomobile/features/school/controllers/school_list_controller.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/school/widgets/school_list_button_widget.dart';
 import 'package:hosomobile/features/school/widgets/school_list_widget.dart';
+=======
+import 'package:hosomobile/features/school/controllers/cart_controller.dart';
+import 'package:hosomobile/features/school/controllers/school_list_controller.dart';
+import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
+import 'package:hosomobile/features/school/screens/checkout_screen.dart';
+import 'package:hosomobile/features/school/widgets/school_list_button_widget.dart';
+import 'package:hosomobile/features/school/widgets/school_list_widget.dart';
+import 'package:hosomobile/util/app_constants.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/util/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,12 +56,101 @@ class SchoolListScreen extends StatelessWidget {
       required this.studentId,
       required this.classId});
 
+<<<<<<< HEAD
+=======
+  // Method to show cart contents
+  void _showCart() {
+    final _cartController = Get.find<CartController>();
+
+    Get.bottomSheet(
+      Container(
+        height: 500,
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          children: [
+            Text(
+              'your_cart'.tr,
+              // style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const Divider(),
+            Expanded(
+              child: Obx(() {
+                if (_cartController.cart.isEmpty) {
+                  return  Center(child: Text('your_cart_is_empty'.tr));
+                }
+                return ListView(
+                  children: _cartController.cart.entries.map((entry) {
+                    return ListTile(
+                      leading: const Icon(Icons.shopping_cart),
+                      title: Text(entry.key.name ?? ''),
+                      subtitle: Text(
+                        '${entry.key.price} ${AppConstants.currency} x ${entry.value}',
+                      ),
+                      trailing: Text(
+                        '${(double.tryParse(entry.key.price ?? '0')! * entry.value).toStringAsFixed(2)} ${AppConstants.currency}',
+                      ),
+                      onTap: () {
+                        // Option to remove or edit quantity
+                        _cartController.removeFromCart(entry.key);
+                      },
+                    );
+                  }).toList(),
+                );
+              }),
+            ),
+            Obx(() => Text(
+                  'Total: ${_cartController.totalPrice.toStringAsFixed(2)} ${AppConstants.currency}',
+                  // style: Theme.of(context).textTheme.headlineSmall,
+                )),
+            ElevatedButton(
+              onPressed: () {
+                // Implement checkout functionality
+                Get.back();
+                Get.to(() => CheckoutScreen(
+                    cartItems: _cartController.cart,
+                    totalPrice: _cartController.totalPrice,
+                    studentController: studentController,
+                    studentIndex: studentIndex,
+                    shipper: shipper,
+                    homePhone: homePhone,
+                    destination: destination,
+                    schoolName: schoolName,
+                    className: className,
+                    studentCode: studentCode,
+                    studentName: studentName,
+                    scrollController: _scrollController,
+                    isHome: false,
+                    studentId: studentId,
+                    schoolId: schoolId,
+                    classId: classId,
+                    productName: 'productName'
+                    ));
+              },
+              child: const Text('Proceed to Checkout'),
+            ),
+           const SizedBox(height: 40,),
+          ],
+        ),
+      ),
+    );
+  }
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   @override
   Widget build(BuildContext context) {
     Get.find<SchoolListController>().setIndex(0);
 
     Get.find<SchoolListController>()
         .getSchoolListData(1, reload: false, schoolId: schoolId);
+<<<<<<< HEAD
+=======
+    // Initialize controllers properly in build method
+    final cartController = Get.find<CartController>();
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
     return Scaffold(
       // appBar: CustomAppbarWidget(title: 'School  List'.tr, onlyTitle: true),
@@ -178,6 +277,39 @@ class SchoolListScreen extends StatelessWidget {
           ),
         ),
       ),
+<<<<<<< HEAD
+=======
+      // Add the floating action button (already in your code)
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.amber,
+        onPressed: _showCart,
+        child: Obx(() => Stack(
+              children: [
+                const Icon(Icons.shopping_cart, color: Colors.white),
+                if (cartController.itemCount > 0)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        '${cartController.itemCount}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
+            )),
+      ),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     );
   }
 

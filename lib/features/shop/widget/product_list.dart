@@ -2,7 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:hosomobile/common/widgets/custom_image_widget.dart';
 import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
+<<<<<<< HEAD
 import 'package:hosomobile/features/shop/screen/prduct_detail_screen.dart';
+=======
+import 'package:hosomobile/features/shop/screen/product_detail_screen.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/features/shop/domain/models/product.dart';
 import 'package:hosomobile/util/app_constants.dart';
 import 'package:hosomobile/util/images.dart';
@@ -23,7 +27,18 @@ class ProductList extends StatelessWidget {
     return ListView.builder(
       itemCount: products.length,
       itemBuilder: (context, index) {
+<<<<<<< HEAD
         final product = products[index];
+=======
+         // Safe access to product
+        if (index >= products.length) return const SizedBox();
+        final product = products[index];
+        
+        // Safe image handling
+        final imageUrl = (product.images != null && product.images!.isNotEmpty)
+            ? product.images![0].src
+            : Images.bannerPlaceHolder;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
         final quantity = cart[product] ?? 0; // Get quantity from cart
       // Inside the ListView.builder itemBuilder
 return GestureDetector(
@@ -45,7 +60,11 @@ return GestureDetector(
                    height: 50,
                   width: 50,
                     image:
+<<<<<<< HEAD
                            product.images?[0].src ?? 'no image',
+=======
+                          imageUrl?? 'no image',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                     fit: BoxFit.cover,
                     placeholder: Images.bannerPlaceHolder),
       title: Text(product.name??'Unknown', style: const TextStyle(fontSize: 12)),

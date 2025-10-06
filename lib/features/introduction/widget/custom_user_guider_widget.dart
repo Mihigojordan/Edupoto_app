@@ -42,7 +42,11 @@ class CustomUserGuideWidget extends StatelessWidget {
 
 
 void playYoutubeVideo() {
+<<<<<<< HEAD
   const youtubeUrl = 'https://www.youtube.com/watch?v=TEdxze71nTU';
+=======
+  const youtubeUrl = 'https://youtu.be/8Eb0BQc7JIQ';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   
   if (kIsWeb) {
     // For web, use url_launcher to open in browser

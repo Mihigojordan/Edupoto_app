@@ -9,6 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:hosomobile/features/language/controllers/localization_controller.dart';
+import 'package:hosomobile/features/school/controllers/cart_controller.dart';
 import 'package:hosomobile/features/setting/controllers/theme_controller.dart';
 import 'package:hosomobile/helper/notification_helper.dart';
 import 'package:hosomobile/helper/route_helper.dart';
@@ -115,6 +116,7 @@ class MyApp extends StatelessWidget {
         MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1)),
           child: GetMaterialApp(
+             initialBinding: CartBinding(), // Add this
             navigatorObservers: [FlutterSmartDialog.observer],
             builder: FlutterSmartDialog.init(),
             title: AppConstants.appName,

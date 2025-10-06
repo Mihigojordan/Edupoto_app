@@ -23,6 +23,10 @@ import 'package:hosomobile/features/map/screens/map_screen_named_location.dart';
 import 'package:hosomobile/features/map/screens/map_screen_sl.dart';
 import 'package:hosomobile/features/school/domain/models/school_list_model.dart';
 import 'package:hosomobile/features/school/screens/school_list_screen.dart';
+<<<<<<< HEAD
+=======
+import 'package:hosomobile/features/shop/domain/models/shop_model.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/features/transaction_money/controllers/bootom_slider_controller.dart';
 import 'package:hosomobile/features/setting/controllers/profile_screen_controller.dart';
 import 'package:hosomobile/features/transaction_money/controllers/contact_controller.dart';
@@ -66,6 +70,10 @@ class SchoolTransactionConfirmationScreen extends StatefulWidget {
   final Function? callBack;
   final WithdrawalMethod? withdrawMethod;
   final List<SchoolLists>? dataList;
+<<<<<<< HEAD
+=======
+  final Map<Product,int>? cartItems;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   final String studentName;
   final String studentCode;
   final int studentId;
@@ -95,6 +103,10 @@ class SchoolTransactionConfirmationScreen extends StatefulWidget {
       this.purpose,
       this.screenId,
       this.isChecked,
+<<<<<<< HEAD
+=======
+      this.cartItems,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       required this.studentName,
       required this.studentCode,
       required this.studentId,
@@ -232,11 +244,21 @@ void calculateTotalPrice() {
 
     final bottomSliderController = Get.find<BottomSliderController>();
   final totalAmount = AppConstants.calculateTotal(double.parse('$subTotalPrice')).toStringAsFixed(2);
+<<<<<<< HEAD
+=======
+   final totalAmountInCart = AppConstants.calculateTotal(double.parse('${widget.price}')).toStringAsFixed(2);
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     final  SchoolLists product = widget.dataList![widget.productIndex!];
     final double convenienceFee= AppConstants.calculateConvenienceFee( double.parse('$subTotalPrice')); 
     // final vat =AppConstants.calculateVAT(double.parse('$subTotalPrice')) ;
    final balance= calculateAvailableBalance(totalAmount);
+<<<<<<< HEAD
     final availableBalance= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse(balance)).toStringAsFixed(2);
+=======
+   final balanceInCart= calculateAvailableBalance(totalAmountInCart);
+    final availableBalance= AppConstants.availableBalance(amount: double.parse(balance), balance: double.parse(balance)).toStringAsFixed(2);
+      final availableBalanceInCart= AppConstants.availableBalance(amount: double.parse('${widget.inputBalance}'), balance: double.parse(balanceInCart)).toStringAsFixed(2);
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       int randomNumber = random.nextInt(90000000) + 10000000;
 
     // final student=  widget.studentController.studentList![widget.studentIndex];
@@ -296,9 +318,15 @@ void calculateTotalPrice() {
               
                   sizedBox10,
                   Text(
+<<<<<<< HEAD
                       '${'product'.tr}:${widget.edubox_service}. ${'contains'.tr}:$checkedProducts ${'product'.tr}s\n ${'school'.tr}:${widget.schoolName}. ${'class'.tr}:${widget.className}'),
                   sizedBox05h,
                   Container(
+=======
+                      '${'product'.tr}:${widget.edubox_service}. \n ${'school'.tr}:${widget.schoolName}. ${'class'.tr}:${widget.className}'),
+                  sizedBox05h,//${'contains'.tr}:$checkedProducts ${'product'.tr}s
+              widget.cartItems==null?    Container(
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                     // height: MediaQuery.of(context).size.height / 5,
 
                     padding: const EdgeInsets.all(10),
@@ -350,7 +378,30 @@ void calculateTotalPrice() {
                         ),
                       ),
                     ),
+<<<<<<< HEAD
                   ),
+=======
+                  ):
+                     Scrollbar(
+                        thumbVisibility: true,
+                       child: SizedBox(
+                         height: MediaQuery.of(context).size.height / 6,
+                                     child: ListView(
+                                       children: widget.cartItems!.entries.map((entry) {
+                                         return ListTile(
+                                           title: Text(entry.key.name ?? ''),
+                                           subtitle: Text('Quantity: ${entry.value}'),
+                                           trailing: Text(
+                        '${(double.tryParse(entry.key.price ?? '0')!) * entry.value} ${AppConstants.currency}',
+                                           ),
+                                         );
+                                       }).toList(),
+                                     ),
+                                   ),
+                     ),
+            
+                  
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                   const SizedBox(height: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,7 +453,11 @@ void calculateTotalPrice() {
                                                 schoolName:schoolName,
                                                 randomNumber: randomNumber,
                                                 className: className,
+<<<<<<< HEAD
                                                 totalAmount: totalAmount,
+=======
+                                                totalAmount:widget.cartItems==null? totalAmount:totalAmountInCart,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                                 studentInfo:'${'student_name'.tr}: $studentName ${'code'.tr}: $studentCode',
                                                 productName: widget.productName!,
                                                 orderId: '21323443421',
@@ -451,7 +506,11 @@ void calculateTotalPrice() {
                                                 schoolName:widget.studentController.studentList![widget.studentIndex].school!,
                                                 randomNumber: randomNumber,
                                                 className: widget.studentController.studentList![widget.studentIndex].studentClass!,
+<<<<<<< HEAD
                                                 totalAmount:  (availableBalance=='0.00'||availableBalance=='-1.00')?  totalAmount:widget.inputBalance!.toStringAsFixed(2),
+=======
+                                                totalAmount: widget.cartItems==null? ((availableBalance=='0.00'||availableBalance=='-1.00')? totalAmountInCart:widget.inputBalance!.toStringAsFixed(2)):  (totalAmountInCart),// placed total amount in cart for a while
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                                 studentInfo:'${'student_name'.tr}: ${widget.studentController.studentList![widget.studentIndex].name} ${'code'.tr}: ${widget.studentController.studentList![widget.studentIndex].code}',
                                                 productName: widget.productName!,
                                                 orderId: '21323443421',
@@ -479,6 +538,11 @@ void calculateTotalPrice() {
                               iconData: Icons.arrow_forward_outlined,
                             )
                           : DeliveryMapScreenSl(
+<<<<<<< HEAD
+=======
+                      
+                            cart: widget.cartItems!,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                               isShop: 0,
                               deliveryCost: AppConstants.deliveryCost,
                               schoolId: widget.schoolId,
@@ -489,7 +553,11 @@ void calculateTotalPrice() {
                               studentId: widget.studentId,
                               studentName: widget.studentName,
                               screenId: widget.screenId??0,
+<<<<<<< HEAD
                               calculatedTotal: calculatedTotal,
+=======
+                              calculatedTotal: subTotalPrice,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                               contactModel: widget.contactModel!,
                               eduboxService: widget.edubox_service??'',
                               dataList: widget.dataList??[],
@@ -508,7 +576,11 @@ void calculateTotalPrice() {
                               productName: widget.productName??'',
                               randomNumber: randomNumber,
                               serviceIndex: widget.serviceIndex??0,
+<<<<<<< HEAD
                               totalAmount:  (availableBalance=='0.00'||availableBalance=='-1.00')?  double.parse(totalAmount):widget.inputBalance!,
+=======
+                              totalAmount:  (availableBalance=='0.00'||availableBalance=='-1.00')? widget.cartItems==null?double.parse(totalAmount): double.parse(totalAmountInCart):widget.inputBalance!,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                               vatPercentage: AppConstants.vatPercentage,
                               availableBalance:double.parse(availableBalance)
                               ),
@@ -525,16 +597,28 @@ void calculateTotalPrice() {
                     color: Theme.of(context).dividerColor,
                   ),
                   Text(
+<<<<<<< HEAD
                     '${'delivery_cost'.tr}: ${AppConstants.deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
+=======
+                    '${'delivery_cost'.tr}: (${'paid_on_delivery'.tr})',//${AppConstants.deliveryCost.toStringAsFixed(2)} ${AppConstants.currency}',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.normal,
                         ),
                   ),
                   // Display Total Price
 
+<<<<<<< HEAD
                   Text('${'material_cost'.tr}: $subTotalPrice ${AppConstants.currency}'),
                   // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
                   Text('${'vat'.tr}: ${'inclusive'.tr}'),
+=======
+             widget.cartItems==null?     Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('${'material_cost'.tr}: $subTotalPrice ${AppConstants.currency}'),
+                         Text('${'vat'.tr}: ${'inclusive'.tr}'),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
                   Text( '${'convenience_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
                   const Divider(),
@@ -545,10 +629,35 @@ void calculateTotalPrice() {
                           fontWeight: FontWeight.bold,
                         ),
                   ),
+<<<<<<< HEAD
+=======
+                    ],
+                  ):
+                              Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('${'material_cost'.tr}: ${widget.price} ${AppConstants.currency}'),
+                         Text('${'vat'.tr}: ${'inclusive'.tr}'),
+
+                  Text( '${'convenience_fee'.tr}: $convenienceFee ${AppConstants.currency}'),
+                  const Divider(),
+
+                  Text(
+                    '${'total_amount_paid_now'.tr}: $totalAmountInCart ${AppConstants.currency}',
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                    ],
+                  ),
+                  // Text('Now Paying: ${calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}'),
+               
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 sizedBox10,
            sizedBox10,
 
 
+<<<<<<< HEAD
                   Text('${'pending'.tr}/${'remaining_amount_to_be_paid'.tr}',
                       style: rubikSemiBold.copyWith(
                           fontSize: Dimensions.fontSizeLarge,
@@ -561,6 +670,25 @@ sizedBox10,
                         fontWeight: FontWeight.bold,
                       )),
               const SizedBox(height: 15),      
+=======
+                  // Text('${'pending'.tr}/${'remaining_amount_to_be_paid'.tr}',
+                  //     style: rubikSemiBold.copyWith(
+                  //         fontSize: Dimensions.fontSizeLarge,
+                  //         color: ColorResources.getGreyBaseGray1())),
+
+
+              //       widget.cartItems==null?         Text(
+              //     '$availableBalance ${AppConstants.currency}',
+              //     style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              //           fontWeight: FontWeight.bold,
+              //         )):
+              //            Text(
+              //     '$availableBalanceInCart ${AppConstants.currency}',
+              //     style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              //           fontWeight: FontWeight.bold,
+              //         )),
+              // const SizedBox(height: 15),      
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
             
      
 
@@ -1112,13 +1240,25 @@ sizedBox
                               builder: (context) {
                                 //**************** Bottom Sheet with slider */
                                 return BottomSheetWithSliderSl(
+<<<<<<< HEAD
                                   availableBalance:availableBalance.toStringAsFixed(2),
                                      shippingAddress1:'$schoolName, $className, $studentInfo',
+=======
+                                          customerNote: '',
+                                deliveryCost: AppConstants.deliveryCost,
+                                     selectedProducts:widget.cartItems!,
+                                  availableBalance:widget.availableBalance.toStringAsFixed(2),
+                                     shippingAddress1:'$schoolName, $className, ${widget.studentCode}, ${widget.studentName}',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                     shippingAddress2: '',
                                     shippingCompany: AppConstants.deliveryCompany,
                                     shippingCity: 'Kigali',
                                     shippingCountry: 'Rwanda',
+<<<<<<< HEAD
                                   homePhone: widget.homePhone,
+=======
+                                  homePhone: '',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                   destination: widget.destination,
                                   amount: totalAmount,
                                   productId: widget.productId!,
@@ -1127,6 +1267,7 @@ sizedBox
                                   transactionType: widget.transactionType,
                                   purpose: widget.purpose,
                                   studentId: widget.studentId,
+<<<<<<< HEAD
                                   inputBalance: calculatedTotal,
                                   dataList: widget.dataList,
                                   productIndex: widget.productIndex,
@@ -1136,6 +1277,17 @@ sizedBox
                                   vat:
                                       '${'vat'.tr}: ${'inclusive'.tr}',
                                   serviceCharge: convenienceFee.toStringAsFixed(2) ,
+=======
+                                  inputBalance: widget.availableBalance,
+                                  dataList: widget.dataList,
+                                  productIndex: widget.productIndex,
+                                  edubox_service: widget.edubox_service,
+                                  amountToPay: '${'delivery_cost'.tr}: (${'paid_on_delivery'.tr})',//${AppConstants.deliveryCost.toStringAsFixed(2)}',
+                                  nowPaid: '${'material_cost'.tr}: ${subTotalPrice.toStringAsFixed(2)} ${AppConstants.currency}',
+                                  vat:
+                                      '${'vat'.tr}: ${'inclusive'.tr}',
+                                  serviceCharge:convenienceFee.toStringAsFixed(2) ,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                   totalNowPaid:'${'total_amount_paid_now'.tr}: $totalAmount ${AppConstants.currency}',
                                   serviceValue: widget.productName,
                                   serviceIndex: widget.serviceIndex,
@@ -1144,6 +1296,10 @@ sizedBox
                                   studentCode: widget.studentCode,
                                   className: widget.className,
                                   schoolName: widget.schoolName,
+<<<<<<< HEAD
+=======
+     
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                 );
                               });
                       // } else {

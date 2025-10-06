@@ -43,7 +43,7 @@ queryString = {
      try {
        body = jsonDecode(response.body);
      }catch(e) {
-       debugPrint('**** error$body is it captured ---> $e');
+       debugPrint('**** error is it captured --->');
      }
      Response response0 = Response(
        body: body ?? response.body, bodyString: response.body.toString(),
@@ -60,7 +60,7 @@ queryString = {
      }else if(response0.statusCode != 200 && response0.body == null) {
        response0 = Response(statusCode: 0, statusText: noInternetMessage);
      }
-     debugPrint('====> API Response: this is response [${response0.statusCode}] $uri\n*${response0.body}');
+    //  debugPrint('====> API Response: this is response [${response0.statusCode}] $uri\n*${response0.body}');
      return response0;
    }
 
@@ -85,7 +85,7 @@ queryString = {
 
     return handleResponse(response, uriProduct);
   } catch (e) {
-    debugPrint('mmmmmmmmmmmmmmmmmmmmmm Error occurred during API call: $e');
+    debugPrint('mmmmmmmmmmmmmmmmmmmmmm Error occurred during API call: ');
     return Response(statusCode: 1, statusText: noInternetMessage);
   }
 }

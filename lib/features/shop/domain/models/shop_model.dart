@@ -75,13 +75,23 @@ class Product {
 class WooImage {
   String? src;
   String? alt;
+<<<<<<< HEAD
 
   WooImage({this.src, this.alt});
+=======
+  int? id;
+
+  WooImage({this.src, this.alt, this.id});
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
   factory WooImage.fromJson(Map<String, dynamic> json) {
     return WooImage(
       src: json['src'],
       alt: json['alt'],
+<<<<<<< HEAD
+=======
+      id: json['id']
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     );
   }
 
@@ -89,6 +99,10 @@ class WooImage {
     return {
       'src': src,
       'alt': alt,
+<<<<<<< HEAD
+=======
+      'id':id
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     };
   }
 }

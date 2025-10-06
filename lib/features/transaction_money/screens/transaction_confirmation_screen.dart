@@ -459,6 +459,7 @@ final balance= calculateAvailableBalance(totalAmount);
                 ],
               ),
               sizedBox10,
+<<<<<<< HEAD
               Text('${'pending'.tr}/${'remaining_amount_to_be_paid'.tr}',
                   style: rubikSemiBold.copyWith(
                       fontSize: Dimensions.fontSizeLarge,
@@ -467,6 +468,16 @@ final balance= calculateAvailableBalance(totalAmount);
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.bold,
                       )),
+=======
+              // Text('${'pending'.tr}/${'remaining_amount_to_be_paid'.tr}',
+              //     style: rubikSemiBold.copyWith(
+              //         fontSize: Dimensions.fontSizeLarge,
+              //         color: ColorResources.getGreyBaseGray1())),
+              // Text('$availableBalance ${AppConstants.currency}',
+              //     style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              //           fontWeight: FontWeight.bold,
+              //         )),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
               const SizedBox(height: 15),
               if (widget.transactionType == TransactionType.withdrawRequest)
                 PreviewAmountWidget(

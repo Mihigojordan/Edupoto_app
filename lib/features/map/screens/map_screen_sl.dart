@@ -1,9 +1,19 @@
+<<<<<<< HEAD
+=======
+import 'package:flutter/foundation.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+<<<<<<< HEAD
+=======
+import 'package:google_maps_places_autocomplete_widgets/model/place.dart';
+import 'package:google_maps_places_autocomplete_widgets/model/suggestion.dart';
+import 'package:google_maps_places_autocomplete_widgets/widgets/address_autocomplete_textfield.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:hosomobile/common/models/contact_model.dart';
 import 'package:hosomobile/common/models/contact_model_mtn.dart';
 import 'package:hosomobile/common/widgets/custom_dropdown.dart';
@@ -72,12 +82,20 @@ class DeliveryMapScreenSl extends StatefulWidget {
       required this.vatPercentage,
       required this.isShop,
       required this.deliveryCost,
+<<<<<<< HEAD
       this.cart,
+=======
+      required this.cart,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       this.checkedStudents,
       this.checkedStudentsId,
       this.product,
       this.quantity,
       this.studentIndex,
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       required this.availableBalance});
 
   final double availableBalance;
@@ -113,7 +131,11 @@ class DeliveryMapScreenSl extends StatefulWidget {
   final Product? product;
   final int? checkedStudentsId;
   final List<StudentModel>? checkedStudents;
+<<<<<<< HEAD
   final Map<Product, int>? cart;
+=======
+  final Map<Product, int> cart;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   final int? quantity;
   final int? studentIndex;
   final double deliveryCost;
@@ -123,7 +145,11 @@ class DeliveryMapScreenSl extends StatefulWidget {
 }
 
 class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
+<<<<<<< HEAD
   late GoogleMapController _mapController;
+=======
+   late GoogleMapController _mapController;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   LatLng _initialPosition =
       const LatLng(-1.9536, 30.1044); // Default to Kigali, Rwanda
   final Set<Marker> _markers = {};
@@ -177,15 +203,60 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
   LatLng? _destinationLatLng;
 
   Marker? _draggableMarker;
+<<<<<<< HEAD
+=======
+  
+
+
+   String? _suggestionPlaceId;
+  String? _suggestionDescription;
+  String? _name;
+  String? _formattedAddress;
+  String? _formattedAddressZipPlus4;
+  String? _streetAddress;
+  String? _streetNumber;
+  String? _street;
+  String? _streetShort;
+  String? _city;
+  String? _county;
+  String? _state;
+  String? _stateShort;
+  String? _zipCode;
+  String? _zipCodeSuffix;
+  String? _zipCodePlus4;
+  String? _vicinity;
+  String? _country;
+  double? _lat;
+  double? _lng;
+
+
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   bool _isDragging = false;
   String _currentAddress = '';
   bool _isLoadingAddress = false;
   LatLng? _previousMarkerPosition;
+<<<<<<< HEAD
+=======
+  bool _isInputLocation = false;
+
+  void onInputLocation() {
+    setState(() {
+      _isInputLocation = !_isInputLocation;
+    });
+  }
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
   @override
   void initState() {
     super.initState();
+<<<<<<< HEAD
     _getCurrentLocation(); // Fetch current_location .trand set it as the default source
+=======
+    // _getCurrentLocation(); // Fetch current location
+    _getCurrentLocation(); // Fetch current_location .trand set it as the default source
+    _initializeControllers();
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     addressFocusNode = FocusNode();
     cityFocusNode = FocusNode();
     stateFocusNode = FocusNode();
@@ -195,6 +266,17 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
     cityTextController = TextEditingController();
     stateTextController = TextEditingController();
     zipTextController = TextEditingController();
+<<<<<<< HEAD
+=======
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_mapController != null) {
+        // Center the map on the destination (if available)
+        _mapController.animateCamera(
+          CameraUpdate.newLatLng(_destinationLatLng ?? _initialPosition),
+        );
+      }
+    });
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   }
 
   /// countries other than the united states.
@@ -213,11 +295,94 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
     if (zip.isNotEmpty) {
       built += ' $zip';
     }
+<<<<<<< HEAD
     built += ', USA';
+=======
+    built += ', RW';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     debugPrint('prepareQuery made built="$built"');
     return built;
   }
 
+<<<<<<< HEAD
+=======
+    String? onSuggestionClickGetTextToUseForControl(Place placeDetails) {
+    //  we just want the street address here, for example if we were using
+    //  the address line of the form to trigger the address autocomplete
+    return placeDetails.streetAddress;
+  }
+
+    void onInitialSuggestionClick(Suggestion suggestion) {
+    debugPrint('=================================onInitialSuggestionClick( suggestion:$suggestion )');
+    setState(() {
+      _suggestionDescription = suggestion.description;
+      _suggestionPlaceId = suggestion.placeId;
+      // clear these until they are loaded...
+      _name = _formattedAddress = _formattedAddressZipPlus4 = _streetAddress =
+          _streetNumber = _street = _streetShort = _city = _county = _state =
+              _stateShort = _zipCode = _zipCodeSuffix =
+                  _zipCodePlus4 = _country = _vicinity = '....';
+      _lat = _lng = 0.0;
+    });
+  }
+
+  void _initializeControllers() {
+    addressFocusNode = FocusNode();
+    cityFocusNode = FocusNode();
+    stateFocusNode = FocusNode();
+    zipFocusNode = FocusNode();
+
+    addressTextController = TextEditingController();
+    cityTextController = TextEditingController();
+    stateTextController = TextEditingController();
+    zipTextController = TextEditingController();
+  }
+
+
+  // This handles when a suggestion is selected from the autocomplete
+  void onSuggestionClick(Place placeDetails) {
+    debugPrint('Selected place: $placeDetails');
+    
+    final newPosition = LatLng(placeDetails.lat!, placeDetails.lng!);
+    
+    setState(() {
+      // Update all the address fields
+      _streetAddress = placeDetails.streetAddress;
+      _city = placeDetails.city;
+      _state = placeDetails.state;
+      _zipCode = placeDetails.zipCode;
+      _country = placeDetails.country;
+      
+      // Update the text controller
+      _destinationController.text = placeDetails.formattedAddress ?? placeDetails.streetAddress ?? '';
+      
+      // Move the marker to the new position
+      _updateMarkerPosition(newPosition);
+      
+      // Center the map on the new position
+      _mapController?.animateCamera(CameraUpdate.newLatLng(newPosition));
+    });
+  }
+
+    Future<void> _updateMarkerPosition(LatLng position) async {
+    if (_isLoadingAddress) return;
+
+    setState(() => _isLoadingAddress = true);
+    try {
+      final address = await _getAddressFromLatLng(position);
+      setState(() {
+        _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
+        _destinationLatLng = position;
+        _draggableMarker = _createDraggableMarker(position, address);
+        _markers.add(_draggableMarker!);
+      });
+      _drawRoute();
+    } finally {
+      setState(() => _isLoadingAddress = false);
+    }
+  }
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   void onClearClick() {
     debugPrint('onClearClickInAddressAutocomplete() clearing form');
     addressTextController.clear();
@@ -233,7 +398,10 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
     }
   }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
   InputDecoration getInputDecoration(String hintText) {
     return InputDecoration(
       filled: true,
@@ -256,18 +424,74 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
     );
   }
 
+<<<<<<< HEAD
   void dispose() {
+=======
+  // Add these helper methods:
+// void _updateCenterPosition() async {
+//   if (_mapController == null) return;
+
+//   // Get current center of the visible map
+//   final visibleRegion = await _mapController.getVisibleRegion();
+//   final centerLat = (visibleRegion.northeast.latitude + visibleRegion.southwest.latitude) / 2;
+//   final centerLng = (visibleRegion.northeast.longitude + visibleRegion.southwest.longitude) / 2;
+//   final center = LatLng(centerLat, centerLng);
+
+//   _updateMarkerPosition(center);
+// }
+
+// Add this method to update the marker position
+// void _updateMarkerPosition(LatLng position) async {
+//   final address = await _getAddressFromLatLng(position);
+//   setState(() {
+//     _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
+//     _destinationController.text = address;
+//     _destinationLatLng = position;
+//     _draggableMarker = _createDraggableMarker(position, address);
+//     _markers.add(_draggableMarker!);
+//   });
+//   _drawRoute();
+// }
+
+
+// Update your marker creation method
+  Marker _createDraggableMarker(LatLng position, String address) {
+    return Marker(
+      markerId: const MarkerId('draggable_marker'),
+      position: position,
+      draggable: true,
+      infoWindow: InfoWindow(
+        title: 'Delivery Location',
+        snippet: address,
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      onDragEnd: (newPosition) {
+        _updateMarkerPosition(newPosition);
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _mapController?.dispose();
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     addressFocusNode.dispose();
     cityFocusNode.dispose();
     stateFocusNode.dispose();
     zipFocusNode.dispose();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     addressTextController.dispose();
     cityTextController.dispose();
     stateTextController.dispose();
     zipTextController.dispose();
     _descriptionController.dispose();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     super.dispose();
   }
 
@@ -284,15 +508,38 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
             height: MediaQuery.of(context).size.height / 1.8,
             child: Stack(
               children: [
+<<<<<<< HEAD
                 // Google Map
                 GoogleMap(
                   onMapCreated: (controller) => _mapController = controller,
                   initialCameraPosition: CameraPosition(
                     target: _initialPosition,
+=======
+                  // Add to your Stack widget above the GoogleMap:
+                Positioned(
+                  top: MediaQuery.of(context).size.height / 2 - 30,
+                  left: MediaQuery.of(context).size.width / 2 - 15,
+                  child: Icon(Icons.location_pin, size: 30, color: Colors.red),
+                ),
+                // Google Map
+// In your GoogleMap widget
+          GoogleMap(
+                  onMapCreated: (controller) {
+                    _mapController = controller;
+                    if (_destinationLatLng != null) {
+                      controller.animateCamera(
+                        CameraUpdate.newLatLng(_destinationLatLng!),
+                      );
+                    }
+                  },
+                  initialCameraPosition: CameraPosition(
+                    target: _destinationLatLng ?? _initialPosition,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                     zoom: 14,
                   ),
                   markers: _markers,
                   polylines: _polylines,
+<<<<<<< HEAD
                   onTap: (latLng) async {
                     final address = await _getAddressFromLatLng(latLng);
                     setState(() {
@@ -316,6 +563,20 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
+=======
+                  onTap: (latLng) {
+                    _updateMarkerPosition(latLng);
+                  },
+                ),
+
+           // Floating Source and Destination Input Fields
+              Positioned(
+                  top: 16,
+                  left: 16,
+                  right: 16,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
@@ -331,6 +592,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
                         width: 1,
                       ),
                     ),
+<<<<<<< HEAD
                     child: RichText(
                       text: TextSpan(
                         style: TextStyle(
@@ -360,6 +622,76 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
                           ),
                         ],
                       ),
+=======
+                    child: Column(
+                      children: [
+                        // Your address instructions here...
+                        kIsWeb
+                            ? TextField(
+                                controller: _destinationController,
+                                decoration: InputDecoration(
+                                  labelText: 'where_to'.tr,
+                                  hintText: '${'eg'.tr} KN 360 St 6, Kigali',
+                                  hintStyle: const TextStyle(color: Colors.grey),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                onChanged: (value) async {
+                                  if (value.isNotEmpty && value.length > 3) {
+                                    List<Location> locations = await locationFromAddress(value);
+                                    if (locations.isNotEmpty) {
+                                      LatLng newPosition = LatLng(
+                                        locations.first.latitude,
+                                        locations.first.longitude,
+                                      );
+                                      _updateMarkerPosition(newPosition);
+                                      _mapController?.animateCamera(
+                                        CameraUpdate.newLatLng(newPosition),
+                                      );
+                                    }
+                                  }
+                                },
+                              )
+                            : AddressAutocompleteTextField(
+                                mapsApiKey: AppConstants.googlePlacesApiKey,
+                                onSuggestionClickGetTextToUseForControl: (place) => place.streetAddress,
+                                onInitialSuggestionClick: (suggestion) {
+                                  setState(() {
+                                    _suggestionDescription = suggestion.description;
+                                    _suggestionPlaceId = suggestion.placeId;
+                                  });
+                                },
+                                onSuggestionClick: onSuggestionClick, // This is where we handle the selection
+                                onFinishedEditingWithNoSuggestion: (text) {
+                                  debugPrint('User typed: $text without selecting a suggestion');
+                                },
+                                hoverColor: Colors.purple,
+                                selectionColor: Colors.red,
+                                buildItem: (Suggestion suggestion, int index) {
+                                  return Container(
+                                    margin: const EdgeInsets.fromLTRB(1, 1, 1, 1),
+                                    padding: const EdgeInsets.all(8),
+                                    alignment: Alignment.centerLeft,
+                                    color: Colors.white,
+                                    child: Text(suggestion.description),
+                                  );
+                                },
+                                clearButton: const Icon(Icons.close),
+                                componentCountry: 'rw',
+                                language: 'en-Us',
+                                controller: _destinationController,
+                                decoration: InputDecoration(
+                                  labelText: 'where_to'.tr,
+                                  hintText: '${'eg'.tr} KN 360 St 6, Kigali',
+                                  hintStyle: const TextStyle(color: Colors.grey),
+                                  border: const OutlineInputBorder(),
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.search),
+                                    onPressed: _setDestinationFromInput,
+                                  ),
+                                ),
+                              ),
+                      ],
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                     ),
                   ),
                 ),
@@ -665,7 +997,10 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
   String? _selectedAddress; // Currently selected address for printing
 
   Future<void> _getCurrentLocation() async {
+<<<<<<< HEAD
     // Check and request location permissions
+=======
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     if (!await _checkLocationPermissions()) return;
 
     try {
@@ -675,12 +1010,20 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
 
       setState(() {
         _initialPosition = currentLatLng;
+<<<<<<< HEAD
         _sourceLatLng = const LatLng(
             -1.929662943503856, 30.114273068056985); // Fixed pickup point
         _destinationLatLng = currentLatLng;
         _currentAddress = address;
         _destinationController.text = address;
         _capturedAddresses.add(address); // Store the initial address
+=======
+        _sourceLatLng = const LatLng(-1.9482, 30.0592); // Fixed pickup point
+        _destinationLatLng =
+            currentLatLng; // Set destination to current location
+        _currentAddress = address;
+        _destinationController.text = address;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
         // Clear existing markers and add new ones
         _markers.clear();
@@ -694,12 +1037,26 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
           ),
         );
 
+<<<<<<< HEAD
         _draggableMarker = _createDraggableMarker(currentLatLng, address);
         _markers.add(_draggableMarker!);
 
         // Draw initial route
         _drawRoute();
       });
+=======
+        // Add destination marker at center
+        _draggableMarker = _createDraggableMarker(currentLatLng, address);
+        _markers.add(_draggableMarker!);
+      });
+
+      // Center the map on the destination
+      _mapController.animateCamera(
+        CameraUpdate.newLatLng(currentLatLng),
+      );
+
+      _drawRoute(); // Draw initial route
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     } catch (e) {
       debugPrint('Error getting location: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -739,6 +1096,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
     return true;
   }
 
+<<<<<<< HEAD
   Marker _createDraggableMarker(LatLng position, String address) {
     return Marker(
       markerId: const MarkerId('draggable_marker'),
@@ -764,6 +1122,32 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
       },
     );
   }
+=======
+// Marker _createDraggableMarker(LatLng position, String address) {
+//   return Marker(
+//     markerId: const MarkerId('draggable_marker'),
+//     position: position,
+//     draggable: true,
+//     infoWindow: InfoWindow(
+//       title: 'Delivery Location',
+//       snippet: address.length > 30 ? '${address.substring(0, 30)}...' : address,
+//       onTap: () => _showAddressDialog(address),
+//     ),
+//     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+//     onDragEnd: (newPosition) async {
+//       final newAddress = await _getAddressFromLatLng(newPosition);
+//       setState(() {
+//         _destinationLatLng = newPosition;
+//         widget.destinationController!.text = newAddress;
+//         _markers.removeWhere((m) => m.markerId.value == 'draggable_marker');
+//         _draggableMarker = _createDraggableMarker(newPosition, newAddress);
+//         _markers.add(_draggableMarker!);
+//       });
+//       _drawRoute();
+//     },
+//   );
+// }
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
 // Add proper address dialog
   void _showAddressDialog(String address) {
@@ -960,7 +1344,11 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
   }
 
   void _setDestinationFromInput() async {
+<<<<<<< HEAD
     final destination = _destinationController.text;
+=======
+    final destination = _destinationController!.text;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
     if (destination.isEmpty || destination == 'current_location'.tr) {
       // If the source field is empty or set to "current_location".tr, use the current_location.tr
@@ -1140,6 +1528,7 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
                         builder: (context) {
                           //**************** Bottom Sheet with slider */
                           return widget.isShop == 0
+<<<<<<< HEAD
                               ? BottomSheetWithSliderSl(
                                   shippingAddress1: widget.destination,
                                   shippingAddress2: '',
@@ -1151,11 +1540,28 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
                                   availableBalance: '0.00',
                                   amount: widget.calculatedTotal.toString(),
                                   productId: widget.productId,
+=======
+                              ?  BottomSheetWithSliderSl(
+                                customerNote: _descriptionController.text,
+                                deliveryCost: widget.deliveryCost,
+                                     selectedProducts:widget.cart,
+                                  availableBalance:widget.availableBalance.toStringAsFixed(2),
+                                     shippingAddress1:widget.destination,
+                                    shippingAddress2: '',
+                                    shippingCompany: AppConstants.deliveryCompany,
+                                    shippingCity: 'Kigali',
+                                    shippingCountry: 'Rwanda',
+                                  homePhone: widget.homePhone,
+                                  destination: widget.destination,
+                                  amount: widget.totalAmount.toStringAsFixed(2),
+                                  productId: widget.productId!,
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                   contactModel: widget.contactModel,
                                   pinCode: widget.pinCodeFieldController,
                                   transactionType: widget.transactionType,
                                   purpose: widget.purpose,
                                   studentId: widget.studentId,
+<<<<<<< HEAD
                                   inputBalance: widget.calculatedTotal,
                                   dataList: widget.dataList,
                                   productIndex: widget.productIndex,
@@ -1170,6 +1576,18 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
                                       '${'convenient_fee'.tr}: ${widget.calculateServiceCharge.toStringAsFixed(2)}',
                                   totalNowPaid:
                                       '${'total_amount_paid_now'.tr}: ${widget.totalAmount} ${AppConstants.currency}',
+=======
+                                  inputBalance: widget.availableBalance,
+                                  dataList: widget.dataList,
+                                  productIndex: widget.productIndex,
+                                  edubox_service: widget.eduboxService,
+                                  amountToPay: '${'delivery_cost'.tr}: (${'paid_on_delivery'.tr})',//${AppConstants.deliveryCost.toStringAsFixed(2)}',
+                                  nowPaid: '${'material_cost'.tr}: ${widget.calculatedTotal.toStringAsFixed(2)} ${AppConstants.currency}',
+                                  vat:
+                                      '${'vat'.tr}: ${'inclusive'.tr}',
+                                  serviceCharge:widget.calculateServiceCharge.toStringAsFixed(2) ,
+                                  totalNowPaid:'${'total_amount_paid_now'.tr}: ${widget.totalAmount} ${AppConstants.currency}',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                   serviceValue: widget.productName,
                                   serviceIndex: widget.serviceIndex,
                                   randomNumber: widget.randomNumber,
@@ -1177,7 +1595,11 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
                                   studentCode: widget.studentCode,
                                   className: widget.className,
                                   schoolName: widget.schoolName,
+<<<<<<< HEAD
                                 )
+=======
+      )
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                               : BottomSheetWithSliderSp(
                                   customerNote: '',
                                   deliveryCost: widget.deliveryCost,
@@ -1219,6 +1641,11 @@ class _DeliveryMapScreenState extends State<DeliveryMapScreenSl> {
                                   serviceValue: widget.product!.name,
                                 );
                         });
+<<<<<<< HEAD
+=======
+
+                        
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
               },
               // SingleSchool( classId: selectedSubCategory, schoolId: selectedCategory, studentId: selectedStudent)
 

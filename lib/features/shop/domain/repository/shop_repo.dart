@@ -53,10 +53,22 @@ class ShopRepo {
       required String shippingCountry,
       required List<Map<String,dynamic>> products,
       required String feeName,
+<<<<<<< HEAD
       required String feeAmount
       }) async {
     return apiClient.postData(AppConstants.getOrder, {
       "currency": currency,
+=======
+      required String feeAmount,
+      required String billingFirstName,
+      required String billingLastName,
+      required String billingCompany,
+      required String billingPhone
+      }) async {
+    return apiClient.postData(AppConstants.getOrder, {
+      "currency": currency,
+      "status": "processing",
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
      "shipping":{
         "first_name":shippingFirstName,
         "last_name": shippingLastName,
@@ -67,6 +79,7 @@ class ShopRepo {
         "country": shippingCountry,
         "phone": homePhone
     },
+<<<<<<< HEAD
     "customer_note":customerNote,
     "line_items":products,
     "shipping_lines":[
@@ -81,6 +94,28 @@ class ShopRepo {
             "total":feeAmount
         }
     ],
+=======
+        "billing": {
+        "first_name": billingFirstName,
+        "last_name": billingLastName,
+        "company": billingCompany,
+        "phone": billingPhone
+    },
+    "customer_note":customerNote,
+    "line_items":products,
+    // "shipping_lines":[
+    //     {
+    //         "method_id":1,
+    //         "total":shippingTotal
+    //     }
+    // ],
+    // "fee_lines":[
+    //     {
+    //         "name":feeName,
+    //         "total":feeAmount
+    //     }
+    // ],
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
       "total": total,
       "customer_id": customerId,

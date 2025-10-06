@@ -163,6 +163,7 @@ class StudentRegistrationController extends GetxController implements GetxServic
 
 
 
+<<<<<<< HEAD
   Future<Response> sendMoney({required ContactModel contactModel, required double amount, String? purpose, String? pinCode, required Function onSuggest}) async{
 
     _isLoading = true;
@@ -190,6 +191,35 @@ class StudentRegistrationController extends GetxController implements GetxServic
    update();
    return response;
   }
+=======
+  // Future<Response> sendMoney({required ContactModel contactModel, required double amount, String? purpose, String? pinCode, required Function onSuggest}) async{
+
+  //   _isLoading = true;
+  //   _isNextBottomSheet = false;
+  //   update();
+  // //  Response responseMtn = await transactionRepo.sendMoneyMtnMomoApi(phoneNumber: contactModel.phoneNumber, amount: amount, purpose: purpose, pin: pinCode);
+   
+  // //  if(responseMtn.statusCode == 202){
+
+  //   Response response = await transactionRepo.sendMoneyApi(phoneNumber: contactModel.phoneNumber, amount: amount, purpose: purpose, pin: pinCode);
+  //   if(response.statusCode==200){
+  //       _isLoading = false;
+  //    _isNextBottomSheet = true;
+
+  //    onSuggest();
+  //   // }
+  //   // else{
+  //   //   print('**********Failed to save sent money');
+  //   // }
+   
+  //  }else{
+  //    _isLoading = false;
+  //    ApiChecker.checkApi(response);
+  //  }
+  //  update();
+  //  return response;
+  // }
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
  
    Future<Response> addStudent({required String name,required String code,required String schoolCode,required String parentId,required int classId, String? gender,String? age,String? hipSize,String? waistSize,String? heightSize,String? topWear,String? bottomWear,String? sportsWear,String? feetWear,String? topSize,String? size }) async{

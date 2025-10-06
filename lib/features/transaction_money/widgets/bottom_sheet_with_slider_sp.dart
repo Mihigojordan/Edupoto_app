@@ -130,12 +130,21 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
     _fetchCustomer();
   }
 
+<<<<<<< HEAD
     Future<void> _fetchCustomer() async {
     try {
       // First check if we already have a customer ID stored locally
      customerId = _shopController.getCustomerId();
       
       if (customerId == null ) {
+=======
+  Future<void> _fetchCustomer() async {
+    try {
+      // First check if we already have a customer ID stored locally
+      customerId = _shopController.getCustomerId();
+
+      if (customerId == null) {
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
         // If no customer ID exists, try to find or create one
         final userId = _authController.getUserId();
         final userData = _authController.getUserData();
@@ -159,14 +168,24 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
         // If customer exists, store the ID
         if (existingCustomer?.id != null) {
           _shopController.setCustomerId(existingCustomer!.id.toString());
+<<<<<<< HEAD
           customerId=existingCustomer.id;
+=======
+          customerId = existingCustomer.id;
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
         } else {
           // If customer doesn't exist, create a new one
           final response = await _shopController.customerReg(
             email: email,
             phone: userData?.phone ?? '',
             firstName: name.split(' ').first,
+<<<<<<< HEAD
             lastName: name.split(' ').length > 1 ? name.split(' ').sublist(1).join(' ') : '',
+=======
+            lastName: name.split(' ').length > 1
+                ? name.split(' ').sublist(1).join(' ')
+                : '',
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
           );
 
           if (response.statusCode == 200 || response.statusCode == 201) {
@@ -201,6 +220,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
         '${Get.find<SplashController>().configModel!.baseUrls!.agentImageUrl}/${widget.contactModel!.avatarImage}';
 
     final ContactController contactController = Get.find<ContactController>();
+<<<<<<< HEAD
     
 
    final List<Map<String, dynamic>> productMaps = 
@@ -208,6 +228,14 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
       final product = entry.key;
       final quantity = entry.value;
       
+=======
+
+    final List<Map<String, dynamic>> productMaps =
+        widget.selectedProducts.entries.map((entry) {
+      final product = entry.key;
+      final quantity = entry.value;
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       return {
         'product_id': product.id,
         'name': product.name,
@@ -224,7 +252,10 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
       canPop: true,
       onPopInvoked: (_) => Get.back(closeOverlays: true, canPop: true),
       child: Container(
+<<<<<<< HEAD
         
+=======
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
           decoration: BoxDecoration(
             color: ColorResources.getBackgroundColor(),
             borderRadius: const BorderRadius.only(
@@ -317,10 +348,23 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                               ],
                             )
                           : Column(children: [
+<<<<<<< HEAD
                              (widget.studentInfo == null ||
                                widget.studentInfo!.isEmpty)?
                             widget.studentCode==null?const SizedBox.shrink():    ForStudentWidget(studentInfo: 'Code: ${widget.studentCode}\nName: ${widget.studentName}'):
                               ForStudentWidget(studentInfo: 'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}'),
+=======
+                              (widget.studentInfo == null ||
+                                      widget.studentInfo!.isEmpty)
+                                  ? widget.studentCode == null
+                                      ? const SizedBox.shrink()
+                                      : ForStudentWidget(
+                                          studentInfo:
+                                              'Code: ${widget.studentCode}\nName: ${widget.studentName}')
+                                  : ForStudentWidget(
+                                      studentInfo:
+                                          'Code: ${widget.studentInfo![widget.studentIndex!].code!}\nName: ${widget.studentInfo![widget.studentIndex!].name}'),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                             ]),
                       Container(
                         color: ColorResources.getBackgroundColor(),
@@ -359,6 +403,7 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                         sizedBox10,
                                         //********************* Student is Problem Here */
                                         (widget.studentInfo == null ||
+<<<<<<< HEAD
                                widget.studentInfo!.isEmpty)?
                              widget.studentCode==null?const SizedBox.shrink():  ForStudentWidget(studentInfo: 'Code: ${widget.studentCode}\nName: ${widget.studentName}'):
                                         Wrap(
@@ -373,6 +418,26 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                             );
                                           }).toList(),
                                         ),
+=======
+                                                widget.studentInfo!.isEmpty)
+                                            ? widget.studentCode == null
+                                                ? const SizedBox.shrink()
+                                                : ForStudentWidget(
+                                                    studentInfo:
+                                                        'Code: ${widget.studentCode}\nName: ${widget.studentName}')
+                                            : Wrap(
+                                                spacing:
+                                                    8.0, // Horizontal space between items
+                                                runSpacing:
+                                                    4.0, // Vertical space between lines
+                                                children: widget.studentInfo!
+                                                    .map((student) {
+                                                  return Text(
+                                                    '${'code'.tr}: ${student.code!}\n${'name'.tr}: ${student.name}',
+                                                  );
+                                                }).toList(),
+                                              ),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                         sizedBox5,
                                         Container(
                                           height: Dimensions.dividerSizeMedium,
@@ -454,7 +519,11 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                               fontSize: 34.0)),
                                       sizedBox10,
                                       // ************************ Payment Method*******************/
+<<<<<<< HEAD
                                       
+=======
+
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                       PaymentMethodSelector(
                                         customerNote: widget.customerNote,
                                         deliveryCost: widget.deliveryCost,
@@ -612,10 +681,29 @@ class _BottomSheetWithSliderState extends State<BottomSheetWithSliderSp> {
                                     ),
                                     child: CustomInkWellWidget(
                                       onTap: () {
+<<<<<<< HEAD
                                          
                                         Get.to(ShopOrderScreen(customerId: customerId,)) ;
                                       }
                                       ,
+=======
+                                        _fetchCustomer();
+                                        // DEBUG: Print the customerId before navigation
+                                        print(
+                                            '👆 Button tapped with customerIdeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee: $customerId');
+
+                                        // Make sure customerId is not null and is the correct type
+                                        if (customerId != null) {
+                                          Get.to(() => ShopOrderScreen(
+                                              customerId: customerId));
+                                        } else {
+                                          print('❌ customerId is null!');
+                                          // Show error or handle null case
+                                          Get.snackbar('Error',
+                                              'Customer ID not available');
+                                        }
+                                      },
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
                                       radius: Dimensions.radiusSizeSmall,
                                       highlightColor: Theme.of(context)
                                           .textTheme

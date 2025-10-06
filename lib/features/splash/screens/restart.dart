@@ -90,12 +90,20 @@ Future<String?> _loadPin() async {
       try {
         await Get.find<SplashController>().initSharedData();
       } catch (e) {
+<<<<<<< HEAD
         print('Error in initSharedData: $e');
+=======
+        print('Error in initSharedData: ');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       }
 
       // Step 4: Fetch User Data
       final userData = Get.find<AuthController>().getUserData();
+<<<<<<< HEAD
       print('User Data[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]: ${userData!.countryCode}/${userData.phone}');
+=======
+       print('User Data[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]: ${userData!.countryCode}/${userData.phone}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
       // Step 5: Route Navigation
       if (Get.find<SplashController>().configModel?.companyName != null) {

@@ -15,8 +15,7 @@ ThemeData dark = ThemeData(
     // bodyMedium: TextStyle(color: Color(0xFF8dbac3)),
     // titleMedium: TextStyle(color: Color(0xFF8dbac3)),
   ),
-dialogTheme: const DialogThemeData(surfaceTintColor: Colors.black),
-
+  // dialogTheme: const DialogTheme(surfaceTintColor: Colors.black),
   colorScheme: ColorScheme(
     brightness: Brightness.dark,
     primary: const Color(0xFF689da7),

@@ -351,30 +351,49 @@ Future<void> _login(BuildContext context) async {
     return;
   }
 
+<<<<<<< HEAD
   print('Here is why I can access---------------------------All login Req Checked ');
+=======
+  // print('Here is why I can access---------------------------All login Req Checked ');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
   try {
     await Get.find<AuthController>().setUserData(
       UserShortDataModel(phone: phoneWithoutCode, countryCode: code),
     );
+<<<<<<< HEAD
     print('Here is why I can login---------------------------try is checked');
+=======
+    // print('Here is why I can login---------------------------try is checked');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
     // Login the user
     var value = await Get.find<AuthController>().login(code: code, phone: phoneWithoutCode, password: password);
 
     if (value.isOk) {
       await Get.find<ProfileController>().getProfileData(reload: true);
+<<<<<<< HEAD
       print('Here is why I can login------------------------------------------- ${value.body}');
+=======
+      // print('Here is why I can login------------------------------------------- ${value.body}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
       // Save PIN if "Remember PIN" is selected
       if (rememberPin == true) {
         await _savePin(password);
       }
     } else {
+<<<<<<< HEAD
       print('Here is why I can’t login-------------------------------------------${value.body}');
     }
   } catch (e) {
     print('Login error: $e');
+=======
+      // print('Here is why I can’t login-------------------------------------------${value.body}');
+    }
+  } catch (e) {
+    print('Login error: ');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     showCustomSnackBarHelper('please_input_your_valid_number'.tr, isError: true);
   }
 }

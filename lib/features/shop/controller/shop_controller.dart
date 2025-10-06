@@ -49,7 +49,11 @@ class ShopController extends GetxController implements GetxService{
     if(_shopList == null ) {
       _shopList = [];
       Response response = await shopRepo.getProductListApi();
+<<<<<<< HEAD
       print('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr${response.body}');
+=======
+      // print('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr${response.body}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       if(response.body != null && response.body != {} && response.statusCode == 200){
         _shopList = [];
         response.body.forEach((website) {_shopList!.add(Product.fromJson(website));});
@@ -77,7 +81,11 @@ class ShopController extends GetxController implements GetxService{
     if(_categoryList == null ) {
       _categoryList = [];
       Response response = await shopRepo.getCategoryListApi();
+<<<<<<< HEAD
       print('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr${response.body}');
+=======
+      // print('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr${response.body}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       if(response.body != null && response.body != {} && response.statusCode == 200){
         _categoryList = [];
         response.body.forEach((website) {_categoryList!.add(WooCategory.fromJson(website));});
@@ -105,7 +113,11 @@ class ShopController extends GetxController implements GetxService{
     if(_brandList == null ) {
       _brandList = [];
       Response response = await shopRepo.getBrandListApi();
+<<<<<<< HEAD
       print('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr${response.body}');
+=======
+      // print('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr${response.body}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       if(response.body != null && response.body != {} && response.statusCode == 200){
         _brandList = [];
         response.body.forEach((website) {_brandList!.add(BrandModel.fromJson(website));});
@@ -165,7 +177,11 @@ class ShopController extends GetxController implements GetxService{
       
       if(response.body != null && response.body != {} && response.statusCode == 200){
         _orderList = [];
+<<<<<<< HEAD
          print('++++++++++++++++++++++++++++++++++++++++ order lists $_orderList'); 
+=======
+        //  print('++++++++++++++++++++++++++++++++++++++++ order lists $_orderList'); 
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
         response.body.forEach((website) {_orderList!.add(OrderModel.fromJson(website));});
        
       
@@ -181,12 +197,20 @@ class ShopController extends GetxController implements GetxService{
     }
   }
 
+<<<<<<< HEAD
     Future<Response> createOrder({required List<Map<String,dynamic>>products,required String feeName,required String feeAmount,required String shippingAddress1,required String shippingAddress2,required String shippingFirstName,required String shippingLastName,required String shippingCompany,required String shippingCity,required String shippingCountry, required String homePhone,  required String currency, required String shippingTotal, required String total, required int customerId,required String paymentMethod, required String paymentMethodTitle,required String createdVia, required String customerNote}) async{
+=======
+    Future<Response> createOrder({ required billingFirstName,required billingLastName,required billingCompany,required billingPhone, required List<Map<String,dynamic>>products,required String feeName,required String feeAmount,required String shippingAddress1,required String shippingAddress2,required String shippingFirstName,required String shippingLastName,required String shippingCompany,required String shippingCity,required String shippingCountry, required String homePhone,  required String currency, required String shippingTotal, required String total, required int customerId,required String paymentMethod, required String paymentMethodTitle,required String createdVia, required String customerNote}) async{
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
     _isLoading = true;
     update();
 
+<<<<<<< HEAD
     Response response = await shopRepo.createOrder( products: products,feeName: feeName,feeAmount:feeAmount , shippingAddress1: shippingAddress1,shippingAddress2: shippingAddress2,shippingFirstName: shippingFirstName,shippingLastName:shippingLastName, shippingCompany: shippingCompany,shippingCity: shippingCity,shippingCountry: shippingCountry,homePhone:homePhone,currency: currency, shippingTotal: shippingTotal, total: total, customerId: customerId, paymentMethod: paymentMethod, paymentMethodTitle: paymentMethodTitle, createdVia: createdVia, customerNote: customerNote);
+=======
+    Response response = await shopRepo.createOrder( billingFirstName: billingFirstName,billingLastName: billingLastName,billingCompany: billingCompany,billingPhone: billingPhone,  products: products,feeName: feeName,feeAmount:feeAmount , shippingAddress1: shippingAddress1,shippingAddress2: shippingAddress2,shippingFirstName: shippingFirstName,shippingLastName:shippingLastName, shippingCompany: shippingCompany,shippingCity: shippingCity,shippingCountry: shippingCountry,homePhone:homePhone,currency: currency, shippingTotal: shippingTotal, total: total, customerId: customerId, paymentMethod: paymentMethod, paymentMethodTitle: paymentMethodTitle, createdVia: createdVia, customerNote: customerNote);
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
     if(response.statusCode==201){
         _isLoading = false;
 
@@ -229,7 +253,11 @@ Future<void> getCustomerData({bool reload = false, bool isUpdate = false}) async
       Response response = await shopRepo.createCustomer(email: email,phone: phone,firstName: firstName,lastName: lastName);
 
       if (response.statusCode == 201) {
+<<<<<<< HEAD
         print('cusotmer id ${response.body['id'].toString()}');
+=======
+        // print('cusotmer id ${response.body['id'].toString()}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 
        setCustomerData(CustomerShortDataModel(
           email: response.body['email'].toString(),

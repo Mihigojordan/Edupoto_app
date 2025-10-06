@@ -109,6 +109,7 @@ class UserInfoWidget extends StatelessWidget {
               ],
             ),
 
+<<<<<<< HEAD
             const SizedBox(height: Dimensions.paddingSizeExtraSmall),
 
             if(profileController.userInfo!.kycStatus != KycVerification.approve) Row(
@@ -149,6 +150,48 @@ class UserInfoWidget extends StatelessWidget {
                 ),
               ],
             ),
+=======
+            // const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+
+            // if(profileController.userInfo!.kycStatus != KycVerification.approve) Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Flexible(
+            //       child: Text(
+            //         profileController.userInfo!.kycStatus == KycVerification.needApply ?
+            //         'kyc_verification_is_not'.tr : profileController.userInfo!.kycStatus == KycVerification.pending ?
+            //         'your_verification_request_is'.tr : 'your_verification_is_denied'.tr,
+            //         style: rubikRegular.copyWith(
+            //           color: Theme.of(context).colorScheme.error,
+            //         ),
+            //         maxLines: 2,
+
+            //       ),
+            //     ),
+            //     const SizedBox(width: Dimensions.paddingSizeDefault,),
+
+            //     CustomInkWellWidget(
+            //       onTap: () => Get.to(()=> const KycVerifyScreen()),
+            //       child: Container(
+            //         padding: const EdgeInsets.symmetric(
+            //           horizontal: Dimensions.paddingSizeDefault,
+            //           vertical: Dimensions.paddingSizeExtraSmall,
+            //         ),
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(Dimensions.paddingSizeExtraSmall),
+            //           color: Theme.of(context).colorScheme.error.withOpacity(0.8),
+            //         ),
+            //         child: Text(
+            //           profileController.userInfo!.kycStatus == KycVerification.needApply ?
+            //           'click_to_verify'.tr : profileController.userInfo!.kycStatus == KycVerification.pending ?
+            //           'edit'.tr : 're_apply'.tr,
+            //           style: rubikMedium.copyWith(color: Theme.of(context).cardColor),
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
           ],
         ),
       ),

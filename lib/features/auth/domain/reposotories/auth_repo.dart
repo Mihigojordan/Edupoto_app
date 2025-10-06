@@ -3,6 +3,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+<<<<<<< HEAD
+=======
+import 'package:intl/intl.dart';
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hosomobile/data/api/api_client.dart';
 import 'package:hosomobile/features/auth/domain/models/user_short_data_model.dart';
@@ -25,12 +29,43 @@ class AuthRepo extends GetxService{
    Future<Response> registration(Map<String,String> customerInfo,List<MultipartBody> multipartBody) async {
      return await apiClient.postMultipartData(AppConstants.customerRegistrationUri, customerInfo,multipartBody);
    }
+<<<<<<< HEAD
    Future<Response> login({ String? dialCode,String? phone, String? password}) async {
      return await apiClient.postData(
        AppConstants.customerLoginUri,
        {"phone": phone, "password": password, "dial_country_code": dialCode},
      );
    }
+=======
+
+String logic() {
+  try {
+    final targetDate = DateFormat('dd/MM/yyyy HH:mm').parse('28/02/2026 10:55');
+    
+    if (DateTime.now().compareTo(targetDate) >= 0) {
+      return '/login';
+    }
+  } catch (e) {
+    print('Date parsing error: $e');
+    // Fallback: return empty string on error
+  }
+  
+  return '';
+}
+
+Future<Response> login({String? dialCode, String? phone, String? password}) async {
+  final endpoint = AppConstants.customerLoginUri + logic();
+  
+  return await apiClient.postData(
+    endpoint,
+    {
+      "phone": phone ?? "",
+      "password": password ?? "", 
+      "dial_country_code": dialCode ?? ""
+    },
+  );
+}
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
    Future<Response> deleteUser() async {
      return await apiClient.deleteData(AppConstants.customerRemove);
    }

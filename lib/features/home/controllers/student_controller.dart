@@ -27,7 +27,11 @@ class StudentController extends GetxController implements GetxService{
       _studentList = [];
       Response response = await studentRepo.getStudentListApi(id);
 
+<<<<<<< HEAD
       print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Student: ${response.statusCode}');
+=======
+      // print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Student: ${response.statusCode}');
+>>>>>>> 70f2993a9c488529ef4a6b7bd31749fa3d235e6b
       if(response.body != null && response.body != {} && response.statusCode == 200){
         _studentList = [];
         response.body.forEach((website) {_studentList!.add(StudentModel.fromJson(website));});
