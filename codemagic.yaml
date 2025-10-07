@@ -7,7 +7,7 @@ workflows:
       cocoapods: default
       vars:
         # Set these in Codemagic UI as secure variables
-        DEVELOPMENT_TEAM: $DEVELOPMENT_TEAM
+        DEVELOPMENT_TEAM: PDMPL563DB
         APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
         APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
         APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY: $APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY
@@ -50,7 +50,7 @@ workflows:
             -scheme Runner \
             -configuration Release \
             -archivePath build/ios/archive/Runner.xcarchive \
-            DEVELOPMENT_TEAM="$DEVELOPMENT_TEAM" \
+            DEVELOPMENT_TEAM="PDMPL563DB" \
             CODE_SIGN_STYLE=Automatic \
             clean archive
 
