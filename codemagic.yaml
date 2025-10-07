@@ -6,7 +6,6 @@ workflows:
       xcode: latest
       cocoapods: default
       vars:
-        # Set these in Codemagic UI as secure variables
         DEVELOPMENT_TEAM: PDMPL563DB
         APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
         APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
@@ -42,6 +41,11 @@ workflows:
           NEW_BUILD=$((CURRENT_BUILD + 1))
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD" "$PLIST_PATH"
           echo "CFBundleVersion updated from $CURRENT_BUILD to $NEW_BUILD"
+
+      - name: Validate Workspace & Schemes
+        script: |
+          echo "🔍 Validating Runner workspace..."
+          xcodebuild -list -workspace ios/Runner.xcworkspace
 
       - name: Archive iOS App (Automatic Signing)
         script: |
