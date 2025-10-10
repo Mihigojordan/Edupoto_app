@@ -375,6 +375,11 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+
+				// Added signing for Runner target Profile config
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PDMPL563DB;
+				CODE_SIGN_IDENTITY = "Apple Development";
 			};
 			name = Profile;
 		};
@@ -555,6 +560,11 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+
+				// Added signing for Runner target Debug config
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PDMPL563DB;
+				CODE_SIGN_IDENTITY = "Apple Development";
 			};
 			name = Debug;
 		};
@@ -576,6 +586,11 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+
+				// Added signing for Runner target Release config
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PDMPL563DB;
+				CODE_SIGN_IDENTITY = "Apple Development";
 			};
 			name = Release;
 		};
